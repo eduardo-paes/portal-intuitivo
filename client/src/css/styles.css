@@ -1,0 +1,42 @@
+/* Formulários */
+label {
+    margin-bottom: 5px;
+}
+
+.form-group {
+    margin: 0 10px;
+}
+
+.form-control {
+    display: flex;
+    margin-bottom: 10px;
+    width: 50%;
+}
+
+/* Botões */
+
+button {
+    margin: 5px;
+    cursor: pointer;
+}
+
+/* TopBar */
+.top-content {
+    padding: 1%;
+}
+
+.item-flex {
+    display: inline;
+    margin-right: 3%;
+}
+
+/* --- Tabela --- */
+
+table, td, th {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 5px;
+}
