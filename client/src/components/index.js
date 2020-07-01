@@ -1,3 +1,4 @@
-import TopBar from './TopBar'
+import LinkRoutes from "./LinkRoutes"
+import PersistentDrawer from "./PersistentDrawer"
 
-export { TopBar }
+export { LinkRoutes, PersistentDrawer }

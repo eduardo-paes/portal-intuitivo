@@ -2,6 +2,14 @@ import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import api from '../api'
 
+// Ícones: Material-UI
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
+
+import Table from 'react-bootstrap/Table'
+
 // Botão de Atualização
 class UpdateUser extends Component {
     // Definição do evento
@@ -9,10 +17,18 @@ class UpdateUser extends Component {
         event.preventDefault();
         window.location.href = `/controle-usuario/update/${this.props.id}`
     }
-    
+
     // Retorna o botaão
     render() {
-        return <button onClick={this.updateUser}>Update</button>
+        return (
+            <IconButton
+                aria-label="update"
+                color="primary"
+                size="small"
+                onClick={this.updateUser}>
+                <EditIcon/>
+            </IconButton>
+        )
     }
 }
 
@@ -22,7 +38,7 @@ class DeleteUser extends Component {
     deleteUser = event => {
         event.preventDefault();
         // Mensagem de confirmação
-        if (window.confirm(`Quer remover o usuário ${this.props.id} permanentemente?`,)) {
+        if (window.confirm(`Quer remover o usuário ${this.props.nome} permanentemente?`)) {
             api.removerUsuario(this.props.id)
             window
                 .location
@@ -32,7 +48,31 @@ class DeleteUser extends Component {
 
     // Retorna o botaão
     render() {
-        return <button onClick={this.deleteUser}>Delete</button>
+        return (
+            <IconButton
+                aria-label="delete"
+                color="secondary"
+                size="small"
+                onClick={this.deleteUser}>
+                <DeleteIcon/>
+            </IconButton>
+        )
+    }
+}
+
+// Botão de Registrar
+class CreateUser extends Component {
+    render() {
+        return (
+            <div className="createButton">
+                <Link to="/controle-usuario/create">
+                    <button className="btn btn-outline-primary">
+                        <AddIcon/>
+                        Registrar
+                    </button>
+                </Link>
+            </div>
+        )
     }
 }
 
@@ -41,23 +81,17 @@ class UsersList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            usuarios: [],
-            columns: [],
-            isLoading: false
+            usuarios: []
         }
     }
 
     // Montagem dos componentes
     componentDidMount = async () => {
-        this.setState({isLoading: true})
 
         await api
             .listarUsuarios()
             .then(usuarios => {
-                this.setState ({
-                    usuarios: usuarios.data.data, 
-                    isLoading: false
-                })
+                this.setState({usuarios: usuarios.data.data})
             })
     }
 
@@ -67,32 +101,41 @@ class UsersList extends Component {
 
         // Retorna a Tabela
         return (
-            <div className="container">
+            <div className="form-group container-fluid">
                 <h1>Controle de Usuário</h1>
-                <table>
-                    <tr>
-                        <th>Nome Completo</th>
-                        <th>E-mail</th>
-                        <th>Tipo de Acesso</th>
-                        <th>Funções</th>
-                    </tr>
-                    {usuarios.map(usuario => (
+
+                <Table
+                    table-bordered
+                    responsive="responsive"
+                    striped="striped"
+                    bordered="bordered"
+                    hover="hover"
+                    size="sm">
+                    <thead>
                         <tr>
-                            <td>{usuario.nome}</td>
-                            <td>{usuario.email}</td>
-                            <td>{usuario.acesso}</td>
-                            <td>
-                                <span><DeleteUser id={usuario._id}/></span>
-                                <span><UpdateUser id={usuario._id}/></span>
-                            </td>
+                            <th>Nome Completo</th>
+                            <th>E-mail</th>
+                            <th>Tipo de Acesso</th>
+                            <th>Funções</th>
                         </tr>
-                    ))}
-                </table>
-                <Link to="/controle-usuario/create">
-                    <button>
-                        <span>Registrar</span>
-                    </button>
-                </Link>
+                    </thead>
+                    <tbody>
+                        {
+                            usuarios.map(usuario => (
+                                <tr>
+                                    <td>{usuario.nome}</td>
+                                    <td>{usuario.email}</td>
+                                    <td>{usuario.acesso}</td>
+                                    <td className="group-buttons">
+                                        <DeleteUser id={usuario._id} nome={usuario.nome}/>
+                                        <UpdateUser id={usuario._id}/>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </Table>
+                <CreateUser/>
             </div>
         )
     }

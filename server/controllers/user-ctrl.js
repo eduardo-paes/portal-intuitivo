@@ -107,8 +107,6 @@ removerUsuario = async (req, res) => {
                     .json({success: false, error: err})
             }
 
-            console.log(usuarioEncontrado);
-
             if (!usuarioEncontrado) {
                 return res
                     .status(404)
@@ -117,7 +115,7 @@ removerUsuario = async (req, res) => {
             // Caso não haja erros, conclui operação.
             return res
                 .status(200)
-                .json({success: true, data: usuario})
+                .json({success: true, data: usuarioEncontrado})
         })
         .catch(err => console.log(err))
 }
