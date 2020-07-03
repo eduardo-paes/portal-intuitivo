@@ -3,6 +3,11 @@ body {
     /* font-family: Roboto; */
 }
 
+.heading-page {
+    text-align: center;
+    font-family: Roboto;
+}
+
 /* --- Formulários --- */
 label {
     margin-bottom: 5px;
@@ -20,8 +25,9 @@ label {
 }
 
 /* --- Botões --- */
-.createButton {
+.create-button {
     margin-top: 15px;
+    text-align: center;
 }
 
 .group-buttons {
@@ -51,4 +57,8 @@ tbody {
 
 td, th {
     padding: 5px;
+}
+
+.react-table {
+    min-width: 650;
 }

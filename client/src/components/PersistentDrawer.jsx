@@ -1,5 +1,6 @@
 import React from "react";
-import LinkRoutes from "./LinkRoutes"
+import {withRouter} from "react-router-dom";
+import {LinkRoutes, ItemsLink} from "./"
 
 import clsx from "clsx";
 import {makeStyles, useTheme} from "@material-ui/core/styles";
@@ -7,14 +8,11 @@ import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItemText from "@material-ui/core/ListItemText";
 
 const drawerWidth = 240;
 
@@ -87,7 +85,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function PersistentDrawer() {
+function PersistentDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
@@ -144,12 +142,7 @@ export default function PersistentDrawer() {
                     </IconButton>
                 </div>
 
-                <Divider/>
-                <List>
-                        <ListItemText primary="Dashboard"/>
-                        <ListItemText primary="Dashboard"/>
-                        <ListItemText primary="Dashboard"/>
-                </List>
+                <ItemsLink />
             </Drawer>
 
             <main
@@ -161,4 +154,6 @@ export default function PersistentDrawer() {
             </main>
         </div>
     );
-}
+} 
+
+export default withRouter(PersistentDrawer);

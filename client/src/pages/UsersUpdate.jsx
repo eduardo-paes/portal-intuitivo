@@ -73,7 +73,7 @@ class UsersUpdate extends Component {
         const {nome, email, acesso} = this.state
         return (
             <div className="form-group">
-                <h1>Atualizar Usuário</h1>
+                <h1 className="heading-page">Atualizar Usuário</h1>
 
                 <label>Nome:
                 </label>

@@ -12,59 +12,46 @@ import Table from 'react-bootstrap/Table'
 
 // Botão de Atualização
 class UpdateUser extends Component {
-    // Definição do evento
-    updateUser = event => {
-        event.preventDefault();
-        window.location.href = `/controle-usuario/update/${this.props.id}`
-    }
-
     // Retorna o botaão
     render() {
         return (
-            <IconButton
-                aria-label="update"
-                color="primary"
-                size="small"
-                onClick={this.updateUser}>
-                <EditIcon/>
-            </IconButton>
+            <Link to={"/controle-usuario/update/" + this.props.id}>
+                <IconButton aria-label="update" color="primary" size="small">
+                    <EditIcon/>
+                </IconButton>
+            </Link>
         )
     }
 }
 
 // Botão de Remoção
-class DeleteUser extends Component {
-    // Definição do evento
-    deleteUser = event => {
-        event.preventDefault();
-        // Mensagem de confirmação
-        if (window.confirm(`Quer remover o usuário ${this.props.nome} permanentemente?`)) {
-            api.removerUsuario(this.props.id)
-            window
-                .location
-                .reload()
+function DeleteUser (props) {
+    const {name, id} = props;
+
+    function removing() {
+        if (window.confirm(`Quer remover o usuário ${name} permanentemente?`)) {
+            api.removerUsuario(id)
         }
     }
 
-    // Retorna o botaão
-    render() {
-        return (
+    return (
+        <Link to="">
             <IconButton
                 aria-label="delete"
                 color="secondary"
                 size="small"
-                onClick={this.deleteUser}>
+                onClick={removing}>
                 <DeleteIcon/>
             </IconButton>
-        )
-    }
+        </Link>
+    )
 }
 
 // Botão de Registrar
 class CreateUser extends Component {
     render() {
         return (
-            <div className="createButton">
+            <div className="create-button">
                 <Link to="/controle-usuario/create">
                     <button className="btn btn-outline-primary">
                         <AddIcon/>
@@ -102,10 +89,10 @@ class UsersList extends Component {
         // Retorna a Tabela
         return (
             <div className="form-group container-fluid">
-                <h1>Controle de Usuário</h1>
+                <h1 className="heading-page">Controle de Usuário</h1>
 
                 <Table
-                    table-bordered
+                    table-bordered="table-bordered"
                     responsive="responsive"
                     striped="striped"
                     bordered="bordered"
@@ -122,7 +109,7 @@ class UsersList extends Component {
                     <tbody>
                         {
                             usuarios.map(usuario => (
-                                <tr>
+                                <tr key={usuario._id}>
                                     <td>{usuario.nome}</td>
                                     <td>{usuario.email}</td>
                                     <td>{usuario.acesso}</td>
