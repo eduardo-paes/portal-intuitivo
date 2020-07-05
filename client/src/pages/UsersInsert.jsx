@@ -2,6 +2,39 @@ import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import api from '../api'
 
+// -- Material UI
+import Button from '@material-ui/core/Button';
+import {withStyles} from '@material-ui/core/styles';
+import {red, cyan} from '@material-ui/core/colors';
+
+// -- Button Styles
+const AddButton = withStyles((theme) => ({
+    root: {
+        color: theme
+            .palette
+            .getContrastText(cyan[700]),
+        backgroundColor: cyan[500],
+        '&:hover': {
+            backgroundColor: cyan[700]
+        },
+        margin: theme.spacing(1)
+    }
+}))(Button);
+
+const DeleteButton = withStyles((theme) => ({
+    root: {
+        color: theme
+            .palette
+            .getContrastText(red[700]),
+        backgroundColor: red[500],
+        '&:hover': {
+            backgroundColor: red[700]
+        },
+        margin: theme.spacing(1)
+    }
+}))(Button);
+
+// -- Hook Principal
 class UsersInsert extends Component {
     // Definição do construtor
     constructor(props) {
@@ -84,9 +117,14 @@ class UsersInsert extends Component {
                     <option value="Administrador">Administrador</option>
                 </select>
                 <div className="group-buttons">
-                    <button className="btn btn-primary bottom-btn" onClick={this.handleIncludeUser}>Adicionar</button>
+                    <AddButton
+                        variant="contained"
+                        color="primary"
+                        onClick={this.handleIncludeUser}>Adicionar</AddButton>
                     <Link to="/controle-usuario/list">
-                        <button className="btn btn-danger bottom-btn">Cancelar</button>
+                        <DeleteButton
+                            variant="contained"
+                            color="secondary">Cancelar</DeleteButton>
                     </Link>
                 </div>
             </div>
@@ -94,4 +132,4 @@ class UsersInsert extends Component {
     }
 }
 
-export default UsersInsert
+export default UsersInsert;

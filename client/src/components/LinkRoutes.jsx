@@ -9,11 +9,6 @@ import {
     Classroom
 } from '../pages'
 
-// -- Styles
-import 'fontsource-roboto';
-import "../css/styles.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 export default function LinkRoutes() {
 
     return (

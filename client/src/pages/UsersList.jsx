@@ -9,6 +9,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 
 import Table from 'react-bootstrap/Table'
+import { Button } from '@material-ui/core';
 
 // Botão de Atualização
 class UpdateUser extends Component {
@@ -26,16 +27,15 @@ class UpdateUser extends Component {
 
 // Botão de Remoção
 function DeleteUser (props) {
-    const {name, id} = props;
-
     function removing() {
-        if (window.confirm(`Quer remover o usuário ${name} permanentemente?`)) {
-            api.removerUsuario(id)
+        if (window.confirm(`Quer remover o usuário ${props.nome} permanentemente?`)) {
+            api.removerUsuario(props.id)
+            window.location.reload()
         }
     }
 
     return (
-        <Link to="">
+        <Link to={"/controle-usuario/list"}>
             <IconButton
                 aria-label="delete"
                 color="secondary"
@@ -53,10 +53,10 @@ class CreateUser extends Component {
         return (
             <div className="create-button">
                 <Link to="/controle-usuario/create">
-                    <button className="btn btn-outline-primary">
+                    <Button variant="outlined" color="primary">
                         <AddIcon/>
                         Registrar
-                    </button>
+                    </Button>
                 </Link>
             </div>
         )
