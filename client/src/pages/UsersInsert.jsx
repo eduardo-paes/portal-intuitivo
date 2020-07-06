@@ -117,14 +117,9 @@ class UsersInsert extends Component {
                     <option value="Administrador">Administrador</option>
                 </select>
                 <div className="group-buttons">
-                    <AddButton
-                        variant="contained"
-                        color="primary"
-                        onClick={this.handleIncludeUser}>Adicionar</AddButton>
+                    <AddButton variant="contained" color="primary" onClick={this.handleIncludeUser}>Adicionar</AddButton>
                     <Link to="/controle-usuario/list">
-                        <DeleteButton
-                            variant="contained"
-                            color="secondary">Cancelar</DeleteButton>
+                        <DeleteButton variant="contained" color="secondary">Cancelar</DeleteButton>
                     </Link>
                 </div>
             </div>

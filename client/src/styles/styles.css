@@ -1,7 +1,4 @@
-/* --- Gerais --- */
-body {
-    /* font-family: Roboto; */
-}
+/* --- Cabeçalho --- */
 
 .heading-page {
     text-align: center;
@@ -36,29 +33,4 @@ label {
 
 .bottom-btn {
     margin: 5px;
-}
-
-/* --- Tabela --- */
-table, td, th {
-    border: 1px solid black;
-    border-collapse: collapse;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-}
-
-thead {
-    text-align: center;
-}
-
-tbody {
-    text-align: left;
-}
-
-td, th {
-    padding: 5px;
-}
-
-.react-table {
-    min-width: 650;
 }
