@@ -1,5 +1,4 @@
 /* --- Cabeçalho --- */
-
 .heading-page {
     text-align: center;
     font-family: Roboto;
@@ -10,6 +9,10 @@ label {
     margin-bottom: 5px;
 }
 
+.container-fluid {
+    padding: 5px;
+}
+
 .form-group {
     margin: 10px 25px;
     padding: 5px;
@@ -18,7 +21,6 @@ label {
 .form-control {
     display: flex;
     margin-bottom: 10px;
-    width: 50%;
 }
 
 /* --- Botões --- */

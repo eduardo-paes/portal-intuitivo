@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
-import { Link as RouterLink } from 'react-router-dom';
+import {Link as RouterLink} from 'react-router-dom';
 import api from '../api'
 
 // Ícones: Material-UI
 
 import AddIcon from '@material-ui/icons/Add';
-import { Button } from '@material-ui/core';
+import {Button} from '@material-ui/core';
 
 import Table from "../components/Table"
 
@@ -48,10 +48,12 @@ class UsersList extends Component {
 
         // Retorna a Tabela
         return (
-            <div className="form-group container-fluid">
-                <h1 className="heading-page">Controle de Usuário</h1>
-                <Table data={usuarios}/>
-                <CreateUser/>
+            <div className="container-fluid">
+                <div className="form-group">
+                    <h1 className="heading-page">Controle de Usuário</h1>
+                    <Table data={usuarios}/>
+                    <CreateUser/>
+                </div>
             </div>
         )
     }

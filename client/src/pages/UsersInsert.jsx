@@ -87,40 +87,42 @@ class UsersInsert extends Component {
     render() {
         const {nome, email, acesso} = this.state
         return (
-            <div className="form-group">
-                <h1 className="heading-page">Criar Usuário</h1>
-                <label>Nome:
-                </label>
-                <input
-                    className="form-control"
-                    type="text"
-                    value={nome}
-                    onChange={this.handleChangeInputName}/>
+            <div className="container-fluid">
+                <div className="form-group">
+                    <h1 className="heading-page">Criar Usuário</h1>
+                    <label>Nome:
+                    </label>
+                    <input
+                        className="form-control"
+                        type="text"
+                        value={nome}
+                        onChange={this.handleChangeInputName}/>
 
-                <label>E-mail:
-                </label>
-                <input
-                    className="form-control"
-                    type="text"
-                    value={email}
-                    onChange={this.handleChangeInputEmail}/>
+                    <label>E-mail:
+                    </label>
+                    <input
+                        className="form-control"
+                        type="text"
+                        value={email}
+                        onChange={this.handleChangeInputEmail}/>
 
-                <label>Acesso:</label>
-                <select
-                    className="form-control"
-                    type="text"
-                    value={acesso}
-                    onChange={this.handleChangeInputAccess}>
-                    <option value=""/>
-                    <option value="Aluno">Aluno</option>
-                    <option value="Professor">Professor</option>
-                    <option value="Administrador">Administrador</option>
-                </select>
-                <div className="group-buttons">
-                    <AddButton variant="contained" color="primary" onClick={this.handleIncludeUser}>Adicionar</AddButton>
-                    <Link to="/controle-usuario/list">
-                        <DeleteButton variant="contained" color="secondary">Cancelar</DeleteButton>
-                    </Link>
+                    <label>Acesso:</label>
+                    <select
+                        className="form-control"
+                        type="text"
+                        value={acesso}
+                        onChange={this.handleChangeInputAccess}>
+                        <option value=""/>
+                        <option value="Aluno">Aluno</option>
+                        <option value="Professor">Professor</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                    <div className="group-buttons">
+                        <AddButton variant="contained" color="primary" onClick={this.handleIncludeUser}>Adicionar</AddButton>
+                        <Link to="/controle-usuario/list">
+                            <DeleteButton variant="contained" color="secondary">Cancelar</DeleteButton>
+                        </Link>
+                    </div>
                 </div>
             </div>
         )
