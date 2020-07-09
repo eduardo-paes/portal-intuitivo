@@ -1,7 +1,10 @@
 import React from "react";
 import {withRouter} from "react-router-dom";
-import {LinkRoutes, ItemsLink} from "./"
 
+// -- Componentes
+import {LinkRoutes, ItemsDrawer, ProfileMenu} from "./"
+
+// -- Material-UI
 import clsx from "clsx";
 import {makeStyles, useTheme} from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -13,6 +16,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import {cyan} from "@material-ui/core/colors";
 
 const drawerWidth = 240;
 
@@ -43,17 +47,16 @@ const useStyles = makeStyles(theme => ({
             })
     },
     menuButton: {
-        marginRight: theme.spacing(2)
-    },
-    hide: {
-        display: "none"
+        marginRight: theme.spacing(2),
+        backgroundColor: "inherit"
     },
     drawer: {
         width: drawerWidth,
         flexShrink: 0
     },
     drawerPaper: {
-        width: drawerWidth
+        width: drawerWidth,
+        backgroundColor: cyan[500]
     },
     drawerHeader: {
         display: "flex",
@@ -82,6 +85,12 @@ const useStyles = makeStyles(theme => ({
                 duration: theme.transitions.duration.enteringScreen
             }),
         marginLeft: 0
+    },
+    hide: {
+        display: "none"
+    },
+    title: {
+        flexGrow: 1
     }
 }));
 
@@ -89,11 +98,11 @@ function PersistentDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
-
+    
     const handleDrawerOpen = () => {
         setOpen(true);
     };
-
+    
     const handleDrawerClose = () => {
         setOpen(false);
     };
@@ -118,12 +127,16 @@ function PersistentDrawer(props) {
                         <MenuIcon/>
                     </IconButton>
 
-                    <Typography variant="h6" noWrap={true}>
-                        Curso Intuitivo
+                    <Typography variant="h6" className={classes.title}>
+                        Portal Intuitivo
                     </Typography>
-                </Toolbar>
 
+                    {/* Ícone e funções do usuário definida na top-bar */}
+                    <ProfileMenu/>
+                
+                </Toolbar>
             </AppBar>
+
             <Drawer
                 className={classes.drawer}
                 variant="persistent"
@@ -141,8 +154,9 @@ function PersistentDrawer(props) {
                         }
                     </IconButton>
                 </div>
-
-                <ItemsLink />
+                
+                {/* Itens da Drawer Lateral */}
+                <ItemsDrawer/>
             </Drawer>
 
             <main
@@ -150,10 +164,12 @@ function PersistentDrawer(props) {
                     [classes.contentShift]: open
                 })}>
                 <div className={classes.drawerHeader}/>
+
+                {/* Conteúdo definido pelas rotas */}
                 <LinkRoutes/>
             </main>
         </div>
     );
-} 
+}
 
 export default withRouter(PersistentDrawer);

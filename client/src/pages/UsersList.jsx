@@ -3,10 +3,10 @@ import {Link as RouterLink} from 'react-router-dom';
 import api from '../api'
 
 // Ícones: Material-UI
-
 import AddIcon from '@material-ui/icons/Add';
 import {Button} from '@material-ui/core';
 
+// Tabela Local: Material UI
 import Table from "../components/Table"
 
 // Botão de Registrar

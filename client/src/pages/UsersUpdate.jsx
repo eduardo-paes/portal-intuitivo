@@ -42,8 +42,7 @@ class UsersUpdate extends Component {
             id: this.props.match.params.id,
             nome: "",
             email: "",
-            acesso: "",
-            senha: ""
+            acesso: ""
         }
     }
 
@@ -76,12 +75,11 @@ class UsersUpdate extends Component {
 
     // Função que salva as mudanças no banco
     handleUpdateUser = async () => {
-        const {id, nome, email, acesso, senha} = this.state
+        const {id, nome, email, acesso} = this.state
         const usuarioAtualizado = {
             nome,
             email,
-            acesso,
-            senha
+            acesso            
         }
 
         await api
@@ -96,7 +94,7 @@ class UsersUpdate extends Component {
         const usuario = await api.encUsuarioPorID(id);
 
         this.setState(
-            {nome: usuario.data.data.nome, email: usuario.data.data.email, acesso: usuario.data.data.acesso, senha: usuario.data.data.senha}
+            {nome: usuario.data.data.nome, email: usuario.data.data.email, acesso: usuario.data.data.acesso}
         );
     }
 
@@ -135,7 +133,7 @@ class UsersUpdate extends Component {
                         <option value="Administrador">Administrador</option>
                     </select>
                     <div className="group-buttons">
-                        <AddButton variant="contained" color="primary" onClick={this.handleIncludeUser}>Atualizar</AddButton>
+                        <AddButton variant="contained" color="primary" onClick={this.handleUpdateUser}>Atualizar</AddButton>
                         <Link to="/controle-usuario/list">
                             <DeleteButton variant="contained" color="secondary">Cancelar</DeleteButton>
                         </Link>

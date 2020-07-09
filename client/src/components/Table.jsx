@@ -20,6 +20,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
+// Função para retornar as dimensões da tela
 import WindowDimension from "./WindowDimension"
 
 // Botão de Atualização
@@ -121,10 +122,10 @@ function EnhancedTableHead(props) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
-    console.log(width);
+    
     var cells = [];
 
-    if (width > 375) {
+    if (width > 500) {
         cells = headCells;
     } else {
         cells = phoneHeadCells
@@ -275,12 +276,12 @@ export default function EnhancedTable(props) {
                                             <TableRow hover={true} tabIndex={-1} key={usuario._id}>
                                                 <TableCell align="left">{usuario.nome}</TableCell>
 
-                                                {(wd.width > 375) && <TableCell align="left">{usuario.email}</TableCell>}
-                                                {(wd.width > 375) && <TableCell align="left">{usuario.acesso}</TableCell>}
+                                                {(wd.width > 500) && <TableCell align="left">{usuario.email}</TableCell>}
+                                                {(wd.width > 500) && <TableCell align="left">{usuario.acesso}</TableCell>}
 
                                                 <TableCell align="left">
-                                                    <DeleteUser id={usuario._id} nome={usuario.nome}/>
                                                     <UpdateUser id={usuario._id}/>
+                                                    <DeleteUser id={usuario._id} nome={usuario.nome}/>
                                                 </TableCell>
                                             </TableRow>
                                         );
