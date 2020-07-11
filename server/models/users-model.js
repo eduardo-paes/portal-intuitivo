@@ -15,6 +15,10 @@ const Usuario = new Schema({
     acesso: {
         type: String,
         required: true
+    },
+    senha: {
+        type: String,
+        required: true
     }
 });
 

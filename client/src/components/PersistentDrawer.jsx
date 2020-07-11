@@ -90,7 +90,8 @@ const useStyles = makeStyles(theme => ({
         display: "none"
     },
     title: {
-        flexGrow: 1
+        flexGrow: 1,
+        minWidth: drawerWidth
     }
 }));
 

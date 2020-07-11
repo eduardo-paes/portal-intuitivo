@@ -4,8 +4,13 @@ import api from '../api'
 
 // -- Material UI
 import Button from '@material-ui/core/Button';
-import {withStyles} from '@material-ui/core/styles';
+import {withStyles, styled} from '@material-ui/core/styles';
 import {red, cyan} from '@material-ui/core/colors';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
+
+// Função de validação dos campos do formulário
+import validate from "../components/FormValidateUser"
 
 // -- Button Styles
 const AddButton = withStyles((theme) => ({
@@ -34,6 +39,10 @@ const DeleteButton = withStyles((theme) => ({
     }
 }))(Button);
 
+const MyTextField = styled(TextField)(
+    {marginBottom: "10px", backgroundColor: "#fff", display: "flex", color: "primary"}
+);
+
 // -- Hook Principal
 class UsersInsert extends Component {
     // Definição do construtor
@@ -43,80 +52,116 @@ class UsersInsert extends Component {
         this.state = {
             nome: "",
             email: "",
-            acesso: ""
+            acesso: "",
+            senha: "",
+            erros: []
         }
     }
 
-    // Guarda o nome vindo do input
-    handleChangeInputName = async event => {
-        const nome = event.target.value;
-        this.setState({nome});
-    }
-
-    // Guarda o email vindo do input
-    handleChangeInputEmail = async event => {
-        const email = event.target.value;
-        this.setState({email});
-    }
-
-    // Guarda o tipo de acesso vindo do input
-    handleChangeInputAccess = async event => {
-        const acesso = event.target.value;
-        this.setState({acesso});
+    // Recebe os dados do input e os guarda
+    handleChange = async event => {
+        const {name, value} = event.target;
+        this.setState({
+            ...this.state,
+            [name]: value
+        });
     }
 
     // Salva os dados do formulário no banco
     handleIncludeUser = async () => {
-        const {nome, email, acesso} = this.state; // Recebe os 3 campos coletados
-        const novoUsuario = {
-            nome,
-            email,
-            acesso
-        }; // Cria novo usuário
+        // Recebe os campos coletados
+        const {nome, email, acesso, senha} = this.state;
+        const error = validate(this.state)
 
-        await api
-            .inserirUsuario(novoUsuario)
-            .then(res => {
-                window.alert("Usuário inserido com sucesso.")
-                // Limpa os campos
-                this.setState({nome: "", email: "", acesso: ""})
-            })
+        this.setState({
+            ...this.state,
+            erros: error
+        });
+
+        if (error.validated) {
+            // Cria novo usuário
+            const novoUsuario = {
+                nome,
+                email,
+                acesso,
+                senha
+            };
+
+            // Guarda novo usuário no banco
+            await api
+                .inserirUsuario(novoUsuario)
+                .then(res => {
+                    window.alert("Usuário inserido com sucesso.")
+                    // Limpa os campos
+                    this.setState({nome: "", email: "", acesso: "", senha: ""})
+                })
+        }
     }
 
     // Formulário - Criação
     render() {
-        const {nome, email, acesso} = this.state
+        const {nome, email, acesso, senha, erros} = this.state
+
         return (
             <div className="container-fluid">
                 <div className="form-group">
                     <h1 className="heading-page">Criar Usuário</h1>
-                    <label>Nome:
-                    </label>
-                    <input
-                        className="form-control"
+
+                    <MyTextField
+                        id="outlined-basic"
+                        label="Nome"
+                        variant="outlined"
+                        name="nome"
                         type="text"
                         value={nome}
-                        onChange={this.handleChangeInputName}/>
+                        autoFocus={true}
+                        onChange={this.handleChange}
+                        error={erros.nome
+                            ? true
+                            : false}/> {erros.nome && <p className="error-message">{erros.nome}</p>}
 
-                    <label>E-mail:
-                    </label>
-                    <input
-                        className="form-control"
-                        type="text"
+                    <MyTextField
+                        id="outlined-basic"
+                        label="E-mail"
+                        variant="outlined"
+                        name="email"
+                        type="email"
                         value={email}
-                        onChange={this.handleChangeInputEmail}/>
+                        onChange={this.handleChange}
+                        error={erros.email
+                            ? true
+                            : false}/> {erros.email && <p className="error-message">{erros.email}</p>}
 
-                    <label>Acesso:</label>
-                    <select
-                        className="form-control"
+                    <MyTextField
+                        id="outlined-select-currency"
+                        select={true}
+                        label="Acesso"
+                        name="acesso"
                         type="text"
                         value={acesso}
-                        onChange={this.handleChangeInputAccess}>
-                        <option value=""/>
-                        <option value="Aluno">Aluno</option>
-                        <option value="Professor">Professor</option>
-                        <option value="Administrador">Administrador</option>
-                    </select>
+                        onChange={this.handleChange}
+                        variant="outlined"
+                        error={erros.acesso
+                            ? true
+                            : false}>
+                        <MenuItem value="Aluno">Aluno</MenuItem>
+                        <MenuItem value="Professor">Professor</MenuItem>
+                        <MenuItem value="Administrador">Administrador</MenuItem>
+                    </MyTextField>
+                    {erros.acesso && <p className="error-message">{erros.acesso}</p>}
+
+                    <MyTextField
+                        id="outlined-basic"
+                        label="Senha"
+                        variant="outlined"
+                        name="senha"
+                        type="password"
+                        value={senha}
+                        onChange={this.handleChange}
+                        error={erros.senha
+                            ? true
+                            : false}/> {erros.senha && <p className="error-message">{erros.senha}</p>}
+
                     <div className="group-buttons">
                         <AddButton variant="contained" color="primary" onClick={this.handleIncludeUser}>Adicionar</AddButton>
                         <Link to="/controle-usuario/list">
