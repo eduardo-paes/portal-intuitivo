@@ -5,6 +5,7 @@ const router = express.Router();
 // Importação dos métodos de controle
 const UsuarioCtrl = require("../controllers/user-ctrl");
 const ConteudoCtrl = require("../controllers/content-ctrl");
+const DisciplinaCtrl = require("../controllers/subject-ctrl");
 
 // Multer
 const multer = require("multer");
@@ -24,6 +25,13 @@ router.put("/controle-conteudo/:id", ConteudoCtrl.atualizarConteudo);
 router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
 router.get("/controle-conteudo/:id", ConteudoCtrl.encConteudoPorID);
 router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);
+
+// Definição dos métodos para cada rota da disciplina
+router.post("/configuracoes/disciplina", DisciplinaCtrl.inserirDisciplina);
+router.put("/configuracoes/disciplina/:id", DisciplinaCtrl.atualizarDisciplina);
+router.delete("/configuracoes/disciplina/:id", DisciplinaCtrl.removerDisciplina);
+router.get("/configuracoes/disciplina/:id", DisciplinaCtrl.encDisciplinaPorID);
+router.get("/configuracoes", DisciplinaCtrl.listarDisciplinas);
 
 // Rota para armazenamento de arquivos de mídia
 router.post("/upload-arquivo", multer(fileStorage).single('file'), (req, res) => {

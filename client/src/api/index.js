@@ -18,7 +18,12 @@ export const atualizarConteudo = (id, conteudoAtualizado) => api.put(`/controle-
 export const removerConteudo = id => api.delete(`/controle-conteudo/${id}`);
 export const encConteudoPorID = id => api.get(`/controle-conteudo/${id}`);
 
-// export const uploadArquivo = (formData, config) => api.post()
+// -- Funções relacionadas à Disciplina
+export const inserirDisciplina = novaDisciplina => api.post("/configuracoes/disciplina", novaDisciplina);
+export const listarDisciplinas = () => api.get("/configuracoes");
+export const atualizarDisciplina = (id, disciplinaAtualizada) => api.put(`/configuracoes/disciplina/${id}`, disciplinaAtualizada);
+export const removerDisciplina = id => api.delete(`/configuracoes/disciplina/${id}`);
+export const encDisciplinaPorID = id => api.get(`/configuracoes/disciplina/${id}`);
 
 const apis = {
     // Usuário
@@ -32,7 +37,13 @@ const apis = {
     listarConteudos,
     atualizarConteudo,
     removerConteudo,
-    encConteudoPorID
+    encConteudoPorID,
+    // Disciplina
+    inserirDisciplina,
+    listarDisciplinas,
+    atualizarDisciplina,
+    removerDisciplina,
+    encDisciplinaPorID
 }
 
 export default apis;

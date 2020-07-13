@@ -40,8 +40,3 @@ html, body {
     text-align: center;
     min-width: 300px;
 }
-
-/* --- Label Tabelas --- */
-.MuiTableSortLabel-root.MuiTableSortLabel-active {
-    color: #606161;
-}

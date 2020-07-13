@@ -1,4 +1,7 @@
-import React from 'react';
+import React from "react";
+import {Link as RouterLink} from 'react-router-dom';
+import api from '../../api'
+
 import {makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,6 +10,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles({
     table: {
@@ -24,8 +30,44 @@ const useStyles = makeStyles({
 
 const semana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
+function UpdateSubject(props) {
+    const {setDisciplina, disciplina, setEditSubject} = props;
+
+    function updating() {
+        setEditSubject(disciplina._id)
+        setDisciplina(disciplina);
+    }
+    // Retorna o botaão
+    return (
+        <IconButton aria-label="update" color="primary" size="small" onClick={updating}>
+            <EditIcon/>
+        </IconButton>
+    )
+}
+
+// Botão de Remoção
+function DeleteSubject(props) {
+    function removing() {
+        if (window.confirm(`Quer remover a disciplina ${props.nome} permanentemente?`)) {
+            api.removerDisciplina(props.id)
+        }
+    }
+
+    return (
+        <RouterLink to={"/configuracoes"}>
+            <IconButton
+                aria-label="delete"
+                color="secondary"
+                size="small"
+                onClick={removing}>
+                <DeleteIcon/>
+            </IconButton>
+        </RouterLink>
+    )
+}
+
 export default function DisTable(props) {
-    const {data} = props;
+    const {data, pushSubject, setID} = props;
     const classes = useStyles();
 
     return (
@@ -35,6 +77,7 @@ export default function DisTable(props) {
                     <TableRow>
                         <TableCell className={classes.head}>Nome</TableCell>
                         <TableCell className={classes.head}>Dia da Semana</TableCell>
+                        <TableCell className={classes.head}>Funções</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -45,6 +88,10 @@ export default function DisTable(props) {
                                 <TableRow key={index}>
                                     <TableCell className={classes.row} component="th" scope="row">{nome}</TableCell>
                                     <TableCell className={classes.row} component="th" scope="row">{semana[diaSemana]}</TableCell>
+                                    <TableCell className={classes.row} component="th" scope="row">
+                                        <UpdateSubject disciplina={row} setDisciplina={pushSubject} setEditSubject={setID}/>
+                                        <DeleteSubject id={row._id} nome={row.nome}/>
+                                    </TableCell>
                                 </TableRow>
                             )
                         })
