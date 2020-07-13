@@ -2,7 +2,7 @@ import React from "react";
 import {withRouter} from "react-router-dom";
 
 // -- Componentes
-import {LinkRoutes, ItemsDrawer, ProfileMenu} from "./"
+import {Routes, ItemsDrawer, ProfileMenu} from "./"
 
 // -- Material-UI
 import clsx from "clsx";
@@ -68,7 +68,8 @@ const useStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1,
-        // padding: theme.spacing(1),
+        padding: theme.spacing(1),
+        backgroundColor: "#fff",
         transition: theme
             .transitions
             .create("margin", {
@@ -167,7 +168,7 @@ function PersistentDrawer(props) {
                 <div className={classes.drawerHeader}/>
 
                 {/* Conteúdo definido pelas rotas */}
-                <LinkRoutes/>
+                <Routes/>
             </main>
         </div>
     );

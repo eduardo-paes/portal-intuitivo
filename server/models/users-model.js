@@ -1,5 +1,4 @@
 // Define o Schema e o Modelo para os objetos do banco de dados
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

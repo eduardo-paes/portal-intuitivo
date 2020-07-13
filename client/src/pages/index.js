@@ -4,5 +4,6 @@ import UsersUpdate from './UsersUpdate'
 import Classroom from "./Classroom"
 import Desempenho from "./Desempenho"
 import Dashboard from "./Dashboard"
+import Login from "./Login"
 
-export { UsersList, UsersInsert, UsersUpdate, Classroom, Desempenho, Dashboard }
+export { UsersList, UsersInsert, UsersUpdate, Classroom, Desempenho, Dashboard, Login }

@@ -137,6 +137,7 @@ function EnhancedTableHead(props) {
                 {
                     cells.map((headCell) => (
                         <TableCell
+                            className={classes.row}
                             key={headCell.id}
                             align={'left'}
                             padding={'default'}
@@ -166,7 +167,7 @@ function EnhancedTableHead(props) {
                                             }
                                         </TableSortLabel>
 
-                                    : <span>{headCell.label}</span>
+                                    : <div>{headCell.label}</div>
                             }
                         </TableCell>
                     ))
@@ -189,11 +190,16 @@ EnhancedTableHead.propTypes = {
 // -- Styles: Tabela-Body
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: '100%'
+        width: '100%',
+        fontFamily: "apertura, sans-serif",
+        color: "#606161"
     },
     paper: {
         width: '100%',
         marginBottom: theme.spacing(2)
+    },
+    row: {
+        color: "#606161"
     },
     table: {
         minWidth: 300
@@ -207,7 +213,7 @@ const useStyles = makeStyles((theme) => ({
         padding: 0,
         position: 'absolute',
         top: 20,
-        width: 1
+        width: 1,
     }
 }));
 
@@ -274,10 +280,10 @@ export default function EnhancedTable(props) {
 
                                         return (
                                             <TableRow hover={true} tabIndex={-1} key={usuario._id}>
-                                                <TableCell align="left">{usuario.nome}</TableCell>
+                                                <TableCell className={classes.row} align="left">{usuario.nome}</TableCell>
 
-                                                {(wd.width > 500) && <TableCell align="left">{usuario.email}</TableCell>}
-                                                {(wd.width > 500) && <TableCell align="left">{usuario.acesso}</TableCell>}
+                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{usuario.email}</TableCell>}
+                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{usuario.acesso}</TableCell>}
 
                                                 <TableCell align="left">
                                                     <UpdateUser id={usuario._id}/>
@@ -303,6 +309,7 @@ export default function EnhancedTable(props) {
 
                 {/* Footer: Paginação */}
                 <TablePagination
+                    className={classes.row}
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={usuarios.length}

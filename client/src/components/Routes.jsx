@@ -1,15 +1,17 @@
 import React from "react";
 import {Route, Switch} from 'react-router-dom'
+
 import {
     UsersList,
     UsersInsert,
     UsersUpdate,
     Dashboard,
     Desempenho,
-    Classroom
+    Classroom,
+    Login
 } from '../pages'
 
-export default function LinkRoutes() {
+export default function Routes() {
 
     return (
         <Switch>
@@ -54,6 +56,12 @@ export default function LinkRoutes() {
                 exact={true}
                 from="/controle-usuario/update/:id"
                 render={props => <UsersUpdate {...props}/>
+                }
+            />
+            <Route
+                exact={true}
+                from="/login"
+                render={props => <Login {...props}/>
                 }
             />
         </Switch>

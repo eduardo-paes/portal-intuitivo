@@ -1,5 +1,4 @@
 // Define as rotas que serão utilizadas para lidar com o banco de dados
-
 const express = require("express");
 
 const UsuarioCtrl = require("../controllers/user-ctrl");

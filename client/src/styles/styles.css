@@ -1,31 +1,13 @@
-body {
+html, body {
+    font-family: apertura, sans-serif;
     background-color: #fff;
 }
 
 /* --- Cabeçalho --- */
 .heading-page {
-    text-align: center;
-    font-family: Roboto;
-}
-
-/* --- Formulários --- */
-label {
-    margin-bottom: 5px;
-}
-
-.container-fluid {
-    padding: 5px;
-    min-width: 300px;
-}
-
-.form-group {
-    margin: 10px 25px;
-    padding: 5px;
-}
-
-.form-control {
-    display: flex;
-    margin: 0;
+    font-style: normal;
+    font-weight: 500;
+    color: #606161;
 }
 
 /* --- Botões --- */
@@ -37,13 +19,4 @@ label {
 .group-buttons {
     text-align: center;
     min-width: 300px;
-}
-
-.bottom-btn {
-    margin: 5px;
-}
-
-.error-message {
-    margin-left: 10px;
-    color: red;
 }
