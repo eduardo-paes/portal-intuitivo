@@ -1,7 +1,7 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
-import {AddButton, DeleteButton, MyTextField, MyContainer} from "../styles/styledComponents"
-import MenuItem from '@material-ui/core/MenuItem';
+import React from '../../../node_modules/react'
+import {Link} from '../../../node_modules/react-router-dom'
+import {AddButton, DeleteButton, MyTextField, MyContainer} from "../../styles/styledComponents"
+import { MenuItem } from '@material-ui/core'
 
 function UserForm (props) {
     const {data, handleChange, onSubmit, typeForm, edit} = props;

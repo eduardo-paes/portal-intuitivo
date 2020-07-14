@@ -8,10 +8,30 @@ import {
     Dashboard,
     Desempenho,
     Classroom,
-    Login
+    Login,
+    HomeScreen
 } from '../pages'
 
-export default function Routes() {
+function Routes() {
+    return (
+        <Switch>
+            <Route
+                exact={true}
+                from="/login"
+                render={props => <Login {...props}/>
+                }
+            />
+            <Route
+                exact={true}
+                from="/"
+                render={props => <HomeScreen {...props}/>
+                }
+            />
+        </Switch>
+    );
+}
+
+function PrivateRoutes() {
 
     return (
         <Switch>
@@ -58,12 +78,11 @@ export default function Routes() {
                 render={props => <UsersUpdate {...props}/>
                 }
             />
-            <Route
-                exact={true}
-                from="/login"
-                render={props => <Login {...props}/>
-                }
-            />
         </Switch>
     );
+}
+
+export {
+    Routes,
+    PrivateRoutes
 }

@@ -39,7 +39,7 @@ function ListarItens(props) {
     );
 }
 
-function ItemsLink(props) {
+function ItemsDrawer(props) {
     const {history} = props;
     const classes = useStyles();
     const itensAluno = [
@@ -75,4 +75,4 @@ function ItemsLink(props) {
     );
 }
 
-export default withRouter(ItemsLink);
+export default withRouter(ItemsDrawer);

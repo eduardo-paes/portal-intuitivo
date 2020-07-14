@@ -1,7 +1,4 @@
-import Routes from "./Routes"
-import PersistentDrawer from "./PersistentDrawer"
-import ItemsDrawer from "./ItemsDrawer";
+import {Routes, PrivateRoutes} from "./Routes"
 import Table from "./Table"
-import ProfileMenu from "./ProfileMenu"
 
-export { Routes, PersistentDrawer, ItemsDrawer, Table, ProfileMenu }
+export { Routes, PrivateRoutes, Table }

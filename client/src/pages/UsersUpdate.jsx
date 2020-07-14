@@ -2,9 +2,9 @@ import React, {Component} from 'react'
 import api from '../api'
 
 // Formulário
-import UserForm from "../components/UserForm"
+import UserForm from "../components/Form/UserForm"
 // Função de validação dos campos do formulário
-import validate from "../components/FormValidateUser"
+import validate from "../components/Form/FormValidateUser"
 
 // -- Hook Principal
 class UsersUpdate extends Component {

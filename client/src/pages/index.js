@@ -5,5 +5,6 @@ import Classroom from "./Classroom"
 import Desempenho from "./Desempenho"
 import Dashboard from "./Dashboard"
 import Login from "./Login"
+import HomeScreen from "./HomeScreen"
 
-export { UsersList, UsersInsert, UsersUpdate, Classroom, Desempenho, Dashboard, Login }
+export { UsersList, UsersInsert, UsersUpdate, Classroom, Desempenho, Dashboard, Login, HomeScreen }
