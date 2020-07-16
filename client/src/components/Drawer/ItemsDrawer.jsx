@@ -1,3 +1,5 @@
+// eslint-disable-next-line
+
 import React, {useEffect, useContext, useState} from 'react'
 import StoreContext from "../Store/Context"
 
@@ -28,7 +30,8 @@ function ListarItens(props) {
     console.log("Esse", itens)
 
     return (
-        <>
+        <> 
+        <Divider /> 
         <List>
             {
                 itens.map(item => {
@@ -42,8 +45,7 @@ function ListarItens(props) {
                 })
             }
         </List>
-        <Divider/>
-        </>
+    </>
     );
 }
 
@@ -72,7 +74,7 @@ function ItemsDrawer(props) {
                 icon: <NoteAddIcon/>,
                 onClick: () => history.push("/criar-conteúdo")
             }, {
-                text: "Analisar Desempenho",
+                text: "Análises",
                 icon: <TimelineIcon/>,
                 onClick: () => history.push("/analisar-desempenho")
             }
@@ -89,35 +91,31 @@ function ItemsDrawer(props) {
             }
         ]
     }
-    const [access, setAccess] = useState({aluno: itens.aluno});
+    const [access, setAccess] = useState({aluno: true});
     const {token} = useContext(StoreContext);
-    
+
     useEffect(() => {
-        function handleAccess() {
-            if (token.accessType === "Professor") {
-                // setAccess(access => {
-                    //     ...access,
-                    //     professor: itens.professor
-                    // });
-                } else if (token.accessType === "Administrador") {
-                    setAccess(preValue => ({
-                        ...preValue,
-                        professor: itens.professor,
-                        admin: itens.admin
-                    }));
-                }
-            }
-            handleAccess()
-        }, []);
-        
-    // console.log(token);
-    console.log(access);
+        if (token.accessType === "Professor") {
+            setAccess(preValue => ({
+                ...preValue,
+                professor: true
+            }));
+        } else if (token.accessType === "Administrador") {
+            setAccess(preValue => ({
+                ...preValue,
+                professor: true,
+                admin: true
+            }));
+        }
+
+    }, [token]);
 
     return (
         <div>
-            {access.aluno && <ListarItens itens={access.aluno} classes={classes}/>}
-            {access.professor && <ListarItens itens={access.professor} classes={classes}/>}
-            {access.admin && <ListarItens itens={access.admin} classes={classes}/>}
+            {access.aluno && <ListarItens itens={itens.aluno} classes={classes}/>}
+            {access.professor && <ListarItens itens={itens.professor} classes={classes}/>}
+            {access.admin && <ListarItens itens={itens.admin} classes={classes}/>}
+            <Divider/>
         </div>
     );
 }

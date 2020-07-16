@@ -23,8 +23,11 @@ export default function ProfileMenu() {
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
         setToken(null);
-        return history.push('/login');
+        history.push('/login');
     };
 
     return (
@@ -52,7 +55,7 @@ export default function ProfileMenu() {
             open={profileOpen}
             onClose={handleClose}>
             <MenuItem onClick={handleClose}>Perfil</MenuItem>
-            <MenuItem button={true} onClick={handleClose}>Sair</MenuItem>
+            <MenuItem button={true} onClick={handleLogout}>Sair</MenuItem>
         </Menu>
     </div>
     );
