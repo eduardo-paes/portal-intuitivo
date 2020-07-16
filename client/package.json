@@ -13,6 +13,7 @@
         "bootstrap-table": "^1.16.0",
         "crypto-js": "^4.0.0",
         "fontsource-roboto": "^2.1.4",
+        "js-cookie": "^2.2.1",
         "material-ui": "^0.20.2",
         "materialize-css": "^1.0.0-rc.2",
         "react": "^16.13.1",
@@ -35,8 +36,14 @@
     },
     "browserslist": {
         "production": [
-            ">0.2%", "not dead", "not op_mini all"
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
         ],
-        "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
     }
 }

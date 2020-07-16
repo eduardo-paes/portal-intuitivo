@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import {useHistory} from 'react-router-dom';
 
+import StoreContext from "../Store/Context"
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -12,12 +14,17 @@ export default function ProfileMenu() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const profileOpen = Boolean(anchorEl);
 
+    const { setToken } = useContext(StoreContext)
+    const history = useHistory();
+
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
     const handleClose = () => {
         setAnchorEl(null);
+        setToken(null);
+        return history.push('/login');
     };
 
     return (
@@ -45,7 +52,7 @@ export default function ProfileMenu() {
             open={profileOpen}
             onClose={handleClose}>
             <MenuItem onClick={handleClose}>Perfil</MenuItem>
-            <MenuItem onClick={handleClose}>Sair</MenuItem>
+            <MenuItem button={true} onClick={handleClose}>Sair</MenuItem>
         </Menu>
     </div>
     );

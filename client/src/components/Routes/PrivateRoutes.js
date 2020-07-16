@@ -1,0 +1,21 @@
+import React, {useContext} from "react";
+import {Route, Redirect} from "react-router-dom"
+import StoreContext from "../Store/Context"
+
+// -- Definição de modelo de rota privada exigindo token para acesso
+const RoutesPrivate = ({ component: Component, ...rest }) => {
+    const {token} = useContext(StoreContext);
+
+    return (
+        <Route
+            {...rest}
+            render={(
+                ) => token
+                ? <Component {...rest}/>
+                : <Redirect to="/login"/>
+            }
+        />
+    )
+}
+
+export default RoutesPrivate;

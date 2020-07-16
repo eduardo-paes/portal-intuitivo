@@ -1,6 +1,9 @@
 import React from "react";
 import {Route, Switch} from 'react-router-dom'
+import StorageProvider from './Store/Provider'
+import RoutesPrivate from "./Routes/PrivateRoutes"
 
+// -- Páginas
 import {
     UsersList,
     UsersInsert,
@@ -14,25 +17,16 @@ import {
 
 function Routes() {
     return (
-        <Switch>
-            <Route
-                exact={true}
-                from="/login"
-                render={props => <Login {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/"
-                render={props => <HomeScreen {...props}/>
-                }
-            />
-        </Switch>
+        <StorageProvider>
+            <Switch>
+                <Route path="/login" component={Login} />
+                <RoutesPrivate path="/" component={HomeScreen} />
+            </Switch>
+        </StorageProvider>
     );
 }
 
 function PrivateRoutes() {
-
     return (
         <Switch>
             <Route exact={true} from="/" render={props => <Dashboard {...props}/>}/>
