@@ -1,0 +1,34 @@
+Portal Intuitivo
+
+Funcionalidades
+- Administrador
+    - Controle de acesso
+    - Inserir e Editar Conteúdo
+    - Criação de turmas (Configurações - separação de turmas)
+        Ex.:
+            - Série: Pré-Vest
+            - Turma: Digital 1
+    - Definição de calendário (Configurações)
+        - Interface: um calendário mesmo, completo
+        - Define quando vai ser liberado o material semanal (data)
+        - Tem que ser possível fazer isso de uma vez só para o ano todo
+    - Marcar o que estará disponível ou não para o aluno (liberar ou não)
+        - Material de Estudo
+        - ADs (Simulados)
+    - Analisar desempenho dos alunos
+
+- Professor
+    - Inserir e Editar Conteúdo
+    - Inserir e Editar Atividade
+        - Todo e qualquer exercício definido
+        - Atividade para antes da aula: "Exercício de Fixação"
+        - Atividade pós-aula: "Aprofundamento"
+        - Atividade "Retomada": Exercícios de tópicos passados (a partir de 30% do curso concluído)
+    - Visualização de Desempenho (Análise)
+    - Visualização de Calendário (Calendário)
+
+- Aluno
+    - Visualização de calendário
+    - Visualização do material de estudo
+    - Realização das atividades
+    - Visualização do desempenho

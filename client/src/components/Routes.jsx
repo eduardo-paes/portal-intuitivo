@@ -1,7 +1,7 @@
 import React from "react";
 import {Route, Switch} from 'react-router-dom'
 import StorageProvider from './Store/Provider'
-import RoutesPrivate from "./Routes/PrivateRoutes"
+import {RoutesPrivate, AdminRoutes} from "./Routes/PrivateRoutes"
 
 // -- Páginas
 import {
@@ -15,63 +15,34 @@ import {
     HomeScreen
 } from '../pages'
 
+// -- Main Routes
 function Routes() {
     return (
         <StorageProvider>
             <Switch>
-                <Route path="/login" component={Login} />
-                <RoutesPrivate path="/" component={HomeScreen} />
+                <Route path="/login" component={Login}/>
+                <RoutesPrivate path="/" component={HomeScreen}/>
             </Switch>
         </StorageProvider>
     );
 }
 
+// -- Private Routes
 function PrivateRoutes() {
+
     return (
         <Switch>
-            <Route exact={true} from="/" render={props => <Dashboard {...props}/>}/>
-            <Route
-                exact={true}
-                from="/dashboard"
-                render={props => <Dashboard {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/desempenho"
-                render={props => <Desempenho {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/classroom"
-                render={props => <Classroom {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/controle-usuario/"
-                render={props => <UsersList {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/controle-usuario/list"
-                render={props => <UsersList {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/controle-usuario/create"
-                render={props => <UsersInsert {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/controle-usuario/update/:id"
-                render={props => <UsersUpdate {...props}/>
-                }
-            />
+            {/* --- Rotas do Aluno */}
+            <RoutesPrivate exact={true} from="/" component={Dashboard}/>
+            <RoutesPrivate exact={true} from="/dashboard" component={Dashboard}/>
+            <RoutesPrivate exact={true} from="/desempenho" component={Desempenho}/>
+            <RoutesPrivate exact={true} from="/classroom" component={Classroom}/> 
+            
+            {/* --- Rotas do Administrador */}
+            <AdminRoutes exact={true} from="/controle-usuario/" component={UsersList}/>
+            <AdminRoutes exact={true} from="/controle-usuario/list" component={UsersList}/>
+            <AdminRoutes exact={true} from="/controle-usuario/create" component={UsersInsert}/>
+            <AdminRoutes exact={true} from="/controle-usuario/update/:id" component={UsersUpdate}/>
         </Switch>
     );
 }

@@ -2,6 +2,7 @@ import React from "react";
 
 // -- Componentes
 import ProfileMenu from "./ProfileMenu"
+import logo from "../../images/TopLogo.png"
 
 // -- Material-UI
 import clsx from "clsx";
@@ -10,7 +11,6 @@ import {
     makeStyles,
     AppBar,
     Toolbar,
-    Typography,
     IconButton
 } from "@material-ui/core";
 
@@ -39,6 +39,12 @@ const useStyles = makeStyles(theme => ({
                 duration: theme.transitions.duration.enteringScreen
             })
     },
+    logo: {
+        width: "150px",
+        minWidth: "150px",
+        height: "30px",
+        minHeight: "30px"
+    },
     menuButton: {
         marginRight: theme.spacing(2),
         backgroundColor: "inherit"
@@ -48,7 +54,10 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         flexGrow: 1,
-        minWidth: drawerWidth
+        minWidth: drawerWidth,
+        display: "block",
+        textAlign: "center",
+        paddingTop: "7px",
     }
 }));
 
@@ -78,9 +87,11 @@ function TopBar(props) {
                         <MenuIcon/>
                     </IconButton>
 
-                    <Typography variant="h6" className={classes.title}>
-                        Portal Intuitivo
-                    </Typography>
+                    <div className={classes.title}>
+                        <img className={classes.logo} src={logo} alt="Logo"/>
+                    </div>
+
+                    {/* <Typography variant="h6" className={classes.title}> Portal Intuitivo </Typography> */}
 
                     {/* Ícone e funções do usuário definida na top-bar */}
                     <ProfileMenu/>

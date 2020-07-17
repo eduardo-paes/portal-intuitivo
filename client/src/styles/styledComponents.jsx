@@ -56,17 +56,17 @@ const MyTextField = styled(TextField)(
 );
 
 const MyContainer = styled(Container)(
-    {padding: "20px 50px 50px 50px", backgroundColor: "#fff"}
+    {padding: "20px 30px 50px 30px"}
 );
 
-const MyTypography = styled(Typography)({marginBottom: "5%", padding: "1%"});
+const MyTypography = styled(Typography)({marginBottom: "5%", padding: "1%", color: "#606161"});
 
 const MyCardContent = styled(CardContent)(
-    {padding: "30px 30px 0 30px", alignContent: "center", textAlign: "center"}
+    {padding: "15px", alignContent: "center", textAlign: "center"}
 );
 
 const MyCard = styled(Card)(
-    {marginTop: "15%"}
+    {marginTop: "15%", backgroundColor: "transparent"}
 );
 
 export {

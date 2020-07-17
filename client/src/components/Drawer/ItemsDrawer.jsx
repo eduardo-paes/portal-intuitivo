@@ -27,7 +27,6 @@ const useStyles = makeStyles(theme => ({
 
 function ListarItens(props) {
     const {itens, classes} = props;
-    console.log("Esse", itens)
 
     return (
         <> 

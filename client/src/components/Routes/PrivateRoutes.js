@@ -9,13 +9,32 @@ const RoutesPrivate = ({ component: Component, ...rest }) => {
     return (
         <Route
             {...rest}
-            render={(
-                ) => token
-                ? <Component {...rest}/>
+            render={
+                (props) => token
+                ? <Component {...props}/>
                 : <Redirect to="/login"/>
             }
         />
     )
 }
 
-export default RoutesPrivate;
+const AdminRoutes = ({ component: Component, ...rest }) => {
+    const {token} = useContext(StoreContext);
+    const access = token.accessType;
+
+    return (
+        <Route
+            {...rest}
+            render={
+                (props) => (access === "Administrador")
+                ? <Component {...props}/>
+                : <Redirect to="/"/>
+            }
+        />
+    )
+}
+
+export {
+    RoutesPrivate,
+    AdminRoutes
+};

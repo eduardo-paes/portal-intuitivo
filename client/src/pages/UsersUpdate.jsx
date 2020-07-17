@@ -63,7 +63,12 @@ class UsersUpdate extends Component {
         const usuario = await api.encUsuarioPorID(id);
 
         this.setState(
-            {nome: usuario.data.data.nome, email: usuario.data.data.email, acesso: usuario.data.data.acesso, senha: usuario.data.data.senha}
+            {
+                nome: usuario.data.data.nome, 
+                email: usuario.data.data.email, 
+                acesso: usuario.data.data.acesso, 
+                senha: usuario.data.data.senha
+            }
         );
     }
 

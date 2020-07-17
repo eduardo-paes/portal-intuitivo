@@ -4,30 +4,33 @@ import StoreContext from "../components/Store/Context"
 import api from '../api'
 
 // -- Styles / Componentes gráficos
+import {Button} from '@material-ui/core';
 import {makeStyles} from "@material-ui/core/styles";
-import logo from "../images/logos intuitivo-01.png"
+import {red} from '@material-ui/core/colors';
+import logo from "../images/loginLogo.png"
 import {
     AddButton,
     MyTextField,
     MyContainer,
     MyTypography,
-    MyCardContent,
-    MyCard
+    MyCardContent
 } from "../styles/styledComponents"
 
 // -- Style Classes
 const useStyles = makeStyles(theme => ({
     logo: {
-        width: "80%",
-        height: "80%"
+        width: "100%",
+        height: "100%"
     },
     button: {
-        marginTop: "2%"
+        margin: "3%"
     },
     message: {
-        color: "red"
-    }
+        color: red[500],
+        marginTop: "5%"
+    },
 }));
+
 
 // -- Dados iniciais
 function initialState() {
@@ -35,7 +38,7 @@ function initialState() {
 }
 
 // -- Função de validação do usuário
-function validateLogin (usuario, data) {
+function validateLogin(usuario, data) {
     // Verifica se há algum usuário com o e-mail informado
     let foundUser = data.filter(user => user.email.includes(usuario.email));
 
@@ -43,14 +46,16 @@ function validateLogin (usuario, data) {
     if (foundUser.length > 0) {
         // Verifica se a senha está correta
         if (foundUser[0].senha === usuario.senha) {
-            return { token: {
-                userID: foundUser[0]._id,
-                accessType: foundUser[0].acesso
-            } }
+            return {
+                token: {
+                    userID: foundUser[0]._id,
+                    accessType: foundUser[0].acesso
+                }
+            }
         }
     }
     // Retorna erro caso haja
-    return { error: 'Usuário ou senha inválido' }
+    return {error: 'Usuário ou senha inválido'}
 }
 
 function Login() {
@@ -58,9 +63,9 @@ function Login() {
     const [data, setData] = useState([]);
     const [usuario, setUsuario] = useState(initialState)
 
-    const { setToken } = useContext(StoreContext)
+    const {setToken} = useContext(StoreContext)
     const history = useHistory();
-    
+
     // Acesso a API - Retorna usuário do banco de dados
     useEffect(() => {
         async function fetchMyAPI() {
@@ -70,7 +75,7 @@ function Login() {
         }
         fetchMyAPI()
     }, []);
-    
+
     // Função para pegar os valores do formulário
     function handleChange(event) {
         const {name, value} = event.target;
@@ -96,15 +101,13 @@ function Login() {
             window.alert(error);
         }
 
-        console.log(token);
-
         // Limpa dados dos inputs
         setUsuario(initialState);
     }
 
     return (
-        <MyContainer maxWidth="sm">
-            <MyCard>
+        <section id="login-screen">
+            <MyContainer maxWidth="sm">
                 <MyCardContent>
                     <img className={classes.logo} src={logo} alt="Logo"/>
 
@@ -127,17 +130,22 @@ function Login() {
                         onChange={handleChange}
                         variant="outlined"/>
 
-                    <p className={classes.message}>Esqueceu a senha?</p>
-
+                    <Button 
+                        className={classes.message} 
+                        variant="text"
+                        href="/">Esqueceu a senha?</Button>
+                    <br/>
+                    
                     <AddButton
                         className={classes.button}
+                        size="large"
                         variant="contained"
                         color="primary"
                         onClick={onSubmit}>Entrar</AddButton>
 
                 </MyCardContent>
-            </MyCard>
-        </MyContainer>
+            </MyContainer>
+        </section>
     );
 }
 
