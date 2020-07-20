@@ -1,6 +1,5 @@
-// eslint-disable-next-line
-
 import React, {useEffect, useContext, useState} from 'react'
+import {withRouter} from "react-router-dom";
 import StoreContext from "../Store/Context"
 
 // -- Material UI: Core
@@ -8,14 +7,16 @@ import {List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/
 import {makeStyles} from "@material-ui/core/styles";
 
 // -- Material UI: Icon
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import TimelineIcon from '@material-ui/icons/Timeline';
-import SettingsIcon from '@material-ui/icons/Settings';
-import NoteAddIcon from '@material-ui/icons/NoteAdd';
-import ClassIcon from '@material-ui/icons/Class';
-import EqualizerIcon from '@material-ui/icons/Equalizer';
-import PeopleIcon from '@material-ui/icons/People';
-import {withRouter} from "react-router-dom";
+import Dashboard from '@material-ui/icons/LibraryBooks';
+import Classroom from '@material-ui/icons/Class';
+import Performance from '@material-ui/icons/Equalizer';
+// --
+import AddContent from '@material-ui/icons/NoteAdd';
+import Analize from '@material-ui/icons/Timeline';
+import Calendar from '@material-ui/icons/EventNote';
+// --
+import UserControl from '@material-ui/icons/People';
+import Settings from '@material-ui/icons/Settings';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -55,37 +56,42 @@ function ItemsDrawer(props) {
         aluno: [
             {
                 text: "Dashboard",
-                icon: <LibraryBooksIcon/>,
+                icon: <Dashboard/>,
                 onClick: () => history.push("/dashboard")
             }, {
                 text: "Classroom",
-                icon: <ClassIcon/>,
+                icon: <Classroom/>,
                 onClick: () => history.push("/classroom")
             }, {
                 text: "Meu desempenho",
-                icon: <EqualizerIcon/>,
+                icon: <Performance/>,
                 onClick: () => history.push("/desempenho")
             }
         ],
         professor: [
             {
-                text: "Criar Conteúdo",
-                icon: <NoteAddIcon/>,
-                onClick: () => history.push("/criar-conteúdo")
-            }, {
                 text: "Análises",
-                icon: <TimelineIcon/>,
+                icon: <Analize/>,
                 onClick: () => history.push("/analisar-desempenho")
-            }
+            }, {
+                text: "Calendário",
+                icon: <Calendar/>,
+                onClick: () => history.push("/calendario")
+            }, {
+                text: "Criar Conteúdo",
+                icon: <AddContent/>,
+                onClick: () => history.push("/criar-conteúdo")
+            }, 
+
         ],
         admin: [
             {
                 text: "Controle de Usuário",
-                icon: <PeopleIcon/>,
+                icon: <UserControl/>,
                 onClick: () => history.push("/controle-usuario")
             }, {
                 text: "Configurações",
-                icon: <SettingsIcon/>,
+                icon: <Settings/>,
                 onClick: () => history.push("/configuracoes")
             }
         ]

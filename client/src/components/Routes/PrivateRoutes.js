@@ -34,7 +34,24 @@ const AdminRoutes = ({ component: Component, ...rest }) => {
     )
 }
 
+const ProfRoutes = ({ component: Component, ...rest }) => {
+    const {token} = useContext(StoreContext);
+    const access = token.accessType;
+
+    return (
+        <Route
+            {...rest}
+            render={
+                (props) => (access === "Professor" || access === "Administrador")
+                ? <Component {...props}/>
+                : <Redirect to="/"/>
+            }
+        />
+    )
+}
+
 export {
     RoutesPrivate,
+    ProfRoutes,
     AdminRoutes
 };

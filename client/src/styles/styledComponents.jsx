@@ -4,7 +4,14 @@ import {Link as RouterLink} from 'react-router-dom';
 // -- Material UI
 import {withStyles, styled} from '@material-ui/core/styles';
 import {red, cyan} from '@material-ui/core/colors';
-import {Typography, Container, TextField, Button, CardContent, Card} from '@material-ui/core';
+import {
+    Typography,
+    Container,
+    TextField,
+    Button,
+    CardContent,
+    Card
+} from '@material-ui/core';
 
 // Ícones: Material-UI
 import AddIcon from '@material-ui/icons/Add';
@@ -33,7 +40,7 @@ const DeleteButton = withStyles((theme) => ({
             backgroundColor: red[700]
         },
         margin: theme.spacing(1)
-        
+
     }
 }))(Button);
 
@@ -56,18 +63,18 @@ const MyTextField = styled(TextField)(
 );
 
 const MyContainer = styled(Container)(
-    {padding: "20px 30px 50px 30px"}
+    {padding: "20px 30px 50px 30px", margin: "0"}
 );
 
-const MyTypography = styled(Typography)({marginBottom: "5%", padding: "1%", color: "#606161"});
+const MyTypography = styled(Typography)(
+    {marginBottom: "5%", padding: "1%", color: "#606161"}
+);
 
 const MyCardContent = styled(CardContent)(
     {padding: "15px", alignContent: "center", textAlign: "center"}
 );
 
-const MyCard = styled(Card)(
-    {marginTop: "15%", backgroundColor: "transparent"}
-);
+const MyCard = styled(Card)({backgroundColor: "transparent"});
 
 export {
     AddButton,

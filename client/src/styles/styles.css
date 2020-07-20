@@ -40,3 +40,10 @@ html, body {
     text-align: center;
     min-width: 300px;
 }
+
+/* --- Calendário --- */
+
+.calendar {
+    flex-grow: 1;
+    padding: 3em;
+}

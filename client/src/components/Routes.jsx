@@ -1,7 +1,7 @@
 import React from "react";
 import {Route, Switch} from 'react-router-dom'
 import StorageProvider from './Store/Provider'
-import {RoutesPrivate, AdminRoutes} from "./Routes/PrivateRoutes"
+import {RoutesPrivate, AdminRoutes, ProfRoutes} from "./Routes/PrivateRoutes"
 
 // -- Páginas
 import {
@@ -11,6 +11,7 @@ import {
     Dashboard,
     Desempenho,
     Classroom,
+    Calendar,
     Login,
     HomeScreen
 } from '../pages'
@@ -38,6 +39,9 @@ function PrivateRoutes() {
             <RoutesPrivate exact={true} from="/desempenho" component={Desempenho}/>
             <RoutesPrivate exact={true} from="/classroom" component={Classroom}/> 
             
+            {/* --- Rotas do Professor */}
+            <ProfRoutes exact={true} from="/calendario" component={Calendar}/>
+
             {/* --- Rotas do Administrador */}
             <AdminRoutes exact={true} from="/controle-usuario/" component={UsersList}/>
             <AdminRoutes exact={true} from="/controle-usuario/list" component={UsersList}/>

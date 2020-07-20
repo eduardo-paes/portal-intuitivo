@@ -29,6 +29,9 @@ const useStyles = makeStyles(theme => ({
         color: red[500],
         marginTop: "5%"
     },
+    container: {
+        margin: "auto"
+    }
 }));
 
 
@@ -107,7 +110,7 @@ function Login() {
 
     return (
         <section id="login-screen">
-            <MyContainer maxWidth="sm">
+            <MyContainer className={classes.container} maxWidth="sm">
                 <MyCardContent>
                     <img className={classes.logo} src={logo} alt="Logo"/>
 
