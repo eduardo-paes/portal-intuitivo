@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {useHistory, withRouter} from 'react-router-dom';
-import StoreContext from "../components/Store/Context"
+import {StoreContext} from "../components/"
 import api from '../api'
 
 // -- Styles / Componentes gráficos
@@ -33,7 +33,6 @@ const useStyles = makeStyles(theme => ({
         margin: "auto"
     }
 }));
-
 
 // -- Dados iniciais
 function initialState() {

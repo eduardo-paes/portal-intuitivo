@@ -2,9 +2,7 @@ import React from "react";
 import {withRouter} from "react-router-dom";
 
 // -- Componentes
-import {PrivateRoutes} from "../components"
-import SideBar from "../components/Drawer/SideBar"
-import TopBar from "../components/Drawer/TopBar"
+import {PrivateRoutes, SideBar, TopBar} from "../components"
 
 // -- Material-UI
 import clsx from "clsx";

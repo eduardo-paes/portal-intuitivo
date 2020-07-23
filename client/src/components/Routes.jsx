@@ -1,6 +1,6 @@
 import React from "react";
 import {Route, Switch} from 'react-router-dom'
-import StorageProvider from './Store/Provider'
+import {StorageProvider} from './'
 import {RoutesPrivate, AdminRoutes, ProfRoutes} from "./Routes/PrivateRoutes"
 
 // -- Páginas
