@@ -7,6 +7,7 @@ import Dashboard from "./Dashboard"
 import Login from "./Login"
 import Calendar from "./Calendar"
 import HomeScreen from "./HomeScreen"
+import CreateContent from "./CreateContent"
 
 export { 
     UsersList, 
@@ -16,6 +17,7 @@ export {
     Desempenho, 
     Dashboard, 
     Calendar,
+    CreateContent,
     Login, 
-    HomeScreen
+    HomeScreen,
 }

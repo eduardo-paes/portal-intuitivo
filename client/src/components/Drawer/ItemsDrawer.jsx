@@ -80,7 +80,7 @@ function ItemsDrawer(props) {
             }, {
                 text: "Criar Conteúdo",
                 icon: <AddContent/>,
-                onClick: () => history.push("/criar-conteúdo")
+                onClick: () => history.push("/criar-conteudo")
             }, 
 
         ],
@@ -101,16 +101,12 @@ function ItemsDrawer(props) {
 
     useEffect(() => {
         if (token.accessType === "Professor") {
-            setAccess(preValue => ({
-                ...preValue,
-                professor: true
-            }));
+            setAccess({professor: true});
         } else if (token.accessType === "Administrador") {
-            setAccess(preValue => ({
-                ...preValue,
+            setAccess({
                 professor: true,
                 admin: true
-            }));
+            });
         }
 
     }, [token]);

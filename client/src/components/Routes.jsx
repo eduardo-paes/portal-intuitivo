@@ -1,7 +1,7 @@
 import React from "react";
 import {Route, Switch} from 'react-router-dom'
 import {StorageProvider} from './'
-import {RoutesPrivate, AdminRoutes, ProfRoutes} from "./Routes/PrivateRoutes"
+import {RoutesPrivate, ConditionalRoute} from "./Routes/PrivateRoutes"
 
 // -- Páginas
 import {
@@ -13,7 +13,8 @@ import {
     Classroom,
     Calendar,
     Login,
-    HomeScreen
+    HomeScreen,
+    CreateContent
 } from '../pages'
 
 // -- Main Routes
@@ -34,19 +35,22 @@ function PrivateRoutes() {
     return (
         <Switch>
             {/* --- Rotas do Aluno */}
-            <RoutesPrivate exact={true} from="/" component={Dashboard}/>
-            <RoutesPrivate exact={true} from="/dashboard" component={Dashboard}/>
-            <RoutesPrivate exact={true} from="/desempenho" component={Desempenho}/>
-            <RoutesPrivate exact={true} from="/classroom" component={Classroom}/> 
+            <ConditionalRoute exact={true} type="Aluno" from="/" component={Dashboard}/>
+            <ConditionalRoute exact={true} type="Aluno" from="/dashboard" component={Dashboard}/>
+            <ConditionalRoute exact={true} type="Aluno" from="/desempenho" component={Desempenho}/>
+            <ConditionalRoute exact={true} type="Aluno" from="/classroom" component={Classroom}/> 
             
             {/* --- Rotas do Professor */}
-            <ProfRoutes exact={true} from="/calendario" component={Calendar}/>
+            <ConditionalRoute exact={true} type="Professor" from="/" component={Calendar}/>
+            <ConditionalRoute exact={true} type="Professor" from="/calendario" component={Calendar}/>
+            <ConditionalRoute exact={true} type="Professor" from="/criar-conteudo" component={CreateContent}/>
 
             {/* --- Rotas do Administrador */}
-            <AdminRoutes exact={true} from="/controle-usuario/" component={UsersList}/>
-            <AdminRoutes exact={true} from="/controle-usuario/list" component={UsersList}/>
-            <AdminRoutes exact={true} from="/controle-usuario/create" component={UsersInsert}/>
-            <AdminRoutes exact={true} from="/controle-usuario/update/:id" component={UsersUpdate}/>
+            <ConditionalRoute exact={true} type="Administrador" from="/" component={UsersList}/>
+            <ConditionalRoute exact={true} type="Administrador" from="/controle-usuario" component={UsersList}/>
+            <ConditionalRoute exact={true} type="Administrador" from="/controle-usuario/list" component={UsersList}/>
+            <ConditionalRoute exact={true} type="Administrador" from="/controle-usuario/create" component={UsersInsert}/>
+            <ConditionalRoute exact={true} type="Administrador" from="/controle-usuario/update/:id" component={UsersUpdate}/>
         </Switch>
     );
 }

@@ -21,6 +21,9 @@ import DialogForm from "./Dialogs/DialogForm"
 import StoreContext from "./Store/Context"
 import StorageProvider from "./Store/Provider"
 
+// -- Editor
+import TextEditor from "./Editor/TextEditor"
+
 export { 
     Routes, 
     PrivateRoutes, 
@@ -33,5 +36,6 @@ export {
     TopBar,
     DialogForm,
     StoreContext,
-    StorageProvider
+    StorageProvider,
+    TextEditor
 }

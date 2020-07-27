@@ -1,8 +1,9 @@
 import React, {useContext} from "react";
 import {Route, Redirect} from "react-router-dom"
-import StoreContext from "../Store/Context"
+import {StoreContext} from "../"
 
 // -- Definição de modelo de rota privada exigindo token para acesso
+// Rotas privadas de acesso
 const RoutesPrivate = ({ component: Component, ...rest }) => {
     const {token} = useContext(StoreContext);
 
@@ -18,40 +19,35 @@ const RoutesPrivate = ({ component: Component, ...rest }) => {
     )
 }
 
-const AdminRoutes = ({ component: Component, ...rest }) => {
+// Rotas privadas para cada tipo de acesso
+const ConditionalRoute = ({ component: Component, type, ...rest }) => {
     const {token} = useContext(StoreContext);
     const access = token.accessType;
+
+    let defaultURL = "/";
+
+    if (access === "Professor") {
+        defaultURL = "/calendario";
+    } else if (access === "Administrador") {
+        defaultURL = "/controle-usuario";
+        type === "Professor" && (type = "Administrador")
+        
+    }
 
     return (
         <Route
             {...rest}
             render={
-                (props) => (access === "Administrador")
+                (props) => (access === type)
                 ? <Component {...props}/>
-                : <Redirect to="/"/>
+                : <Redirect to={defaultURL}/>
             }
         />
     )
 }
 
-const ProfRoutes = ({ component: Component, ...rest }) => {
-    const {token} = useContext(StoreContext);
-    const access = token.accessType;
-
-    return (
-        <Route
-            {...rest}
-            render={
-                (props) => (access === "Professor" || access === "Administrador")
-                ? <Component {...props}/>
-                : <Redirect to="/"/>
-            }
-        />
-    )
-}
 
 export {
     RoutesPrivate,
-    ProfRoutes,
-    AdminRoutes
+    ConditionalRoute
 };
