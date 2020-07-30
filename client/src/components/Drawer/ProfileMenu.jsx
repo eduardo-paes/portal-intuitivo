@@ -19,7 +19,7 @@ export default function ProfileMenu() {
     const history = useHistory();
     //const urlArquivo = token.perfilImage;
     const url = `/../../../../server/public/uploads/${token.nameImage}`;
-    console.log(url);
+    //console.log(url);
 
     const handleMenu = (event) => {
         console.log(token);
