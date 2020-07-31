@@ -7,9 +7,9 @@ const userRouter = require('./routes/user-routes')
 
 // -- APP
 const app = express();
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
-app.use(bodyParser.json());
 
 // Conexão com o banco
 db.on("error", console.error.bind(console, "Erro de conexão com MongoDB: "));

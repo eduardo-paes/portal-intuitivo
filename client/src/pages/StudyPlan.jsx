@@ -1,13 +1,12 @@
 import React from "react";
 import {MyContainer} from "../styles/styledComponents"
 
-const Calendar = props => {
-  
+const StudyPlan = props => {
   return (
     <MyContainer>
-      <h1 className="heading-page">Calendário</h1>
+      <h1 className="heading-page">Plano de Estudos</h1>
     </MyContainer>
   );
 };
 
-export default Calendar;
+export default StudyPlan;

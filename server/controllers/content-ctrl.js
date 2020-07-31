@@ -1,7 +1,7 @@
-const Usuario = require('../models/users-model');
+const Conteudo = require('../models/content-model');
 
-// Função para inserir usuário no banco
-inserirUsuario = (req, res) => {
+// Função para inserir conteúdo no banco
+inserirConteudo = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
     console.log(req.body);
@@ -9,39 +9,39 @@ inserirUsuario = (req, res) => {
     if (!body) {
         return res.status(400).json({
             success: false,
-            error: "Um usuário deve ser fornecido.",
+            error: "O conteúdo deve ser fornecido.",
         })
     }
 
-    const novoUsuario = new Usuario(body);
+    const novoConteudo = new Conteudo(body);
 
     // Verifica se dados não são nulos
-    if (!novoUsuario) {
+    if (!novoConteudo) {
         return res
             .status(400)
             .json({success: false, error: err});
     }
 
     // Salva novo usário
-    novoUsuario
+    novoConteudo
         .save()
         .then(() => {
             return res.status(201).json({
                 success: true,
-                id: novoUsuario._id,
-                message: "Usuário inserido com sucesso!",
+                id: novoConteudo._id,
+                message: "Conteúdo inserido com sucesso!",
             })
         })
         .catch(error => {
             return res.status(400).json({
                 error,
-                message: "Usuário não inserido!",
+                message: "Conteúdo não inserido!",
             })
         });
 }
 
-// Função para atualizar usuário por ID
-atualizarUsuario = async (req, res) => {
+// Função para atualizar conteúdo por ID
+atualizarConteudo = async (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
 
@@ -52,117 +52,119 @@ atualizarUsuario = async (req, res) => {
         })
     }
 
-    const usuario = new Usuario(body);
+    const conteudo = new Conteudo(body);
 
     // Verifica se dados não são nulos
-    if (!usuario) {
+    if (!conteudo) {
         return res
             .status(400)
             .json({success: false, error: "Os dados são nulos ou incompatíveis."})
     }
 
-    // Busca usuário pelo id (id da rota)
-    Usuario.findOne({
+    // Busca conteúdo pelo id (id da rota)
+    Conteudo.findOne({
         _id: req.params.id
-    }, (err, usuarioEncontrado) => {
+    }, (err, conteudoEncontrado) => {
         if (err) {
             return res
                 .status(404)
-                .json({err, message: "Usuário não encontrado."})
+                .json({err, message: "Conteúdo não encontrado."})
         }
 
-        // Atualiza dados do usuário encontrado
-        usuarioEncontrado.nome = usuario.nome
-        usuarioEncontrado.email = usuario.email
-        usuarioEncontrado.acesso = usuario.acesso
-        usuarioEncontrado.senha = usuario.senha
+        // Atualiza dados do conteúdo encontrado
+        conteudoEncontrado.topico = conteudo.topico
+        conteudoEncontrado.disciplina = conteudo.disciplina
+        conteudoEncontrado.semana = conteudo.semana
+        conteudoEncontrado.data = conteudo.data
+        conteudoEncontrado.conteudo = conteudo.conteudo
+        conteudoEncontrado.autor = conteudo.autor
 
         // Salva alterações
-        usuarioEncontrado
+        conteudoEncontrado
             .save()
             .then(() => {
                 return res.status(200).json({
                     success: true,
-                    id: usuarioEncontrado._id,
-                    message:"Usuário atualizado com sucesso!",
+                    id: conteudoEncontrado._id,
+                    message:"Conteúdo atualizado com sucesso!",
                 })
             })
             .catch(error => {
                 return res.status(404).json({
                     error,
-                    message: "Usuário não atualizado!",
+                    message: "Conteúdo não atualizado!",
                 })
             });
     });
 }
 
-// Função para remover usuário por ID
-removerUsuario = async (req, res) => {
-    // Encontra usuário pelo ID e remove
-    await Usuario
+// Função para remover conteúdo por ID
+removerConteudo = async (req, res) => {
+    // Encontra conteúdo pelo ID e remove
+    await Conteudo
         .findOneAndDelete({
             _id: req.params.id
-        }, (err, usuarioEncontrado) => {
+        }, (err, conteudoEncontrado) => {
             if (err) {
                 return res
                     .status(400)
                     .json({success: false, error: err})
             }
 
-            if (!usuarioEncontrado) {
+            if (!conteudoEncontrado) {
                 return res
                     .status(404)
-                    .json({success: false, error: "Usuário não encontrado."})
+                    .json({success: false, error: "Conteúdo não encontrado."})
             }
             // Caso não haja erros, conclui operação.
             return res
                 .status(200)
-                .json({success: true, data: usuarioEncontrado})
+                .json({success: true, data: conteudoEncontrado})
         })
         .catch(err => console.log(err))
 }
 
-// Função para buscar usuário por ID
-encUsuarioPorID = async (req, res) => {
-    // Encontra usuário por ID fornecido na rota
-    await Usuario
+// Função para buscar conteúdo por ID
+encConteudoPorID = async (req, res) => {
+    // Encontra conteúdo por ID fornecido na rota
+    await Conteudo
         .findOne({
             _id: req.params.id
-        }, (err, usuarioEncontrado) => {
+        }, (err, conteudoEncontrado) => {
             if (err) {
                 return res
                     .status(400)
                     .json({success: false, error: err})
             }
 
-            if (!usuarioEncontrado) {
+            if (!conteudoEncontrado) {
                 return res
                     .status(404)
-                    .json({success: false, error: "Usuário não encontrado."})
+                    .json({success: false, error: "Conteúdo não encontrado."})
             }
 
             return res
                 .status(200)
-                .json({success: true, data: usuarioEncontrado})
+                .json({success: true, data: conteudoEncontrado})
         })
         .catch(err => console.log(err))
 }
 
-// Função para listar os usuários contidos no banco
-listarUsuarios = async (req, res) => {
-    await Usuario.find({}, (err, listaUsuarios) => {
+// Função para listar os conteúdos contidos no banco
+listarConteudos = async (req, res) => {
+    await Conteudo.find({}, (err, listaConteudos) => {
         // Verificação de erros
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
         // Verifica se há dados na lista
-        if (!listaUsuarios.length) {
+        if (!listaConteudos.length) {
             return res
                 .status(404)
                 .json({ success: false, error: "Dados não encontrados." })
         }
-        // Caso não haja erros, retorna lista de usuários
-        return res.status(200).json({ success: true, data: listaUsuarios })
+        // Caso não haja erros, retorna lista de conteúdos
+        return res.status(200).json({ success: true, data: listaConteudos })
     })
     // Havendo erro, retorna o erro
     .catch(err => console.log(err))
@@ -170,9 +172,9 @@ listarUsuarios = async (req, res) => {
 
 // Exporta os módulos
 module.exports = {
-    inserirUsuario,
-    atualizarUsuario,
-    removerUsuario,
-    encUsuarioPorID,
-    listarUsuarios
+    inserirConteudo,
+    atualizarConteudo,
+    removerConteudo,
+    encConteudoPorID,
+    listarConteudos
 }

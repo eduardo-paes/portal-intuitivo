@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Link as RouterLink} from 'react-router-dom';
-import api from '../api'
+import api from '../../api'
 
 // -- Material UI - Table
 import PropTypes from 'prop-types';
@@ -21,7 +21,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
 // Função para retornar as dimensões da tela
-import WindowDimension from "./WindowDimension"
+import WindowDimension from "../WindowDimension"
 
 // Botão de Atualização
 class UpdateUser extends Component {
@@ -42,9 +42,6 @@ function DeleteUser(props) {
     function removing() {
         if (window.confirm(`Quer remover o usuário ${props.nome} permanentemente?`)) {
             api.removerUsuario(props.id)
-            window
-                .location
-                .reload()
         }
     }
 
@@ -150,6 +147,7 @@ function EnhancedTableHead(props) {
                                             direction={orderBy === headCell.id
                                                 ? order
                                                 : 'asc'}
+                                            className={classes.row}
                                             onClick={createSortHandler(headCell.id)}>
                                             {headCell.label}
                                             {
@@ -166,7 +164,6 @@ function EnhancedTableHead(props) {
                                                     : null
                                             }
                                         </TableSortLabel>
-
                                     : <div>{headCell.label}</div>
                             }
                         </TableCell>
@@ -202,7 +199,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#606161"
     },
     table: {
-        minWidth: 300
+        minWidth: 300,
     },
     visuallyHidden: {
         border: 0,

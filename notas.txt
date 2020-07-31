@@ -35,3 +35,48 @@ FUNCIONALIDADES
     - Visualização do desempenho
 
 TELAS
+-- ALUNO
+Classroom
+    - Link para a aulo online (classroom).
+
+Plano de Estudos
+    - Visualizar material de estudo
+    - No final de cada material de estudo haverá um link para o exercícios referentes aquele tópico
+
+Biblioteca
+    - Visualizar material de estudo referente a datas passadas
+    - Possibilidade de filtrar por:
+        - Dia: Qualquer dia anterior do ano letivo corrente.
+        - Semana: Qualquer semana anterior do ano letivo corrente.
+        - Disciplina/Tópico: Qualquer disciplina/tópico com o material já liberado.
+
+Meu Desempenho
+    - Quantidade de conteúdo estudado dentre os materiais já disponibilizados.
+    - Quantidade de exercícios realizados dentre os já disponibilizados.
+        - Quantidade de erros/acertos em cada exercício.
+    - Possibilidadede filtrar tudo por semana/disciplina.
+
+-- PROFESSOR
+Material de Estudos
+    - Possibilidade de upar conteúdo em pdf/html para a plataforma.
+    - Possibilidade de editar informações relacionadas a esse material (semana, data, disciplina, tópico).
+    - Possibilidade de remover o material.
+
+Atividades
+    - Possibilidade de remover/editar/criar completamente o conteúdo na plataforma.
+        - Definir tipo de atividade, disciplina, semana e tópico.
+        - Criar respostas discursivas/multipla-escolha.
+
+Análises (Desempenho Geral)
+    - Quantidade de conteúdo estudado exercícios realizados dentre os já disponibilizados.
+        - Quantidade de tópicos por disciplina.
+        - Quantidade de erros/acertos em cada exercício.
+    - Possibilidadede filtrar tudo por semana/disciplina/aluno.
+
+-- ADMINISTRADOR
+Controle de Usuário
+    - Criar, editar, remover e buscar usuários na plataforma.
+
+Configurações
+    - Criar, editar, remover e buscar disciplinas.
+    - Definir link da aula online do Classroom.

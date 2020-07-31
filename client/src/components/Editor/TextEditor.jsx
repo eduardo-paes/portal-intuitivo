@@ -1,11 +1,17 @@
 import React, {useState, useEffect} from 'react';
-// import axios from "axios";
-// import {useSelector} from "react-redux";
 import QuillEditor from "./QuillEditor"
+import api from '../../api'
 
 // Material-UI
 import {Button} from '@material-ui/core';
-import {MyTextField} from "../../styles/styledComponents"
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+    buttons: {
+        marginTop: theme.spacing(2),
+        margin: theme.spacing(1)
+    }
+}));
 
 function initialState() {
     return {
@@ -13,17 +19,27 @@ function initialState() {
         topico: "",
         semana: "",
         data: "",
-        conteudo: ""
-    } 
+        conteudo: "",
+        autor: ""
+    }
 }
 
-// -- Main Function
+// Function Main
 function TextEditor() {
-    // const user = useSelector(state => state.user);
-
-    const [files, setFiles] = useState([])
+    // -- Acesso a API - Retorna usuário do banco de dados
+    useEffect(() => {
+        async function fetchMyAPI() {
+            await api
+        }
+        fetchMyAPI()
+    }, []);
+    
+    // -- Define principais constantes
+    const classes = useStyles();
+    const [materialFiles, setFiles] = useState([])
     const [material, setMaterial] = useState(initialState);
 
+    // -- Definição das Funções
     const onEditorChange = (value) => {
         setMaterial(preValue => ({
             ...preValue,
@@ -33,52 +49,52 @@ function TextEditor() {
 
     const onFilesChange = (files) => {
         setFiles(files);
-        console.log(files);
+        console.log(materialFiles);
     }
 
-    const onMaterialChange = (event) => {
-        const {name, value} = event.target;
-        setMaterial(preValue => ({
-            ...preValue,
-            [name]: value
-        }));
-    }
+    // const onMaterialChange = (event) => {
+    //     const {name, value} = event.target;
+    //     setMaterial(preValue => ({
+    //         ...preValue,
+    //         [name]: value
+    //     }));
+    // }
 
-    function saveContent(event) {
+    const cleanContent = (event) => {
         event.preventDefault();
-                
-        console.log("VAR:", material);
+        setFiles([]);
+        setMaterial(initialState);
+    }
 
-        // setMaterial(initialState);
+    const saveContent = (event) => {
+        event.preventDefault();
+
+        // console.log("VAR:", material);
+        if (material) {
+            api
+                .inserirConteudo(material)
+                .then(res => {
+                    window.alert("Conteúdo inserido com sucesso.")
+                })
+        }
     }
 
     return (
         <div>
-            <MyTextField
-                id="outlined-basic"
-                label="Tópico"
-                variant="outlined"
-                name="topico"
-                type="text"
-                value={material.topico}
-                onChange={onMaterialChange}/>
-
-            <QuillEditor 
+            <QuillEditor
                 placeholder={"Digite aqui"}
                 onEditorChange={onEditorChange}
-                onFilesChange={onFilesChange}
-            />
-            <form onSubmit={saveContent}>
-                <div style={{ textAlign: "center", margin: "2rem" }}>
-                    <Button 
-                        variant="outlined" 
-                        type="submit"
-                        color="primary" 
-                        onSubmit={saveContent}>
+                onFilesChange={onFilesChange}/>
+
+                <div className="group-buttons">
+                    <Button className={classes.buttons} variant="outlined" type="submit" color="secondary" onClick={cleanContent}>
+                        Limpar
+                    </Button>
+
+                    <Button className={classes.buttons} variant="outlined" type="submit" color="primary" onClick={saveContent}>
                         Salvar
                     </Button>
                 </div>
-            </form>
         </div>
     );
 }

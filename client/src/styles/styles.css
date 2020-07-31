@@ -41,9 +41,7 @@ html, body {
     min-width: 300px;
 }
 
-/* --- Calendário --- */
-
-.calendar {
-    flex-grow: 1;
-    padding: 3em;
+/* --- Label Tabelas --- */
+.MuiTableSortLabel-root.MuiTableSortLabel-active {
+    color: #606161;
 }

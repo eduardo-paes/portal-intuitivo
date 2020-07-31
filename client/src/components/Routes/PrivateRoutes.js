@@ -27,7 +27,7 @@ const ConditionalRoute = ({ component: Component, type, ...rest }) => {
     let defaultURL = "/";
 
     if (access === "Professor") {
-        defaultURL = "/calendario";
+        defaultURL = "/controle-conteudo";
     } else if (access === "Administrador") {
         defaultURL = "/controle-usuario";
         type === "Professor" && (type = "Administrador")

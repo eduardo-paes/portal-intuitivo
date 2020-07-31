@@ -8,13 +8,15 @@ import {
     UsersList,
     UsersInsert,
     UsersUpdate,
-    Dashboard,
+    StudyPlan,
+    Library,
     Desempenho,
     Classroom,
-    Calendar,
+    Exercises,
     Login,
     HomeScreen,
-    CreateContent
+    ContentInsert,
+    Settings
 } from '../pages'
 
 // -- Main Routes
@@ -35,15 +37,16 @@ function PrivateRoutes() {
     return (
         <Switch>
             {/* --- Rotas do Aluno */}
-            <ConditionalRoute exact={true} type="Aluno" from="/" component={Dashboard}/>
-            <ConditionalRoute exact={true} type="Aluno" from="/dashboard" component={Dashboard}/>
+            <ConditionalRoute exact={true} type="Aluno" from="/" component={StudyPlan}/>
+            <ConditionalRoute exact={true} type="Aluno" from="/plano-estudo" component={StudyPlan}/>
+            <ConditionalRoute exact={true} type="Aluno" from="/biblioteca" component={Library}/>
             <ConditionalRoute exact={true} type="Aluno" from="/desempenho" component={Desempenho}/>
             <ConditionalRoute exact={true} type="Aluno" from="/classroom" component={Classroom}/> 
             
             {/* --- Rotas do Professor */}
-            <ConditionalRoute exact={true} type="Professor" from="/" component={Calendar}/>
-            <ConditionalRoute exact={true} type="Professor" from="/calendario" component={Calendar}/>
-            <ConditionalRoute exact={true} type="Professor" from="/criar-conteudo" component={CreateContent}/>
+            <ConditionalRoute exact={true} type="Professor" from="/" component={ContentInsert}/>
+            <ConditionalRoute exact={true} type="Professor" from="/atividades" component={Exercises}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo" component={ContentInsert}/>
 
             {/* --- Rotas do Administrador */}
             <ConditionalRoute exact={true} type="Administrador" from="/" component={UsersList}/>
@@ -51,6 +54,8 @@ function PrivateRoutes() {
             <ConditionalRoute exact={true} type="Administrador" from="/controle-usuario/list" component={UsersList}/>
             <ConditionalRoute exact={true} type="Administrador" from="/controle-usuario/create" component={UsersInsert}/>
             <ConditionalRoute exact={true} type="Administrador" from="/controle-usuario/update/:id" component={UsersUpdate}/>
+            <ConditionalRoute exact={true} type="Administrador" from="/configuracoes" component={Settings}/>
+
         </Switch>
     );
 }

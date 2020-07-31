@@ -1,5 +1,6 @@
-// -- Tabela
-import Table from "./Table"
+// -- Tabelas
+import UserTable from "./Tables/UserTable"
+import DisTable from "./Tables/DisTable"
 
 // -- Rotas
 import {Routes, PrivateRoutes} from "./Routes"
@@ -27,7 +28,8 @@ import TextEditor from "./Editor/TextEditor"
 export { 
     Routes, 
     PrivateRoutes, 
-    Table, 
+    UserTable,
+    DisTable, 
     UserForm, 
     UserValidater, 
     ItemsDrawer, 

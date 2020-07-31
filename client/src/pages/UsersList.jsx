@@ -1,41 +1,43 @@
-import React, {Component} from 'react'
+import React, {useState, useEffect} from 'react'
 import api from '../api'
 
 // Tabela Local: Material UI
-import Table from "../components/Table"
+import {UserTable} from "../components"
 import {CreateUser, MyContainer} from "../styles/styledComponents"
 
-class UsersList extends Component {
-    // Definição do construtor
-    constructor(props) {
-        super(props)
-        this.state = {
-            usuarios: []
+function UsersList(props) {
+    const [user, setUser] = useState({
+        usuarios: []
+    })
+
+    useEffect(() => {
+        async function fetchMyAPI() {
+            const response = await api.listarUsuarios();
+            const value = await response.data.data;
+            setUser({usuarios: value})
         }
-    }
+        fetchMyAPI()
+    }, [user]);
 
-    // Montagem dos componentes
-    componentDidMount = async () => {
-        await api
-            .listarUsuarios()
-            .then(usuarios => {
-                this.setState({usuarios: usuarios.data.data})
-            })
-    }
+    useEffect(() => {
+        async function fetchMyAPI() {
+            const response = await api.listarUsuarios();
+            const value = await response.data.data;
+            setUser({usuarios: value})
+        }
+        fetchMyAPI()
+    }, []);
 
-    // Renderização da tabela
-    render() {
-        const {usuarios} = this.state
+    const {usuarios} = user;
 
-        // Retorna a Tabela
-        return (
-            <MyContainer>
-                <h1 className="heading-page">Controle de Usuário</h1>
-                <Table data={usuarios}/>
-                <CreateUser/>
-            </MyContainer>
-        )
-    }
+    // Retorna a Tabela
+    return (
+        <MyContainer>
+            <h1 className="heading-page">Controle de Usuário</h1>
+            <UserTable data={usuarios}/>
+            <CreateUser/>
+        </MyContainer>
+    )
 }
 
 export default UsersList;

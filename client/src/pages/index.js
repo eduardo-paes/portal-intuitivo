@@ -3,11 +3,13 @@ import UsersInsert from './UsersInsert'
 import UsersUpdate from './UsersUpdate'
 import Classroom from "./Classroom"
 import Desempenho from "./Desempenho"
-import Dashboard from "./Dashboard"
+import StudyPlan from "./StudyPlan"
+import Library from "./Library"
 import Login from "./Login"
-import Calendar from "./Calendar"
+import Exercises from "./Exercises"
 import HomeScreen from "./HomeScreen"
-import CreateContent from "./CreateContent"
+import ContentInsert from "./ContentInsert"
+import Settings from "./Settings"
 
 export { 
     UsersList, 
@@ -15,9 +17,11 @@ export {
     UsersUpdate, 
     Classroom, 
     Desempenho, 
-    Dashboard, 
-    Calendar,
-    CreateContent,
+    StudyPlan, 
+    Library,
+    Exercises,
+    ContentInsert,
     Login, 
     HomeScreen,
+    Settings,
 }

@@ -51,6 +51,7 @@ function validateLogin(usuario, data) {
             return {
                 token: {
                     userID: foundUser[0]._id,
+                    userName: foundUser[0].nome,
                     accessType: foundUser[0].acesso
                 }
             }

@@ -7,13 +7,14 @@ import {List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/
 import {makeStyles} from "@material-ui/core/styles";
 
 // -- Material UI: Icon
-import Dashboard from '@material-ui/icons/LibraryBooks';
+import StudyPlan from '@material-ui/icons/LibraryBooks';
+import Library from '@material-ui/icons/MenuBook';
 import Classroom from '@material-ui/icons/Class';
 import Performance from '@material-ui/icons/Equalizer';
 // --
-import AddContent from '@material-ui/icons/NoteAdd';
+import ContentControl from '@material-ui/icons/NoteAdd';
 import Analize from '@material-ui/icons/Timeline';
-import Calendar from '@material-ui/icons/EventNote';
+import Exercises from '@material-ui/icons/Ballot';
 // --
 import UserControl from '@material-ui/icons/People';
 import Settings from '@material-ui/icons/Settings';
@@ -55,10 +56,14 @@ function ItemsDrawer(props) {
     const itens = {
         aluno: [
             {
-                text: "Dashboard",
-                icon: <Dashboard/>,
-                onClick: () => history.push("/dashboard")
+                text: "Plano de Estudos",
+                icon: <StudyPlan/>,
+                onClick: () => history.push("/plano-estudo")
             }, {
+                text: "Biblioteca",
+                icon: <Library/>,
+                onClick: () => history.push("/biblioteca")
+            },{
                 text: "Classroom",
                 icon: <Classroom/>,
                 onClick: () => history.push("/classroom")
@@ -74,13 +79,13 @@ function ItemsDrawer(props) {
                 icon: <Analize/>,
                 onClick: () => history.push("/analisar-desempenho")
             }, {
-                text: "Calendário",
-                icon: <Calendar/>,
-                onClick: () => history.push("/calendario")
+                text: "Atividades",
+                icon: <Exercises/>,
+                onClick: () => history.push("/atividades")
             }, {
-                text: "Criar Conteúdo",
-                icon: <AddContent/>,
-                onClick: () => history.push("/criar-conteudo")
+                text: "Material de Estudo",
+                icon: <ContentControl/>,
+                onClick: () => history.push("/controle-conteudo")
             }, 
 
         ],
