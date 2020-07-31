@@ -17,7 +17,10 @@ class UsersInsert extends Component {
             email: "",
             acesso: "",
             senha: "",
-            erros: []
+            erros: [],
+            nomeArquivo: "",
+            urlArquivo: "",
+            foto: {}
         }
     }
 
@@ -26,15 +29,26 @@ class UsersInsert extends Component {
         const {name, value} = event.target;
         this.setState({
             ...this.state,
-            [name]: value
+            [name]: value,
         });
     }
 
+    handleUpload = async event => {
+        
+        const file = event.target.files[0];
+        this.setState({ 
+            ...this.state,
+            nomeArquivo: "profile."+file.name,
+            urlArquivo: URL.createObjectURL(file),
+            foto: file
+        })
+    }
+
     // Salva os dados do formulário no banco
-    handleIncludeUser = async () => {
+    handleIncludeUser = async (event) => {
         // Recebe os campos coletados
-        const {nome, email, acesso, senha} = this.state;
-        const error = validate(this.state)
+        const {nome, email, acesso, senha, nomeArquivo, urlArquivo, foto} = this.state;
+        const error = validate(this.state);
 
         this.setState({
             ...this.state,
@@ -47,8 +61,20 @@ class UsersInsert extends Component {
                 nome,
                 email,
                 acesso,
-                senha
+                senha,
+                nomeArquivo,
+                urlArquivo
             };
+
+            if (foto) {
+                const formData = new FormData();
+                formData.append("foto", foto);
+                fetch('http://localhost:3000/api/controle-usuario', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+            }
 
             // Guarda novo usuário no banco
             await api
@@ -56,8 +82,9 @@ class UsersInsert extends Component {
                 .then(res => {
                     window.alert("Usuário inserido com sucesso.")
                     // Limpa os campos
-                    this.setState({nome: "", email: "", acesso: "", senha: ""})
+                    this.setState({nome: "", email: "", acesso: "", senha: "", nomeArquivo: "", urlArquivo: ""})
                 })
+            
         }
     }
 
@@ -67,6 +94,7 @@ class UsersInsert extends Component {
             <UserForm
                 data={this.state}
                 handleChange={this.handleChange}
+                handleUpload={this.handleUpload}
                 onSubmit={this.handleIncludeUser}
                 typeForm="Registrar"
                 edit={false}

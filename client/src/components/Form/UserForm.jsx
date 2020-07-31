@@ -1,15 +1,24 @@
 import React from '../../../node_modules/react'
 import {Link} from '../../../node_modules/react-router-dom'
-import {AddButton, DeleteButton, MyTextField, MyContainer} from "../../styles/styledComponents"
+import {AddButton, DeleteButton, MyAvatar, MyTextField, MyContainer} from "../../styles/styledComponents"
 import { MenuItem } from '@material-ui/core'
 
+// Upload da Imagem do Perfil
+import Upload from "../Upload";
+
 function UserForm (props) {
-    const {data, handleChange, onSubmit, typeForm, edit} = props;
-    const {nome, email, acesso, senha, erros} = data;
+    const {data, handleChange, handleUpload, onSubmit, typeForm, edit} = props;
+    const {nome, email, acesso, senha, erros, urlArquivo} = data;
 
     return (
         <MyContainer>
             <h1 className="heading-page">{typeForm} Usuário</h1>
+
+            <MyAvatar src={urlArquivo} alt="Preview"/>
+
+            <Upload 
+               onUpload={handleUpload}
+            />
 
             <MyTextField
                 id="outlined-basic"

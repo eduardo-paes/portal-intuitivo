@@ -5,6 +5,7 @@ import {Link as RouterLink} from 'react-router-dom';
 import {withStyles, styled} from '@material-ui/core/styles';
 import {red, cyan} from '@material-ui/core/colors';
 import {
+    Avatar,
     Typography,
     Container,
     TextField,
@@ -76,6 +77,14 @@ const MyCardContent = styled(CardContent)(
 
 const MyCard = styled(Card)({backgroundColor: "transparent"});
 
+const MyAvatar = styled(Avatar) (
+    {
+        marginLeft: "60px",
+        width: "150px",
+        height: "150px"
+    }
+)
+
 export {
     AddButton,
     CreateUser,
@@ -84,5 +93,6 @@ export {
     MyTextField,
     MyTypography,
     MyCardContent,
-    MyCard
+    MyCard,
+    MyAvatar
 }

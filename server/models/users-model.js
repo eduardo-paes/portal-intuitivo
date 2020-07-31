@@ -18,6 +18,14 @@ const Usuario = new Schema({
     senha: {
         type: String,
         required: true
+    },
+    nomeArquivo: {
+        type: String,
+        required: false
+    },
+    urlArquivo: {
+        type: String,
+        required: false
     }
 });
 

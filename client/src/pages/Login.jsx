@@ -52,7 +52,8 @@ function validateLogin(usuario, data) {
                 token: {
                     userID: foundUser[0]._id,
                     userName: foundUser[0].nome,
-                    accessType: foundUser[0].acesso
+                    accessType: foundUser[0].acesso,
+                    nameImage: foundUser[0].nomeArquivo
                 }
             }
         }

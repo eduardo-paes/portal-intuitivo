@@ -76,6 +76,8 @@ atualizarUsuario = async (req, res) => {
         usuarioEncontrado.email = usuario.email
         usuarioEncontrado.acesso = usuario.acesso
         usuarioEncontrado.senha = usuario.senha
+        usuarioEncontrado.nomeArquivo = usuario.nomeArquivo
+        usuarioEncontrado.urlArquivo = usuario.urlArquivo
 
         // Salva alterações
         usuarioEncontrado

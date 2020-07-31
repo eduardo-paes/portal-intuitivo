@@ -8,11 +8,12 @@ const ConteudoCtrl = require("../controllers/content-ctrl");
 
 // Multer
 const multer = require("multer");
+const multerConfig = require("./config/multer");
 const fileStorage = require("../src/multerConfig");
 
 // Definição dos métodos para cada rota do usuário
-router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
-router.put("/controle-usuario/:id", UsuarioCtrl.atualizarUsuario);
+router.post("/controle-usuario", multer(multerConfig).single("foto"), UsuarioCtrl.inserirUsuario);
+router.put("/controle-usuario/:id", multer(multerConfig).single("foto"), UsuarioCtrl.atualizarUsuario);
 router.delete("/controle-usuario/:id", UsuarioCtrl.removerUsuario);
 router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
