@@ -1,4 +1,9 @@
 html, body {
+<<<<<<< HEAD
+=======
+    font-family: apertura, sans-serif;
+    /* background-image: url("https://www.transparenttextures.com/patterns/cubes.png"); */
+>>>>>>> Adicionando tela de login
     background-color: #fff;
     font-family: apertura, sans-serif;
     margin: 0;
