@@ -4,7 +4,6 @@ import {Link as RouterLink} from 'react-router-dom';
 // -- Material UI
 import {withStyles, styled} from '@material-ui/core/styles';
 import {red, cyan} from '@material-ui/core/colors';
-<<<<<<< HEAD
 import {
     Avatar,
     Typography,
@@ -14,9 +13,6 @@ import {
     CardContent,
     Card
 } from '@material-ui/core';
-=======
-import {Typography, Container, TextField, Button, CardContent, Card} from '@material-ui/core';
->>>>>>> Adicionando tela de login
 
 // Ícones: Material-UI
 import AddIcon from '@material-ui/icons/Add';
@@ -45,11 +41,6 @@ const DeleteButton = withStyles((theme) => ({
             backgroundColor: red[700]
         },
         margin: theme.spacing(1)
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> Adicionando tela de login
     }
 }))(Button);
 
@@ -72,7 +63,6 @@ const MyTextField = styled(TextField)(
 );
 
 const MyContainer = styled(Container)(
-<<<<<<< HEAD
     {padding: "20px 30px 50px 30px", margin: "0"}
 );
 
@@ -85,20 +75,6 @@ const MyCardContent = styled(CardContent)(
 );
 
 const MyCard = styled(Card)({backgroundColor: "transparent"});
-=======
-    {padding: "20px 50px 50px 50px", backgroundColor: "#fff"}
-);
-
-const MyTypography = styled(Typography)({marginBottom: "5%", padding: "1%"});
-
-const MyCardContent = styled(CardContent)(
-    {padding: "30px 30px 0 30px", alignContent: "center", textAlign: "center"}
-);
-
-const MyCard = styled(Card)(
-    {marginTop: "15%"}
-);
->>>>>>> Adicionando tela de login
 
 const MyAvatar = styled(Avatar) (
     {

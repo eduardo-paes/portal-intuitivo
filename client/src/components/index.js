@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // -- Tabelas
 import UserTable from "./Tables/UserTable"
 import DisTable from "./Tables/DisTable"
@@ -42,9 +41,3 @@ export {
     StorageProvider,
     TextEditor
 }
-=======
-import {Routes, PrivateRoutes} from "./Routes"
-import Table from "./Table"
-
-export { Routes, PrivateRoutes, Table }
->>>>>>> Adicionando tela de login

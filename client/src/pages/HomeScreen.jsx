@@ -2,13 +2,7 @@ import React from "react";
 import {withRouter} from "react-router-dom";
 
 // -- Componentes
-<<<<<<< HEAD
 import {PrivateRoutes, SideBar, TopBar} from "../components"
-=======
-import {PrivateRoutes} from "../components"
-import SideBar from "../components/Drawer/SideBar"
-import TopBar from "../components/Drawer/TopBar"
->>>>>>> Adicionando tela de login
 
 // -- Material-UI
 import clsx from "clsx";

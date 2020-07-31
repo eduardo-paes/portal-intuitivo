@@ -12,7 +12,6 @@ import {
     Library,
     Desempenho,
     Classroom,
-<<<<<<< HEAD
     Exercises,
     Login,
     HomeScreen,
@@ -33,36 +32,10 @@ function Routes() {
 }
 
 // -- Private Routes
-=======
-    Login,
-    HomeScreen
-} from '../pages'
-
-function Routes() {
-    return (
-        <Switch>
-            <Route
-                exact={true}
-                from="/login"
-                render={props => <Login {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/"
-                render={props => <HomeScreen {...props}/>
-                }
-            />
-        </Switch>
-    );
-}
-
->>>>>>> Adicionando tela de login
 function PrivateRoutes() {
 
     return (
         <Switch>
-<<<<<<< HEAD
             {/* --- Rotas do Aluno */}
             <ConditionalRoute exact={true} type="Aluno" from="/" component={StudyPlan}/>
             <ConditionalRoute exact={true} type="Aluno" from="/plano-estudo" component={StudyPlan}/>
@@ -83,51 +56,6 @@ function PrivateRoutes() {
             <ConditionalRoute exact={true} type="Administrador" from="/controle-usuario/update/:id" component={UsersUpdate}/>
             <ConditionalRoute exact={true} type="Administrador" from="/configuracoes" component={Settings}/>
 
-=======
-            <Route exact={true} from="/" render={props => <Dashboard {...props}/>}/>
-            <Route
-                exact={true}
-                from="/dashboard"
-                render={props => <Dashboard {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/desempenho"
-                render={props => <Desempenho {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/classroom"
-                render={props => <Classroom {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/controle-usuario/"
-                render={props => <UsersList {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/controle-usuario/list"
-                render={props => <UsersList {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/controle-usuario/create"
-                render={props => <UsersInsert {...props}/>
-                }
-            />
-            <Route
-                exact={true}
-                from="/controle-usuario/update/:id"
-                render={props => <UsersUpdate {...props}/>
-                }
-            />
->>>>>>> Adicionando tela de login
         </Switch>
     );
 }

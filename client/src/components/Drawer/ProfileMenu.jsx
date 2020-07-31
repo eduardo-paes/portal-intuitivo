@@ -1,10 +1,7 @@
 import React, {useContext} from 'react';
 import {useHistory} from 'react-router-dom';
 
-<<<<<<< HEAD:client/src/components/Drawer/ProfileMenu.jsx
 import StoreContext from "../Store/Context"
-=======
->>>>>>> Adicionando tela de login:client/src/components/ProfileMenu.jsx
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';

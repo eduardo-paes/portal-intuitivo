@@ -2,10 +2,7 @@ import React from "react";
 
 // -- Componentes
 import ProfileMenu from "./ProfileMenu"
-<<<<<<< HEAD
 import logo from "../../images/TopLogo.png"
-=======
->>>>>>> Adicionando tela de login
 
 // -- Material-UI
 import clsx from "clsx";
@@ -14,10 +11,6 @@ import {
     makeStyles,
     AppBar,
     Toolbar,
-<<<<<<< HEAD
-=======
-    Typography,
->>>>>>> Adicionando tela de login
     IconButton
 } from "@material-ui/core";
 
@@ -46,15 +39,12 @@ const useStyles = makeStyles(theme => ({
                 duration: theme.transitions.duration.enteringScreen
             })
     },
-<<<<<<< HEAD
     logo: {
         width: "150px",
         minWidth: "150px",
         height: "30px",
         minHeight: "30px"
     },
-=======
->>>>>>> Adicionando tela de login
     menuButton: {
         marginRight: theme.spacing(2),
         backgroundColor: "inherit"
@@ -64,14 +54,10 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         flexGrow: 1,
-<<<<<<< HEAD
         minWidth: drawerWidth,
         display: "block",
         textAlign: "center",
         paddingTop: "7px",
-=======
-        minWidth: drawerWidth
->>>>>>> Adicionando tela de login
     }
 }));
 
@@ -101,17 +87,9 @@ function TopBar(props) {
                         <MenuIcon/>
                     </IconButton>
 
-<<<<<<< HEAD
                     <div className={classes.title}>
                         <img className={classes.logo} src={logo} alt="Logo"/>
                     </div>
-
-                    {/* <Typography variant="h6" className={classes.title}> Portal Intuitivo </Typography> */}
-=======
-                    <Typography variant="h6" className={classes.title}>
-                        Portal Intuitivo
-                    </Typography>
->>>>>>> Adicionando tela de login
 
                     {/* Ícone e funções do usuário definida na top-bar */}
                     <ProfileMenu/>
