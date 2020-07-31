@@ -9,6 +9,7 @@ import Login from "./Login"
 import Exercises from "./Exercises"
 import HomeScreen from "./HomeScreen"
 import ContentInsert from "./ContentInsert"
+import ContentUpload from "./ContentInsert"
 import Settings from "./Settings"
 
 export { 
@@ -24,4 +25,5 @@ export {
     Login, 
     HomeScreen,
     Settings,
+    ContentUpload
 }

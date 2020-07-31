@@ -19,8 +19,8 @@ router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
 
 // Definição dos métodos para cada rota do conteúdo
-router.post("/controle-conteudo", ConteudoCtrl.inserirConteudo);
-router.put("/controle-conteudo/:id", ConteudoCtrl.atualizarConteudo);
+router.post("/controle-conteudo", multer(multerConfig).single("conteudo"), ConteudoCtrl.inserirConteudo);
+router.put("/controle-conteudo/:id", multer(multerConfig).single("conteudo"), ConteudoCtrl.atualizarConteudo);
 router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
 router.get("/controle-conteudo/:id", ConteudoCtrl.encConteudoPorID);
 router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);

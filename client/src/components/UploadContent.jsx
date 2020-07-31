@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import DescriptionIcon from '@material-ui/icons/Description';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,34 +14,34 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: theme.spacing(1),
-    marginLeft: theme.spacing(7.5),
+    marginLeft: theme.spacing(64),
   },
 }));
 
-export default function UploadButtons(props) {
-  const {handleUpload} = props;
+export default function UploadContent(props) {
+  const {onChange} = props;
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <input
-        accept="image/*"
+        accept="file_extension/*"
         className={classes.input}
-        name="foto"
-        id="contained-button-photo"
+        name="conteudo"
+        id="contained-button-file"
         single="true"
         type="file"
-        onChange={handleUpload}
+        onChange={onChange}
         />
-      <label htmlFor="contained-button-photo">
+      <label htmlFor="contained-button-file">
         <Button
         variant="contained"
         color="primary"
         component="span"
         className={classes.button}
-        startIcon={<PhotoCamera />}
+        startIcon={<DescriptionIcon />}
       >
-        Upload
+        Subir Conteúdo
         </Button>
       </label>
     </div>

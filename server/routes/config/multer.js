@@ -14,6 +14,15 @@ const storageTypes = {
             cb(null, file.key);
         }     
     }),
+    conteudo: multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, path.resolve(__dirname, "..", "..", "public", "conteudo"));
+        }, 
+        filename: (req, file, cb) => {
+            file.key = `conteudo.${file.originalname}`;
+            cb(null, file.key);
+        }     
+    }),
     s3: multerS3({
         s3: new aws.S3(),
         bucket: 'teste-exemplo',
@@ -26,20 +35,6 @@ const storageTypes = {
 }
 
 module.exports = {
-    dest: path.resolve(__dirname, "..", "..", "public", "uploads"),
-    storage: storageTypes["local"],
-    fileFilter: (req, file, cb) => {
-        const allowedMimes = [
-            "image/jpeg",
-            "image/pjpeg",
-            "image/png",
-            "image/jpg"
-        ];
-
-        if (allowedMimes.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error("Invalid file type."));
-        }
-    }
+    dest: path.resolve(__dirname, "..", "..", "public", "conteudo"),
+    storage: storageTypes["conteudo"],
 };

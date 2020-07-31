@@ -86,8 +86,7 @@ function ItemsDrawer(props) {
                 text: "Material de Estudo",
                 icon: <ContentControl/>,
                 onClick: () => history.push("/controle-conteudo")
-            }, 
-
+            },
         ],
         admin: [
             {
