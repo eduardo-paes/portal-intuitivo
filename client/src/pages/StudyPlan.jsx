@@ -1,5 +1,5 @@
 import React from "react";
-import {MyContainer} from "../assets/styles/styledComponents"
+import {MyContainer} from "../styles/styledComponents"
 
 const StudyPlan = props => {
   return (
