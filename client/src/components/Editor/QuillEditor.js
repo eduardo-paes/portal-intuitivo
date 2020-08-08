@@ -1,8 +1,11 @@
 import React from 'react';
+
+// -- Quill Editor
 import ReactQuill, { Quill } from 'react-quill';
 import "react-quill/dist/quill.snow.css";
 
 import axios from 'axios';
+const postURL = "http://localhost:3000/api/upload-arquivo"
 const __ISMSIE__ = navigator.userAgent.match(/Trident/i) ? true : false;
 
 // -- Configuração do ClipBoard
@@ -45,7 +48,7 @@ class Clipboard extends QuillClipboard {
                         this.quill.pasteHTML(position, rendered, 'silent');
                         this.quill.setSelection(position + rendered.length);
                     })
-                    .catch(error => console.error(error));
+                    .catch(error => console.error("ClipBoard", error));
             });
 
         } else {
@@ -165,7 +168,6 @@ class PollBlot extends BlockEmbed {
         const title = bTag.innerText;
         return { id, title };
     }
-
 }
 PollBlot.blotName = 'poll';
 PollBlot.tagName = 'p';
@@ -233,33 +235,43 @@ class QuillEditor extends React.Component {
 
         if (event.currentTarget && event.currentTarget.files && event.currentTarget.files.length > 0) {
             const file = event.currentTarget.files[0];
-
+            
             let formData = new FormData();
             const config = {
-                header: { 'content-type': 'multipart/form-data' }
+                header: { 
+                    'content-type': 'multipart/form-data' 
+                }
             }
             formData.append("file", file);
+            
+            // console.log("Image:", file);
+            // console.log("FormData:", formData);
 
-            axios.post('/api/blog/uploadfiles', formData, config)
+            axios.post(postURL, formData, config)
                 .then(response => {
                     if (response.data.success) {
-
+                        // console.log(response.data);
                         const quill = this.reactQuillRef.getEditor();
                         quill.focus();
 
                         let range = quill.getSelection();
                         let position = range ? range.index : 0;
 
-                        quill.insertEmbed(position, "image", { src: "http://localhost:8000/" + response.data.url, alt: response.data.fileName });
+                        quill.insertEmbed(position, "image", { 
+                            src: "http://localhost:8000/" + response.data.url, 
+                            alt: response.data.fileName 
+                        });
                         quill.setSelection(position + 1);
 
                         if (this._isMounted) {
                             this.setState({
                                 files: [...this.state.files, file]
-                            }, () => { this.props.onFilesChange(this.state.files) });
+                            }, () => { 
+                                this.props.onFilesChange(this.state.files) 
+                            });
                         }
                     } else {
-                        return alert('failed to upload file')
+                        return alert('Falha no upload da imagem.')
                     }
                 })
         }
@@ -274,12 +286,11 @@ class QuillEditor extends React.Component {
             const file = event.currentTarget.files[0];
 
             let formData = new FormData();
-            const config = {
-                header: { 'content-type': 'multipart/form-data' }
-            }
+            const config = { header: { 'content-type': 'multipart/form-data' } }
             formData.append("file", file);
 
-            axios.post('/api/blog/uploadfiles', formData, config)
+            // -- Axios POST
+            axios.post(postURL, formData, config)
                 .then(response => {
                     if (response.data.success) {
 
@@ -288,7 +299,11 @@ class QuillEditor extends React.Component {
 
                         let range = quill.getSelection();
                         let position = range ? range.index : 0;
-                        quill.insertEmbed(position, "video", { src: "http://localhost:8000/" + response.data.url, title: response.data.fileName });
+
+                        quill.insertEmbed(position, "video", { 
+                            src: "http://localhost:8000/" + response.data.url, 
+                            title: response.data.fileName 
+                        });
                         quill.setSelection(position + 1);
 
                         if (this._isMounted) {
@@ -297,7 +312,8 @@ class QuillEditor extends React.Component {
                             }, () => { this.props.onFilesChange(this.state.files) });
                         }
                     } else {
-                        return alert('failed to upload file')
+                        console.log(response);
+                        return alert('Falha no upload do vídeo.')
                     }
                 })
         }
@@ -310,23 +326,28 @@ class QuillEditor extends React.Component {
 
         if (event.currentTarget && event.currentTarget.files && event.currentTarget.files.length > 0) {
             const file = event.currentTarget.files[0];
-            console.log(file);
+            console.log("File:", file);
 
             let formData = new FormData();
             const config = {
-                header: { 'content-type': 'multipart/form-data' }
+                header: { 
+                    'content-type': 
+                    'multipart/form-data'
+                }
             }
+
             formData.append("file", file);
 
-            axios.post('/api/blog/uploadfiles', formData, config)
+            // -- Axios POST
+            axios.post(postURL, formData, config)
                 .then(response => {
                     if (response.data.success) {
-
                         const quill = this.reactQuillRef.getEditor();
                         quill.focus();
 
                         let range = quill.getSelection();
                         let position = range ? range.index : 0;
+
                         quill.insertEmbed(position, "file", response.data.fileName);
                         quill.setSelection(position + 1);
 
@@ -335,7 +356,10 @@ class QuillEditor extends React.Component {
                                 files: [...this.state.files, file]
                             }, () => { this.props.onFilesChange(this.state.files) });
                         }
-                    };
+                    } else {
+                        console.log("Problema na inserção do arquivo.")
+                        console.log(response);
+                    }
                 })
         }
     };
@@ -343,26 +367,6 @@ class QuillEditor extends React.Component {
     render() {
         return (
             <div>
-                <div id="toolbar">
-                    <select className="ql-header" defaultValue={""} onChange={e => e.persist()}>
-                        <option value="1" />
-                        <option value="2" />
-                        <option value="" />
-                    </select>
-                    <button className="ql-bold" />
-                    <button className="ql-italic" />
-                    <button className="ql-underline" />
-                    <button className="ql-strike" />
-                    <button className="ql-insertImage"> I </button>
-                    <button className="ql-insertVideo"> V </button>
-                    <button className="ql-insertFile"> F </button>
-                    <button className="ql-link" />
-                    <button className="ql-code-block" />
-                    <button className="ql-video" />
-                    <button className="ql-blockquote" />
-                    <button className="ql-clean" />
-                </div>
-
                 <ReactQuill
                     ref={(el) => { this.reactQuillRef = el }}
                     theme={'snow'}
@@ -372,6 +376,7 @@ class QuillEditor extends React.Component {
                     value={this.state.editorHtml}
                     placeholder={this.props.placeholder}
                 />
+
                 <input type="file" accept="image/*" ref={this.inputOpenImageRef} style={{ display: "none" }} onChange={this.insertImage} />
                 <input type="file" accept="video/*" ref={this.inputOpenVideoRef} style={{ display: "none" }} onChange={this.insertVideo} />
                 <input type="file" accept="*" ref={this.inputOpenFileRef} style={{ display: "none" }} onChange={this.insertFile} />
@@ -382,7 +387,18 @@ class QuillEditor extends React.Component {
     modules = {
         // syntax: true,
         toolbar: {
-            container: "#toolbar",
+            container: [
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'font': [] }],
+                ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                [{ 'align': [] }],
+                [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+                [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['blockquote', 'code-block'],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+                [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+            ],
             handlers: {
                 insertImage: this.imageHandler,
                 insertVideo: this.videoHandler,

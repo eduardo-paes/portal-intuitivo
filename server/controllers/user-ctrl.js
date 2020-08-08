@@ -4,6 +4,7 @@ const Usuario = require('../models/users-model');
 inserirUsuario = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
+    console.log(req.body);
 
     if (!body) {
         return res.status(400).json({
@@ -75,6 +76,8 @@ atualizarUsuario = async (req, res) => {
         usuarioEncontrado.email = usuario.email
         usuarioEncontrado.acesso = usuario.acesso
         usuarioEncontrado.senha = usuario.senha
+        usuarioEncontrado.nomeArquivo = usuario.nomeArquivo
+        usuarioEncontrado.urlArquivo = usuario.urlArquivo
 
         // Salva alterações
         usuarioEncontrado

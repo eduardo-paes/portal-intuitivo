@@ -1,8 +1,6 @@
-// -- Tabela
-import Table from "./Table"
-
-// -- Rotas
-import {Routes, PrivateRoutes} from "./Routes"
+// -- Tabelas
+import UserTable from "./Tables/UserTable"
+import DisTable from "./Tables/DisTable"
 
 // -- Forms
 import UserForm from "./Form/UserForm"
@@ -17,17 +15,12 @@ import TopBar from "./Drawer/TopBar"
 // -- Dialogs
 import DialogForm from "./Dialogs/DialogForm"
 
-// -- Store
-import StoreContext from "./Store/Context"
-import StorageProvider from "./Store/Provider"
-
 // -- Editor
 import TextEditor from "./Editor/TextEditor"
 
 export { 
-    Routes, 
-    PrivateRoutes, 
-    Table, 
+    UserTable,
+    DisTable, 
     UserForm, 
     UserValidater, 
     ItemsDrawer, 
@@ -35,7 +28,5 @@ export {
     SideBar, 
     TopBar,
     DialogForm,
-    StoreContext,
-    StorageProvider,
     TextEditor
 }

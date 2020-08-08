@@ -1,20 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {BrowserRouter} from "react-router-dom";
-import { Routes } from "./components";
+import { BrowserRouter } from "react-router-dom";
+import { Routes } from "./routes";
 
 // -- Styles
-import "./styles/styles.css";
+import "./assets/styles/global.css";
 import { ThemeProvider } from '@material-ui/core/styles';
-import theme from "./styles/theme"
+import theme from "./assets/styles/theme"
 
 ReactDOM.render(
-    <React.StrictMode>
         <BrowserRouter>
             <ThemeProvider theme={theme}>
                 <Routes/>
             </ThemeProvider>
-        </BrowserRouter>
-    </React.StrictMode>,
+        </BrowserRouter>,
     document.getElementById('root')
 );

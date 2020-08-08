@@ -1,31 +1,15 @@
-import React, {useState, useEffect} from 'react';
-// import axios from "axios";
-// import {useSelector} from "react-redux";
+import React, {useState} from 'react';
 import QuillEditor from "./QuillEditor"
 
-// Material-UI
-import {Button} from '@material-ui/core';
-import {MyTextField} from "../../styles/styledComponents"
+// Function Main
+function TextEditor(props) {
+    // -- Define principais constantes
+    const {setAtividade} = props;
+    const [conteudoFiles, setFiles] = useState([])
 
-function initialState() {
-    return {
-        disciplina: "",
-        topico: "",
-        semana: "",
-        data: "",
-        conteudo: ""
-    } 
-}
-
-// -- Main Function
-function TextEditor() {
-    // const user = useSelector(state => state.user);
-
-    const [files, setFiles] = useState([])
-    const [material, setMaterial] = useState(initialState);
-
+    // -- Definição das Funções
     const onEditorChange = (value) => {
-        setMaterial(preValue => ({
+        setAtividade(preValue => ({
             ...preValue,
             conteudo: value
         }));
@@ -33,52 +17,15 @@ function TextEditor() {
 
     const onFilesChange = (files) => {
         setFiles(files);
-        console.log(files);
-    }
-
-    const onMaterialChange = (event) => {
-        const {name, value} = event.target;
-        setMaterial(preValue => ({
-            ...preValue,
-            [name]: value
-        }));
-    }
-
-    function saveContent(event) {
-        event.preventDefault();
-                
-        console.log("VAR:", material);
-
-        // setMaterial(initialState);
+        console.log(conteudoFiles);
     }
 
     return (
         <div>
-            <MyTextField
-                id="outlined-basic"
-                label="Tópico"
-                variant="outlined"
-                name="topico"
-                type="text"
-                value={material.topico}
-                onChange={onMaterialChange}/>
-
-            <QuillEditor 
+            <QuillEditor
                 placeholder={"Digite aqui"}
                 onEditorChange={onEditorChange}
-                onFilesChange={onFilesChange}
-            />
-            <form onSubmit={saveContent}>
-                <div style={{ textAlign: "center", margin: "2rem" }}>
-                    <Button 
-                        variant="outlined" 
-                        type="submit"
-                        color="primary" 
-                        onSubmit={saveContent}>
-                        Salvar
-                    </Button>
-                </div>
-            </form>
+                onFilesChange={onFilesChange}/>
         </div>
     );
 }

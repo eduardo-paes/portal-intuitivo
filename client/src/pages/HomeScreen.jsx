@@ -1,8 +1,9 @@
 import React from "react";
 import {withRouter} from "react-router-dom";
 
-// -- Componentes
-import {PrivateRoutes, SideBar, TopBar} from "../components"
+// -- Componentes/Rotas
+import {SideBar, TopBar} from "../components"
+import {PrivateRoutes} from "../routes"
 
 // -- Material-UI
 import clsx from "clsx";
@@ -19,14 +20,12 @@ const useStyles = makeStyles(theme => ({
         display: "flex",
         alignItems: "center",
         padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
         ...theme.mixins.toolbar,
         justifyContent: "flex-end"
     },
     content: {
         flexGrow: 1,
         padding: theme.spacing(1),
-        backgroundColor: "#fff",
         transition: theme
             .transitions
             .create("margin", {
