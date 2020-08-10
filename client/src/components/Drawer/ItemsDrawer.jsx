@@ -1,6 +1,6 @@
 import React, {useEffect, useContext, useState} from 'react'
 import {withRouter} from "react-router-dom";
-import StoreContext from "../Store/Context"
+import {StoreContext} from "../../utils"
 
 // -- Material UI: Core
 import {List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/core";
@@ -15,6 +15,7 @@ import Performance from '@material-ui/icons/Equalizer';
 import ContentControl from '@material-ui/icons/NoteAdd';
 import Analize from '@material-ui/icons/Timeline';
 import Exercises from '@material-ui/icons/Ballot';
+import Questions from '@material-ui/icons/Storage';
 // --
 import UserControl from '@material-ui/icons/People';
 import Settings from '@material-ui/icons/Settings';
@@ -49,7 +50,6 @@ function ListarItens(props) {
     </>
     );
 }
-
 function ItemsDrawer(props) {
     const {history} = props;
     const classes = useStyles();
@@ -86,7 +86,15 @@ function ItemsDrawer(props) {
                 text: "Material de Estudo",
                 icon: <ContentControl/>,
                 onClick: () => history.push("/controle-conteudo")
+<<<<<<< HEAD
             },
+=======
+            }, {
+                text: "Banco de Questões",
+                icon: <Questions/>,
+                onClick: () => history.push("/controle-questoes")
+            }, 
+>>>>>>> 5624a7e498b895eec2bc440ebabd6aa5423aa41e
         ],
         admin: [
             {
@@ -102,7 +110,6 @@ function ItemsDrawer(props) {
     }
     const [access, setAccess] = useState({aluno: true});
     const {token} = useContext(StoreContext);
-
     useEffect(() => {
         if (token.accessType === "Professor") {
             setAccess({professor: true});
@@ -112,9 +119,7 @@ function ItemsDrawer(props) {
                 admin: true
             });
         }
-
     }, [token]);
-
     return (
         <div>
             {access.aluno && <ListarItens itens={itens.aluno} classes={classes}/>}
@@ -124,5 +129,4 @@ function ItemsDrawer(props) {
         </div>
     );
 }
-
 export default withRouter(ItemsDrawer);

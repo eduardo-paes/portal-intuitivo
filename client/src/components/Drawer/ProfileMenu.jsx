@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import StoreContext from "../Store/Context"
+import {StoreContext} from "../../utils"
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';

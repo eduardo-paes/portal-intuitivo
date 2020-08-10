@@ -1,6 +1,6 @@
 import React from '../../../node_modules/react'
 import {Link} from '../../../node_modules/react-router-dom'
-import {AddButton, DeleteButton, MyAvatar, MyTextField, MyContainer} from "../../styles/styledComponents"
+import {AddButton, DeleteButton, MyAvatar, MyTextField, MyContainer} from "../../assets/styles/styledComponents"
 import { MenuItem } from '@material-ui/core'
 
 // Upload da Imagem do Perfil
@@ -15,10 +15,7 @@ function UserForm (props) {
             <h1 className="heading-page">{typeForm} Usuário</h1>
 
             <MyAvatar src={urlArquivo} alt="Preview"/>
-
-            <Upload 
-               onUpload={handleUpload}
-            />
+            <Upload onUpload={handleUpload} />
 
             <MyTextField
                 id="outlined-basic"
@@ -73,7 +70,7 @@ function UserForm (props) {
 
             <div className="group-buttons">
                 <AddButton onClick={onSubmit}>{typeForm}</AddButton>
-                <Link to="/controle-usuario/list">
+                <Link to="/controle-usuario/list" style={{ textDecoration: 'none' }}>
                     <DeleteButton>Cancelar</DeleteButton>
                 </Link>
             </div>

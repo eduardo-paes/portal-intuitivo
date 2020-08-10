@@ -2,7 +2,7 @@ import React from "react";
 
 // -- Componentes
 import ProfileMenu from "./ProfileMenu"
-import logo from "../../images/TopLogo.png"
+import logo from "../../assets/images/TopLogo.png"
 
 // -- Material-UI
 import clsx from "clsx";
@@ -90,8 +90,6 @@ function TopBar(props) {
                     <div className={classes.title}>
                         <img className={classes.logo} src={logo} alt="Logo"/>
                     </div>
-
-                    {/* <Typography variant="h6" className={classes.title}> Portal Intuitivo </Typography> */}
 
                     {/* Ícone e funções do usuário definida na top-bar */}
                     <ProfileMenu/>

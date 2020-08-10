@@ -1,0 +1,15 @@
+.conteudoQuestao {
+    margin-top: 2rem;
+}
+
+.enunciadoQuestao {
+    margin-bottom: 2rem;
+}
+
+.respostasQuestao {
+    margin-bottom: 2rem;
+}
+
+.questionType {
+    text-align: right;
+}
