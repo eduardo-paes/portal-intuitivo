@@ -2,8 +2,8 @@ import React from "react";
 import {withRouter} from "react-router-dom";
 
 // -- Componentes/Rotas
-import {SideBar, TopBar} from "../components"
-import {PrivateRoutes} from "../routes"
+import {SideBar, TopBar} from "../../components"
+import {PrivateRoutes} from "../../routes"
 
 // -- Material-UI
 import clsx from "clsx";
@@ -14,7 +14,8 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
     root: {
-        display: "flex"
+        display: "flex",
+        // background: "#fff"
     },
     drawerHeader: {
         display: "flex",
@@ -42,7 +43,7 @@ const useStyles = makeStyles(theme => ({
                 duration: theme.transitions.duration.enteringScreen
             }),
         marginLeft: 0
-    }
+    },
 }));
 
 function HomeScreen(props) {
@@ -55,9 +56,7 @@ function HomeScreen(props) {
             <TopBar open={open} setOpen={setOpen}/>
             <SideBar open={open} setOpen={setOpen}/>
             <main
-                className={clsx(classes.content, {
-                    [classes.contentShift]: open
-                })}>
+                className={clsx(classes.content, { [classes.contentShift]: open })}>
                 <div className={classes.drawerHeader}/>
                 <PrivateRoutes/>
             </main>

@@ -13,7 +13,7 @@ import {
     MyTextField,
     MyContainer,
     MyTypography,
-    MyCardContent
+    LoginCard
 } from "../../assets/styles/styledComponents"
 import './styles.css'
 
@@ -123,7 +123,7 @@ function Login() {
     return (
         <div id="login-screen" className="container">
             <MyContainer className={classes.container} maxWidth="sm">
-                <MyCardContent>
+                <LoginCard>
                     <header className={classes.header}>
                         <img className={classes.logo} src={logo} alt="Logo"/>
                         <MyTypography align="center" variant="h4">Login</MyTypography>
@@ -162,7 +162,7 @@ function Login() {
                             color="primary"
                             onClick={onSubmit}>Entrar</AddButton>
                     </footer>
-                </MyCardContent>
+                </LoginCard>
             </MyContainer>
         </div>
     );

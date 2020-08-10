@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {Link as RouterLink} from 'react-router-dom';
 
 // -- Material UI
@@ -44,20 +44,20 @@ const DeleteButton = withStyles((theme) => ({
     }
 }))(Button);
 
-class CreateUser extends Component {
-    render() {
-        return (
-            <div className="create-button">
-                <RouterLink to="/controle-usuario/create" style={{ textDecoration: 'none' }}>
-                    <Button variant="outlined" color="primary" startIcon={<AddIcon/>}>
-                        Registrar
-                    </Button>
-                </RouterLink>
-            </div>
-        )
-    }
-}
+function CreateButton(props) {
+    const {title, url} = props;
+    return (
+        <div className="create-button">
+            <RouterLink to={url} style={{ textDecoration: 'none' }}>
+                <Button variant="outlined" color="primary" startIcon={<AddIcon/>}>
+                    {title}
+                </Button>
+            </RouterLink>
+        </div>
+    )
+}    
 
+// -- Others
 const MyTextField = styled(TextField)(
     {marginBottom: "10px", backgroundColor: "#fff", display: "flex", color: "primary"}
 );
@@ -70,11 +70,15 @@ const MyTypography = styled(Typography)(
     {marginBottom: "5%", padding: "1%", color: "#606161"}
 );
 
-const MyCardContent = styled(CardContent)(
+const LoginCard = styled(CardContent)(
     {padding: "15px", alignContent: "center", textAlign: "center"}
 );
 
-const MyCard = styled(Card)({backgroundColor: "transparent"});
+const MyCard = styled(Card)({backgroundColor: "#fff"});
+
+const MyCardContent = styled(CardContent)(
+    {padding: "15px", alignContent: "left", textAlign: "left"}
+);
 
 const MyAvatar = styled(Avatar) ({
     marginLeft: "60px",
@@ -84,12 +88,13 @@ const MyAvatar = styled(Avatar) ({
 
 export {
     AddButton,
-    CreateUser,
+    CreateButton,
     DeleteButton,
     MyContainer,
     MyTextField,
     MyTypography,
-    MyCardContent,
+    LoginCard,
     MyCard,
+    MyCardContent,
     MyAvatar
 }

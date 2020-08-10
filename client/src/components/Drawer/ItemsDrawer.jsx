@@ -15,6 +15,7 @@ import Performance from '@material-ui/icons/Equalizer';
 import ContentControl from '@material-ui/icons/NoteAdd';
 import Analize from '@material-ui/icons/Timeline';
 import Exercises from '@material-ui/icons/Ballot';
+import Questions from '@material-ui/icons/Storage';
 // --
 import UserControl from '@material-ui/icons/People';
 import Settings from '@material-ui/icons/Settings';
@@ -85,6 +86,10 @@ function ItemsDrawer(props) {
                 text: "Material de Estudo",
                 icon: <ContentControl/>,
                 onClick: () => history.push("/controle-conteudo")
+            }, {
+                text: "Banco de Questões",
+                icon: <Questions/>,
+                onClick: () => history.push("/controle-questoes")
             }, 
         ],
         admin: [

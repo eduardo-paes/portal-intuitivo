@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
-import {MyContainer, MyTextField} from "../assets/styles/styledComponents"
-import {DisTable} from "../components"
-import api from '../api'
+import {MyContainer, MyTextField} from "../../assets/styles/styledComponents"
+import {DisTable} from "../../components"
+import api from '../../api'
 
 // Material-UI
 import {
@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
 
 const initialState = {
     nome: "",
-    diaSemana: ''
+    diaSemana: '',
+    areaConhecimento: ''
 }
 
 function Settings(props) {
@@ -39,16 +40,18 @@ function Settings(props) {
     const [disciplina, setDisciplina] = useState(initialState);     // Constante para armazenamento dos dados do formulário
     const [subjectID, setEditSubject] = useState(null);             // Constante para verificar se há edição
     
+    // Lista disciplinas em tela
     useEffect(() => {
-        const abortController = new AbortController();
+        let unmounted = false;
+
         async function fetchChangeAPI() {
-            const response = await api.listarDisciplinas();
-            const value = response.data.data;
-            setData(value);
+            let response = await api.listarDisciplinas();
+            if (!unmounted) {
+                setData(response.data.data);
+            }
         }
-        fetchChangeAPI()
-        
-        return abortController.abort();
+        fetchChangeAPI();
+        return () => {unmounted = true};
     }, [data]);
 
     // Função para pegar os valores do formulário
@@ -58,8 +61,10 @@ function Settings(props) {
             ...preValue,
             [name]: value
         }));
+        console.log(disciplina.areaConhecimento);
     }
 
+    // Guarda nova disciplina no banco
     async function saveChange() {
         await api
             .inserirDisciplina(disciplina)
@@ -76,6 +81,7 @@ function Settings(props) {
         await api
             .atualizarDisciplina(subjectID, disciplina)
             .then(res => {
+                console.log(disciplina);
                 // Limpa os campos
                 if (res.status === 201) {
                     setDisciplina(initialState);
@@ -104,7 +110,7 @@ function Settings(props) {
                             <AccordionDetails>
                                 <Grid item={true} xs={12} sm={12}>
                                     <MyTextField
-                                        id="nomeTextField"
+                                        id="campoNome"
                                         variant="outlined"
                                         label="Nome"
                                         name="nome"
@@ -113,7 +119,7 @@ function Settings(props) {
                                         onChange={handleChange}/>
 
                                     <MyTextField
-                                        id="diaTextField"
+                                        id="campoDia"
                                         variant="outlined"
                                         select={true}
                                         label="Dia da Semana"
@@ -125,6 +131,20 @@ function Settings(props) {
                                         <MenuItem value="3">Quarta-feira</MenuItem>
                                         <MenuItem value="4">Quinta-feira</MenuItem>
                                         <MenuItem value="5">Sexta-feira</MenuItem>
+                                    </MyTextField>
+
+                                    <MyTextField
+                                        id="campoArea"
+                                        variant="outlined"
+                                        select={true}
+                                        label="Área do Conhecimento"
+                                        name="areaConhecimento"
+                                        value={disciplina.areaConhecimento ? disciplina.areaConhecimento : ""}
+                                        onChange={handleChange}>
+                                            <MenuItem value="cienciasHumanas">Ciências Humanas</MenuItem>
+                                            <MenuItem value="cienciasDaNatureza">Ciências da Natureza</MenuItem>
+                                            <MenuItem value="linguagens">Linguagens</MenuItem>
+                                            <MenuItem value="matematica">Matemática</MenuItem>
                                     </MyTextField>
 
                                     <div className={classes.group}>

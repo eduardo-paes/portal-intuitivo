@@ -1,18 +1,9 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 html, body, #root {
     font-family: apertura, sans-serif;
-    /* height: 100vh; */
+    box-sizing: border-box;
+    height: 100vh;
     margin: 0;
     padding:0;
-}
-
-body {
-    background: #fff;
 }
 
 /* @media(min-width: 700px) {} */

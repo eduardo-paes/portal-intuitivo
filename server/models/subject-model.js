@@ -10,6 +10,10 @@ const Disciplina = new Schema({
     diaSemana: {
         type: Number,
         required: true
+    },
+    areaConhecimento: {
+        type: String,
+        required: true
     }
 });
 

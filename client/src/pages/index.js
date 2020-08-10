@@ -6,14 +6,19 @@ import ContentInsert from "./StudyContent/ContentInsert"
 import ContentList from "./StudyContent/ContentList"
 import ContentUpdate from "./StudyContent/ContentUpdate"
 
-import Classroom from "./Classroom"
-import Desempenho from "./Desempenho"
-import StudyPlan from "./StudyPlan"
-import Library from "./Library"
+import QuestionInsert from "./Questions/QuestionInsert"
+import QuestionList from "./Questions/QuestionList"
+
+import ActivityInsert from "./Activities/ActivityInsert"
+
+import Classroom from "./Student/Classroom"
+import Desempenho from "./Student/Desempenho"
+import Library from "./Student/Library"
+import StudyPlan from "./Student/StudyPlan"
+
 import Login from "./Login"
-import Exercises from "./Exercises"
-import HomeScreen from "./HomeScreen"
-import Settings from "./Settings"
+import GeneralPage from "./General"
+import Settings from "./Admin/Settings"
 
 export { 
     UsersList, 
@@ -24,12 +29,15 @@ export {
     ContentList,
     ContentUpdate,
     
+    QuestionInsert,
+    QuestionList,
+    ActivityInsert,
+
     Classroom, 
     Desempenho, 
     StudyPlan, 
     Library,
-    Exercises,
     Login, 
-    HomeScreen,
+    GeneralPage,
     Settings,
 }

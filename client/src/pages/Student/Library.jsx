@@ -1,5 +1,5 @@
 import React from "react";
-import {MyContainer} from "../styles/styledComponents"
+import {MyContainer} from "../../assets/styles/styledComponents"
 
 const Library = props => {
   return (

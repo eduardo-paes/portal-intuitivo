@@ -12,11 +12,13 @@ import {
     Library,
     Desempenho,
     Classroom,
-    Exercises,
+    ActivityInsert,
+    QuestionInsert,
     Login,
-    HomeScreen,
+    GeneralPage,
     ContentInsert,
-    Settings
+    Settings,
+    QuestionList
 } from '../pages'
 
 // -- Main Routes
@@ -25,7 +27,7 @@ function Routes() {
         <StorageProvider>
             <Switch>
                 <Route path="/login" component={Login}/>
-                <RoutesPrivate path="/" component={HomeScreen}/>
+                <RoutesPrivate path="/" component={GeneralPage}/>
             </Switch>
         </StorageProvider>
     );
@@ -45,8 +47,10 @@ function PrivateRoutes() {
             
             {/* --- Rotas do Professor */}
             <ConditionalRoute exact={true} type="Professor" from="/" component={ContentInsert}/>
-            <ConditionalRoute exact={true} type="Professor" from="/atividades" component={Exercises}/>
+            <ConditionalRoute exact={true} type="Professor" from="/atividades" component={ActivityInsert}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo" component={ContentInsert}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-questoes" component={QuestionList}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/create" component={QuestionInsert}/>
 
             {/* --- Rotas do Administrador */}
             <ConditionalRoute exact={true} type="Administrador" from="/" component={UsersList}/>

@@ -3,22 +3,24 @@ import api from '../../api'
 
 // Tabela Local: Material UI
 import {UserTable} from "../../components"
-import {CreateUser, MyContainer} from "../../assets/styles/styledComponents"
+import {CreateButton, MyContainer} from "../../assets/styles/styledComponents"
 
-function UsersList(props) {
+function UsersList() {
     const [user, setUser] = useState({
         usuarios: []
     })
 
     useEffect(() => {
-        const abortController = new AbortController();
-        async function fetchMyAPI() {
-            const response = await api.listarUsuarios();
-            const value = await response.data.data;
-            setUser({usuarios: value})
+        let unmounted = false;
+        async function fetchAPI () {
+            let response = await api.listarUsuarios();
+
+            if (!unmounted) {
+                setUser({ usuarios: response.data.data })
+            }
         }
-        fetchMyAPI()
-        return abortController.abort();
+        fetchAPI();
+        return () => {unmounted = true};
     }, [user]);
 
     const {usuarios} = user;
@@ -28,7 +30,7 @@ function UsersList(props) {
         <MyContainer>
             <h1 className="heading-page">Controle de Usuário</h1>
             <UserTable data={usuarios}/>
-            <CreateUser/>
+            <CreateButton title="Registrar" url="/controle-usuario/create"/>
         </MyContainer>
     )
 }
