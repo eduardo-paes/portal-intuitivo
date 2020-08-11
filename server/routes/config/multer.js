@@ -21,7 +21,7 @@ const storageTypes = {
         filename: (req, file, cb) => {
             file.key = `conteudo.${file.originalname}`;
             cb(null, file.key);
-        }     
+        }   
     }),
     s3: multerS3({
         s3: new aws.S3(),

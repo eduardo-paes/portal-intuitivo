@@ -1,9 +1,11 @@
-<<<<<<< HEAD:client/src/pages/ContentInsert.jsx
 import React, {useContext, useState} from "react";
-import {StoreContext} from "../components"
+import { Document, Page } from "react-pdf/dist/entry.webpack";
+
+import {StoreContext} from "../../utils";
+import { UploadContent } from "../../components";
+
+import {MyContainer, MyTextField} from "../../assets/styles/styledComponents";
 import {Grid} from '@material-ui/core';
-import {MyContainer, MyTextField} from "../styles/styledComponents";
-import UploadContent from "../components/UploadContent";
 
 function initialState() {
   return {
@@ -37,11 +39,11 @@ function Content(props) {
     nome: token.userName
   }
 
-  console.log(autor);
+  //console.log(autor);
   
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
-  console.log(material.dataLiberacao);
+  //console.log(material.dataLiberacao);
 
   // -- Definição das Funções
 
@@ -61,68 +63,66 @@ function Content(props) {
       conteudo: file
     }));
     console.log(material.conteudo);
+    if (material.conteudo) {
+      const formData = new FormData();
+      formData.append("conteudo", material.conteudo);
+      fetch('http://localhost:3000/api/controle-conteudo', {
+              method: 'POST',
+              body: formData
+          })
+          .then(res => res.json())
+    }
   }
-  
-=======
-import React from "react";
-import {MyContainer} from "../../assets/styles/styledComponents"
-// import {TextEditor} from "../../components"
->>>>>>> 5624a7e498b895eec2bc440ebabd6aa5423aa41e:client/src/pages/StudyContent/ContentInsert.jsx
 
   return (
-<<<<<<< HEAD:client/src/pages/ContentInsert.jsx
       <MyContainer>
         <h1 className="heading-page">Criar Conteúdo</h1>
-        <Grid container="container" spacing={1}>
-            <Grid item={true} xs={12} sm={4}>
-                <MyTextField
-                    id="outlined-basic"
-                    label="Disciplina"
-                    variant="outlined"
-                    name="disciplina"
-                    type="text"
-                    value={material.disciplina}
-                    onChange={onMaterialChange}/>
-            </Grid>
-            <Grid item={true} xs={12} sm={4}>
-                <MyTextField
-                    id="outlined-basic"
-                    label="Semana"
-                    variant="outlined"
-                    name="semana"
-                    type="text"
-                    value={material.semana}
-                    onChange={onMaterialChange}/>
-            </Grid>
-            <Grid item={true} xs={12} sm={4}>
-                <MyTextField
-                    id="outlined-basic"
-                    label="Data"
-                    variant="outlined"
-                    name="dataLiberacao"
-                    type="text"
-                    value={material.dataCriacao.getDate() + "/" + (material.dataCriacao.getMonth()+1) + "/" + material.dataCriacao.getFullYear()}
-                    onChange={onMaterialChange}/>
-            </Grid>
-            <Grid item={true} xs={12}>
-                <MyTextField
-                    id="outlined-basic"
-                    label="Tópico"
-                    variant="outlined"
-                    name="topico"
-                    type="text"
-                    value={material.topico}
-                    onChange={onMaterialChange}/>
-            </Grid>
-        </Grid>
-        <UploadContent
-        onChange={handleUpload}/>
-      </MyContainer>
-=======
-    <MyContainer>
-      <h1 className="heading-page">Criar Conteúdo</h1>
+        <Grid container spacing={1}>
+          <Grid item={true} xs={12} sm={4}>
+            <MyTextField
+                id="outlined-basic"
+                label="Disciplina"
+                variant="outlined"
+                name="disciplina"
+                type="text"
+                value={material.disciplina}
+                onChange={onMaterialChange}/>
+          </Grid>
+          <Grid item={true} xs={12} sm={4}>
+            <MyTextField
+                id="outlined-basic"
+                label="Semana"
+                variant="outlined"
+                name="semana"
+                type="text"
+                value={material.semana}
+                onChange={onMaterialChange}/>
+          </Grid>
+          <Grid item={true} xs={12} sm={4}>
+            <MyTextField
+                id="outlined-basic"
+                label="Data"
+                variant="outlined"
+                name="dataLiberacao"
+                type="text"
+                value={material.dataCriacao.getDate() + "/" + (material.dataCriacao.getMonth()+1) + "/" + material.dataCriacao.getFullYear()}
+                onChange={onMaterialChange}/>
+          </Grid>
+          <Grid item={true} xs={12}>
+              <MyTextField
+                  id="outlined-basic"
+                  label="Tópico"
+                  variant="outlined"
+                  name="topico"
+                  type="text"
+                  value={material.topico}
+                  onChange={onMaterialChange}/>
+          </Grid>
+      </Grid>
+      <UploadContent onChange={handleUpload}/>
+      {material.conteudo ? <Document file={material.conteudo}/> : null}
+      
     </MyContainer>
->>>>>>> 5624a7e498b895eec2bc440ebabd6aa5423aa41e:client/src/pages/StudyContent/ContentInsert.jsx
   );
 
 };  

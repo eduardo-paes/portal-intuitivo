@@ -17,16 +17,8 @@ import Library from "./Student/Library"
 import StudyPlan from "./Student/StudyPlan"
 
 import Login from "./Login"
-<<<<<<< HEAD
-import Exercises from "./Exercises"
-import HomeScreen from "./HomeScreen"
-import ContentInsert from "./ContentInsert"
-import ContentUpload from "./ContentInsert"
-import Settings from "./Settings"
-=======
 import GeneralPage from "./General"
 import Settings from "./Admin/Settings"
->>>>>>> 5624a7e498b895eec2bc440ebabd6aa5423aa41e
 
 export { 
     UsersList, 
@@ -48,9 +40,4 @@ export {
     Login, 
     GeneralPage,
     Settings,
-<<<<<<< HEAD
-    ContentUpload
 }
-=======
-}
->>>>>>> 5624a7e498b895eec2bc440ebabd6aa5423aa41e

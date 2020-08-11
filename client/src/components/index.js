@@ -18,6 +18,9 @@ import DialogForm from "./Dialogs/DialogForm"
 // -- Editor
 import TextEditor from "./Editor/TextEditor"
 
+// -- Upload Content
+import UploadContent from './UploadContent'
+
 export { 
     UserTable,
     DisTable, 
@@ -28,5 +31,6 @@ export {
     SideBar, 
     TopBar,
     DialogForm,
-    TextEditor
+    TextEditor,
+    UploadContent
 }

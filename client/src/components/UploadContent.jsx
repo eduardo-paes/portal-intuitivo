@@ -2,28 +2,35 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import DescriptionIcon from '@material-ui/icons/Description';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    marginLeft: "30%",
+    marginRight: "30%",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   input: {
     display: 'none',
   },
   button: {
-    marginTop: theme.spacing(1),
-    marginLeft: theme.spacing(64),
-  },
+    width: '200px',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: '10px'
+  }
 }));
 
-export default function UploadContent(props) {
-  const {onChange} = props;
+ function UploadContent(props) {
+  const {onChange, onClick} = props;
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={classes.buttonsContainer}>
       <input
         accept="file_extension/*"
         className={classes.input}
@@ -40,10 +47,22 @@ export default function UploadContent(props) {
         component="span"
         className={classes.button}
         startIcon={<DescriptionIcon />}
-      >
+        >
         Subir Conteúdo
         </Button>
       </label>
+      <Button
+        variant="contained"
+        color="primary"
+        component="span"
+        className={classes.button}
+        startIcon={<VisibilityIcon />}
+        onClick={onClick}
+      >
+        Visualizar
+      </Button>
     </div>
   );
 }
+
+export default UploadContent;

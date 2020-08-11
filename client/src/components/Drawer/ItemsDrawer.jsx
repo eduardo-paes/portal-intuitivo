@@ -86,15 +86,11 @@ function ItemsDrawer(props) {
                 text: "Material de Estudo",
                 icon: <ContentControl/>,
                 onClick: () => history.push("/controle-conteudo")
-<<<<<<< HEAD
-            },
-=======
             }, {
                 text: "Banco de Questões",
                 icon: <Questions/>,
                 onClick: () => history.push("/controle-questoes")
             }, 
->>>>>>> 5624a7e498b895eec2bc440ebabd6aa5423aa41e
         ],
         admin: [
             {
