@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import { Document, Page } from "react-pdf/dist/entry.webpack";
+// import { Document, Page } from "react-pdf/dist/entry.webpack";
 
 import {StoreContext} from "../../utils";
 import { UploadContent } from "../../components";
@@ -19,19 +19,6 @@ function initialState() {
   }
 }
 
-// -- Outro modelo de conteúdo 
-// return {
-//   disciplina: "",
-//   topico: "",
-//   semana: "",
-//   conteudo: '',
-//   dataCriacao: new Date(),
-//   publicado: false,
-//   dataModificacao: new Date(),
-//   autor: '' 
-// }
-
-
 function Content(props) {
   const {token} = useContext(StoreContext);
   const autor = {
@@ -39,7 +26,7 @@ function Content(props) {
     nome: token.userName
   }
 
-  //console.log(autor);
+  console.log(autor);
   
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
@@ -120,7 +107,7 @@ function Content(props) {
           </Grid>
       </Grid>
       <UploadContent onChange={handleUpload}/>
-      {material.conteudo ? <Document file={material.conteudo}/> : null}
+      {/* {material.conteudo ? <Document file={material.conteudo}/> : null} */}
       
     </MyContainer>
   );

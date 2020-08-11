@@ -16,6 +16,15 @@ html, body, #root {
     color: #606161;
 }
 
+.subtitle-page {
+    font-style: normal;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: #606161;
+    border-bottom: 1px solid #606161;
+    padding-bottom: 0.5rem;
+}
+
 /* --- Botões --- */
 .create-button {
     margin-top: 15px;

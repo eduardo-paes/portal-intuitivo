@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
         marginTop: "5%"
     },
     container: {
-        margin: "auto"
+        // margin: "auto"
     },
     textField: {
         marginTop: "1rem",
@@ -129,7 +129,7 @@ function Login() {
                         <MyTypography align="center" variant="h4">Login</MyTypography>
                     </header>
 
-                    <body className={classes.groupTextFields}>
+                    <main className={classes.groupTextFields}>
                         <MyTextField
                             id="emailField"
                             label="E-mail"
@@ -149,7 +149,7 @@ function Login() {
                             value={usuario.senha}
                             onChange={handleChange}
                             variant="outlined"/>
-                    </body>
+                    </main>
 
                     <footer className={classes.groupButtons}>
                         <Link to="/" style={{ textDecoration: 'none' }}>

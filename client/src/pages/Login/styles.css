@@ -1,10 +1,16 @@
 #login-screen {
     background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
-
     width: 100vw;
     height: 100vh;
-
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media(min-width: 700px) {
+    #login-screen {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+    }
 }
