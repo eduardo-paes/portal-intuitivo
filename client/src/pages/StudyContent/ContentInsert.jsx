@@ -1,10 +1,13 @@
 import React, {useContext, useState} from "react";
-// import { Document, Page } from "react-pdf/dist/entry.webpack";
+import {Link} from '../../../node_modules/react-router-dom';
+import api from '../../api';
+//import PDFViewer from 'pdf-viewer-reactjs';
+//import { Document, Page, pdfjs } from "react-pdf";
 
 import {StoreContext} from "../../utils";
 import { UploadContent } from "../../components";
 
-import {MyContainer, MyTextField} from "../../assets/styles/styledComponents";
+import {AddButton, DeleteButton, MyContainer, MyTextField} from "../../assets/styles/styledComponents";
 import {Grid} from '@material-ui/core';
 
 function initialState() {
@@ -14,8 +17,8 @@ function initialState() {
     semana: "",
     dataCriacao: new Date(),
     dataLiberacao: new Date(), 
-    conteudo: {}, 
-    autor: ""
+    conteudo: {},
+    autor: {}
   }
 }
 
@@ -25,12 +28,9 @@ function Content(props) {
     id: token.userID,
     nome: token.userName
   }
-
-  console.log(autor);
   
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
-  //console.log(material.dataLiberacao);
 
   // -- Definição das Funções
 
@@ -49,8 +49,22 @@ function Content(props) {
       ...preValue,
       conteudo: file
     }));
-    console.log(material.conteudo);
+  }
+
+  const onSubmit = async event => {
+    const {disciplina, topico, dataLiberacao, dataCriacao, semana, conteudo, autor} = initialState;
+
+    const novoConteudo = {
+      disciplina, 
+      topico, 
+      semana,
+      data: dataLiberacao, 
+      conteudo, 
+      autor
+    };
+
     if (material.conteudo) {
+      
       const formData = new FormData();
       formData.append("conteudo", material.conteudo);
       fetch('http://localhost:3000/api/controle-conteudo', {
@@ -59,7 +73,17 @@ function Content(props) {
           })
           .then(res => res.json())
     }
+
+    // Guarda novo usuário no banco
+    await api
+        .inserirConteudo(novoConteudo)
+        .then(res => {
+            window.alert("Conteúdo inserido com sucesso.")
+            // Limpa os campos
+            setMaterial({disciplina: "", semana: "", topico: "", dataLiberacao: new Date(), dataCriacao: new Date(),  conteudo: {}, autor: {}})
+        })
   }
+
 
   return (
       <MyContainer>
@@ -106,9 +130,7 @@ function Content(props) {
                   onChange={onMaterialChange}/>
           </Grid>
       </Grid>
-      <UploadContent onChange={handleUpload}/>
-      {/* {material.conteudo ? <Document file={material.conteudo}/> : null} */}
-      
+      <UploadContent onChange={handleUpload} backTo="/controle-usuario/list" onSubmit={onSubmit}/>
     </MyContainer>
   );
 

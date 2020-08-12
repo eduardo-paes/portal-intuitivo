@@ -21,7 +21,7 @@ const Conteudo = new Schema({
         // required: true
     },
     conteudo: {
-        type: String,
+        type: Object,
         // required: true
     },
     autor: {
