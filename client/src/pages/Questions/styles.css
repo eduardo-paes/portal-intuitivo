@@ -38,7 +38,18 @@
     font-size: small;
 }
 
+.MuiButton-root	 {
+    display: flex;
+    margin-top: 0.6rem;
+    margin-left: 0.6rem;
+    font-size: small;
+}
+
 @media(min-width: 700px) {
+    .MuiButtonGroup-root {
+        resize: none;
+    }
+
     .questaoTipo {
         text-align: right; 
     }

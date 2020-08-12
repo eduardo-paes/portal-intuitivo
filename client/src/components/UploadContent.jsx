@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import DescriptionIcon from '@material-ui/icons/Description';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import { AddButton, DeleteButton } from '../assets/styles/styledComponents';
+import { /*AddButton,*/ DeleteButton } from '../assets/styles/styledComponents';
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 

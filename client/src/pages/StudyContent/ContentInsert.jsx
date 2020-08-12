@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {Link} from '../../../node_modules/react-router-dom';
+// import {Link} from '../../../node_modules/react-router-dom';
 import api from '../../api';
 //import PDFViewer from 'pdf-viewer-reactjs';
 //import { Document, Page, pdfjs } from "react-pdf";
@@ -7,7 +7,7 @@ import api from '../../api';
 import {StoreContext} from "../../utils";
 import { UploadContent } from "../../components";
 
-import {AddButton, DeleteButton, MyContainer, MyTextField} from "../../assets/styles/styledComponents";
+import {/*AddButton, DeleteButton,*/ MyContainer, MyTextField} from "../../assets/styles/styledComponents";
 import {Grid} from '@material-ui/core';
 
 function initialState() {
@@ -28,6 +28,8 @@ function Content(props) {
     id: token.userID,
     nome: token.userName
   }
+
+  console.log(autor);
   
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
@@ -52,7 +54,7 @@ function Content(props) {
   }
 
   const onSubmit = async event => {
-    const {disciplina, topico, dataLiberacao, dataCriacao, semana, conteudo, autor} = initialState;
+    const {disciplina, topico, dataLiberacao, /*dataCriacao,*/ semana, conteudo, autor} = initialState;
 
     const novoConteudo = {
       disciplina, 

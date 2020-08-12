@@ -61,7 +61,7 @@ function QuestionInsert() {
         return abortController.abort();
     }, [disciplina]);
 
-    // -- Definição das Funções
+    // -- Salvar dados do formulário inicial
     function handleChange (event) {
         const {name, value} = event.target;
         setQuestao(preValue => ({
@@ -71,17 +71,42 @@ function QuestionInsert() {
         }));
     }
 
+    // -- Salvar dados das opções de resposta
     function handleOptionChange(position, name, value) {
-        setOpcoes(opcoes.map((item, index) => {
-            if (index === position) {
-                return { ...item, [name]: value };
-            } else {
-                return item;
-            }
-        }));
-        console.log(value);
+        var options = value.split('\n').map(option => {
+            return option;
+        });
+
+        if (options.length > 0) {
+            console.log(options);
+            addMultipleOptions(options);
+        } else {
+            setOpcoes(opcoes.map((item, index) => {
+                if (index === position) {
+                    return { ...item, [name]: value };
+                } else {
+                    return item;
+                }
+            }));
+        }
     }
 
+    // -- Adicionar múltiplas opções
+    function addMultipleOptions(options) {
+        for (let key = 0; key < options.length; key++) {
+            setOpcoes(opcoes.map((item, index) => {
+                if (key === index) {
+                    return { ...item, "opcao": options[key] };
+                } else {
+                    return item;
+                }
+            }));
+            addNewOption();
+        }
+        console.log(opcoes);
+    }
+
+    // -- Remover opção de resposta
     function deleteThisOption(position) {
         setOpcoes(options => {
             return options.filter((option, index) => {
@@ -90,7 +115,8 @@ function QuestionInsert() {
         })
     }
 
-    function addNewOption(event) {
+    // -- Adicionar nova opção de resposta
+    function addNewOption() {
         setQuestao(preValue => ({
             ...preValue,
             resposta: opcoes
@@ -99,7 +125,6 @@ function QuestionInsert() {
             ...opcoes,
             { opcao: '' }
         ]);
-        event.preventDefault();
     }
 
     return (
@@ -153,7 +178,7 @@ function QuestionInsert() {
                         <h2 className="subtitle-page">Respostas</h2>
 
                         <Grid container={true} spacing={1}>
-                            <Grid item={true} xs={12} sm={9}>
+                            <Grid item={true} xs={12} md={8} sm={8}>
                                 {
                                     tipoResposta === "discursiva" 
                                     ? (<p>Questões discursivas possuem como opção de resposta uma caixa de texto.</p>) 
@@ -161,7 +186,7 @@ function QuestionInsert() {
                                 }
                             </Grid>
 
-                            <Grid item={true} xs={12} sm={3}>
+                            <Grid item={true} xs={12} md={4} sm={4}>
                                 <div className="questaoTipo">
                                     <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
                                         <Button onClick={() => setTipoResposta("multiplaEscolha")}>Múltipla Escolha</Button>
@@ -174,6 +199,7 @@ function QuestionInsert() {
 
                     <MyCard hidden={tipoResposta === "discursiva" ? true : false}>
                         <label id="gabarito">Gabarito</label>
+                        
                         {opcoes.map((item, index) => {
                             let tam = opcoes.length;
                             return (
@@ -194,10 +220,11 @@ function QuestionInsert() {
                                                             id="campoOpcao"
                                                             label={`Opção ${index+1}`}
                                                             name="opcao"
-                                                            type="text"
+                                                            multiline={true}
+                                                            rowsMax={4}
                                                             value={item.opcao}
                                                             autoFocus={true}
-                                                            onKeyDown={e => {e.keyCode === 13 && addNewOption(e)}}
+                                                            onKeyDown={e => {e.keyCode === 13 && addNewOption()}}
                                                             onChange={e => handleOptionChange(index, "opcao", e.target.value)}/>
                                                     </Grid>
                                                 </Grid>
