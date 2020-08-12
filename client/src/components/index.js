@@ -1,5 +1,6 @@
 // -- Tabelas
 import UserTable from "./Tables/UserTable"
+import ContentTable from "./Tables/ContentTable"
 import DisTable from "./Tables/DisTable"
 
 // -- Forms
@@ -23,6 +24,7 @@ import UploadContent from './UploadContent'
 
 export { 
     UserTable,
+    ContentTable,
     DisTable, 
     UserForm, 
     UserValidater, 

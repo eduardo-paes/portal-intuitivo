@@ -10,7 +10,6 @@ const DisciplinaCtrl = require("../controllers/subject-ctrl");
 // Multer
 const multer = require("multer");
 const multerConfig = require("./config/multer");
-const uploadConteudo = multer({dest: __dirname+'../public/conteudo'});
 const fileStorage = require("../src/multerConfig");
 
 // Definição dos métodos para cada rota do usuário

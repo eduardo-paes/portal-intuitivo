@@ -132,7 +132,7 @@ function Content(props) {
                   onChange={onMaterialChange}/>
           </Grid>
       </Grid>
-      <UploadContent onChange={handleUpload} backTo="/controle-usuario/list" onSubmit={onSubmit}/>
+      <UploadContent onChange={handleUpload} backTo="/controle-conteudo" onSubmit={onSubmit}/>
     </MyContainer>
   );
 
