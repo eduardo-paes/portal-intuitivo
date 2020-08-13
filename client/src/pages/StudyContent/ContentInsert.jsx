@@ -1,38 +1,45 @@
-import React, {useContext, useState} from "react";
-// import {Link} from '../../../node_modules/react-router-dom';
+import React, {useContext, useState, useEffect} from "react";
 import api from '../../api';
-//import PDFViewer from 'pdf-viewer-reactjs';
-//import { Document, Page, pdfjs } from "react-pdf";
+
 
 import {StoreContext} from "../../utils";
 import { UploadContent } from "../../components";
 
-import {/*AddButton, DeleteButton,*/ MyContainer, MyTextField} from "../../assets/styles/styledComponents";
-import {Grid} from '@material-ui/core';
+import {MyContainer, MyTextField} from "../../assets/styles/styledComponents";
+import {Grid, MenuItem} from '@material-ui/core';
 
 function initialState() {
   return {
+    area: "",
     disciplina: "", 
-    topico: "", 
-    semana: "",
-    dataCriacao: new Date(),
-    dataLiberacao: new Date(), 
+    topico: "",
+    numeracao: 0,
     conteudo: {},
-    autor: {}
+    autor: ""
   }
 }
 
 function Content(props) {
   const {token} = useContext(StoreContext);
-  const autor = {
-    id: token.userID,
-    nome: token.userName
-  }
+  const autorInfo = token.userName;
 
-  console.log(autor);
+  //console.log(autor);
   
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
+  const [disciplina, setDisciplina] = useState([]);           // Disciplinas do Banco de Dados
+
+  // -- Carrega as Disciplinas existentes no banco
+  useEffect(() => {
+      const abortController = new AbortController();
+      async function fetchDisciplinaAPI() {
+          const response = await api.listarDisciplinas();
+          const value = response.data.data;
+          setDisciplina(value);
+      }
+      fetchDisciplinaAPI()
+      return abortController.abort();
+  }, [disciplina]);
 
   // -- Definição das Funções
 
@@ -54,16 +61,19 @@ function Content(props) {
   }
 
   const onSubmit = async event => {
-    const {disciplina, topico, dataLiberacao, /*dataCriacao,*/ semana, conteudo, autor} = initialState;
+    const {area, disciplina, topico, numeracao, conteudo} = material;
 
     const novoConteudo = {
+      area,
+      autor: autorInfo,
       disciplina, 
       topico, 
-      semana,
-      data: dataLiberacao, 
-      conteudo, 
-      autor
+      numeracao,
+      conteudo
     };
+
+    console.log(novoConteudo);
+
 
     if (material.conteudo) {
       
@@ -82,7 +92,7 @@ function Content(props) {
         .then(res => {
             window.alert("Conteúdo inserido com sucesso.")
             // Limpa os campos
-            setMaterial({disciplina: "", semana: "", topico: "", dataLiberacao: new Date(), dataCriacao: new Date(),  conteudo: {}, autor: {}})
+            setMaterial({area: "", disciplina: "", topico: "", numeracao: 0,  conteudo: {}, autor: {}})
         })
   }
 
@@ -93,32 +103,44 @@ function Content(props) {
         <Grid container spacing={1}>
           <Grid item={true} xs={12} sm={4}>
             <MyTextField
-                id="outlined-basic"
-                label="Disciplina"
-                variant="outlined"
-                name="disciplina"
-                type="text"
-                value={material.disciplina}
-                onChange={onMaterialChange}/>
+              id="campoArea"
+              variant="outlined"
+              disabled={false}
+              select={true}
+              label="Área do Conhecimento"
+              name="area"
+              value={material.area ? material.area : ""}
+              onChange={onMaterialChange}>
+              <MenuItem value="Ciências Humanas">Ciências Humanas</MenuItem>
+              <MenuItem value="Ciências da Natureza">Ciências da Natureza</MenuItem>
+              <MenuItem value="Linguagens">Linguagens</MenuItem>
+              <MenuItem value="Matemática">Matemática</MenuItem>
+            </MyTextField>
+          </Grid>
+          <Grid item={true} xs={12} sm={4}>
+            <MyTextField
+              id="campoDisciplina"
+              variant="outlined"
+              select={true}
+              label="Disciplina"
+              name="disciplina"
+              value={material.disciplina}
+              onChange={onMaterialChange}>
+              {
+                  disciplina.map((row, index) => {
+                      return <MenuItem key={index} value={row.nome}>{row.nome}</MenuItem>
+                  })
+              }
+            </MyTextField>
           </Grid>
           <Grid item={true} xs={12} sm={4}>
             <MyTextField
                 id="outlined-basic"
-                label="Semana"
+                label="Numeração"
                 variant="outlined"
-                name="semana"
+                name="numeracao"
                 type="text"
-                value={material.semana}
-                onChange={onMaterialChange}/>
-          </Grid>
-          <Grid item={true} xs={12} sm={4}>
-            <MyTextField
-                id="outlined-basic"
-                label="Data"
-                variant="outlined"
-                name="dataLiberacao"
-                type="text"
-                value={material.dataCriacao.getDate() + "/" + (material.dataCriacao.getMonth()+1) + "/" + material.dataCriacao.getFullYear()}
+                value={material.numeracao}
                 onChange={onMaterialChange}/>
           </Grid>
           <Grid item={true} xs={12}>

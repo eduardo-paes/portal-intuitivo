@@ -1,27 +1,27 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import DescriptionIcon from '@material-ui/icons/Description';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import { /*AddButton,*/ DeleteButton } from '../assets/styles/styledComponents';
+
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+
+import { makeStyles } from '@material-ui/core/styles';
+import DescriptionIcon from '@material-ui/icons/Description';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyles = makeStyles((theme) => ({
   buttonsContainer: {
-    width: '60%',
+    width: '100%',
     display: "flex",
     flexDirection: "row",
-    marginLeft: "25%",
-    marginRight: "10%",
-    alignItems: "center",
-    justifyContent: "center"
+    marginLeft: "auto",
+    marginRight: "auto",
+    alignItems: "center"
   },
   input: {
     display: 'none',
   },
   button: {
-    width: '200px',
+    width: '190px',
     display: "flex",
     alignItems: "center",
     justifyContent: "center"
@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
   const classes = useStyles();
 
   return (
-    <Grid container spacing={0} className={classes.buttonsContainer}>
-      <Grid item={true} xs={12} sm={6}>
+    <Grid container spacing={10} className={classes.buttonsContainer}>
+      <Grid item={true} xs={6} sm={3}>
         <input
           accept="file_extension/*"
           className={classes.input}
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
         </Button>
         </label>
       </Grid>
-      <Grid item={true} xs={12} sm={6}>
+      <Grid item={true} xs={6} sm={3}>
         <Button
           variant="contained"
           color="primary"
@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
           Visualizar
         </Button>
       </Grid>
-      <Grid item={true} xs={12} sm={6}>
+      <Grid item={true} xs={6} sm={3}>
         <Button 
           variant="contained"
           color="primary"
@@ -77,9 +77,15 @@ const useStyles = makeStyles((theme) => ({
           Salvar
         </Button>
       </Grid>
-      <Grid item={true} xs={12} sm={6}>
+      <Grid item={true} xs={6} sm={3}>
         <Link to={backTo} style={{ textDecoration: 'none' }} >
-          <DeleteButton >Voltar</DeleteButton>
+          <Button 
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+          >
+            Voltar  
+          </Button>
         </Link>
       </Grid>
     </Grid>

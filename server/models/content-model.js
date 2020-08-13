@@ -4,6 +4,10 @@ const Usuario = require("./users-model")
 const Schema = mongoose.Schema;
 
 const Conteudo = new Schema({
+    area: {
+        type: String,
+        // required: true
+    },
     disciplina: {
         type: String,
         // required: true
@@ -12,12 +16,8 @@ const Conteudo = new Schema({
         type: String,
         // required: true
     },
-    semana: {
+    numeracao: {
         type: Number,
-        // required: true
-    },
-    data: {
-        type: Date,
         // required: true
     },
     conteudo: {
@@ -26,6 +26,7 @@ const Conteudo = new Schema({
     },
     autor: {
         type: String,
+        // type: String,
         // type: Usuario,
         // ref: "Usuario"
     }

@@ -59,10 +59,6 @@ function ContentInsert () {
               </Grid>
           </Grid>
       </header>
-
-      <main>
-          Conteúdos serão listados aqui.
-      </main>
     </MyContainer>
   );
 };

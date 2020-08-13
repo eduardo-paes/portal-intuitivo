@@ -19,13 +19,23 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 // Função para retornar as dimensões da tela
 import WindowDimension from "../WindowDimension"
 
+// Botão para visualização do conteúdo
+function ContentVisualization (props) {
+    return (
+        <IconButton aria-label="visualization" color="primary" size="small">
+            <VisibilityIcon/>
+        </IconButton>
+    )
+}
+
 // Botão de Atualização
 class UpdateContent extends Component {
-    // Retorna o botaão
+    // Retorna o botão
     render() {
         return (
             <RouterLink to={"/controle-conteudo/update/" + this.props.id}>
@@ -46,7 +56,7 @@ function DeleteContent(props) {
     }
 
     return (
-        <RouterLink to={"/controle-conteudo/list"}>
+        <RouterLink to={"/controle-conteudo"}>
             <IconButton
                 aria-label="delete"
                 color="secondary"
@@ -89,14 +99,17 @@ function stableSort(array, comparator) {
 // -- Componentes das Células de Cabeçalho
 const headCells = [
     {
+        id: 'area',
+        label: 'Área'
+    }, {
         id: 'disciplina',
         label: 'Disciplina'
     }, {
         id: 'topico',
         label: 'Tópico'
     }, {
-        id: 'semana',
-        label: 'Semana'
+        id: 'numeracao',
+        label: 'Numeração'
     }, {
         id: 'conteudo',
         label: 'Conteúdo'
@@ -277,12 +290,14 @@ export default function EnhancedTable(props) {
 
                                         return (
                                             <TableRow hover={true} tabIndex={-1} key={conteudo._id}>
-                                                <TableCell className={classes.row} align="left">{conteudo.disciplina}</TableCell>
+                                                <TableCell className={classes.row} align="left">{conteudo.area}</TableCell>
 
+                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{conteudo.disciplina}</TableCell>}
                                                 {(wd.width > 500) && <TableCell className={classes.row} align="left">{conteudo.topico}</TableCell>}
-                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{conteudo.semana}</TableCell>}
+                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
 
                                                 <TableCell align="left">
+                                                    <ContentVisualization/>
                                                     <UpdateContent id={conteudo._id}/>
                                                     <DeleteContent id={conteudo._id} nome={conteudo.disciplina}/>
                                                 </TableCell>
