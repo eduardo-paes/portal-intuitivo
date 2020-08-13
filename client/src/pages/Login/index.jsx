@@ -31,18 +31,9 @@ const useStyles = makeStyles(theme => ({
         padding: "5% 0 3%",
         marginTop: "5%"
     },
-    container: {
-        // margin: "auto"
-    },
     textField: {
         marginTop: "1rem",
-    },
-    groupTextFields: {
-        // alignItems: "flex-end"
-    },
-    groupButtons: {
-        // alignItems: "flex-end"
-    },
+    }
 }));
 
 // -- Dados iniciais
@@ -121,7 +112,7 @@ function Login() {
     }
 
     return (
-        <div id="login-screen" className="container">
+        <div id="login-screen">
             <MyContainer className={classes.container} maxWidth="sm">
                 <LoginCard>
                     <header className={classes.header}>

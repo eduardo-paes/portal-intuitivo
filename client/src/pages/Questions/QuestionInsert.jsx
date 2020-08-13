@@ -26,28 +26,43 @@ const useStyles = makeStyles((theme) => ({
     },
     checkBox: {
         marginTop: "0.4rem"
+    },
+    questaoTipo: {
+        textAlign: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        alignContent: "center"
+    },
+    questaoOpcoes: {
+        padding: "1rem",
+        textAlign: "center",
+        alignItems: "center",
     }
 }));
 
 
 // -- Dados iniciais da constante Atividade
-function initialState() {
-    return {
-        disciplina: "",
-        topico: "",
-        enunciado: [],
-        resposta: [],
-        tipoResposta: "",
-        gabarito: ""
-    }
+const initialState = {
+    disciplina: "",
+    topico: "",
+    enunciado: [],
+    resposta: [],
+    tipoResposta: "",
+    gabarito: ""
+}
+
+// -- Dados iniciais da constante Opções
+const initialOptionState = {
+    opcao: "", 
+    gabarito: false
 }
 
 function QuestionInsert() {
     const classes = useStyles();
-    const [disciplina, setDisciplina] = useState([]);           // Disciplinas do Banco de Dados
-    const [questao, setQuestao] = useState(initialState);   // Guarda as alterações temporárias do formulário
-    const [tipoResposta, setTipoResposta] = useState("");   // Guarda as alterações temporárias do formulário
-    const [opcoes, setOpcoes] = useState([{opcao: "", gabarito: false}]);
+    const [disciplina, setDisciplina] = useState([]);               // Disciplinas do Banco de Dados
+    const [questao, setQuestao] = useState(initialState);           // Guarda as alterações temporárias do formulário
+    const [tipoResposta, setTipoResposta] = useState("");           // Guarda as alterações temporárias sobre o tipo de questão
+    const [opcoes, setOpcoes] = useState([initialOptionState]);
 
     // -- Carrega as Disciplinas existentes no banco
     useEffect(() => {
@@ -74,12 +89,14 @@ function QuestionInsert() {
     // -- Salvar dados das opções de resposta
     function handleOptionChange(position, name, value) {
         var options = value.split('\n').map(option => {
-            return option;
+            return {
+                opcao: option, 
+                gabarito: false
+            };
         });
 
-        if (options.length > 0) {
-            console.log(options);
-            addMultipleOptions(options);
+        if (options.length > 1) {
+            setOpcoes(options);
         } else {
             setOpcoes(opcoes.map((item, index) => {
                 if (index === position) {
@@ -89,21 +106,6 @@ function QuestionInsert() {
                 }
             }));
         }
-    }
-
-    // -- Adicionar múltiplas opções
-    function addMultipleOptions(options) {
-        for (let key = 0; key < options.length; key++) {
-            setOpcoes(opcoes.map((item, index) => {
-                if (key === index) {
-                    return { ...item, "opcao": options[key] };
-                } else {
-                    return item;
-                }
-            }));
-            addNewOption();
-        }
-        console.log(opcoes);
     }
 
     // -- Remover opção de resposta
@@ -122,22 +124,22 @@ function QuestionInsert() {
             resposta: opcoes
         }));
         setOpcoes([
-            ...opcoes,
-            { opcao: '' }
+            ...opcoes, 
+            initialOptionState
         ]);
     }
 
     return (
         <MyContainer>
-            <header>
+            <section id="cabecalhoQuestao">
                 <Grid container={true} className={classes.root} spacing={2}>
                     <Grid item={true} xs={12} sm={9}>
                         <h1 className="heading-page">Criar Questão</h1>
                     </Grid>
                 </Grid>
-            </header>
+            </section>
 
-            <main>
+            <section className="conteudoQuestao">
                 <Grid container={true} spacing={1}>
                     <Grid item={true} xs={12} sm={6}>
                         <MyTextField
@@ -168,97 +170,86 @@ function QuestionInsert() {
                     </Grid>
                 </Grid>
                 
-                <div className="conteudoQuestao">
-                    <div className="enunciadoQuestao">
-                        <h2 className="subtitle-page">Enunciado</h2>
-                        <textarea />
-                    </div>
+                <div className="enunciadoQuestao">
+                    <h2 className="subtitle-page">Enunciado</h2>
+                    <textarea />
+                </div>
 
-                    <div className="respostasQuestao">
-                        <h2 className="subtitle-page">Respostas</h2>
+                <div className="respostasQuestao">
+                    <h2 className="subtitle-page">Respostas</h2>
 
-                        <Grid container={true} spacing={1}>
-                            <Grid item={true} xs={12} md={8} sm={8}>
-                                {
-                                    tipoResposta === "discursiva" 
-                                    ? (<p>Questões discursivas possuem como opção de resposta uma caixa de texto.</p>) 
-                                    : (<p>Defina abaixo as opções de resposta de acordo com o enunciado informado acima.</p>)
-                                }
-                            </Grid>
-
-                            <Grid item={true} xs={12} md={4} sm={4}>
-                                <div className="questaoTipo">
-                                    <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
-                                        <Button onClick={() => setTipoResposta("multiplaEscolha")}>Múltipla Escolha</Button>
-                                        <Button onClick={() => setTipoResposta("discursiva")}>Discursiva</Button>
-                                    </ButtonGroup>
-                                </div>
-                            </Grid>
+                    <Grid container={true} spacing={1}>
+                        <Grid item={true} xs={12} md={8} sm={8}>
+                            {
+                                tipoResposta === "discursiva" 
+                                ? (<p>Questões discursivas possuem como opção de resposta uma caixa de texto.</p>) 
+                                : (<p>Defina abaixo as opções de resposta de acordo com o enunciado informado acima.</p>)
+                            }
                         </Grid>
-                    </div>
 
-                    <MyCard hidden={tipoResposta === "discursiva" ? true : false}>
-                        <label id="gabarito">Gabarito</label>
+                        <Grid className={classes.questaoTipo} item={true} xs={12} md={4} sm={4}>
+                            <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
+                                <Button onClick={() => setTipoResposta("multiplaEscolha")}>Múltipla Escolha</Button>
+                                <Button onClick={() => setTipoResposta("discursiva")}>Discursiva</Button>
+                            </ButtonGroup>
+                        </Grid>
+                    </Grid>
+                </div>
+
+                <MyCard hidden={tipoResposta === "discursiva" ? true : false}>
+                        <label id="gabaritoLabel">Gabarito</label>
                         
                         {opcoes.map((item, index) => {
                             let tam = opcoes.length;
                             return (
-                                <div key={index} className="questaoOpcoes">
+                                <Grid key={index} className={classes.questaoOpcoes} container={true} spacing={1}>
+                                    
+                                    <Grid item={true} xs={10} sm={11}>
                                         <Grid container={true} spacing={1}>
-                                            <Grid item={true} xs={10} sm={11}>
-                                                
-                                                <Grid container={true} spacing={1}>
-                                                    <Grid item={true} xs={2} sm={1}>
-                                                        <Checkbox
-                                                            checked={opcoes.gabarito}
-                                                            className={classes.checkBox}
-                                                            onChange={e => handleOptionChange(index, "gabarito", e.target.value)}
-                                                            inputProps={{ 'aria-label': 'primary checkbox' }}/>
-                                                    </Grid>
-                                                    <Grid item={true} xs={10} sm={11}>
-                                                        <MyTextField
-                                                            id="campoOpcao"
-                                                            label={`Opção ${index+1}`}
-                                                            name="opcao"
-                                                            multiline={true}
-                                                            rowsMax={4}
-                                                            value={item.opcao}
-                                                            autoFocus={true}
-                                                            onKeyDown={e => {e.keyCode === 13 && addNewOption()}}
-                                                            onChange={e => handleOptionChange(index, "opcao", e.target.value)}/>
-                                                    </Grid>
-                                                </Grid>
-
-                                            </Grid>
-
                                             <Grid item={true} xs={2} sm={1}>
-                                                {index === tam-1 
-                                                    ?
-                                                        <Fab className={classes.fabButton} onClick={addNewOption} size="small" color="primary" aria-label="add">
-                                                            <AddIcon />
-                                                        </Fab>
-                                                    :
-                                                        <Fab className={classes.fabButton} onClick={() => deleteThisOption (index)} size="small" color="secondary" aria-label="add">
-                                                            <DeleteIcon />
-                                                        </Fab>
-                                                } 
+                                                <Checkbox
+                                                    checked={opcoes.gabarito}
+                                                    className={classes.checkBox}
+                                                    onChange={e => handleOptionChange(index, "gabarito", e.target.value)}
+                                                    inputProps={{ 'aria-label': 'primary checkbox' }}/>
+                                            </Grid>
+                                            <Grid item={true} xs={10} sm={11}>
+                                                <MyTextField
+                                                    id="campoOpcao"
+                                                    label={`Opção ${index+1}`}
+                                                    name="opcao"
+                                                    multiline={true}
+                                                    rowsMax={4}
+                                                    value={item.opcao}
+                                                    autoFocus={true}
+                                                    onKeyDown={e => {e.keyCode === 13 && addNewOption()}}
+                                                    onChange={e => handleOptionChange(index, "opcao", e.target.value)}/>
                                             </Grid>
                                         </Grid>
-                                </div>
+                                    </Grid>
+
+                                    <Grid item={true} xs={2} sm={1}>
+                                        {index === tam-1 
+                                            ?   <Fab className={classes.fabButton} onClick={addNewOption} size="small" color="primary" aria-label="add">
+                                                    <AddIcon />
+                                                </Fab>
+                                            :   <Fab className={classes.fabButton} onClick={() => deleteThisOption (index)} size="small" color="secondary" aria-label="add">
+                                                    <DeleteIcon />
+                                                </Fab>
+                                        } 
+                                    </Grid>
+                                </Grid>
                             )
                         })}
                     </MyCard>
-                </div>
-            </main>
+            </section>
         
-            <footer>
-                <div className="group-buttons">
-                    <AddButton onClick={() => console.log(questao)}>Salvar</AddButton>
-                    <Link to="/controle-questoes/create" style={{ textDecoration: 'none' }}>
-                        <DeleteButton>Cancelar</DeleteButton>
-                    </Link>
-                </div>
-            </footer>
+            <section className="group-buttons">
+                <AddButton onClick={() => console.log(questao)}>Salvar</AddButton>
+                <Link to="/controle-questoes/create" style={{ textDecoration: 'none' }}>
+                    <DeleteButton>Cancelar</DeleteButton>
+                </Link>
+            </section>
         </MyContainer>
     );
 };
