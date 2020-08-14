@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ContentInsert () {
+function ContentList () {
 
   const classes = useStyles();
 
@@ -63,4 +63,4 @@ function ContentInsert () {
   );
 };
 
-export default ContentInsert;
+export default ContentList;

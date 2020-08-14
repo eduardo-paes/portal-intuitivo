@@ -17,6 +17,7 @@ import {
     Login,
     GeneralPage,
     ContentInsert,
+    ContentUpdate,
     ContentList,
     Settings,
     QuestionList
@@ -50,6 +51,7 @@ function PrivateRoutes() {
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo" component={ContentList}/>
             <ConditionalRoute exact={true} type="Professor" from="/atividades" component={ActivityInsert}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo/create" component={ContentInsert}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo/update" component={ContentUpdate}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes" component={QuestionList}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/create" component={QuestionInsert}/>
 

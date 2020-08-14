@@ -22,14 +22,24 @@ import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 // Função para retornar as dimensões da tela
-import WindowDimension from "../WindowDimension"
+import WindowDimension from "../WindowDimension";
+
+// Função para abrir popup com o pdf do conteúdo
+import Popup from 'reactjs-popup';
+import PDFViewer from "../PDFViewer/PDFViewer";
 
 // Botão para visualização do conteúdo
 function ContentVisualization (props) {
+
     return (
-        <IconButton aria-label="visualization" color="primary" size="small">
-            <VisibilityIcon/>
-        </IconButton>
+        <Popup
+            trigger={<IconButton aria-label="visualization" color="primary" size="small"> <VisibilityIcon/> </IconButton>}
+            modal
+            closeOnDocumentClick
+        >
+            <PDFViewer source={props.conteudo}/>
+        </Popup>
+            
     )
 }
 

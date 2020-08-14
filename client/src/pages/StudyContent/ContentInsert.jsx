@@ -28,6 +28,7 @@ function Content(props) {
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
   const [disciplina, setDisciplina] = useState([]);           // Disciplinas do Banco de Dados
+  const [conteudo, setConteudo] = useState("");
 
   // -- Carrega as Disciplinas existentes no banco
   useEffect(() => {
@@ -58,6 +59,8 @@ function Content(props) {
       ...preValue,
       conteudo: file
     }));
+
+    setConteudo(URL.createObjectURL(file));
   }
 
   const onSubmit = async event => {
@@ -135,7 +138,7 @@ function Content(props) {
           </Grid>
           <Grid item={true} xs={12} sm={4}>
             <MyTextField
-                id="outlined-basic"
+                id="campoNumeracao"
                 label="Numeração"
                 variant="outlined"
                 name="numeracao"
@@ -145,7 +148,7 @@ function Content(props) {
           </Grid>
           <Grid item={true} xs={12}>
               <MyTextField
-                  id="outlined-basic"
+                  id="campoTopico"
                   label="Tópico"
                   variant="outlined"
                   name="topico"
@@ -154,7 +157,7 @@ function Content(props) {
                   onChange={onMaterialChange}/>
           </Grid>
       </Grid>
-      <UploadContent onChange={handleUpload} backTo="/controle-conteudo" onSubmit={onSubmit}/>
+      <UploadContent onChange={handleUpload} conteudo={conteudo} backTo="/controle-conteudo" onSubmit={onSubmit}/>
     </MyContainer>
   );
 

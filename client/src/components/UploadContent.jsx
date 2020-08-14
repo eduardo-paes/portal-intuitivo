@@ -3,10 +3,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import Popup from 'reactjs-popup';
+import PDFViewer from "./PDFViewer/PDFViewer";
 
 import { makeStyles } from '@material-ui/core/styles';
 import DescriptionIcon from '@material-ui/icons/Description';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+
 
 const useStyles = makeStyles((theme) => ({
   buttonsContainer: {
@@ -29,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
  function UploadContent(props) {
-  const {onChange, onSubmit, backTo} = props;
+  const {onChange, onSubmit, backTo, conteudo } = props;
   const classes = useStyles();
 
   return (
@@ -57,15 +60,24 @@ const useStyles = makeStyles((theme) => ({
         </label>
       </Grid>
       <Grid item={true} xs={6} sm={3}>
-        <Button
-          variant="contained"
-          color="primary"
-          component="span"
-          className={classes.button}
-          startIcon={<VisibilityIcon />}
+        <Popup
+            trigger={
+              <Button
+                variant="contained"
+                color="primary"
+                component="span"
+                className={classes.button}
+                startIcon={<VisibilityIcon />}
+              >
+                Visualizar
+              </Button>
+            }
+            modal
+            closeOnDocumentClick
         >
-          Visualizar
-        </Button>
+            <PDFViewer source={conteudo}/>
+        </Popup>
+        
       </Grid>
       <Grid item={true} xs={6} sm={3}>
         <Button 
