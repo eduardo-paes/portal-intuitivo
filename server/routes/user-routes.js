@@ -10,18 +10,38 @@ const DisciplinaCtrl = require("../controllers/subject-ctrl");
 // Multer
 const multer = require("multer");
 const multerConfig = require("./config/multer");
-const fileStorage = require("../src/multerConfig");
+const {conteudoUpload, fotoUpload, questaoUpload} = require("../src/multerConfig");
+
+
+let storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}_${file.originalname}`);
+    },
+    fileFilter: (req, file, cb) => {
+        const ext = path.extname(file.originalname)
+        if (ext !== '.jpg' && ext !== '.png' && ext !== '.mp4') {
+            return cb(res.status(400).end('only jpg, png, mp4 is allowed'), false);
+        }
+        cb(null, true)
+    }
+});
+
+const upload = multer({ storage: storage }).single("file");
+
 
 // Definição dos métodos para cada rota do usuário
-router.post("/controle-usuario", multer(multerConfig).single("foto"), UsuarioCtrl.inserirUsuario);
-router.put("/controle-usuario/:id", multer(multerConfig).single("foto"), UsuarioCtrl.atualizarUsuario);
+router.post("/controle-usuario", multer(fotoUpload).single("foto"), UsuarioCtrl.inserirUsuario);
+router.put("/controle-usuario/:id", multer(fotoUpload).single("foto"), UsuarioCtrl.atualizarUsuario);
 router.delete("/controle-usuario/:id", UsuarioCtrl.removerUsuario);
 router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
 
 // Definição dos métodos para cada rota do conteúdo
-router.post("/controle-conteudo", multer(multerConfig).single("conteudo"), ConteudoCtrl.inserirConteudo);
-router.put("/controle-conteudo/:id", multer(multerConfig).single("conteudo"), ConteudoCtrl.atualizarConteudo);
+router.post("/controle-conteudo", multer(conteudoUpload).single("conteudo"), ConteudoCtrl.inserirConteudo);
+router.put("/controle-conteudo/:id", multer(conteudoUpload).single("conteudo"), ConteudoCtrl.atualizarConteudo);
 router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
 router.get("/controle-conteudo/:id", ConteudoCtrl.encConteudoPorID);
 router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);
@@ -34,18 +54,10 @@ router.get("/configuracoes/disciplina/:id", DisciplinaCtrl.encDisciplinaPorID);
 router.get("/configuracoes", DisciplinaCtrl.listarDisciplinas);
 
 // Rota para armazenamento de arquivos de mídia
-router.post("/upload-arquivo", multer(fileStorage).single('file'), (req, res) => {
-    console.log(req.file);
-    // if (error) {
-    //     console.log("Erro no upload", error);
-    //     return res.json({ success: false, error });
-    // } else {
-    //     return res.json({
-    //         success: true, 
-    //         url: res.req.file.path, 
-    //         fileName: res.req.file.filename
-    //     })
-    // }
+router.post("/upload-arquivo", multer(questaoUpload).single('file'), (req, res, err) => {
+    console.log(req.file)
+
+    return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.filename });
 });
 
 module.exports = router;

@@ -4,15 +4,14 @@ import QuillEditor from "./QuillEditor"
 // Function Main
 function TextEditor(props) {
     // -- Define principais constantes
-    const {setAtividade} = props;
+    const [text, setText] = useState("")
     const [conteudoFiles, setFiles] = useState([])
+
 
     // -- Definição das Funções
     const onEditorChange = (value) => {
-        setAtividade(preValue => ({
-            ...preValue,
-            conteudo: value
-        }));
+        setText(value);
+        console.log(text);
     }
 
     const onFilesChange = (files) => {

@@ -243,24 +243,25 @@ class QuillEditor extends React.Component {
                 }
             }
             formData.append("file", file);
-            
-            // console.log("Image:", file);
-            // console.log("FormData:", formData);
+
+            console.log(file);
 
             axios.post(postURL, formData, config)
                 .then(response => {
                     if (response.data.success) {
-                        // console.log(response.data);
                         const quill = this.reactQuillRef.getEditor();
                         quill.focus();
 
                         let range = quill.getSelection();
                         let position = range ? range.index : 0;
 
+                        console.log(response.data.url)
+
                         quill.insertEmbed(position, "image", { 
                             src: "http://localhost:8000/" + response.data.url, 
                             alt: response.data.fileName 
                         });
+
                         quill.setSelection(position + 1);
 
                         if (this._isMounted) {
@@ -374,12 +375,14 @@ class QuillEditor extends React.Component {
                     modules={this.modules}
                     formats={this.formats}
                     value={this.state.editorHtml}
+                    style={{background: "#fff"}}
                     placeholder={this.props.placeholder}
                 />
 
-                <input type="file" accept="image/*" ref={this.inputOpenImageRef} style={{ display: "none" }} onChange={this.insertImage} />
-                <input type="file" accept="video/*" ref={this.inputOpenVideoRef} style={{ display: "none" }} onChange={this.insertVideo} />
-                <input type="file" accept="*" ref={this.inputOpenFileRef} style={{ display: "none" }} onChange={this.insertFile} />
+                {/* -- Inputs acionados pelos handlers */}
+                <input type="file" name="image" accept="image/*" ref={this.inputOpenImageRef} style={{ display: "none" }} onChange={this.insertImage} />
+                <input type="file" name="video" accept="video/*" ref={this.inputOpenVideoRef} style={{ display: "none" }} onChange={this.insertVideo} />
+                <input type="file" name="file" accept="*" ref={this.inputOpenFileRef} style={{ display: "none" }} onChange={this.insertFile} />
             </div>
         )
     }
@@ -388,7 +391,7 @@ class QuillEditor extends React.Component {
         // syntax: true,
         toolbar: {
             container: [
-                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
                 [{ 'font': [] }],
                 ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
                 [{ 'align': [] }],
@@ -396,13 +399,14 @@ class QuillEditor extends React.Component {
                 [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                 ['blockquote', 'code-block'],
+                ['link', 'image', 'video'],
                 [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-                [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                ['clean']
             ],
             handlers: {
-                insertImage: this.imageHandler,
-                insertVideo: this.videoHandler,
-                insertFile: this.fileHandler,
+                'image': this.imageHandler,
+                'video': this.videoHandler,
+                'file': this.fileHandler,
                 insertPoll: this.pollHandler,
             }
         },
@@ -410,9 +414,12 @@ class QuillEditor extends React.Component {
     };
 
     formats = [
-        'header',
+        'size', 'font', 'align',
         'bold', 'italic', 'underline', 'strike',
-        'image', 'video', 'file', 'link',"code-block", "video", "blockquote", "clean"
+        'list', 'bullet',
+        'color', 'background',
+        'indent', 'script',
+        'image', 'video', 'file', 'link', "code-block", "video", "blockquote", "clean"
     ];
 }
 

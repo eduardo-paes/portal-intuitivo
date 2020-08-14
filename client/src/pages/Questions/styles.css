@@ -25,6 +25,12 @@
     font-size: small;
 }
 
+.grupoBotoes {
+    text-align: center;
+    margin-top: 1rem;
+    min-width: 300px;
+}
+
 .MuiButton-root	 {
     display: flex;
     margin-top: 0.6rem;

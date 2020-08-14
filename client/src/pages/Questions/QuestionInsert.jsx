@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import {Link} from 'react-router-dom'
 import api from '../../api'
 
+// -- Editor
+import { TextEditor } from "../../components";
+
 // -- Styles
 import { MyContainer, MyTextField, MyCard, AddButton, DeleteButton } from "../../assets/styles/styledComponents"
 import { Grid, MenuItem, ButtonGroup, Button, Fab, Checkbox } from "@material-ui/core";
@@ -95,9 +98,11 @@ function QuestionInsert() {
             };
         });
 
-        if (options.length > 1) {
+        if (options.length > 2) {
+            console.log("Texto");
             setOpcoes(options);
         } else {
+            console.log("Frase");
             setOpcoes(opcoes.map((item, index) => {
                 if (index === position) {
                     return { ...item, [name]: value };
@@ -105,6 +110,7 @@ function QuestionInsert() {
                     return item;
                 }
             }));
+            console.log(opcoes);
         }
     }
 
@@ -148,6 +154,7 @@ function QuestionInsert() {
                             select={true}
                             label="Disciplina"
                             name="disciplina"
+                            autoFocus={true}
                             value={questao.disciplina}
                             onChange={handleChange}>
                             {
@@ -172,7 +179,7 @@ function QuestionInsert() {
                 
                 <div className="enunciadoQuestao">
                     <h2 className="subtitle-page">Enunciado</h2>
-                    <textarea />
+                    <TextEditor text={questao} setText={setQuestao}/>
                 </div>
 
                 <div className="respostasQuestao">
@@ -219,9 +226,9 @@ function QuestionInsert() {
                                                     label={`Opção ${index+1}`}
                                                     name="opcao"
                                                     multiline={true}
-                                                    rowsMax={4}
-                                                    value={item.opcao}
                                                     autoFocus={true}
+                                                    // rowsMax={1}
+                                                    value={item.opcao}
                                                     onKeyDown={e => {e.keyCode === 13 && addNewOption()}}
                                                     onChange={e => handleOptionChange(index, "opcao", e.target.value)}/>
                                             </Grid>
@@ -244,7 +251,7 @@ function QuestionInsert() {
                     </MyCard>
             </section>
         
-            <section className="group-buttons">
+            <section className="grupoBotoes">
                 <AddButton onClick={() => console.log(questao)}>Salvar</AddButton>
                 <Link to="/controle-questoes/create" style={{ textDecoration: 'none' }}>
                     <DeleteButton>Cancelar</DeleteButton>
