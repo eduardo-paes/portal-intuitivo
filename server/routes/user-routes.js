@@ -1,6 +1,10 @@
 // Define as rotas que serão utilizadas para lidar com o banco de dados
 const express = require("express");
+const bodyparser = require("body-parser");
 const router = express.Router();
+
+router.use(bodyparser.urlencoded({extended: true}));
+router.use(bodyparser.json());
 
 // Importação dos métodos de controle
 const UsuarioCtrl = require("../controllers/user-ctrl");
@@ -9,28 +13,7 @@ const DisciplinaCtrl = require("../controllers/subject-ctrl");
 
 // Multer
 const multer = require("multer");
-const multerConfig = require("./config/multer");
-const {conteudoUpload, fotoUpload, questaoUpload} = require("../src/multerConfig");
-
-
-let storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/");
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}_${file.originalname}`);
-    },
-    fileFilter: (req, file, cb) => {
-        const ext = path.extname(file.originalname)
-        if (ext !== '.jpg' && ext !== '.png' && ext !== '.mp4') {
-            return cb(res.status(400).end('only jpg, png, mp4 is allowed'), false);
-        }
-        cb(null, true)
-    }
-});
-
-const upload = multer({ storage: storage }).single("file");
-
+const {conteudoUpload, fotoUpload} = require("../src/multerConfig");
 
 // Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", multer(fotoUpload).single("foto"), UsuarioCtrl.inserirUsuario);
@@ -53,11 +36,43 @@ router.delete("/configuracoes/disciplina/:id", DisciplinaCtrl.removerDisciplina)
 router.get("/configuracoes/disciplina/:id", DisciplinaCtrl.encDisciplinaPorID);
 router.get("/configuracoes", DisciplinaCtrl.listarDisciplinas);
 
-// Rota para armazenamento de arquivos de mídia
-router.post("/upload-arquivo", multer(questaoUpload).single('file'), (req, res, err) => {
-    console.log(req.file)
+const multiparty = require('connect-multiparty');
+const MultipartyMiddleware = multiparty({uploadDir: __dirname + '../../uploads'})
 
-    return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.filename });
+router.post('/uploads', MultipartyMiddleware, (req, res) => {
+    console.log(req.files.upload);
+    console.log(res.files.upload);
+});
+
+// Rota para armazenamento de arquivos de mídia
+router.post("/upload-arquivo", (req, res) => {
+    const path = require("path");
+
+    let questaoStorage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
+        },
+        filename: (req, file, cb) => {
+            cb(null, `question_${file.originalname}`);
+        },
+        fileFilter: (req, file, cb) => {
+            const ext = path.extname(file.originalname)
+            if (ext !== '.jpg' && ext !== '.png' && ext !== '.mp4') {
+                return cb(res.status(400).end('only jpg, png, mp4 is allowed'), false);
+            }
+            cb(null, true)
+        }
+    });
+
+    const upload = multer({ storage: questaoStorage }).single("file");
+    
+    upload(req, res, err => {
+        if (err) {
+            console.log(err);
+            return res.json({ success: false, err });
+        }
+        return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.filename });
+    });
 });
 
 module.exports = router;

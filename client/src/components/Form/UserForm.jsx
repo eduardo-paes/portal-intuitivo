@@ -5,6 +5,7 @@ import { MenuItem } from '@material-ui/core'
 
 // Upload da Imagem do Perfil
 import Upload from "../Upload";
+import "./styleUserForm.css"
 
 function UserForm (props) {
     const {data, handleChange, handleUpload, onSubmit, typeForm, edit} = props;
@@ -14,11 +15,13 @@ function UserForm (props) {
         <MyContainer>
             <h1 className="heading-page">{typeForm} Usuário</h1>
 
-            <MyAvatar src={urlArquivo} alt="Preview"/>
-            <Upload onUpload={handleUpload} />
+            <div className="uploadImage">
+                <MyAvatar src={urlArquivo} alt="Preview"/>
+                <Upload onUpload={handleUpload} />
+            </div>
 
             <MyTextField
-                id="outlined-basic"
+                id="userNameInput"
                 label="Nome"
                 variant="outlined"
                 name="nome"
@@ -30,7 +33,7 @@ function UserForm (props) {
                 error={erros.nome ? true : false}/>
 
             <MyTextField
-                id="outlined-basic"
+                id="userEmailsInput"
                 label="E-mail"
                 variant="outlined"
                 name="email"
@@ -41,7 +44,7 @@ function UserForm (props) {
                 error={erros.email ? true : false}/>
 
             <MyTextField
-                id="outlined-select"
+                id="userAccessInput"
                 select={true}
                 label="Acesso"
                 name="acesso"
@@ -57,7 +60,7 @@ function UserForm (props) {
             </MyTextField>
 
             <MyTextField
-                id="outlined-uncontrolled"
+                id="userPasswordInput"
                 label="Senha"
                 name="senha"
                 type="password"

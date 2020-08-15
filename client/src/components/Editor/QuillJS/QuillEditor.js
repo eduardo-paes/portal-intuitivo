@@ -237,6 +237,7 @@ class QuillEditor extends React.Component {
             const file = event.currentTarget.files[0];
             
             let formData = new FormData();
+            
             const config = {
                 header: { 
                     'content-type': 'multipart/form-data' 
@@ -255,7 +256,7 @@ class QuillEditor extends React.Component {
                         let range = quill.getSelection();
                         let position = range ? range.index : 0;
 
-                        console.log(response.data.url)
+                        console.log("URL: ", response.data.url)
 
                         quill.insertEmbed(position, "image", { 
                             src: "http://localhost:8000/" + response.data.url, 

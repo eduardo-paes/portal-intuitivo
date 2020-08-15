@@ -1,49 +1,39 @@
 import React from "react";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import 'react-quill/dist/quill.bubble.css';
-import { useState } from "react";
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-const modules = {
-    toolbar: [
-       [{ 'header': [1, 2, false] }],
-      ['bold', 'italic', 'underline','strike', 'blockquote'],
-      [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-      ['link', 'image'],
-      ['clean']
-    ]
-}
-
-const formats = [
-    'font',
-    'size',
-    'bold', 'italic', 'underline',
-    'list', 'bullet',
-    'align',
-    'color', 'background'
-]
+import axios from 'axios';
+const postURL = "http://localhost:3000/api//upload-arquivo";
 
 function TextEditor (props) {
-    const [text, setText] = useState("")
-
-    function handleChange(content, delta, source, editor) {
-        // console.log(editor.getHTML());       // HTML/rich text
-        // console.log(editor.getText());       // plain text
-        // console.log(editor.getLength());     // number of characters
-        setText(editor.getText());
+    const {text, setText} = props;
+    
+    const handleEditorChange = (event, editor) => {
+        const data = editor.getData();
+        setText(preValue => ({
+            ...preValue,
+            enunciado: data
+        }));
     }
 
     return (
         <div>
-            <ReactQuill 
-                theme="snow"
-                style={{background: "#fff"}}
-                modules={modules}
-                formats={formats}
-                value={text}
-                onChange={handleChange}
-                placeholder="Digite o enunciado da questão aqui."
-            />
+            <p>{text.enunciado}</p>
+            <CKEditor
+                    editor={ ClassicEditor }
+                    data="<p>Digite o enunciado aqui.</p>"
+                    onInit={ editor => {
+                        console.log( 'Editor is ready to use!', editor );
+                    } }
+                    config={
+                        {
+                            ckfinder: {
+                                uploadUrl: postURL
+                            }
+                        }
+                    }
+                    onChange={handleEditorChange}
+                />
         </div>
     )
 }

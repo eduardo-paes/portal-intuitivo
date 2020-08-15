@@ -43,12 +43,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-
 // -- Dados iniciais da constante Atividade
 const initialState = {
     disciplina: "",
     topico: "",
-    enunciado: [],
+    enunciado: "",
     resposta: [],
     tipoResposta: "",
     gabarito: ""
