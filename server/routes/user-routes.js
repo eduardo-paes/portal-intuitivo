@@ -37,11 +37,11 @@ router.get("/configuracoes/disciplina/:id", DisciplinaCtrl.encDisciplinaPorID);
 router.get("/configuracoes", DisciplinaCtrl.listarDisciplinas);
 
 const multiparty = require('connect-multiparty');
-const MultipartyMiddleware = multiparty({uploadDir: __dirname + '../../uploads'})
+const MultipartyMiddleware = multiparty({uploadDir: __dirname + '../../uploads/question'})
 
 router.post('/uploads', MultipartyMiddleware, (req, res) => {
     console.log(req.files.upload);
-    console.log(res.files.upload);
+    // console.log(res.files.upload);
 });
 
 // Rota para armazenamento de arquivos de mídia
@@ -68,7 +68,7 @@ router.post("/upload-arquivo", (req, res) => {
     
     upload(req, res, err => {
         if (err) {
-            console.log(err);
+            console.log("Erro: ", err);
             return res.json({ success: false, err });
         }
         return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.filename });

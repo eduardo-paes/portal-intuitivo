@@ -1,12 +1,11 @@
 {
-  "name": "Projeto",
+  "name": "Server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "appClient": "cd ../client && npm start",
-    "ckeditor": "concurrently \" nodemon index.js\" \" npm run appClient\""
+    "appClient": "cd ../client && npm start"
   },
   "keywords": [],
   "author": "",
