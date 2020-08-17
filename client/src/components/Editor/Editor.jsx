@@ -1,9 +1,11 @@
 import React from "react";
 import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import Editor from '@ckeditor/ckeditor5-build-inline';
+// import Editor from 'ckeditor5-custom-build';
 
 const editorConfig = {
-    ckfinder: {uploadUrl: "http://localhost:3000/api/uploads"}
+    ckfinder: {uploadUrl: "http://localhost:3000/api/uploads"},
+    language: 'pt-Br'
 };
 
 function TextEditor (props) {
@@ -21,7 +23,7 @@ function TextEditor (props) {
         <div>
             <p>{text.enunciado}</p>
             <CKEditor
-                    editor={ ClassicEditor }
+                    editor={ Editor }
                     data="<p>Digite o enunciado aqui.</p>"
                     onInit={ editor => {console.log( 'Editor is ready to use!', editor )} }
                     config={ editorConfig }
