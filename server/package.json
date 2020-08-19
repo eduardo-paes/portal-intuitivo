@@ -1,11 +1,10 @@
 {
-  "name": "Server",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "appClient": "cd ../client && npm start"
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -26,7 +25,7 @@
     "nodemon": "^2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^3.4.3",
     "s": "^1.0.0"
   },
   "browserslist": {

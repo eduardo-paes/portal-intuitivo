@@ -11,14 +11,14 @@ module.exports = {
     storage: multer.diskStorage({ 
         // Destino de armazenamento
         destination: (req, file, cb) => {
-            cb(null, path.resolve(__dirname, '..', '..', 'uploads'))
+            cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
         },
         // Nome do arquivo
         filename: (req, file, cb) => {
             // Gerando número aleatório para compor nome da imagem
             crypto.randomBytes(16, (err, hash) => {
                 if (err) cb(err);
-                const fileName = `${hash.toString('hex')}-${file.originalname}`
+                const fileName = `questao-${hash.toString('hex')}`
                 cb(null, fileName);
             });
         },
