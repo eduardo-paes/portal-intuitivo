@@ -1,6 +1,7 @@
 // Define as rotas que serão utilizadas para lidar com o banco de dados
 const express = require("express");
 const bodyparser = require("body-parser");
+const path = require("path");
 const router = express.Router();
 
 router.use(bodyparser.urlencoded({extended: true}));
@@ -10,6 +11,7 @@ router.use(bodyparser.json());
 const UsuarioCtrl = require("../controllers/user-ctrl");
 const ConteudoCtrl = require("../controllers/content-ctrl");
 const DisciplinaCtrl = require("../controllers/subject-ctrl");
+const QuestaoCtrl = require("../controllers/question-ctrl");
 
 // Multer
 const multer = require("multer");
@@ -36,17 +38,24 @@ router.delete("/configuracoes/disciplina/:id", DisciplinaCtrl.removerDisciplina)
 router.get("/configuracoes/disciplina/:id", DisciplinaCtrl.encDisciplinaPorID);
 router.get("/configuracoes", DisciplinaCtrl.listarDisciplinas);
 
-const multiparty = require('connect-multiparty');
-const MultipartyMiddleware = multiparty({uploadDir: __dirname + '../../uploads/question'})
+// Definição dos métodos para cada rota do conteúdo
+router.post("/controle-questao", QuestaoCtrl.inserirQuestao);
+router.put("/controle-questao/:id", QuestaoCtrl.atualizarQuestao);
+router.delete("/controle-questao/:id", QuestaoCtrl.removerQuestao);
+router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
+router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 
-router.post('/uploads', MultipartyMiddleware, (req, res) => {
-    console.log(req.files.upload);
-    // console.log(res.files.upload);
-});
+// // Rota para armazenamento de arquivos de mídia 1
+// const multiparty = require('connect-multiparty');
+// const MultipartyMiddleware = multiparty({uploadDir: __dirname + '../../uploads/question'})
 
-// Rota para armazenamento de arquivos de mídia
+// router.post('/uploads', MultipartyMiddleware, (req, res) => {
+//     console.log(req.files.upload);
+//     console.log(res.files.upload);
+// });
+
+// Rota para armazenamento de arquivos de mídia 2
 router.post("/upload-arquivo", (req, res) => {
-    const path = require("path");
 
     let questaoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
@@ -64,14 +73,14 @@ router.post("/upload-arquivo", (req, res) => {
         }
     });
 
-    const upload = multer({ storage: questaoStorage }).single("file");
+    const upload = multer({ storage: questaoStorage }).single("upload");
     
     upload(req, res, err => {
         if (err) {
-            console.log("Erro: ", err);
+            console.log(err);
             return res.json({ success: false, err });
         }
-        return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.filename });
+        return res.json({ success: true, url: res.req.file.path });
     });
 });
 

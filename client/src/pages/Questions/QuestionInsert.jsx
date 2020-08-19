@@ -50,7 +50,10 @@ const initialState = {
     enunciado: "",
     resposta: [],
     tipoResposta: "",
-    gabarito: ""
+    gabarito: "",
+    dataCriacao: new Date(),
+    dataEdicao: new Date(),
+    autor: ""
 }
 
 // -- Dados iniciais da constante Opções
@@ -59,11 +62,12 @@ const initialOptionState = {
     gabarito: false
 }
 
+// -- Função Principal
 function QuestionInsert() {
     const classes = useStyles();
-    const [disciplina, setDisciplina] = useState([]);               // Disciplinas do Banco de Dados
-    const [questao, setQuestao] = useState(initialState);           // Guarda as alterações temporárias do formulário
-    const [tipoResposta, setTipoResposta] = useState("");           // Guarda as alterações temporárias sobre o tipo de questão
+    const [disciplina, setDisciplina] = useState([]);                       // Disciplinas do Banco de Dados
+    const [questao, setQuestao] = useState(initialState);                   // Guarda as alterações temporárias do formulário
+    const [tipoResposta, setTipoResposta] = useState("multiplaEscolha");    // Guarda as alterações temporárias sobre o tipo de questão
     const [opcoes, setOpcoes] = useState([initialOptionState]);
 
     // -- Carrega as Disciplinas existentes no banco
@@ -90,18 +94,34 @@ function QuestionInsert() {
 
     // -- Salvar dados das opções de resposta
     function handleOptionChange(position, name, value) {
-        var options = value.split('\n').map(option => {
-            return {
-                opcao: option, 
-                gabarito: false
-            };
-        });
+        // Altera valor do gabarito de cada questão
+        if (name === "gabarito") {
+            return setOpcoes(opcoes.map((item, index) => {
+                if (index === position) {
+                    return { ...item, [name]: !item.gabarito };
+                } else {
+                    return item;
+                }
+            })); 
+        }
 
+        // Verifica se há inserção de múltiplas opções de uma só vez
+        var options = value.split('\n').map(option => {
+            return option !== '\n' && {
+                opcao: option,
+                gabarito: false,
+            }
+        });
+        
+        console.log(options);
+
+        // Caso haja inserção de múltiplas respostas
         if (options.length > 2) {
-            console.log("Texto");
             setOpcoes(options);
-        } else {
-            console.log("Frase");
+        }
+        
+        // Caso não haja inserção de múltiplas respostas
+        else {
             setOpcoes(opcoes.map((item, index) => {
                 if (index === position) {
                     return { ...item, [name]: value };
@@ -109,7 +129,6 @@ function QuestionInsert() {
                     return item;
                 }
             }));
-            console.log(opcoes);
         }
     }
 
@@ -132,6 +151,28 @@ function QuestionInsert() {
             ...opcoes, 
             initialOptionState
         ]);
+    }
+
+    async function saveQuestion() {
+        if (questao.tipoRespota === "multiplaEscolha") {
+            let opcoesGabarito = opcoes.map(opcao => {
+                return opcao.filter((item, index) => {
+                    return item && index;
+                })
+            })
+            setQuestao(preValue => ({
+                ...preValue,
+                gabarito: opcoesGabarito
+            }))
+        }
+        await api
+            .inserirQuestao(questao)
+            .then(res => {
+                // Limpa os campos
+                if (res.status === 201) {
+                    setQuestao(initialState);
+                }
+            })
     }
 
     return (
@@ -251,7 +292,7 @@ function QuestionInsert() {
             </section>
         
             <section className="grupoBotoes">
-                <AddButton onClick={() => console.log(questao)}>Salvar</AddButton>
+                <AddButton onClick={saveQuestion}>Salvar</AddButton>
                 <Link to="/controle-questoes/create" style={{ textDecoration: 'none' }}>
                     <DeleteButton>Cancelar</DeleteButton>
                 </Link>

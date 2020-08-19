@@ -20,10 +20,7 @@ app.get("/", (req, res) => {
 
 app.use("/api", userRouter);
 
-app.listen(5000, function(err){
-    if (err) {
-        console.log(err);
-    }
+app.listen(5000, function(){
     console.log("Server started on port 5000.");
 });
   

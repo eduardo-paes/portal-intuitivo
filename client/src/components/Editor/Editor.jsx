@@ -1,12 +1,8 @@
 import React from "react";
 import CKEditor from '@ckeditor/ckeditor5-react';
-import Editor from '@ckeditor/ckeditor5-build-inline';
-// import Editor from 'ckeditor5-custom-build';
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
-const editorConfig = {
-    ckfinder: {uploadUrl: "http://localhost:3000/api/uploads"},
-    language: 'pt-Br'
-};
+import {uploadAdapterPlugin} from "./UploadEditor";
 
 function TextEditor (props) {
     const {text, setText} = props;
@@ -24,11 +20,16 @@ function TextEditor (props) {
             <p>{text.enunciado}</p>
             <CKEditor
                     editor={ Editor }
-                    data="<p>Digite o enunciado aqui.</p>"
-                    onInit={ editor => {console.log( 'Editor is ready to use!', editor )} }
-                    config={ editorConfig }
+                    name="ckeditor"
+                    data="<p><span style='color:hsl(0, 0%, 30%)'>Digite o enunciado aqui.</span></p>"
+                    onInit={editor => {
+                        editor.ui.view.editable.element.style.height = "200px"
+                        uploadAdapterPlugin(editor)
+                    }}
+                    // config={ { ckfinder: {uploadUrl: "http://localhost:5000/api/upload-arquivo"} } }
                     onError={ err => console.log(err) }
-                    onChange={ handleEditorChange}
+                    onChange={ handleEditorChange }
+                    style={{color: "#fff"}}
                 />
         </div>
     )

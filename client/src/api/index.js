@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:3000/api",
+    baseURL: "http://localhost:5000/api",
 });
 
 // -- Funções relacionadas ao Usuário
@@ -25,6 +25,13 @@ export const atualizarDisciplina = (id, disciplinaAtualizada) => api.put(`/confi
 export const removerDisciplina = id => api.delete(`/configuracoes/disciplina/${id}`);
 export const encDisciplinaPorID = id => api.get(`/configuracoes/disciplina/${id}`);
 
+// -- Funções relacionadas à Questão
+export const inserirQuestao = novaQuestao => api.post("/controle-questao", novaQuestao);
+export const listarQuestao = () => api.get("/controle-questao");
+export const atualizarQuestao = (id, questaoAtualizada) => api.put(`/controle-questao/${id}`, questaoAtualizada);
+export const removerQuestao = id => api.delete(`/controle-questao/${id}`);
+export const encQuestaoPorID = id => api.get(`/controle-questao/${id}`);
+
 const apis = {
     // Usuário
     inserirUsuario,
@@ -43,7 +50,13 @@ const apis = {
     listarDisciplinas,
     atualizarDisciplina,
     removerDisciplina,
-    encDisciplinaPorID
+    encDisciplinaPorID,
+    // Questão
+    inserirQuestao,
+    listarQuestao,
+    atualizarQuestao,
+    removerQuestao,
+    encQuestaoPorID
 }
 
 export default apis;
