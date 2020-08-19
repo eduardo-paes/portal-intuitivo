@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
                 variant="contained"
                 color="primary"
                 component="span"
+                disabled={conteudo === "" ? true : false}
                 className={classes.button}
                 startIcon={<VisibilityIcon />}
               >

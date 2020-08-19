@@ -8,11 +8,11 @@ import ContentForm from "../../components/Form/ContentForm";
 function initialState() {
   return {
     area: "",
-    disciplina: [""], 
+    disciplina: '', 
     topico: "",
     numeracao: 0,
-    conteudo: {},
-    autor: ""
+    autor: "",
+    conteudo: {}
   }
 }
 
@@ -29,14 +29,14 @@ function Content(props) {
 
   // -- Carrega as Disciplinas existentes no banco
   useEffect(() => {
-      const abortController = new AbortController();
-      async function fetchDisciplinaAPI() {
-          const response = await api.listarDisciplinas();
-          const value = response.data.data;
-          setDisciplina(value);
-      }
-      fetchDisciplinaAPI()
-      return abortController.abort();
+    const abortController = new AbortController();
+    async function fetchDisciplinaAPI() {
+        const response = await api.listarDisciplinas();
+        const value = response.data.data;
+        setDisciplina(value);
+    }
+    fetchDisciplinaAPI()
+    return abortController.abort();
   }, [disciplina]);
 
   // -- Definição das Funções
@@ -47,17 +47,16 @@ function Content(props) {
           ...preValue,
           [name]: value
         }));
-        console.log(conteudo);
-  }
-
+      }
+      
   const handleUpload = async event => {
-        
+    
     const file = event.target.files[0];
     setMaterial(preValue => ({
       ...preValue,
       conteudo: file
     }));
-
+    
     setConteudo(URL.createObjectURL(file));
   }
 
@@ -69,17 +68,16 @@ function Content(props) {
       autor: autorInfo,
       disciplina, 
       topico, 
-      numeracao,
-      conteudo
+      numeracao
     };
 
     console.log(novoConteudo);
 
 
-    if (material.conteudo) {
+    if (conteudo) {
       
       const formData = new FormData();
-      formData.append("conteudo", material.conteudo);
+      formData.append("conteudo", conteudo);
       fetch('http://localhost:3000/api/controle-conteudo', {
               method: 'POST',
               body: formData
@@ -101,7 +99,7 @@ function Content(props) {
   return (
       <ContentForm 
         data={material}
-        disciplinas={disciplina}
+        listaDisciplina={disciplina}
         onSubmit={onSubmit}
         conteudo={conteudo}
         handleUpload={handleUpload}

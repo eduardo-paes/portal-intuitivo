@@ -4,7 +4,7 @@ import { Grid, MenuItem } from "@material-ui/core";
 import UploadContent from "../UploadContent";
 
 function ContentForm (props) {
-    const { data, onMaterialChange, conteudo, disciplinas, handleUpload, onSubmit } = props;
+    const { data, onMaterialChange, conteudo, listaDisciplina, handleUpload, onSubmit } = props;
     const { area, disciplina, numeracao, topico } = data;
 
     return (
@@ -29,16 +29,16 @@ function ContentForm (props) {
             </Grid>
             <Grid item={true} xs={12} sm={4}>
                 <MyTextField
-                id="campoDisciplina"
-                variant="outlined"
-                select={true}
-                label="Disciplina"
-                name="disciplina"
-                defaultValue="Matemática"
-                value={disciplina}
-                onChange={onMaterialChange}>
+                    id="campoDisciplina"
+                    variant="outlined"
+                    select={true}
+                    label="Disciplina"
+                    name="disciplina"
+                    autoFocus={true}
+                    value={disciplina}
+                    onChange={onMaterialChange}>
                     {
-                        disciplinas.map((row, index) => {
+                        listaDisciplina.map((row, index) => {
                             return <MenuItem key={index} value={row.nome}>{row.nome}</MenuItem>
                         })
                     }
