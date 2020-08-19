@@ -3,15 +3,12 @@ import api from '../../api';
 
 
 import {StoreContext} from "../../utils";
-import { UploadContent } from "../../components";
-
-import {MyContainer, MyTextField} from "../../assets/styles/styledComponents";
-import {Grid, MenuItem} from '@material-ui/core';
+import ContentForm from "../../components/Form/ContentForm";
 
 function initialState() {
   return {
     area: "",
-    disciplina: "", 
+    disciplina: [""], 
     topico: "",
     numeracao: 0,
     conteudo: {},
@@ -49,7 +46,8 @@ function Content(props) {
       setMaterial(preValue => ({
           ...preValue,
           [name]: value
-      }));
+        }));
+        console.log(conteudo);
   }
 
   const handleUpload = async event => {
@@ -101,64 +99,14 @@ function Content(props) {
 
 
   return (
-      <MyContainer>
-        <h1 className="heading-page">Criar Conteúdo</h1>
-        <Grid container spacing={1}>
-          <Grid item={true} xs={12} sm={4}>
-            <MyTextField
-              id="campoArea"
-              variant="outlined"
-              disabled={false}
-              select={true}
-              label="Área do Conhecimento"
-              name="area"
-              value={material.area ? material.area : ""}
-              onChange={onMaterialChange}>
-              <MenuItem value="Ciências Humanas">Ciências Humanas</MenuItem>
-              <MenuItem value="Ciências da Natureza">Ciências da Natureza</MenuItem>
-              <MenuItem value="Linguagens">Linguagens</MenuItem>
-              <MenuItem value="Matemática">Matemática</MenuItem>
-            </MyTextField>
-          </Grid>
-          <Grid item={true} xs={12} sm={4}>
-            <MyTextField
-              id="campoDisciplina"
-              variant="outlined"
-              select={true}
-              label="Disciplina"
-              name="disciplina"
-              value={material.disciplina}
-              onChange={onMaterialChange}>
-              {
-                  disciplina.map((row, index) => {
-                      return <MenuItem key={index} value={row.nome}>{row.nome}</MenuItem>
-                  })
-              }
-            </MyTextField>
-          </Grid>
-          <Grid item={true} xs={12} sm={4}>
-            <MyTextField
-                id="campoNumeracao"
-                label="Numeração"
-                variant="outlined"
-                name="numeracao"
-                type="text"
-                value={material.numeracao}
-                onChange={onMaterialChange}/>
-          </Grid>
-          <Grid item={true} xs={12}>
-              <MyTextField
-                  id="campoTopico"
-                  label="Tópico"
-                  variant="outlined"
-                  name="topico"
-                  type="text"
-                  value={material.topico}
-                  onChange={onMaterialChange}/>
-          </Grid>
-      </Grid>
-      <UploadContent onChange={handleUpload} conteudo={conteudo} backTo="/controle-conteudo" onSubmit={onSubmit}/>
-    </MyContainer>
+      <ContentForm 
+        data={material}
+        disciplinas={disciplina}
+        onSubmit={onSubmit}
+        conteudo={conteudo}
+        handleUpload={handleUpload}
+        onMaterialChange={onMaterialChange}
+      />
   );
 
 };  
