@@ -31,17 +31,17 @@ function Content(props) {
   useEffect( () => {
 
     async function fetchConteudoAPI() {
-
-        const response = await api.encConteudoPorID(material.id);
-        setMaterial({ 
-          area: response.data.data.area, 
-          disciplina: response.data.data.disciplina, 
-          numeracao: response.data.data.numeracao, 
-          topico: response.data.data.topico
-        })
+      const response = await api.encConteudoPorID(material.id);
+      setMaterial({ 
+        area: response.data.data.area, 
+        disciplina: response.data.data.disciplina, 
+        numeracao: response.data.data.numeracao, 
+        topico: response.data.data.topico
+      })
     }
     fetchConteudoAPI();
-
+    
+  // eslint-disable-next-line
   }, []);
 
   // -- Carrega as Disciplinas existentes no banco
@@ -78,7 +78,7 @@ function Content(props) {
   }
 
   const onSubmit = async event => {
-    const {area, autor, disciplina, topico, numeracao, conteudo} = material;
+    const {area, /*autor,*/ disciplina, topico, numeracao, conteudo} = material;
 
     const novoConteudo = {
       area,

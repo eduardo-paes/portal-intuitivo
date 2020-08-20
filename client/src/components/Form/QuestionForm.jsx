@@ -1,10 +1,8 @@
-import React, { useContext, useState, useEffect } from "react";
+import React from "react";
 import {Link} from 'react-router-dom'
-import api from '../../api'
 
 // -- Editor / Context
-import { TextEditor } from "../../components";
-import { StoreContext } from "../../utils";
+import { TextEditor } from "../";
 
 // -- Styles
 import { MyContainer, MyTextField, MyCard, AddButton, DeleteButton } from "../../assets/styles/styledComponents"
@@ -47,8 +45,110 @@ const useStyles = makeStyles((theme) => ({
 
 function QuestionForm (props) {
     const classes = useStyles();
-    const {title, questao, disciplina, opcoes, autor} = props;
-    const {handleQuestionChange, handleOptionChange, addNewOption, saveQuestion, deleteThisOption} = props;
+ 
+    const {title, disciplina, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
+
+    // -- Salvar dados do formulário inicial
+    function handleChange (event) {
+        const {name, value} = event.target;
+        setQuestao(preValue => ({
+            ...preValue,
+            [name]: value
+        }));
+    }
+
+    // -- Salvar dados do enunciado da questão
+    function handleEnunciado(value) {
+        setQuestao(preValue => ({
+            ...preValue,
+            enunciado: value
+        }));
+    }
+
+    // -- Salvar dados das opções da questão
+    function handleOpcao(position, value) {
+        // Inserção múltipla de opções de resposta
+        if (value.includes('</p><p>') && value.length > 10) {
+            var options = value.split('</p><p>').map(option => {
+                let aux = ''
+                option.includes('<p>') && (aux = '<p>')
+                option.includes('</p>') && (aux = '</p>')
+                return {
+                    opcao: '<p>' + option.replace(aux, '') + '</p>',
+                    gabarito: false,
+                }
+            });
+            // &nbsp;
+
+            console.log(options)
+            setOpcoes(options);
+            console.log(opcoes)
+        }
+        
+        // Inserção individual de opções de resposta
+        else {
+            setOpcoes(opcoes.map((item, index) => {
+                if (index === position) {
+                    return { ...item, opcao: value };
+                } else {
+                    return item;
+                }
+            }));
+        }
+    
+        setQuestao(preValue => ({
+            ...preValue,
+            resposta: opcoes
+        }));
+    }
+
+    // -- Salvar dados de gabarito de cada opção
+    function handleResposta(value) {
+        // Altera valor do gabarito de cada questão
+        setQuestao(preValue => ({
+            ...preValue,
+            tipoResposta: value
+        }));
+    }
+
+    // -- Salvar dados de gabarito de cada opção
+    function handleGabarito(position) {
+        // Altera valor do gabarito de cada questão
+        setOpcoes(opcoes.map((item, index) => {
+            if (index === position) {
+                return { ...item, "gabarito": !item.gabarito };
+            } else {
+                return item;
+            }
+        })); 
+
+        // Salvando novo status
+        setQuestao(preValue => ({
+            ...preValue,
+            resposta: opcoes
+        }));
+    }
+
+    // -- Remover opção de resposta
+    function deleteThisOption(position) {
+        setOpcoes(options => {
+            return options.filter((option, index) => {
+                return index !== position;
+            })
+        })
+    }
+
+    // -- Adicionar opção de resposta
+    function addNewOption() {
+        setQuestao(preValue => ({
+            ...preValue,
+            resposta: opcoes
+        }));
+        setOpcoes([
+            ...opcoes, 
+            initialOptionState
+        ]);
+    }
 
     return (
         <MyContainer>

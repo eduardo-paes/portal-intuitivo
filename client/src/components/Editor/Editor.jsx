@@ -19,7 +19,10 @@ const editorConfig = {
 			'undo',
 			'redo'
 		]
-    }
+    },
+    removePlugins: [ 
+        'List'
+    ],
 }
 
 // -- Função Principal

@@ -38,7 +38,7 @@ class UsersInsert extends Component {
         const file = event.target.files[0];
         this.setState({ 
             ...this.state,
-            nomeArquivo: "profile."+file.name,
+            nomeArquivo: file.name,
             urlArquivo: URL.createObjectURL(file),
             foto: file
         })
@@ -69,7 +69,7 @@ class UsersInsert extends Component {
             if (foto) {
                 const formData = new FormData();
                 formData.append("foto", foto);
-                fetch('http://localhost:3000/api/controle-usuario', {
+                fetch('http://localhost:5000/api/controle-usuario', {
                         method: 'POST',
                         body: formData
                     })
