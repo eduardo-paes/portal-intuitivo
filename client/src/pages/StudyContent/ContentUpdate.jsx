@@ -29,7 +29,7 @@ function Content(props) {
   const [material, setMaterial] = useState(initialState(props));
   
   useEffect( () => {
-
+    const abortController = new AbortController();
     async function fetchConteudoAPI() {
 
         const response = await api.encConteudoPorID(material.id);
@@ -41,6 +41,7 @@ function Content(props) {
         })
     }
     fetchConteudoAPI();
+    return abortController.abort();
 
   }, []);
 
@@ -95,7 +96,7 @@ function Content(props) {
       
       const formData = new FormData();
       formData.append("conteudo", conteudo);
-      fetch('http://localhost:3000/api/controle-conteudo', {
+      fetch('http://localhost:5000/api/controle-conteudo', {
               method: 'POST',
               body: formData
           })

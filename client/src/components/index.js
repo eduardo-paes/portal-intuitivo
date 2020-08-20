@@ -21,7 +21,7 @@ import DialogForm from "./Dialogs/DialogForm"
 import TextEditor from "./Editor/Editor"
 
 // -- Upload Content
-import UploadContent from './UploadContent'
+import UploadContent from './Upload/UploadContent'
 
 export { 
     UserTable,

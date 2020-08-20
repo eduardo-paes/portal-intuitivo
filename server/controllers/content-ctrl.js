@@ -4,7 +4,7 @@ const Conteudo = require('../models/content-model');
 inserirConteudo = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
-    console.log(req.body);
+    console.log(body);
 
     if (!body) {
         return res.status(400).json({
@@ -12,7 +12,7 @@ inserirConteudo = (req, res) => {
             error: "O conteúdo deve ser fornecido.",
         })
     }
-
+    
     const novoConteudo = new Conteudo(body);
 
     // Verifica se dados não são nulos
@@ -43,15 +43,16 @@ inserirConteudo = (req, res) => {
 // Função para atualizar conteúdo por ID
 atualizarConteudo = async (req, res) => {
     // Recebe dados do formulário
+    console.log(req.params);
     const body = req.body;
-
+    
     if (!body) {
         return res.status(400).json({
             success: false,
             error: "Os dados devem ser fornecidos.",
         })
     }
-
+    
     const conteudo = new Conteudo(body);
 
     // Verifica se dados não são nulos
@@ -61,16 +62,18 @@ atualizarConteudo = async (req, res) => {
             .json({success: false, error: "Os dados são nulos ou incompatíveis."})
     }
 
+    
     // Busca conteúdo pelo id (id da rota)
     Conteudo.findOne({
         _id: req.params.id
     }, (err, conteudoEncontrado) => {
         if (err) {
             return res
-                .status(404)
-                .json({err, message: "Conteúdo não encontrado."})
+            .status(404)
+            .json({err, message: "Conteúdo não encontrado."})
         }
-
+        console.log(conteudo);
+        console.log(conteudoEncontrado);
         // Atualiza dados do conteúdo encontrado
         conteudoEncontrado.topico = conteudo.topico
         conteudoEncontrado.area = conteudo.area

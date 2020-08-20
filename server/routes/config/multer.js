@@ -2,8 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const crypto = require("crypto");
 
-const storageTypes = {
-    foto: multer.diskStorage({
+const storageFoto = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "profile"));
         }, 
@@ -11,31 +10,30 @@ const storageTypes = {
             file.key = `profile.${file.originalname}`;
             cb(null, file.key);
         }     
-    }),
+});
 
-    conteudo: multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, path.resolve(__dirname, "..", "..", "uploads", "content"));
-        }, 
-        filename: (req, file, cb) => {
-            file.key = `conteudo.${file.originalname}`;
-            cb(null, file.key);
-        }   
-    }),
+const storageConteudo = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.resolve(__dirname, "..", "..", "uploads", "content"));
+    }, 
+    filename: (req, file, cb) => {
+        file.key = `conteudo.${file.originalname}`;
+        cb(null, file.key);
+    }   
+});
 
-    questao: multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
-        }, 
-        filename: (req, file, cb) => {
-            crypto.randomBytes(16, (err, hash) => {
-                if (err) cb(err);
-                const fileName = `${hash.toString('hex')}-${file.originalname}`
-                cb(null, fileName);
-            });
-        },
-    })
-}
+const storageQuestao = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
+    }, 
+    filename: (req, file, cb) => {
+        crypto.randomBytes(16, (err, hash) => {
+            if (err) cb(err);
+            const fileName = `${hash.toString('hex')}-${file.originalname}`
+            cb(null, fileName);
+        });
+    },
+});
 
 const fotoUpload = {
     dest: path.resolve(__dirname, "..", "..", "uploads", "profile"),
@@ -53,7 +51,7 @@ const questaoUpload = {
 }
 
 module.exports = {
-    fotoUpload,
-    conteudoUpload,
-    questaoUpload
+    storageFoto,
+    storageConteudo,
+    storageQuestao
 };

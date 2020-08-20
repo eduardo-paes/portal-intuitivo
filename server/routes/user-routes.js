@@ -15,7 +15,8 @@ const QuestaoCtrl = require("../controllers/question-ctrl");
 
 // Multer
 const multer = require("multer");
-const {conteudoUpload, fotoUpload} = require("../src/multerConfig");
+const {storageConteudo, fotoUpload} = require("../src/multerConfig");
+const uploadConteudo = multer({storage: storageConteudo});
 
 // Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", multer(fotoUpload).single("foto"), UsuarioCtrl.inserirUsuario);
@@ -25,8 +26,8 @@ router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
 
 // Definição dos métodos para cada rota do conteúdo
-router.post("/controle-conteudo", multer(conteudoUpload).single("conteudo"), ConteudoCtrl.inserirConteudo);
-router.put("/controle-conteudo/:id", multer(conteudoUpload).single("conteudo"), ConteudoCtrl.atualizarConteudo);
+router.post("/controle-conteudo", uploadConteudo.single("conteudo"), ConteudoCtrl.inserirConteudo);
+router.put("/controle-conteudo/:id", uploadConteudo.single("conteudo"), ConteudoCtrl.atualizarConteudo);
 router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
 router.get("/controle-conteudo/:id", ConteudoCtrl.encConteudoPorID);
 router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);
