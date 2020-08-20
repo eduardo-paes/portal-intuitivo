@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {Link} from 'react-router-dom'
 import api from '../../api'
 
-// -- Editor
+// -- Editor / Context
 import { TextEditor } from "../../components";
+import { StoreContext } from "../../utils";
 
 // -- Styles
 import { MyContainer, MyTextField, MyCard, AddButton, DeleteButton } from "../../assets/styles/styledComponents"
 import { Grid, MenuItem, ButtonGroup, Button, Fab, Checkbox } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { makeStyles } from '@material-ui/core/styles';
 import "./styles.css"
 
+// -- Local Styles
 const useStyles = makeStyles((theme) => ({
     buttons: {
         marginTop: theme.spacing(2),
@@ -31,10 +33,10 @@ const useStyles = makeStyles((theme) => ({
         marginTop: "0.4rem"
     },
     questaoTipo: {
-        textAlign: "center",
-        alignItems: "center",
-        alignSelf: "center",
-        alignContent: "center"
+        textAlign: "right",
+        alignItems: "right",
+        alignSelf: "right",
+        alignContent: "right"
     },
     questaoOpcoes: {
         padding: "1rem",
@@ -43,14 +45,13 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-// -- Dados iniciais da constante Atividade
-const initialState = {
+// -- Dados iniciais da constante Questão
+const initialQuestionState = {
     disciplina: "",
     topico: "",
     enunciado: "",
     resposta: [],
-    tipoResposta: "",
-    gabarito: "",
+    tipoResposta: "multiplaEscolha",
     dataCriacao: new Date(),
     dataEdicao: new Date(),
     autor: ""
@@ -65,10 +66,10 @@ const initialOptionState = {
 // -- Função Principal
 function QuestionInsert() {
     const classes = useStyles();
-    const [disciplina, setDisciplina] = useState([]);                       // Disciplinas do Banco de Dados
-    const [questao, setQuestao] = useState(initialState);                   // Guarda as alterações temporárias do formulário
-    const [tipoResposta, setTipoResposta] = useState("multiplaEscolha");    // Guarda as alterações temporárias sobre o tipo de questão
+    const [disciplina, setDisciplina] = useState([]);                               // Disciplinas do Banco de Dados
+    const [questao, setQuestao] = useState(initialQuestionState);                   // Guarda as alterações temporárias do formulário
     const [opcoes, setOpcoes] = useState([initialOptionState]);
+    const {token} = useContext(StoreContext);
 
     // -- Carrega as Disciplinas existentes no banco
     useEffect(() => {
@@ -87,49 +88,79 @@ function QuestionInsert() {
         const {name, value} = event.target;
         setQuestao(preValue => ({
             ...preValue,
-            [name]: value,
-            tipoResposta: tipoResposta
+            [name]: value
         }));
     }
 
-    // -- Salvar dados das opções de resposta
-    function handleOptionChange(position, name, value) {
-        // Altera valor do gabarito de cada questão
-        if (name === "gabarito") {
-            return setOpcoes(opcoes.map((item, index) => {
-                if (index === position) {
-                    return { ...item, [name]: !item.gabarito };
-                } else {
-                    return item;
+    // -- Salvar dados do enunciado da questão
+    function handleEnunciado(value) {
+        setQuestao(preValue => ({
+            ...preValue,
+            enunciado: value
+        }));
+    }
+
+    function handleOpcao(position, value) {
+        // Inserção múltipla de opções de resposta
+        if (value.includes('</p><p>') && value.length > 10) {
+            var options = value.split('</p><p>').map(option => {
+                let aux = ''
+                option.includes('<p>') && (aux = '<p>')
+                option.includes('</p>') && (aux = '</p>')
+                return {
+                    opcao: '<p>' + option.replace(aux, '') + '</p>',
+                    gabarito: false,
                 }
-            })); 
-        }
+            });
+            // &nbsp;
 
-        // Verifica se há inserção de múltiplas opções de uma só vez
-        var options = value.split('\n').map(option => {
-            return option !== '\n' && {
-                opcao: option,
-                gabarito: false,
-            }
-        });
-        
-        console.log(options);
-
-        // Caso haja inserção de múltiplas respostas
-        if (options.length > 2) {
+            console.log(options)
             setOpcoes(options);
+            console.log(opcoes)
         }
         
-        // Caso não haja inserção de múltiplas respostas
+        // Inserção individual de opções de resposta
         else {
             setOpcoes(opcoes.map((item, index) => {
                 if (index === position) {
-                    return { ...item, [name]: value };
+                    return { ...item, opcao: value };
                 } else {
                     return item;
                 }
             }));
         }
+    
+        setQuestao(preValue => ({
+            ...preValue,
+            resposta: opcoes
+        }));
+    }
+
+    // -- Salvar dados de gabarito de cada opção
+    function handleResposta(value) {
+        // Altera valor do gabarito de cada questão
+        setQuestao(preValue => ({
+            ...preValue,
+            tipoResposta: value
+        }));
+    }
+
+    // -- Salvar dados de gabarito de cada opção
+    function handleGabarito(position) {
+        // Altera valor do gabarito de cada questão
+        setOpcoes(opcoes.map((item, index) => {
+            if (index === position) {
+                return { ...item, "gabarito": !item.gabarito };
+            } else {
+                return item;
+            }
+        })); 
+
+        // Salvando novo status
+        setQuestao(preValue => ({
+            ...preValue,
+            resposta: opcoes
+        }));
     }
 
     // -- Remover opção de resposta
@@ -141,7 +172,7 @@ function QuestionInsert() {
         })
     }
 
-    // -- Adicionar nova opção de resposta
+    // -- Adicionar opção de resposta
     function addNewOption() {
         setQuestao(preValue => ({
             ...preValue,
@@ -153,39 +184,36 @@ function QuestionInsert() {
         ]);
     }
 
+    // -- Salva questão no banco de dados
     async function saveQuestion() {
-        if (questao.tipoRespota === "multiplaEscolha") {
-            let opcoesGabarito = opcoes.map(opcao => {
-                return opcao.filter((item, index) => {
-                    return item && index;
-                })
-            })
-            setQuestao(preValue => ({
-                ...preValue,
-                gabarito: opcoesGabarito
-            }))
-        }
-        await api
-            .inserirQuestao(questao)
-            .then(res => {
-                // Limpa os campos
-                if (res.status === 201) {
-                    setQuestao(initialState);
-                }
-            })
+        setQuestao(preValue => ({
+            ...preValue,
+            autor: token.userID,
+            resposta: opcoes
+        }))
+
+        console.log(questao)
+
+        // await api
+        //     .inserirQuestao(questao)
+        //     .then(res => {
+        //         // Limpa os campos
+        //         if (res.status === 201) {
+                    setQuestao(initialQuestionState);
+                    setOpcoes([initialOptionState]);
+        //         }
+        //     })
     }
 
     return (
         <MyContainer>
-            <section id="cabecalhoQuestao">
+            <section className="cabecalhoQuestao">
                 <Grid container={true} className={classes.root} spacing={2}>
                     <Grid item={true} xs={12} sm={9}>
                         <h1 className="heading-page">Criar Questão</h1>
                     </Grid>
                 </Grid>
-            </section>
 
-            <section className="conteudoQuestao">
                 <Grid container={true} spacing={1}>
                     <Grid item={true} xs={12} sm={6}>
                         <MyTextField
@@ -216,34 +244,40 @@ function QuestionInsert() {
                             onChange={handleChange}/>
                     </Grid>
                 </Grid>
+            </section>
                 
-                <div className="enunciadoQuestao">
-                    <h2 className="subtitle-page">Enunciado</h2>
-                    <TextEditor text={questao} setText={setQuestao}/>
-                </div>
+            <section className="enunciadoQuestao">
+                <h2 className="subtitle-page">Enunciado</h2>
+                <MyCard>
+                    <TextEditor 
+                    optionType={false}
+                    text={questao} 
+                    setText={handleEnunciado}
+                />
+                </MyCard>
+            </section>
 
-                <div className="respostasQuestao">
-                    <h2 className="subtitle-page">Respostas</h2>
+            <section className="respostaQuestao">
+                <h2 className="subtitle-page">Respostas</h2>
 
-                    <Grid container={true} spacing={1}>
-                        <Grid item={true} xs={12} md={8} sm={8}>
-                            {
-                                tipoResposta === "discursiva" 
-                                ? (<p>Questões discursivas possuem como opção de resposta uma caixa de texto.</p>) 
-                                : (<p>Defina abaixo as opções de resposta de acordo com o enunciado informado acima.</p>)
-                            }
-                        </Grid>
-
-                        <Grid className={classes.questaoTipo} item={true} xs={12} md={4} sm={4}>
-                            <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
-                                <Button onClick={() => setTipoResposta("multiplaEscolha")}>Múltipla Escolha</Button>
-                                <Button onClick={() => setTipoResposta("discursiva")}>Discursiva</Button>
-                            </ButtonGroup>
-                        </Grid>
+                <Grid container={true} spacing={1}>
+                    <Grid item={true} xs={12} md={8} sm={8}>
+                        {
+                            questao.tipoResposta === "discursiva" 
+                            ? (<p>Questões discursivas possuem como opção de resposta uma caixa de texto.</p>) 
+                            : (<p>Defina abaixo as opções de resposta de acordo com o enunciado informado acima.</p>)
+                        }
                     </Grid>
-                </div>
 
-                <MyCard hidden={tipoResposta === "discursiva" ? true : false}>
+                    <Grid className={classes.questaoTipo} item={true} xs={12} md={4} sm={4}>
+                        <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
+                            <Button onClick={() => handleResposta("multiplaEscolha")}>Múltipla Escolha</Button>
+                            <Button onClick={() => handleResposta("discursiva")}>Discursiva</Button>
+                        </ButtonGroup>
+                    </Grid>
+                </Grid>
+
+                <MyCard hidden={questao.tipoResposta === "discursiva" ? true : false}>
                         <label id="gabaritoLabel">Gabarito</label>
                         
                         {opcoes.map((item, index) => {
@@ -257,11 +291,21 @@ function QuestionInsert() {
                                                 <Checkbox
                                                     checked={opcoes.gabarito}
                                                     className={classes.checkBox}
-                                                    onChange={e => handleOptionChange(index, "gabarito", e.target.value)}
+                                                    onChange={() => handleGabarito(index)}
                                                     inputProps={{ 'aria-label': 'primary checkbox' }}/>
                                             </Grid>
                                             <Grid item={true} xs={10} sm={11}>
-                                                <MyTextField
+                                                <div className="questionEditor">
+                                                    <TextEditor 
+                                                        optionType={true}
+                                                        opcoes={opcoes}
+                                                        text={item.opcao} 
+                                                        setText={handleOpcao}
+                                                        position={index}
+                                                        styles={classes.questionEditor}
+                                                        />
+                                                </div>
+                                                {/* <MyTextField
                                                     id="campoOpcao"
                                                     label={`Opção ${index+1}`}
                                                     name="opcao"
@@ -270,7 +314,7 @@ function QuestionInsert() {
                                                     // rowsMax={1}
                                                     value={item.opcao}
                                                     onKeyDown={e => {e.keyCode === 13 && addNewOption()}}
-                                                    onChange={e => handleOptionChange(index, "opcao", e.target.value)}/>
+                                                    onChange={e => handleOptionChange(index, "opcao", e.target.value)}/> */}
                                             </Grid>
                                         </Grid>
                                     </Grid>

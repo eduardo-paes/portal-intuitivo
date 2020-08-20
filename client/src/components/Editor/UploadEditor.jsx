@@ -22,9 +22,6 @@ export class UploadAdapter {
           onUploadProgress: (progressEvent) => {
             this.loader.uploadTotal = progressEvent.total
             this.loader.uploaded = progressEvent.loaded
-            // const uploadPercentage = parseInt(
-            //   Math.round((progressEvent.loaded / progressEvent.total) * 100)
-            // )
           },
         })
           .then(({ data }) => ({ default: data.url }))

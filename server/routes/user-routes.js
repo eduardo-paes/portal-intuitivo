@@ -45,24 +45,20 @@ router.delete("/controle-questao/:id", QuestaoCtrl.removerQuestao);
 router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 
-// // Rota para armazenamento de arquivos de mídia 1
-// const multiparty = require('connect-multiparty');
-// const MultipartyMiddleware = multiparty({uploadDir: __dirname + '../../uploads/question'})
-
-// router.post('/uploads', MultipartyMiddleware, (req, res) => {
-//     console.log(req.files.upload);
-//     console.log(res.files.upload);
-// });
-
 // Rota para armazenamento de arquivos de mídia 2
 router.post("/upload-arquivo", (req, res) => {
+    const crypto = require("crypto");
 
     let questaoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
         },
         filename: (req, file, cb) => {
-            cb(null, `question_${file.originalname}`);
+            crypto.randomBytes(16, (err, hash) => {
+                if (err) cb(err);
+                const fileName = `${hash.toString('hex')}-${file.originalname}`
+                cb(null, fileName);
+            });
         },
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname)
@@ -73,7 +69,7 @@ router.post("/upload-arquivo", (req, res) => {
         }
     });
 
-    const upload = multer({ storage: questaoStorage }).single("upload");
+    const upload = multer({ storage: questaoStorage }).single("file");
     
     upload(req, res, err => {
         if (err) {
