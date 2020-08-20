@@ -20,10 +20,6 @@ const Conteudo = new Schema({
         type: Number,
         // required: true
     },
-    conteudo: {
-        type: Object,
-        // required: true
-    },
     autor: {
         type: String,
         // type: String,

@@ -76,7 +76,6 @@ atualizarConteudo = async (req, res) => {
         conteudoEncontrado.area = conteudo.area
         conteudoEncontrado.disciplina = conteudo.disciplina
         conteudoEncontrado.numeracao = conteudo.numeracao
-        conteudoEncontrado.conteudo = conteudo.conteudo
         conteudoEncontrado.autor = conteudo.autor
 
         // Salva alterações

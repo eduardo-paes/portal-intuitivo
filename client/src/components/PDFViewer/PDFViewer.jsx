@@ -14,8 +14,12 @@ function PDFViewer (props) {
     const classe = useStyles();
     const { source } = props;
     return (
-        <iframe src={`${source}#toolbar=0`} className={classe.pdfBox} title="Conteúdo PDF." />
-    )
+        < iframe 
+            src={`${source}#toolbar=0`}  
+            className={classe.pdfBox} 
+            title="Conteúdo PDF."
+        />
+    );
 }
 
 export default PDFViewer;
