@@ -99,7 +99,7 @@ function Content(props) {
         
         const formData = new FormData();
         formData.append("conteudo", material.conteudo);
-        fetch('http://localhost:5000/api/controle-conteudo', {
+        fetch('http://localhost:5000/api/upload-conteudo', {
               method: 'POST',
               body: formData
             })

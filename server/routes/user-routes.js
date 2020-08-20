@@ -16,7 +16,6 @@ const QuestaoCtrl = require("../controllers/question-ctrl");
 // Multer
 const multer = require("multer");
 const {storageConteudo, fotoUpload} = require("../src/multerConfig");
-const uploadConteudo = multer({storage: storageConteudo});
 
 // Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", multer(fotoUpload).single("foto"), UsuarioCtrl.inserirUsuario);
@@ -26,8 +25,8 @@ router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
 
 // Definição dos métodos para cada rota do conteúdo
-router.post("/controle-conteudo", uploadConteudo.single("conteudo"), ConteudoCtrl.inserirConteudo);
-router.put("/controle-conteudo/:id", uploadConteudo.single("conteudo"), ConteudoCtrl.atualizarConteudo);
+router.post("/controle-conteudo", ConteudoCtrl.inserirConteudo);
+router.put("/controle-conteudo/:id", ConteudoCtrl.atualizarConteudo);
 router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
 router.get("/controle-conteudo/:id", ConteudoCtrl.encConteudoPorID);
 router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);
@@ -71,6 +70,34 @@ router.post("/upload-arquivo", (req, res) => {
     });
 
     const upload = multer({ storage: questaoStorage }).single("file");
+    
+    upload(req, res, err => {
+        if (err) {
+            console.log(err);
+            return res.json({ success: false, err });
+        }
+        return res.json({ success: true, url: res.req.file.path });
+    });
+});
+
+// Rota para armazenamento de conteúdo pdf
+router.post("/upload-conteudo", (req, res) => {
+    const crypto = require("crypto");
+
+    let conteudoStorage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, path.resolve(__dirname, "..", "..", "uploads", "content"));
+        },
+        filename: (req, file, cb) => {
+            crypto.randomBytes(16, (err, hash) => {
+                if (err) cb(err);
+                const fileName = `${hash.toString('hex')}-${file.originalname}`
+                cb(null, fileName);
+            });
+        }
+    });
+
+    const upload = multer({ storage: conteudoStorage }).single("conteudo");
     
     upload(req, res, err => {
         if (err) {
