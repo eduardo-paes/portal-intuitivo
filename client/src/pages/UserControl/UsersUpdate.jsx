@@ -81,7 +81,7 @@ class UsersUpdate extends Component {
             const data = new FormData();
             data.append("foto", foto);
             
-            fetch('http://localhost:3000/api/controle-usuario', {
+            fetch('http://localhost:5000/api/controle-usuario', {
                 method: 'POST',
                 body: data
             })

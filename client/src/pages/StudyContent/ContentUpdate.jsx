@@ -1,7 +1,6 @@
 import React, {useContext, useState, useEffect} from "react";
 import api from '../../api';
 
-
 import {StoreContext} from "../../utils";
 import ContentForm from "../../components/Form/ContentForm";
 
@@ -31,18 +30,19 @@ function Content(props) {
   useEffect( () => {
     const abortController = new AbortController();
     async function fetchConteudoAPI() {
-
-        const response = await api.encConteudoPorID(material.id);
-        setMaterial({ 
-          area: response.data.data.area, 
-          disciplina: response.data.data.disciplina, 
-          numeracao: response.data.data.numeracao, 
-          topico: response.data.data.topico
-        })
+      const response = await api.encConteudoPorID(material.id);
+      setMaterial({ 
+        area: response.data.data.area, 
+        disciplina: response.data.data.disciplina, 
+        numeracao: response.data.data.numeracao, 
+        topico: response.data.data.topico
+      })
     }
     fetchConteudoAPI();
     return abortController.abort();
 
+    
+  // eslint-disable-next-line
   }, []);
 
   // -- Carrega as Disciplinas existentes no banco

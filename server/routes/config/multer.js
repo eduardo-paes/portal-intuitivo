@@ -7,8 +7,11 @@ const storageFoto = multer.diskStorage({
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "profile"));
         }, 
         filename: (req, file, cb) => {
-            file.key = `profile.${file.originalname}`;
-            cb(null, file.key);
+            crypto.randomBytes(16, (err, hash) => {
+                if (err) cb(err);
+                const fileName = `${hash.toString('hex')}-${file.originalname}`
+                cb(null, fileName);
+            });
         }     
 });
 
