@@ -46,12 +46,13 @@ router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 
 // Rota para armazenamento de arquivos
-router.post("/upload-arquivo", (req, res) => {
+router.post("/upload-questao", (req, res) => {
     const crypto = require("crypto");
 
     let questaoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
+            
         },
         filename: (req, file, cb) => {
             crypto.randomBytes(16, (err, hash) => {
@@ -74,9 +75,9 @@ router.post("/upload-arquivo", (req, res) => {
     upload(req, res, err => {
         if (err) {
             console.log(err);
-            return res.json({ success: false, err });
+            return res.json({ uploaded: false, err });
         }
-        return res.json({ success: true, url: res.req.file.path });
+        return res.json({ uploaded: true, url: HttpUtility.JavaScriptStringEncode(req.file) });
     });
 });
 
