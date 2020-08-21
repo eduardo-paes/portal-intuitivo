@@ -7,15 +7,15 @@ const router = express.Router();
 router.use(bodyparser.urlencoded({extended: true}));
 router.use(bodyparser.json());
 
+// Multer para importação de arquivos
+const multer = require("multer");
+const {conteudoUpload, fotoUpload} = require("../src/multerConfig");
+
 // Importação dos métodos de controle
 const UsuarioCtrl = require("../controllers/user-ctrl");
 const ConteudoCtrl = require("../controllers/content-ctrl");
 const DisciplinaCtrl = require("../controllers/subject-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
-
-// Multer
-const multer = require("multer");
-const {conteudoUpload, fotoUpload} = require("../src/multerConfig");
 
 // Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", multer(fotoUpload).single("foto"), UsuarioCtrl.inserirUsuario);
@@ -45,7 +45,7 @@ router.delete("/controle-questao/:id", QuestaoCtrl.removerQuestao);
 router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 
-// Rota para armazenamento de arquivos de mídia 2
+// Rota para armazenamento de arquivos
 router.post("/upload-arquivo", (req, res) => {
     const crypto = require("crypto");
 
