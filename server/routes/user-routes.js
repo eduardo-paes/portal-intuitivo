@@ -77,7 +77,7 @@ router.post("/upload-questao", (req, res) => {
             console.log(err);
             return res.json({ uploaded: false, err });
         }
-        return res.json({ uploaded: true, url: HttpUtility.JavaScriptStringEncode(req.file) });
+        return res.json({ uploaded: true, url: res.req.file.path });
     });
 });
 
