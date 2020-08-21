@@ -1,7 +1,7 @@
 import React from "react";
 import { MyContainer, MyTextField } from "../../assets/styles/styledComponents";
 import { Grid, MenuItem } from "@material-ui/core";
-import UploadContent from "../UploadContent";
+import UploadContent from "../Upload/UploadContent";
 
 function ContentForm (props) {
     const { data, onMaterialChange, conteudo, listaDisciplina, handleUpload, onSubmit } = props;

@@ -10,15 +10,13 @@ export class UploadAdapter {
       return this.loader.file.then((file) => {
         const data = new FormData()
         data.append("file", file)
-        const genericError = `Couldn't upload file: ${file.name}.`
+        const genericError = `Não foi possível fazer o upload do arquivo: ${file.name}.`
   
         return axios({
           data,
           method: "POST",
           url: "http://localhost:5000/api/upload-arquivo",
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data", },
           onUploadProgress: (progressEvent) => {
             this.loader.uploadTotal = progressEvent.total
             this.loader.uploaded = progressEvent.loaded

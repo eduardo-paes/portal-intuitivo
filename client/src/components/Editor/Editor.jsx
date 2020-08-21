@@ -68,7 +68,7 @@ function TextEditor (props) {
                     data={ defaultMessage }
                     onInit={ editor => { 
                         editor.ui.focusTracker.on('change:isFocused', (evt, name, value) => {value && onEditorFocus()});
-                        uploadAdapterPlugin(editor); 
+                        uploadAdapterPlugin(editor);
                         handleDefaultMessage() 
                     }}
                     config={ optionType && editorConfig }

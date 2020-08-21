@@ -4,7 +4,7 @@ import {AddButton, DeleteButton, MyAvatar, MyTextField, MyContainer} from "../..
 import { MenuItem } from '@material-ui/core'
 
 // Upload da Imagem do Perfil
-import Upload from "../Upload";
+import Upload from "../Upload/Upload";
 import "./styleUserForm.css"
 
 function UserForm (props) {

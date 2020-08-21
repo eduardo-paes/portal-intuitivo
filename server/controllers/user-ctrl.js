@@ -53,6 +53,7 @@ atualizarUsuario = async (req, res) => {
     }
 
     const usuario = new Usuario(body);
+    console.log(usuario);
     
     // Verifica se dados não são nulos
     if (!usuario) {

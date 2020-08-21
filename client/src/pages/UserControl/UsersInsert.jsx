@@ -34,7 +34,6 @@ class UsersInsert extends Component {
     }
 
     handleUpload = async event => {
-        
         const file = event.target.files[0];
         this.setState({ 
             ...this.state,
@@ -84,7 +83,6 @@ class UsersInsert extends Component {
                     // Limpa os campos
                     this.setState({nome: "", email: "", acesso: "", senha: "", nomeArquivo: "", urlArquivo: ""})
                 })
-            
         }
     }
 

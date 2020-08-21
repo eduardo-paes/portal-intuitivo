@@ -4,6 +4,8 @@ import api from '../../api';
 
 import {StoreContext} from "../../utils";
 import ContentForm from "../../components/Form/ContentForm";
+// Função de validação dos campos do formulário
+import validate from "../../components/Form/FormValidateContent";
 
 function initialState() {
   return {
@@ -12,7 +14,8 @@ function initialState() {
     topico: "",
     numeracao: 0,
     autor: "",
-    conteudo: {}
+    conteudo: {},
+    erros: []
   }
 }
 
@@ -61,38 +64,49 @@ function Content(props) {
   }
 
   const onSubmit = async event => {
-    const {area, disciplina, topico, numeracao, conteudo} = material;
+    const {area, disciplina, topico, numeracao} = material;
+    const error = validate(material);
 
-    const novoConteudo = {
-      area,
-      autor: autorInfo,
-      disciplina, 
-      topico, 
-      numeracao
-    };
+    setMaterial(preValue => ({
+      ...preValue,
+      erros: error
+    }))
 
-    console.log(novoConteudo);
-
-
-    if (conteudo) {
+    if(error.validated) {
       
-      const formData = new FormData();
-      formData.append("conteudo", conteudo);
-      fetch('http://localhost:3000/api/controle-conteudo', {
+      const novoConteudo = {
+        area,
+        autor: autorInfo,
+        disciplina, 
+        topico, 
+        numeracao
+      };
+  
+      console.log(novoConteudo);
+  
+      // Guarda novo usuário no banco
+      await api
+      .inserirConteudo(novoConteudo)
+      .then(res => {
+        window.alert("Conteúdo inserido com sucesso.")
+        // Limpa os campos
+        setMaterial({area: "", disciplina: "", topico: "", numeracao: 0,  conteudo: {}, autor: {}})
+      })
+      
+      // Verifica se o usuário subiu algum conteúdo pdf
+      if (conteudo) {
+        // Salva o pdf na pasta local
+        
+        const formData = new FormData();
+        formData.append("conteudo", material.conteudo);
+        fetch('http://localhost:5000/api/upload-conteudo', {
               method: 'POST',
               body: formData
-          })
+            })
           .then(res => res.json())
+      }
     }
 
-    // Guarda novo usuário no banco
-    await api
-        .inserirConteudo(novoConteudo)
-        .then(res => {
-            window.alert("Conteúdo inserido com sucesso.")
-            // Limpa os campos
-            setMaterial({area: "", disciplina: "", topico: "", numeracao: 0,  conteudo: {}, autor: {}})
-        })
   }
 
 

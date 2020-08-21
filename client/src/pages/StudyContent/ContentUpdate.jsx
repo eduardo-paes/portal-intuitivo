@@ -1,7 +1,6 @@
 import React, {useContext, useState, useEffect} from "react";
 import api from '../../api';
 
-
 import {StoreContext} from "../../utils";
 import ContentForm from "../../components/Form/ContentForm";
 
@@ -29,7 +28,7 @@ function Content(props) {
   const [material, setMaterial] = useState(initialState(props));
   
   useEffect( () => {
-
+    const abortController = new AbortController();
     async function fetchConteudoAPI() {
       const response = await api.encConteudoPorID(material.id);
       setMaterial({ 
@@ -40,6 +39,8 @@ function Content(props) {
       })
     }
     fetchConteudoAPI();
+    return abortController.abort();
+
     
   // eslint-disable-next-line
   }, []);
@@ -78,7 +79,7 @@ function Content(props) {
   }
 
   const onSubmit = async event => {
-    const {area, /*autor,*/ disciplina, topico, numeracao, conteudo} = material;
+    const {area, autor, disciplina, topico, numeracao, conteudo} = material;
 
     const novoConteudo = {
       area,
@@ -95,7 +96,7 @@ function Content(props) {
       
       const formData = new FormData();
       formData.append("conteudo", conteudo);
-      fetch('http://localhost:3000/api/controle-conteudo', {
+      fetch('http://localhost:5000/api/upload-conteudo', {
               method: 'POST',
               body: formData
           })
