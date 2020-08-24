@@ -10,6 +10,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
+
 // Permite carregar os arquivos que estão no diretório uploads a partir do prefixo do caminho /uploads.
 app.use('/uploads', express.static(__dirname + './../uploads'));
 

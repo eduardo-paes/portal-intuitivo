@@ -16,9 +16,6 @@ const ConteudoCtrl = require("../controllers/content-ctrl");
 const DisciplinaCtrl = require("../controllers/subject-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
 
-// Multer
-const multer = require("multer");
-
 // Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
 router.put("/controle-usuario/:id", UsuarioCtrl.atualizarUsuario);
@@ -51,6 +48,8 @@ router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 router.post("/upload-questao", (req, res) => {
     const crypto = require("crypto");
 
+    var fileName;
+
     let questaoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
@@ -58,7 +57,7 @@ router.post("/upload-questao", (req, res) => {
         filename: (req, file, cb) => {
             crypto.randomBytes(16, (err, hash) => {
                 if (err) cb(err);
-                const fileName = `${hash.toString('hex')}-${file.originalname}`
+                fileName = `${hash.toString('hex')}-${file.originalname}`
                 cb(null, fileName);
             });
         },
@@ -78,7 +77,7 @@ router.post("/upload-questao", (req, res) => {
             console.log(err);
             return res.json({ uploaded: false, err });
         }
-        return res.json({ uploaded: true, url: res.req.file.path });
+        return res.json({ uploaded: true, url: res.req.file.path , name: fileName});
     });
 });
 

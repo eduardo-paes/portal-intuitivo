@@ -15,14 +15,14 @@ export class UploadAdapter {
       return axios({
         data,
         method: "POST",
-        url: "http://localhost:5000/api/uploader",
+        url: "http://localhost:5000/api/upload-questao",
         headers: { "Content-Type": "multipart/form-data", },
         onUploadProgress: (progressEvent) => {
           this.loader.uploadTotal = progressEvent.total
           this.loader.uploaded = progressEvent.loaded
         },
       })
-        .then(({ data }) => ({ default: data.url }))
+        .then(({ data }) => ({ default: `http://localhost:5000/uploads/question/${data.name}` }))
         .catch(error => Promise.reject(error?.message ?? genericError))
     })
   }
