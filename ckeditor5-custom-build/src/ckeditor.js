@@ -31,6 +31,7 @@ import MathType from '@wiris/mathtype-ckeditor5';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
 import SpecialCharactersMathematical from '@ckeditor/ckeditor5-special-characters/src/specialcharactersmathematical.js';
@@ -74,6 +75,7 @@ Editor.builtinPlugins = [
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
+	SimpleUploadAdapter,
 	SpecialCharacters,
 	SpecialCharactersEssentials,
 	SpecialCharactersMathematical,

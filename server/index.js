@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const db = require("./db");
-const userRouter = require('./routes/user-routes')
+const Routes = require('./routes/routes')
 
 // -- APP
 const app = express();
@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
     res.send("Hello World!")
 });
 
-app.use("/api", userRouter);
+app.use("/api", Routes);
 
 app.listen(5000, function(){
     console.log("Server started on port 5000.");

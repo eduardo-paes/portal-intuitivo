@@ -7,6 +7,9 @@ const router = express.Router();
 router.use(bodyparser.urlencoded({extended: true}));
 router.use(bodyparser.json());
 
+// Multer para importação de arquivos
+const multer = require("multer");
+
 // Importação dos métodos de controle
 const UsuarioCtrl = require("../controllers/user-ctrl");
 const ConteudoCtrl = require("../controllers/content-ctrl");
@@ -44,8 +47,8 @@ router.delete("/controle-questao/:id", QuestaoCtrl.removerQuestao);
 router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 
-// Rota para armazenamento de arquivos de mídia 2
-router.post("/upload-arquivo", (req, res) => {
+// Rota para armazenamento de arquivos
+router.post("/upload-questao", (req, res) => {
     const crypto = require("crypto");
 
     let questaoStorage = multer.diskStorage({
@@ -73,9 +76,9 @@ router.post("/upload-arquivo", (req, res) => {
     upload(req, res, err => {
         if (err) {
             console.log(err);
-            return res.json({ success: false, err });
+            return res.json({ uploaded: false, err });
         }
-        return res.json({ success: true, url: res.req.file.path });
+        return res.json({ uploaded: true, url: res.req.file.path });
     });
 });
 
