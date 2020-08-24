@@ -96,7 +96,6 @@ function Content(props) {
       // Verifica se o usuário subiu algum conteúdo pdf
       if (conteudo) {
         // Salva o pdf na pasta local
-        
         const formData = new FormData();
         formData.append("conteudo", material.conteudo);
         fetch('http://localhost:5000/api/upload-conteudo', {

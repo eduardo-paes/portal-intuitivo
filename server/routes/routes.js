@@ -9,7 +9,6 @@ router.use(bodyparser.json());
 
 // Multer para importação de arquivos
 const multer = require("multer");
-const {conteudoUpload, fotoUpload} = require("../src/multerConfig");
 
 // Importação dos métodos de controle
 const UsuarioCtrl = require("../controllers/user-ctrl");
@@ -18,8 +17,8 @@ const DisciplinaCtrl = require("../controllers/subject-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
 
 // Definição dos métodos para cada rota do usuário
-router.post("/controle-usuario", multer(fotoUpload).single("foto"), UsuarioCtrl.inserirUsuario);
-router.put("/controle-usuario/:id", multer(fotoUpload).single("foto"), UsuarioCtrl.atualizarUsuario);
+router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
+router.put("/controle-usuario/:id", UsuarioCtrl.atualizarUsuario);
 router.delete("/controle-usuario/:id", UsuarioCtrl.removerUsuario);
 router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
@@ -52,7 +51,6 @@ router.post("/upload-questao", (req, res) => {
     let questaoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
-            
         },
         filename: (req, file, cb) => {
             crypto.randomBytes(16, (err, hash) => {
@@ -77,7 +75,7 @@ router.post("/upload-questao", (req, res) => {
             console.log(err);
             return res.json({ uploaded: false, err });
         }
-        return res.json({ uploaded: true, url: HttpUtility.JavaScriptStringEncode(req.file) });
+        return res.json({ uploaded: true, url: res.req.file.path });
     });
 });
 
