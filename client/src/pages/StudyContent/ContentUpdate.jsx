@@ -3,6 +3,7 @@ import api from '../../api';
 
 import {StoreContext} from "../../utils";
 import ContentForm from "../../components/Form/ContentForm";
+import validate from "../../components/Form/FormValidateContent";
 
 function initialState(props) {
   return {
@@ -12,7 +13,8 @@ function initialState(props) {
     topico: "",
     numeracao: 0,
     autor: "",
-    conteudo: {}
+    conteudo: {},
+    erros: []
   }
 }
 
@@ -31,12 +33,13 @@ function Content(props) {
     const abortController = new AbortController();
     async function fetchConteudoAPI() {
       const response = await api.encConteudoPorID(material.id);
-      setMaterial({ 
+      setMaterial(preValue => ({ 
+        ...preValue,
         area: response.data.data.area, 
         disciplina: response.data.data.disciplina, 
         numeracao: response.data.data.numeracao, 
         topico: response.data.data.topico
-      })
+      }))
     }
     fetchConteudoAPI();
     return abortController.abort();
@@ -79,36 +82,56 @@ function Content(props) {
   }
 
   const onSubmit = async event => {
-    const {area, autor, disciplina, topico, numeracao, conteudo} = material;
+    const {area, disciplina, topico, numeracao, conteudo, id} = material;
+    const error = validate(material);
 
-    const novoConteudo = {
-      area,
-      autor: autorInfo,
-      disciplina, 
-      topico, 
-      numeracao
-    };
+    setMaterial(preValue => ({
+      ...preValue,
+      erros: error
+    }))
 
-    console.log(novoConteudo);
-
-
-    if (conteudo) {
+    if(error.validated) {
       
-      const formData = new FormData();
-      formData.append("conteudo", conteudo);
-      fetch('http://localhost:5000/api/upload-conteudo', {
-              method: 'POST',
-              body: formData
-          })
-          .then(res => res.json())
-    }
+      const conteudoAtualizado = {
+        area,
+        autor: autorInfo,
+        disciplina, 
+        topico, 
+        numeracao
+      };  
+  
+      // Guarda novo usuário no banco
+      await api
+          .atualizarConteudo(id, conteudoAtualizado)
+          .then(res => {
 
-    // Guarda novo usuário no banco
-    await api
-        .atualizarConteudo(novoConteudo)
-        .then(res => {
-            window.alert("Conteúdo inserido com sucesso.")
-        })
+          // Verifica se o usuário subiu algum conteúdo pdf
+          if (conteudo) {
+            // Salva o pdf na pasta local
+            const formData = new FormData();
+            formData.append("conteudo", material.conteudo);
+            fetch(`http://localhost:5000/api/upload-conteudo/${res.data.id}`, {
+                  method: 'POST',
+                  body: formData
+                })
+              .then(res => res.json())
+          }
+
+
+              window.alert("Conteúdo inserido com sucesso.")
+          })
+  
+      if (conteudo) {
+        
+        const formData = new FormData();
+        formData.append("conteudo", conteudo);
+        fetch('http://localhost:5000/api/upload-conteudo', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+      }  
+    }
   }
 
 

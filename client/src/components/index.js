@@ -5,7 +5,9 @@ import DisTable from "./Tables/DisTable"
 
 // -- Forms
 import UserForm from "./Form/UserForm"
+import ContentForm from "./Form/ContentForm"
 import UserValidater from "./Form/FormValidateUser"
+import ContentValidater from "./Form/FormValidateContent"
 
 // -- Drawer
 import ItemsDrawer from "./Drawer/ItemsDrawer"
@@ -29,6 +31,8 @@ export {
     DisTable, 
     UserForm, 
     UserValidater, 
+    ContentForm,
+    ContentValidater,
     ItemsDrawer, 
     ProfileMenu, 
     SideBar, 

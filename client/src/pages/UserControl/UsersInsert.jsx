@@ -69,7 +69,7 @@ class UsersInsert extends Component {
             if (foto) {
                 const formData = new FormData();
                 formData.append("foto", foto);
-                fetch('http://localhost:5000/api/controle-usuario', {
+                fetch('http://localhost:5000/api/upload-profile', {
                         method: 'POST',
                         body: formData
                     })

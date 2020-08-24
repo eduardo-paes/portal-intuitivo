@@ -89,22 +89,23 @@ function Content(props) {
       .inserirConteudo(novoConteudo)
       .then(res => {
         window.alert("Conteúdo inserido com sucesso.")
+
+        // Verifica se o usuário subiu algum conteúdo pdf
+        if (conteudo) {
+          // Salva o pdf na pasta local
+          const formData = new FormData();
+          formData.append("conteudo", material.conteudo);
+          fetch(`http://localhost:5000/api/upload-conteudo/${res.data.id}`, {
+                method: 'POST',
+                body: formData
+              })
+            .then(res => res.json())
+        }
+
         // Limpa os campos
         setMaterial({area: "", disciplina: "", topico: "", numeracao: 0,  conteudo: {}, autor: {}})
+        setConteudo("");
       })
-      
-      // Verifica se o usuário subiu algum conteúdo pdf
-      if (conteudo) {
-        // Salva o pdf na pasta local
-        
-        const formData = new FormData();
-        formData.append("conteudo", material.conteudo);
-        fetch('http://localhost:5000/api/upload-conteudo', {
-              method: 'POST',
-              body: formData
-            })
-          .then(res => res.json())
-      }
     }
 
   }

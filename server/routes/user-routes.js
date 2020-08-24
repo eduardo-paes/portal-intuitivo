@@ -15,11 +15,10 @@ const QuestaoCtrl = require("../controllers/question-ctrl");
 
 // Multer
 const multer = require("multer");
-const {storageConteudo, fotoUpload} = require("../src/multerConfig");
 
 // Definição dos métodos para cada rota do usuário
-router.post("/controle-usuario", multer(fotoUpload).single("foto"), UsuarioCtrl.inserirUsuario);
-router.put("/controle-usuario/:id", multer(fotoUpload).single("foto"), UsuarioCtrl.atualizarUsuario);
+router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
+router.put("/controle-usuario/:id", UsuarioCtrl.atualizarUsuario);
 router.delete("/controle-usuario/:id", UsuarioCtrl.removerUsuario);
 router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
@@ -81,7 +80,7 @@ router.post("/upload-arquivo", (req, res) => {
 });
 
 // Rota para armazenamento de conteúdo pdf
-router.post("/upload-conteudo", (req, res) => {
+router.post("/upload-conteudo/:id", (req, res) => {
     const crypto = require("crypto");
 
     let conteudoStorage = multer.diskStorage({
@@ -89,11 +88,8 @@ router.post("/upload-conteudo", (req, res) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "content"));
         },
         filename: (req, file, cb) => {
-            crypto.randomBytes(16, (err, hash) => {
-                if (err) cb(err);
-                const fileName = `${hash.toString('hex')}-${file.originalname}`
-                cb(null, fileName);
-            });
+            const fileName = `${req.params.id}.pdf`
+            cb(null, fileName);
         }
     });
 
@@ -104,7 +100,35 @@ router.post("/upload-conteudo", (req, res) => {
             console.log(err);
             return res.json({ success: false, err });
         }
-        return res.json({ success: true, url: res.req.file.path });
+        return res.json({ success: true });
+    });
+});
+
+// Rota para armazenamento da foto de perfil
+router.post("/upload-profile", (req, res) => {
+    const crypto = require("crypto");
+
+    let fotoStorage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, path.resolve(__dirname, "..", "..", "uploads", "profile"));
+        },
+        filename: (req, file, cb) => {
+            crypto.randomBytes(16, (err, hash) => {
+                if (err) cb(err);
+                const fileName = `${hash.toString('hex')}-${file.originalname}`
+                cb(null, fileName);
+            });
+        }
+    });
+
+    const upload = multer({ storage: fotoStorage }).single("foto");
+    
+    upload(req, res, err => {
+        if (err) {
+            console.log(err);
+            return res.json({ success: false, err });
+        }
+        return res.json({ success: true });
     });
 });
 

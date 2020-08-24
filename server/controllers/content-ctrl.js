@@ -43,9 +43,8 @@ inserirConteudo = (req, res) => {
 // Função para atualizar conteúdo por ID
 atualizarConteudo = async (req, res) => {
     // Recebe dados do formulário
-    console.log(req.params);
     const body = req.body;
-    
+    console.log(body);
     if (!body) {
         return res.status(400).json({
             success: false,
@@ -69,11 +68,10 @@ atualizarConteudo = async (req, res) => {
     }, (err, conteudoEncontrado) => {
         if (err) {
             return res
-            .status(404)
-            .json({err, message: "Conteúdo não encontrado."})
+                .status(404)
+                .json({err, message: "Conteúdo não encontrado."})
         }
-        console.log(conteudo);
-        console.log(conteudoEncontrado);
+        
         // Atualiza dados do conteúdo encontrado
         conteudoEncontrado.topico = conteudo.topico
         conteudoEncontrado.area = conteudo.area

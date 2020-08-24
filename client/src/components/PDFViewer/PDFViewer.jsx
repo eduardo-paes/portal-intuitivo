@@ -15,7 +15,7 @@ function PDFViewer (props) {
     const { source } = props;
     return (
         < iframe 
-            src={`${source}#toolbar=0`}  
+            src={source}  
             className={classe.pdfBox} 
             title="Conteúdo PDF."
         />

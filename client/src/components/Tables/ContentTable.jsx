@@ -33,11 +33,18 @@ function ContentVisualization (props) {
 
     return (
         <Popup
-            trigger={<IconButton aria-label="visualization" color="primary" size="small"> <VisibilityIcon/> </IconButton>}
+            trigger={
+                <IconButton 
+                    aria-label="visualization" 
+                    color="primary" 
+                    size="small"> 
+                    <VisibilityIcon/> 
+                </IconButton>
+            }
             modal
             closeOnDocumentClick
         >
-            <PDFViewer source={props.conteudo}/>
+            <PDFViewer source={`http://localhost:5000/uploads/content/${props.id}.pdf`}/>
         </Popup>
             
     )
@@ -307,7 +314,7 @@ export default function EnhancedTable(props) {
                                                 {(wd.width > 500) && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
 
                                                 <TableCell align="left">
-                                                    <ContentVisualization/>
+                                                    <ContentVisualization id={conteudo._id}/>
                                                     <UpdateContent id={conteudo._id}/>
                                                     <DeleteContent id={conteudo._id} nome={conteudo.disciplina}/>
                                                 </TableCell>
