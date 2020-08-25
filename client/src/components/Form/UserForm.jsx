@@ -5,7 +5,7 @@ import { MenuItem } from '@material-ui/core'
 
 // Upload da Imagem do Perfil
 import Upload from "../Upload/Upload";
-import "./styleUserForm.css"
+import "./Styles/styleUserForm.css"
 
 function UserForm (props) {
     const {data, handleChange, handleUpload, onSubmit, typeForm, edit} = props;

@@ -10,7 +10,8 @@ import { Grid, MenuItem, ButtonGroup, Button, Fab, Checkbox } from "@material-ui
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
-import "./stylesQuestionForm.css"
+import ChipsArray from './Utils/Chips'
+import "./Styles/stylesQuestionForm.css"
 
 // -- Local Styles
 const useStyles = makeStyles((theme) => ({
@@ -29,9 +30,6 @@ const useStyles = makeStyles((theme) => ({
     },
     checkBox: {
         marginTop: "0.4rem"
-    },
-    questaoTipo: {
-        padding: "1px",
     },
     questaoOpcoes: {
         padding: "1rem",
@@ -213,6 +211,9 @@ function QuestionForm (props) {
                             onChange={handleChange}/>
                     </Grid>
                 </Grid>
+
+                <ChipsArray/>
+
             </section>
                 
             <section className="enunciadoQuestao">
@@ -238,7 +239,7 @@ function QuestionForm (props) {
                         }
                     </Grid>
 
-                    <Grid className={classes.questaoTipo} item={true} xs={12} md={4} sm={4}>
+                    <Grid item={true} xs={12} md={4} sm={4}>
                         <div className="questaoTipo">
                             <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
                                 <Button onClick={() => handleResposta("multiplaEscolha")}>Múltipla Escolha</Button>

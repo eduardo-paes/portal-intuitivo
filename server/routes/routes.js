@@ -4,6 +4,7 @@ const bodyparser = require("body-parser");
 const path = require("path");
 const router = express.Router();
 
+// Aplicação do body-parser
 router.use(bodyparser.urlencoded({extended: true}));
 router.use(bodyparser.json());
 

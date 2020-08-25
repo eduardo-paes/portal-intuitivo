@@ -6,7 +6,7 @@ import DisTable from "./Tables/DisTable"
 // -- Forms
 import UserForm from "./Form/UserForm"
 import ContentForm from "./Form/ContentForm"
-import UserValidater from "./Form/FormValidateUser"
+import UserValidater from "./Form/Validation/FormValidateUser"
 import ContentValidater from "./Form/FormValidateContent"
 
 // -- Drawer
