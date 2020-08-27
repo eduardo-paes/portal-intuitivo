@@ -40,7 +40,7 @@ class UsersUpdate extends Component {
             nomeArquivo: "profile."+file.name,
             urlArquivo: URL.createObjectURL(file),
             foto: file
-        })
+        });
     }
 
     // Salva as mudanças no banco
@@ -76,16 +76,16 @@ class UsersUpdate extends Component {
                 .atualizarUsuario(id, usuarioAtualizado)
                 .then(res => {
                     window.alert("Usuário atualizado com sucesso.")
+                    const data = new FormData();
+                    data.append("foto", foto);
+                    fetch(`http://localhost:5000/api/upload-profile/${res.data.id}`, {
+                        method: 'POST',
+                        body: data
+                    })
+                    .then(res => res.json())    
                 })
 
-            const data = new FormData();
-            data.append("foto", foto);
             
-            fetch('http://localhost:5000/api/upload-profile', {
-                method: 'POST',
-                body: data
-            })
-            .then(res => res.json())    
         }
     }
 

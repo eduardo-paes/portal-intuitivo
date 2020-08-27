@@ -33,13 +33,13 @@ function ContentForm (props) {
                     variant="outlined"
                     select={true}
                     label="Disciplina"
-                    name="disciplina"
+                    name="disciplinaID"
                     autoFocus={true}
                     value={disciplina}
                     onChange={onMaterialChange}>
                     {
                         listaDisciplina.map((row, index) => {
-                            return <MenuItem key={index} value={row.nome}>{row.nome}</MenuItem>
+                            return <MenuItem key={index} value={row._id}>{row.nome}</MenuItem>
                         })
                     }
                 </MyTextField>

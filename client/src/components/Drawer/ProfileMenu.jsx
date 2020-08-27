@@ -1,11 +1,11 @@
 import React, {useContext} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {StoreContext} from "../../utils"
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import {StoreContext} from "../../utils";
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import { Avatar } from '@material-ui/core';
 
 // Esta função retorna o ícone e menu do usuário na barra de topo 
 // contendo funções de logout e edição de perfil
@@ -14,7 +14,8 @@ export default function ProfileMenu() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const profileOpen = Boolean(anchorEl);
 
-    const { setToken } = useContext(StoreContext)
+    const { token, setToken } = useContext(StoreContext)
+    console.log(token);
     const history = useHistory();
 
     const handleMenu = (event) => {
@@ -38,7 +39,7 @@ export default function ProfileMenu() {
             aria-haspopup="true"
             onClick={handleMenu}
             color="inherit">
-            <AccountCircle/>
+            <Avatar sizes="small" src={`http://localhost:5000/uploads/profile/${token.userID}.jpeg`} alt="Preview"/>
         </IconButton>
         <Menu
             id="menu-appbar"

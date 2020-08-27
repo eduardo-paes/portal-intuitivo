@@ -10,10 +10,11 @@ import validate from "../../components/Form/FormValidateContent";
 function initialState() {
   return {
     area: "",
-    disciplina: '', 
+    disciplinaID: '', 
+    disciplinaNome: '',  
     topico: "",
     numeracao: 0,
-    autor: "",
+    autor: [],
     conteudo: {},
     erros: []
   }
@@ -21,13 +22,12 @@ function initialState() {
 
 function Content(props) {
   const {token} = useContext(StoreContext);
-  const autorInfo = token.userName;
 
   //console.log(autor);
   
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
-  const [disciplina, setDisciplina] = useState([]);           // Disciplinas do Banco de Dados
+  const [disciplina, setDisciplina] = useState(["Disciplina"]);           // Disciplinas do Banco de Dados
   const [conteudo, setConteudo] = useState("");
 
   // -- Carrega as Disciplinas existentes no banco
@@ -40,7 +40,7 @@ function Content(props) {
     }
     fetchDisciplinaAPI()
     return abortController.abort();
-  }, [disciplina]);
+  }, []);
 
   // -- Definição das Funções
 
@@ -64,20 +64,23 @@ function Content(props) {
   }
 
   const onSubmit = async event => {
-    const {area, disciplina, topico, numeracao} = material;
+    const {area, disciplinaID, topico, numeracao, autor} = material;
     const error = validate(material);
+    const response = await api.encDisciplinaPorID(disciplinaID);
 
     setMaterial(preValue => ({
       ...preValue,
-      erros: error
+      erros: error,
+      autor: autor.push(token.userID)
     }))
 
     if(error.validated) {
       
       const novoConteudo = {
         area,
-        autor: autorInfo,
-        disciplina, 
+        autor,
+        disciplinaID,
+        disciplinaNome: response.data.data.nome, 
         topico, 
         numeracao
       };
@@ -103,7 +106,7 @@ function Content(props) {
         }
 
         // Limpa os campos
-        setMaterial({area: "", disciplina: "", topico: "", numeracao: 0,  conteudo: {}, autor: {}})
+        setMaterial({area: "", disciplinaID: "", disciplinaNome: "", topico: "", numeracao: 0,  conteudo: {}, autor: {}})
         setConteudo("");
       })
     }

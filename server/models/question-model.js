@@ -6,9 +6,8 @@ const Usuario = require("./users-model.js");
 
 const Questao = new Schema({
     disciplina: {
-        // type: Schema.Types.ObjectId, 
-        // ref: 'Disciplina',
-        type: String,
+        type: Schema.Types.ObjectId, 
+        ref: 'Disciplina',
         // required: true
     },
     topico: {

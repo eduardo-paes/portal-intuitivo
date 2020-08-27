@@ -64,23 +64,24 @@ class UsersInsert extends Component {
                 nomeArquivo,
                 urlArquivo
             };
-
-            if (foto) {
-                const formData = new FormData();
-                formData.append("foto", foto);
-                fetch('http://localhost:5000/api/upload-profile', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(res => res.json())
-            }
-
+            
             // Guarda novo usuário no banco
             await api
-                .inserirUsuario(novoUsuario)
-                .then(res => {
-                    window.alert("Usuário inserido com sucesso.")
-                    // Limpa os campos
+            .inserirUsuario(novoUsuario)
+            .then(res => {
+                window.alert("Usuário inserido com sucesso.");
+
+                if (foto) {
+                    const formData = new FormData();
+                    formData.append("foto", foto);
+                    fetch(`http://localhost:5000/api/upload-profile/${res.data.id}`, {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(res => res.json())
+                }
+                
+                // Limpa os campos
                     this.setState({nome: "", email: "", acesso: "", senha: "", nomeArquivo: "", urlArquivo: ""})
                 })
         }

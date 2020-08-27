@@ -9,10 +9,11 @@ function initialState(props) {
   return {
     id: props.match.params.id,
     area: "",
-    disciplina: '', 
+    disciplinaID: '',
+    disciplinaNome: '',  
     topico: "",
     numeracao: 0,
-    autor: "",
+    autor: [],
     conteudo: {},
     erros: []
   }
@@ -22,10 +23,8 @@ function Content(props) {
   
   const {token} = useContext(StoreContext);
   
-  const autorInfo = token.userName;
-  
   // -- Define principais constantes
-  const [disciplina, setDisciplina] = useState([]);           // Disciplinas do Banco de Dados
+  const [disciplina, setDisciplina] = useState([""]);           // Disciplinas do Banco de Dados
   const [conteudo, setConteudo] = useState("");
   const [material, setMaterial] = useState(initialState(props));
   
@@ -36,7 +35,8 @@ function Content(props) {
       setMaterial(preValue => ({ 
         ...preValue,
         area: response.data.data.area, 
-        disciplina: response.data.data.disciplina, 
+        disciplinaID: response.data.data.disciplinaID, 
+        disciplinaNome: response.data.data.disciplinaNome,
         numeracao: response.data.data.numeracao, 
         topico: response.data.data.topico
       }))
@@ -58,7 +58,7 @@ function Content(props) {
     }
     fetchDisciplinaAPI()
     return abortController.abort();
-  }, [disciplina]);
+  }, []);
 
   // -- Definição das Funções
 
@@ -82,20 +82,23 @@ function Content(props) {
   }
 
   const onSubmit = async event => {
-    const {area, disciplina, topico, numeracao, conteudo, id} = material;
+    const {area, disciplinaID, topico, numeracao, conteudo, id, autor} = material;
     const error = validate(material);
+    const response = await api.encDisciplinaPorID(disciplinaID);
 
     setMaterial(preValue => ({
       ...preValue,
-      erros: error
+      erros: error,
+      autor: autor.push(token.userID)
     }))
 
     if(error.validated) {
       
       const conteudoAtualizado = {
         area,
-        autor: autorInfo,
-        disciplina, 
+        autor,
+        disciplinaID, 
+        disciplinaNome: response.data.data.nome, 
         topico, 
         numeracao
       };  

@@ -8,9 +8,12 @@ const Conteudo = new Schema({
         type: String,
         // required: true
     },
-    disciplina: {
+    disciplinaID: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Disciplina'
+    },
+    disciplinaNome: {
         type: String,
-        // required: true
     },
     topico: {
         type: String,
@@ -21,10 +24,8 @@ const Conteudo = new Schema({
         // required: true
     },
     autor: {
-        type: String,
-        // type: String,
-        // type: Usuario,
-        // ref: "Usuario"
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario'
     }
 });
 

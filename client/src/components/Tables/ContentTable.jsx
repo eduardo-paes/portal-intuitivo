@@ -28,6 +28,11 @@ import WindowDimension from "../WindowDimension";
 import Popup from 'reactjs-popup';
 import PDFViewer from "../PDFViewer/PDFViewer";
 
+/*
+Funcionalidade pendente:
+    -> Um card de Filtragem;
+*/
+
 // Botão para visualização do conteúdo
 function ContentVisualization (props) {
 
@@ -138,8 +143,8 @@ const phoneHeadCells = [
         id: 'disciplina',
         label: 'Disciplina'
     }, {
-        id: 'topico',
-        label: 'Tópico'
+        id: 'conteudo',
+        label: 'Conteúdo'
     }
 ]
 
@@ -152,7 +157,7 @@ function EnhancedTableHead(props) {
     
     var cells = [];
 
-    if (width > 500) {
+    if (width > 700) {
         cells = headCells;
     } else {
         cells = phoneHeadCells
@@ -304,19 +309,20 @@ export default function EnhancedTable(props) {
                                         page * rowsPerPage + rowsPerPage
                                     )
                                     .map((conteudo, index) => {
-
+                                        ;
+                                        
                                         return (
                                             <TableRow hover={true} tabIndex={-1} key={conteudo._id}>
                                                 <TableCell className={classes.row} align="left">{conteudo.area}</TableCell>
 
-                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{conteudo.disciplina}</TableCell>}
-                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{conteudo.topico}</TableCell>}
-                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
+                                                {(wd.width > 700) && <TableCell className={classes.row} align="left">{conteudo.disciplinaNome}</TableCell>}
+                                                {(wd.width > 700) && <TableCell className={classes.row} align="left">{conteudo.topico}</TableCell>}
+                                                {(wd.width > 700) && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
 
                                                 <TableCell align="left">
                                                     <ContentVisualization id={conteudo._id}/>
                                                     <UpdateContent id={conteudo._id}/>
-                                                    <DeleteContent id={conteudo._id} nome={conteudo.disciplina}/>
+                                                    <DeleteContent id={conteudo._id} nome={conteudo.topico}/>
                                                 </TableCell>
                                             </TableRow>
                                         );

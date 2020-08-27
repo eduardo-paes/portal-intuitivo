@@ -83,7 +83,6 @@ router.post("/upload-questao", (req, res) => {
 
 // Rota para armazenamento de conteúdo pdf
 router.post("/upload-conteudo/:id", (req, res) => {
-    const crypto = require("crypto");
 
     let conteudoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
@@ -107,19 +106,23 @@ router.post("/upload-conteudo/:id", (req, res) => {
 });
 
 // Rota para armazenamento da foto de perfil
-router.post("/upload-profile", (req, res) => {
-    const crypto = require("crypto");
-
+router.post("/upload-profile/:id", (req, res) => {
+    let id = req.params.id;
     let fotoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "profile"));
         },
         filename: (req, file, cb) => {
-            crypto.randomBytes(16, (err, hash) => {
-                if (err) cb(err);
-                const fileName = `${hash.toString('hex')}-${file.originalname}`
-                cb(null, fileName);
-            });
+            const ext = path.extname(file.originalname);
+            file.key = { id }
+            cb(null, `${ req.params.id + ".jpeg" }`);
+        },
+        fileFilter: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg') {
+                return cb(res.status(400).end('only jpg, png, jpeg is allowed'), false);
+            }
+            cb(null, true)
         }
     });
 
