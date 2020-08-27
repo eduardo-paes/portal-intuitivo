@@ -5,7 +5,7 @@ import api from '../../api';
 import {StoreContext} from "../../utils";
 import ContentForm from "../../components/Form/ContentForm";
 // Função de validação dos campos do formulário
-import validate from "../../components/Form/FormValidateContent";
+import validate from "../../components/Form/Validation/FormValidateContent";
 
 function initialState() {
   return {

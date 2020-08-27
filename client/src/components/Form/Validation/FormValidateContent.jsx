@@ -21,7 +21,6 @@ export default function validate(values) {
         erros.topico = "O tópico deve ser preenchido."
     }
 
-
     else {
         erros.validated = true
     }
