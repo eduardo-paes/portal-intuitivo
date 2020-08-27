@@ -3,7 +3,7 @@ import api from '../../api';
 
 import {StoreContext} from "../../utils";
 import ContentForm from "../../components/Form/ContentForm";
-import validate from "../../components/Form/FormValidateContent";
+import validate from "../../components/Form/Validation/FormValidateContent";
 
 function initialState(props) {
   return {

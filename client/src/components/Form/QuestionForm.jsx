@@ -1,16 +1,17 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Link} from 'react-router-dom'
 
-// -- Editor / Context
+// -- Editor / Chips
 import { TextEditor } from "../";
+import ChipsArray from './Utils/Chips'
 
-// -- Styles
+// -- Styles / Imports
 import { MyContainer, MyTextField, MyCard, AddButton, DeleteButton } from "../../assets/styles/styledComponents"
 import { Grid, MenuItem, ButtonGroup, Button, Fab, Checkbox } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
-import "./stylesQuestionForm.css"
+import "./Styles/stylesQuestionForm.css"
 
 // -- Local Styles
 const useStyles = makeStyles((theme) => ({
@@ -30,20 +31,33 @@ const useStyles = makeStyles((theme) => ({
     checkBox: {
         marginTop: "0.4rem"
     },
-    questaoTipo: {
-        padding: "1px",
-    },
     questaoOpcoes: {
         padding: "1rem",
         textAlign: "center",
         alignItems: "center",
+    },
+    errorMessage: {
+        fontSize: "0.75rem",
+        paddingLeft: "1rem",
+        color: "#f44336"
+    },
+    errorAlarm: {
+        border:"1px solid #f44336"
     }
 }));
 
 function QuestionForm (props) {
     const classes = useStyles();
- 
     const {title, disciplina, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
+
+    // -- Salva alterações de 'opcoes' em 'questao'
+    useEffect(() => {
+        setQuestao(preValue => ({
+            ...preValue,
+            resposta: opcoes
+        }));
+        // eslint-disable-next-line
+    }, [opcoes])
 
     // -- Salvar dados do formulário inicial
     function handleChange (event) {
@@ -63,64 +77,60 @@ function QuestionForm (props) {
     }
 
     // -- Salvar dados das opções da questão
-    function handleOpcao(position, value, fromEditor) {
-        if (fromEditor) {
-            // Verifica se valor contém parágrafo e espaços vazios
-            let blankSpace = value.includes('<p>&nbsp;</p>');
-            let paragraphs = value.includes('</p><p>');
-            
-            // Se sim, Inserção múltipla de opções de resposta
-            if (!blankSpace && paragraphs) {
-                console.log("Múltiplo")
-                // Separa o texto entre parágrafos
-                var options = value.split('</p><p>').map(option => {
-                    // Correções do split
-                    if (option.includes('<p>')) {
-                        option = option + '</p>';
-                    } else if (option.includes('</p>')) {
-                        option = '<p>' + option;
-                    } else {
-                        option = '<p>' + option + '</p>';
-                    }
-
-                    // Retorna um objeto opção contendo o tampo de opcao preenchido
-                    return {
-                        opcao: option,
-                        gabarito: false,
-                    }
-                });
-
-                // Verifica se o array de opções já contém algum valor
-                var optionsAux = opcoes.filter((opcao, index) => {
-                    let checking = opcoes[index].opcao.includes('');
-                    return !checking && opcao;
-                })
-                var arrayAux = opcoes[0].opcao.includes('') ? [] : optionsAux;
-                
-                // Caso não, o array auxiliar será um vetor vazio
-                if (arrayAux === []) {
-                    setOpcoes(options);
+    function handleOpcao(position, value) {
+        // Verifica se valor contém parágrafo e espaços vazios
+        let blankSpace = value.includes('<p>&nbsp;</p>');
+        let paragraphs = value.includes('</p><p>');
+        
+        // Se sim, Inserção múltipla de opções de resposta
+        if (!blankSpace && paragraphs) {
+            // Separa o texto entre parágrafos
+            var options = value.split('</p><p>').map(option => {
+                // Correções do split adicionando tag <p> faltante
+                if (option.includes('<p>')) {
+                    option = option + '</p>';
+                } else if (option.includes('</p>')) {
+                    option = '<p>' + option;
+                } else {
+                    option = '<p>' + option + '</p>';
                 }
-                // De outro modo, serão inseridos novos valores
-                else {
-                    options.forEach(item => {arrayAux.push(item)});
-                    setOpcoes(arrayAux);
+
+                // Retorna um objeto opção contendo o campo de 'opcao' preenchido
+                return {
+                    opcao: option,
+                    gabarito: false,
                 }
+            });
+
+            // Verifica se o array de opções já contém algum valor
+            var optionsAux = opcoes.filter(item => {
+                return item.opcao !== "";
+            })
+
+            // Caso o array opcoes já contém algum valor, arrayAux recebe esses valores, do contrário recebe um array vazio
+            var arrayAux = optionsAux.length > 0 ? optionsAux : [];
+
+            // Caso não, o array auxiliar será um vetor vazio
+            if (arrayAux === []) {
+                setOpcoes(options);
             }
-            
-            // Inserção individual de opções de resposta
+            // De outro modo, serão inseridos novos valores
             else {
-                console.log("Individual")
-                setOpcoes(opcoes.map((item, index) => {
-                    if (index === position) {
-                        return { ...item, opcao: value };
-                    } else {
-                        return item;
-                    }
-                }));
+                options.forEach(item => {arrayAux.push(item)});
+                setOpcoes(arrayAux);
             }
         }
-        console.log("handleOpcao", opcoes);
+        
+        // Inserção individual de opções de resposta
+        else {
+            setOpcoes(opcoes.map((item, index) => {
+                if (index === position) {
+                    return { ...item, opcao: value };
+                } else {
+                    return item;
+                }
+            }));
+        }
     }
 
     // -- Salvar dados de gabarito de cada opção
@@ -141,12 +151,6 @@ function QuestionForm (props) {
             } else {
                 return item;
             }
-        })); 
-
-        // Salvando novo status
-        setQuestao(preValue => ({
-            ...preValue,
-            resposta: opcoes
         }));
     }
 
@@ -155,19 +159,10 @@ function QuestionForm (props) {
         setOpcoes(opcoes.filter((option, index) => {
             return index !== position;
         }));
-
-        setQuestao(preValue => ({
-            ...preValue,
-            resposta: opcoes
-        }));
     }
 
     // -- Adicionar opção de resposta
     function addNewOption() {
-        setQuestao(preValue => ({
-            ...preValue,
-            resposta: opcoes
-        }));
         setOpcoes([
             ...opcoes, 
             initialOptionState
@@ -193,13 +188,15 @@ function QuestionForm (props) {
                             name="disciplina"
                             autoFocus={true}
                             value={questao.disciplina}
-                            onChange={handleChange}>
+                            onChange={handleChange}
+                            error={questao.erros.disciplina ? true : false}>
                             {
                                 disciplina.map((row, index) => {
                                     return <MenuItem key={index} value={row._id}>{row.nome}</MenuItem>
                                 })
                             }
                         </MyTextField>
+                        {questao.erros.disciplina && <p className={classes.errorMessage}>{questao.erros.disciplina}</p>}
                     </Grid>
 
                     <Grid item={true} xs={12} sm={6}>
@@ -210,20 +207,26 @@ function QuestionForm (props) {
                             name="topico"
                             type="text"
                             value={questao.topico}
-                            onChange={handleChange}/>
+                            onChange={handleChange}
+                            error={questao.erros.topico ? true : false}/>
+                        {questao.erros.topico && <p className={classes.errorMessage}>{questao.erros.topico}</p>}
                     </Grid>
                 </Grid>
+
+                <ChipsArray/>
+
             </section>
                 
             <section className="enunciadoQuestao">
                 <h2 className="subtitle-page">Enunciado</h2>
-                <MyCard>
+                <MyCard className={questao.erros.enunciado && classes.errorAlarm}>
                     <TextEditor 
                     optionType={false}
                     text={questao.enunciado} 
                     setText={handleEnunciado}
-                />
+                    />
                 </MyCard>
+                {questao.erros.enunciado && <p className={classes.errorMessage}>{questao.erros.enunciado}</p>}
             </section>
 
             <section className="respostaQuestao">
@@ -238,7 +241,7 @@ function QuestionForm (props) {
                         }
                     </Grid>
 
-                    <Grid className={classes.questaoTipo} item={true} xs={12} md={4} sm={4}>
+                    <Grid item={true} xs={12} md={4} sm={4}>
                         <div className="questaoTipo">
                             <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
                                 <Button onClick={() => handleResposta("multiplaEscolha")}>Múltipla Escolha</Button>
@@ -248,7 +251,10 @@ function QuestionForm (props) {
                     </Grid>
                 </Grid>
 
-                <MyCard hidden={questao.tipoResposta === "discursiva" ? true : false}>
+                <MyCard 
+                    className={questao.erros.resposta && classes.errorAlarm}
+                    hidden={questao.tipoResposta === "discursiva" ? true : false}
+                >
                         <label id="gabaritoLabel">Gabarito</label>
                         
                         {opcoes.map((item, index) => {
@@ -294,6 +300,7 @@ function QuestionForm (props) {
                             )
                         })}
                     </MyCard>
+                    {questao.erros.resposta && <p className={classes.errorMessage}>{questao.erros.resposta}</p>}
             </section>
         
             <section className="grupoBotoes">

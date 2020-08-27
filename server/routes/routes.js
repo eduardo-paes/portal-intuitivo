@@ -4,6 +4,7 @@ const bodyparser = require("body-parser");
 const path = require("path");
 const router = express.Router();
 
+// Aplicação do body-parser
 router.use(bodyparser.urlencoded({extended: true}));
 router.use(bodyparser.json());
 
@@ -28,6 +29,7 @@ router.post("/controle-conteudo", ConteudoCtrl.inserirConteudo);
 router.put("/controle-conteudo/:id", ConteudoCtrl.atualizarConteudo);
 router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
 router.get("/controle-conteudo/:id", ConteudoCtrl.encConteudoPorID);
+// router.get("/controle-conteudo/:id", ConteudoCtrl.listarConteudoPorDisciplina);
 router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);
 
 // Definição dos métodos para cada rota da disciplina

@@ -6,8 +6,11 @@ import DisTable from "./Tables/DisTable"
 // -- Forms
 import UserForm from "./Form/UserForm"
 import ContentForm from "./Form/ContentForm"
-import UserValidater from "./Form/FormValidateUser"
-import ContentValidater from "./Form/FormValidateContent"
+
+// -- Validators
+import UserValidater from "./Form/Validation/FormValidateUser"
+import ContentValidater from "./Form/Validation/FormValidateContent"
+import QuestionValidater from "./Form/Validation/FormValidateQuestion"
 
 // -- Drawer
 import ItemsDrawer from "./Drawer/ItemsDrawer"
@@ -30,6 +33,7 @@ export {
     DisTable, 
     UserForm, 
     UserValidater, 
+    QuestionValidater,
     ContentForm,
     ContentValidater,
     ItemsDrawer, 

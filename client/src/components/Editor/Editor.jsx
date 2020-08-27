@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import CKEditor from '@ckeditor/ckeditor5-react';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 
@@ -31,8 +31,13 @@ const generalConfig = {}
 
 // -- Função Principal
 function TextEditor (props) {
-    const {text, setText, optionType, position} = props;                // Dados passados ao editor
+    const {text, setText, optionType, position} = props;                        // Dados passados ao editor
     const [defaultMessage, setDefaultMessage] = useState('');
+
+    useEffect(() => {
+        optionType ? setText(position, text) : setText(text);
+    // eslint-disable-next-line    
+    }, [text])
 
     // -- Função para determinar mensagem inicial do editor
     const handleDefaultMessage = () => {
@@ -56,7 +61,7 @@ function TextEditor (props) {
     const handleEditorChange = (event, editor) => {
         const data = editor.getData();
         // Verifica qual o modo de inserção apropriado (opção ou enunciado)
-        optionType ? setText(position, data, true) : setText(data);
+        optionType ? setText(position, data) : setText(data);
     }
     
     return (

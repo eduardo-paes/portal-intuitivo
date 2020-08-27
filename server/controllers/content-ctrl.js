@@ -151,10 +151,36 @@ encConteudoPorID = async (req, res) => {
         .catch(err => console.log(err))
 }
 
+// Função para buscar conteúdo por ID da Disciplina
+listarConteudoPorDisciplina = async (req, res) => {
+    // Encontra conteúdo pela ID da Disciplina fornecido pela rota
+    await Conteudo
+        .findOne({
+            disciplinaID: req.params.id
+        }, (err, conteudoEncontrado) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!conteudoEncontrado) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Conteúdo não encontrado."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: conteudoEncontrado})
+        })
+        .catch(err => console.log(err))
+}
+
 // Função para listar os conteúdos contidos no banco
 listarConteudos = async (req, res) => {
     await Conteudo.find({}, (err, listaConteudos) => {
-        // Verificação de erros
+        // Verifica se os dados foram encontrados
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
