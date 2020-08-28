@@ -153,9 +153,10 @@ encConteudoPorID = async (req, res) => {
 
 // Função para buscar conteúdo por ID da Disciplina
 listarConteudoPorDisciplina = async (req, res) => {
+    console.log("DID: ", req.params.id);
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
     await Conteudo
-        .findOne({
+        .find({
             disciplinaID: req.params.id
         }, (err, conteudoEncontrado) => {
             if (err) {
@@ -203,5 +204,6 @@ module.exports = {
     atualizarConteudo,
     removerConteudo,
     encConteudoPorID,
-    listarConteudos
+    listarConteudos,
+    listarConteudoPorDisciplina
 }

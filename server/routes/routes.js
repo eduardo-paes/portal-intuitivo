@@ -29,8 +29,8 @@ router.post("/controle-conteudo", ConteudoCtrl.inserirConteudo);
 router.put("/controle-conteudo/:id", ConteudoCtrl.atualizarConteudo);
 router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
 router.get("/controle-conteudo/:id", ConteudoCtrl.encConteudoPorID);
-// router.get("/controle-conteudo/:id", ConteudoCtrl.listarConteudoPorDisciplina);
 router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);
+router.get("/controle-conteudo/topicos/:id", ConteudoCtrl.listarConteudoPorDisciplina);
 
 // Definição dos métodos para cada rota da disciplina
 router.post("/configuracoes/disciplina", DisciplinaCtrl.inserirDisciplina);
@@ -49,9 +49,7 @@ router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {
     const crypto = require("crypto");
-
     var fileName;
-
     let questaoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
@@ -85,7 +83,6 @@ router.post("/upload-questao", (req, res) => {
 
 // Rota para armazenamento de conteúdo pdf
 router.post("/upload-conteudo/:id", (req, res) => {
-
     let conteudoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "content"));

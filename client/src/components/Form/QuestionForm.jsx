@@ -1,9 +1,10 @@
-import React, {useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {Link} from 'react-router-dom'
 
-// -- Editor / Chips
+// -- Editor / Chips / api
 import { TextEditor } from "../";
 import ChipsArray from './Utils/Chips'
+import api from '../../api'
 
 // -- Styles / Imports
 import { MyContainer, MyTextField, MyCard, AddButton, DeleteButton } from "../../assets/styles/styledComponents"
@@ -49,6 +50,22 @@ const useStyles = makeStyles((theme) => ({
 function QuestionForm (props) {
     const classes = useStyles();
     const {title, disciplina, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
+    const [topico, setTopico] = useState([]);
+
+    // -- Carrega os Tópicos, por Disciplina, existentes no banco
+    useEffect(() => {
+        if (questao.disciplinaID !== '') {
+            const abortController = new AbortController();
+            async function fetchTopicoAPI() {
+                const response = await api.listarConteudoPorDisciplina(questao.disciplinaID);
+                const value = response.data.data;
+                setTopico(value);
+            }
+            fetchTopicoAPI()
+            return abortController.abort();
+        }
+        // eslint-disable-next-line
+    }, [questao.disciplinaID]);
 
     // -- Salva alterações de 'opcoes' em 'questao'
     useEffect(() => {
@@ -65,6 +82,16 @@ function QuestionForm (props) {
         setQuestao(preValue => ({
             ...preValue,
             [name]: value
+        }));
+    }
+
+    // -- Salvar dados do formulário inicial
+    function handleDisciplina (event) {
+        const {value} = event.target;
+        setQuestao(preValue => ({
+            ...preValue,
+            disciplinaID: value._id,
+            disciplinaNome: value.nome,
         }));
     }
 
@@ -187,12 +214,12 @@ function QuestionForm (props) {
                             label="Disciplina"
                             name="disciplina"
                             autoFocus={true}
-                            value={questao.disciplina}
-                            onChange={handleChange}
+                            value={questao.disciplinaNome}
+                            onChange={handleDisciplina}
                             error={questao.erros.disciplina ? true : false}>
                             {
-                                disciplina.map((row, index) => {
-                                    return <MenuItem key={index} value={row._id}>{row.nome}</MenuItem>
+                                disciplina.map(row => {
+                                    return <MenuItem key={row._id} value={row}>{row.nome}</MenuItem>
                                 })
                             }
                         </MyTextField>
@@ -202,13 +229,25 @@ function QuestionForm (props) {
                     <Grid item={true} xs={12} sm={6}>
                         <MyTextField
                             id="campoTopico"
-                            label="Tópico"
                             variant="outlined"
+                            select={true}
+                            label="Tópico"
                             name="topico"
-                            type="text"
+                            disabled={topico.length === 0 ? true : false}
                             value={questao.topico}
                             onChange={handleChange}
-                            error={questao.erros.topico ? true : false}/>
+                            error={questao.erros.topico ? true : false}>
+
+                            { 
+                            topico !== undefined &&
+                                topico.length >= 1 
+                                ? topico.map((row, index) => {
+                                    return <MenuItem key={index} value={row._id}>{row.topico}</MenuItem>
+                                })
+                                : <MenuItem key={topico._id} value={topico._id}>{topico.topico}</MenuItem>
+                            }
+
+                        </MyTextField>
                         {questao.erros.topico && <p className={classes.errorMessage}>{questao.erros.topico}</p>}
                     </Grid>
                 </Grid>
@@ -305,7 +344,7 @@ function QuestionForm (props) {
         
             <section className="grupoBotoes">
                 <AddButton onClick={saveQuestion}>Salvar</AddButton>
-                <Link to="/controle-questoes/create" style={{ textDecoration: 'none' }}>
+                <Link to="/controle-questoes/list" style={{ textDecoration: 'none' }}>
                     <DeleteButton>Cancelar</DeleteButton>
                 </Link>
             </section>

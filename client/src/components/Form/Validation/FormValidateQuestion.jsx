@@ -1,9 +1,9 @@
 export default function validate (props) {
-    const {disciplina, topico, enunciado, tipoResposta, resposta} = props;
+    const {disciplinaNome, topico, enunciado, tipoResposta, resposta} = props;
     let erros = {};
 
     // Validar disciplina
-    if (disciplina === '') {
+    if (disciplinaNome === '') {
         erros.disciplina = "É preciso escolher uma disciplina."
         erros.validated = false;
     }

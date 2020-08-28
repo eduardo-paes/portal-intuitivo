@@ -123,6 +123,8 @@ removerQuestao = async (req, res) => {
 
 // Função para buscar questao por ID
 encQuestaoPorID = async (req, res) => {
+    // 5f3d287466f48605a627fed0
+    console.log(req.params.id)
     // Encontra questao por ID fornecido na rota
     await Questao
         .findOne({

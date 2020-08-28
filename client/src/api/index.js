@@ -17,7 +17,7 @@ export const listarConteudos = () => api.get("/controle-conteudo");
 export const atualizarConteudo = (id, conteudoAtualizado) => api.put(`/controle-conteudo/${id}`, conteudoAtualizado);
 export const removerConteudo = id => api.delete(`/controle-conteudo/${id}`);
 export const encConteudoPorID = id => api.get(`/controle-conteudo/${id}`);
-export const listarConteudoPorDisciplina = disciplinaID => api.get(`/controle-conteudo/${disciplinaID}`);
+export const listarConteudoPorDisciplina = id => api.get(`/controle-conteudo/topicos/${id}`);
 
 // -- Funções relacionadas à Disciplina
 export const inserirDisciplina = novaDisciplina => api.post("/configuracoes/disciplina", novaDisciplina);

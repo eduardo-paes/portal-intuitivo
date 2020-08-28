@@ -6,8 +6,9 @@ import ContentInsert from "./StudyContent/ContentInsert"
 import ContentList from "./StudyContent/ContentList"
 import ContentUpdate from "./StudyContent/ContentUpdate"
 
-import QuestionInsert from "./Questions/QuestionInsert"
 import QuestionList from "./Questions/QuestionList"
+import QuestionInsert from "./Questions/QuestionInsert"
+import QuestionUpdate from "./Questions/QuestionUpdate"
 
 import ActivityInsert from "./Activities/ActivityInsert"
 
@@ -29,8 +30,9 @@ export {
     ContentList,
     ContentUpdate,
     
-    QuestionInsert,
     QuestionList,
+    QuestionInsert,
+    QuestionUpdate,
     ActivityInsert,
 
     Classroom, 

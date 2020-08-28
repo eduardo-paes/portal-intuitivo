@@ -26,11 +26,11 @@ export default function ChipsArray(props) {
     const emptyTagMessage = "Selecione as tags desejadas no botão ao lado."     // Mensagem para quando não há tags selecionadas
     const [selectedTag, setSelectedTag] = useState([]);                         // Lista de tags selecionadas
     const [tagList, setTagList] = useState([                                    // Lista de tags disponíveis
-        { key: 0, label: 'Angular', selected: false },
-        { key: 1, label: 'jQuery', selected: false },
-        { key: 2, label: 'Polymer', selected: false },
-        { key: 3, label: 'React', selected: false },
-        { key: 4, label: 'Vue.js', selected: false },
+        { key: 0, label: 'Tag 1', selected: false },
+        { key: 1, label: 'Tag 2', selected: false },
+        { key: 2, label: 'Tag 3', selected: false },
+        { key: 3, label: 'Tag 4', selected: false },
+        { key: 4, label: 'Tag 5', selected: false },
     ]);
 
     // Função callback após adicionar/remover uma tag

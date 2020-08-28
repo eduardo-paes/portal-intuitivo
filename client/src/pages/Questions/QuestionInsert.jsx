@@ -4,44 +4,32 @@ import { StoreContext } from "../../utils";
 import QuestionForm from "../../components/Form/QuestionForm";
 import validate from "../../components/Form/Validation/FormValidateQuestion";
 
-// -- Dados iniciais da constante Questão
-const initialQuestionState = {
-    disciplina: "",
-    topico: "",
-    enunciado: "",
-    resposta: [],
-    tipoResposta: "multiplaEscolha",
-    dataCriacao: new Date(),
-    dataEdicao: new Date(),
-    erros: []
-}
-
-// -- Dados iniciais da constante Opções
-const initialOptionState = {
-    opcao: "", 
-    gabarito: false
-}
-
 // -- Função Principal
 function QuestionInsert() {
+    // -- Dados iniciais da constante Questão
+    const initialQuestionState = {
+        disciplinaID: "",
+        disciplinaNome: "",
+        topicoID: "",
+        topicoNome: "",
+        enunciado: "",
+        resposta: [],
+        tipoResposta: "multiplaEscolha",
+        dataCriacao: new Date(),
+        dataEdicao: new Date(),
+        erros: []
+    }
+
+    // -- Dados iniciais da constante Opções
+    const initialOptionState = {
+        opcao: "", 
+        gabarito: false
+    }
+
     const [disciplina, setDisciplina] = useState([]);
-    const [topico, setTopico] = useState([]);
     const [questao, setQuestao] = useState(initialQuestionState);
     const [opcoes, setOpcoes] = useState([initialOptionState]);
     const {token} = useContext(StoreContext);
-
-    // -- Carrega as Disciplinas existentes no banco
-    useEffect(() => {
-        const abortController = new AbortController();
-        async function fetchTopicoAPI() {
-            const response = await api.listarConteudoPorDisciplina(questao.disciplina);
-            const value = response.data.data;
-            setTopico(value);
-            console.log(value);
-        }
-        fetchTopicoAPI()
-        return abortController.abort();
-    }, [topico]);
 
     // -- Carrega as Disciplinas existentes no banco
     useEffect(() => {
@@ -53,7 +41,7 @@ function QuestionInsert() {
         }
         fetchDisciplinaAPI()
         return abortController.abort();
-    }, [disciplina]);
+    }, []);
 
     // -- Confirma mudanças realizadas em opcoes
     useEffect(() => {

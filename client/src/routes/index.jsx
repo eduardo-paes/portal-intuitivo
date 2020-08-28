@@ -13,14 +13,15 @@ import {
     Desempenho,
     Classroom,
     ActivityInsert,
+    QuestionList,
     QuestionInsert,
+    QuestionUpdate,
     Login,
     GeneralPage,
     ContentInsert,
     ContentUpdate,
     ContentList,
     Settings,
-    QuestionList
 } from '../pages'
 
 // -- Main Routes
@@ -53,7 +54,9 @@ function PrivateRoutes() {
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo/create" component={ContentInsert}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo/update/:id" component={ContentUpdate}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes" component={QuestionList}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/list" component={QuestionList}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/create" component={QuestionInsert}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/update/:id" component={QuestionUpdate}/>
 
             {/* --- Rotas do Administrador */}
             <ConditionalRoute exact={true} type="Administrador" from="/" component={UsersList}/>
