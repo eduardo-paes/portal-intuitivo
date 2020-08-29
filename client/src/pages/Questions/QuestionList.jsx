@@ -1,44 +1,81 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import api from '../../api'
 
 // -- Styles
-import { MyContainer, CreateButton } from "../../assets/styles/styledComponents"
-import { Grid } from "@material-ui/core";
-import {makeStyles} from '@material-ui/core/styles';
+// import { Grid } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
+
+// -- Components
+import { MyContainer, CreateButton, MyCard, MyCardContent } from "../../assets/styles/styledComponents"
+import { QuestionTable } from "../../components"
 
 // -- Local Styles
 const useStyles = makeStyles((theme) => ({
-    buttons: {
-        marginTop: theme.spacing(2),
-        margin: theme.spacing(1)
-    },
-    root: {
-        flexGrow: 1
-    },
-    group: {
-        textAlign: "center"
+    cardQuestion: {
+        marginTop: "1rem",
+        maxWidth: "500px",
+        alignSelf: "center",
+        alignItems: "center",
+        alignText: "center"
+    }, 
+    cardList: {
+        alignItems: "center",
+        alignText: "center"
     }
 }));
 
+function DecodeFromHTML (value) {
+
+    const parser = new DOMParser();
+    const decodedString = parser.parseFromString(`<!doctype html><body>${value}`, 'text/html').body.textContent;
+    console.log(decodedString);
+}
+
+
 function QuestionInsert() {
     const classes = useStyles();
+    const [questoes, setQuestoes] = useState([]);
+    const [questaoSelecionada, setQuestaoSelecionada] = useState('');
+
+    // -- Lista as questões do banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        async function fetchQuestoesAPI() {
+            const response = await api.listarQuestao();
+            const value = response.data.data;
+            setQuestoes(value);
+        }
+        fetchQuestoesAPI()
+        return abortController.abort();
+    }, [questoes]);
+
+    // -- Observa mudanças em questão selecionada
+    useEffect(() => {
+        console.log(questaoSelecionada)
+        setQuestaoSelecionada(questaoSelecionada)
+        DecodeFromHTML(questaoSelecionada.enunciado)
+    }, [questaoSelecionada]);
 
         return (
         <MyContainer>
-            <header>
-                <Grid container={true} className={classes.root} spacing={2}>
-                    <Grid item={true} xs={12} sm={9}>
-                        <h1 className="heading-page">Banco de Questões</h1>
-                    </Grid>
+            <section id="cabecalhoListaQuestao">
+                <h1 className="heading-page">Banco de Questões</h1>
+                <QuestionTable data={questoes} setQuestion={setQuestaoSelecionada}/>
+                <CreateButton title="Inserir Questão" url="/controle-questoes/create"/>
+            </section>
 
-                    <Grid item={true} xs={12} sm={3}>
-                        <CreateButton title="Inserir Questão" url="/controle-questoes/create"/>
-                    </Grid>
-                </Grid>
-            </header>
-
-            <main>
-                Questões serão listadas aqui
-            </main>
+            <section id="cardsListaQuestao" className={classes.cardList} hidden={questaoSelecionada === '' ? true : false}>
+                <MyCard className={classes.cardQuestion}>
+                    <MyCardContent>
+                        <div dangerouslySetInnerHTML={{__html: questaoSelecionada.enunciado}} />
+                        { questaoSelecionada.tipoResposta === "multiplaEscolha" 
+                            && questaoSelecionada.resposta.map((item, index) => {
+                                return (<div key={index} dangerouslySetInnerHTML={{__html: item.opcao}} />);
+                            })
+                        }
+                    </MyCardContent>
+                </MyCard>
+            </section>
         </MyContainer>
     );
 };

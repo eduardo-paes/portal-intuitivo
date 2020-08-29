@@ -49,15 +49,15 @@ const useStyles = makeStyles((theme) => ({
 
 function QuestionForm (props) {
     const classes = useStyles();
-    const {title, disciplina, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
+    const {title, listaDisciplinas, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
     const [topico, setTopico] = useState([]);
 
     // -- Carrega os Tópicos, por Disciplina, existentes no banco
     useEffect(() => {
-        if (questao.disciplinaID !== '') {
+        if (questao.disciplina.id !== '') {
             const abortController = new AbortController();
             async function fetchTopicoAPI() {
-                const response = await api.listarConteudoPorDisciplina(questao.disciplinaID);
+                const response = await api.listarConteudoPorDisciplina(questao.disciplina.id);
                 const value = response.data.data;
                 setTopico(value);
             }
@@ -65,10 +65,11 @@ function QuestionForm (props) {
             return abortController.abort();
         }
         // eslint-disable-next-line
-    }, [questao.disciplinaID]);
+    }, [questao.disciplina.id]);
 
     // -- Salva alterações de 'opcoes' em 'questao'
     useEffect(() => {
+        console.log(opcoes)
         setQuestao(preValue => ({
             ...preValue,
             resposta: opcoes
@@ -76,22 +77,19 @@ function QuestionForm (props) {
         // eslint-disable-next-line
     }, [opcoes])
 
-    // -- Salvar dados do formulário inicial
-    function handleChange (event) {
-        const {name, value} = event.target;
-        setQuestao(preValue => ({
-            ...preValue,
-            [name]: value
-        }));
-    }
+    // -- Confirma mudanças realizadas em questao
+    useEffect(() => {
+        console.log(questao)
+    }, [questao]);
 
     // -- Salvar dados do formulário inicial
-    function handleDisciplina (event) {
-        const {value} = event.target;
+    function handleChange (nameField, ID, nome) {        
         setQuestao(preValue => ({
             ...preValue,
-            disciplinaID: value._id,
-            disciplinaNome: value.nome,
+            [nameField]: {
+                id: ID,
+                nome: nome
+            }
         }));
     }
 
@@ -122,7 +120,7 @@ function QuestionForm (props) {
                     option = '<p>' + option + '</p>';
                 }
 
-                // Retorna um objeto opção contendo o campo de 'opcao' preenchido
+                // Retorna um objeto opção contstarto o campo de 'opcao' preenchido
                 return {
                     opcao: option,
                     gabarito: false,
@@ -214,12 +212,11 @@ function QuestionForm (props) {
                             label="Disciplina"
                             name="disciplina"
                             autoFocus={true}
-                            value={questao.disciplinaNome}
-                            onChange={handleDisciplina}
+                            value={questao.disciplina.nome}
                             error={questao.erros.disciplina ? true : false}>
                             {
-                                disciplina.map(row => {
-                                    return <MenuItem key={row._id} value={row}>{row.nome}</MenuItem>
+                                listaDisciplinas.map((row, index) => {
+                                    return <MenuItem key={index} value={row.nome} onClick={() => handleChange("disciplina", row._id, row.nome)}>{row.nome}</MenuItem>
                                 })
                             }
                         </MyTextField>
@@ -234,17 +231,15 @@ function QuestionForm (props) {
                             label="Tópico"
                             name="topico"
                             disabled={topico.length === 0 ? true : false}
-                            value={questao.topico}
-                            onChange={handleChange}
+                            value={questao.topico.nome}
                             error={questao.erros.topico ? true : false}>
 
-                            { 
-                            topico !== undefined &&
+                            { topico !== undefined &&
                                 topico.length >= 1 
                                 ? topico.map((row, index) => {
-                                    return <MenuItem key={index} value={row._id}>{row.topico}</MenuItem>
+                                    return <MenuItem key={index} value={row.topico} onClick={() => handleChange("topico", row._id, row.topico)}>{row.topico}</MenuItem>
                                 })
-                                : <MenuItem key={topico._id} value={topico._id}>{topico.topico}</MenuItem>
+                                : <MenuItem key={topico._id} value={topico.topico} onClick={() => handleChange("topico", topico._id, topico.topico)}>{topico.topico}</MenuItem>
                             }
 
                         </MyTextField>
@@ -260,9 +255,9 @@ function QuestionForm (props) {
                 <h2 className="subtitle-page">Enunciado</h2>
                 <MyCard className={questao.erros.enunciado && classes.errorAlarm}>
                     <TextEditor 
-                    optionType={false}
-                    text={questao.enunciado} 
-                    setText={handleEnunciado}
+                        optionType={false}
+                        text={questao.enunciado} 
+                        setText={handleEnunciado}
                     />
                 </MyCard>
                 {questao.erros.enunciado && <p className={classes.errorMessage}>{questao.erros.enunciado}</p>}
@@ -305,7 +300,7 @@ function QuestionForm (props) {
                                         <Grid container={true} spacing={1}>
                                             <Grid item={true} xs={2} sm={1}>
                                                 <Checkbox
-                                                    checked={opcoes.gabarito}
+                                                    checked={item.gabarito}
                                                     className={classes.checkBox}
                                                     onChange={() => handleGabarito(index)}
                                                     inputProps={{ 'aria-label': 'primary checkbox' }}/>

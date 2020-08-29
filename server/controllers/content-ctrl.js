@@ -153,7 +153,6 @@ encConteudoPorID = async (req, res) => {
 
 // Função para buscar conteúdo por ID da Disciplina
 listarConteudoPorDisciplina = async (req, res) => {
-    console.log("DID: ", req.params.id);
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
     await Conteudo
         .find({

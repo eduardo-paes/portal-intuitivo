@@ -1,15 +1,15 @@
 export default function validate (props) {
-    const {disciplinaNome, topico, enunciado, tipoResposta, resposta} = props;
+    const {disciplina, topico, enunciado, tipoResposta, resposta} = props;
     let erros = {};
 
     // Validar disciplina
-    if (disciplinaNome === '') {
+    if (disciplina.nome === '') {
         erros.disciplina = "É preciso escolher uma disciplina."
         erros.validated = false;
     }
 
     // Validar topico
-    if (topico === '') {
+    if (topico.nome === '') {
         erros.topico = "É preciso escolher um tópico."
         erros.validated = false;
     }
@@ -26,10 +26,9 @@ export default function validate (props) {
         erros.validated = false;
     }
 
-    if (!erros.validated) {
+    if (erros.validated !== false) {
         erros.validated = true;
     }
 
-    console.log("Erros: ", erros)
     return erros;
 }

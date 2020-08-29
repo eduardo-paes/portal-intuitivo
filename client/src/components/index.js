@@ -2,6 +2,7 @@
 import UserTable from "./Tables/UserTable"
 import ContentTable from "./Tables/ContentTable"
 import DisTable from "./Tables/DisTable"
+import QuestionTable from "./Tables/QuestionTable"
 
 // -- Forms
 import UserForm from "./Form/UserForm"
@@ -31,6 +32,7 @@ export {
     UserTable,
     ContentTable,
     DisTable, 
+    QuestionTable,
     UserForm, 
     UserValidater, 
     QuestionValidater,

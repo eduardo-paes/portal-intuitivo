@@ -8,10 +8,14 @@ import validate from "../../components/Form/Validation/FormValidateQuestion";
 function QuestionInsert() {
     // -- Dados iniciais da constante Questão
     const initialQuestionState = {
-        disciplinaID: "",
-        disciplinaNome: "",
-        topicoID: "",
-        topicoNome: "",
+        disciplina: {
+            id: "",
+            nome: ""
+        },
+        topico: {
+            id: "",
+            nome: ""
+        },
         enunciado: "",
         resposta: [],
         tipoResposta: "multiplaEscolha",
@@ -26,7 +30,7 @@ function QuestionInsert() {
         gabarito: false
     }
 
-    const [disciplina, setDisciplina] = useState([]);
+    const [listaDisciplinas, setListaDisciplinas] = useState([]);
     const [questao, setQuestao] = useState(initialQuestionState);
     const [opcoes, setOpcoes] = useState([initialOptionState]);
     const {token} = useContext(StoreContext);
@@ -37,7 +41,7 @@ function QuestionInsert() {
         async function fetchDisciplinaAPI() {
             const response = await api.listarDisciplinas();
             const value = response.data.data;
-            setDisciplina(value);
+            setListaDisciplinas(value);
         }
         fetchDisciplinaAPI()
         return abortController.abort();
@@ -48,18 +52,24 @@ function QuestionInsert() {
         setOpcoes(opcoes);
     }, [opcoes]);
 
+    // -- Confirma mudanças realizadas em questao
+    useEffect(() => {
+        setQuestao(questao);
+    }, [questao]);
+
     // -- Salva questão no banco de dados
     async function saveQuestion() {
-        const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, dataEdicao} = questao;
-        
         // Valida se há algum erro no preenchimento dos campos
         const error = validate(questao);
         setQuestao(preValue => ({
             ...preValue,
             erros: error
         }))
+        
         // Verifica se há erro
         if (error.validated) {
+            const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, dataEdicao} = questao;
+
             if (tipoResposta === "multiplaEscolha") {
                 var respostaValidada = resposta.filter(item => {
                     return item.opcao !== "";
@@ -76,13 +86,14 @@ function QuestionInsert() {
                 dataEdicao,
                 autor: token.userID
             }
-        
+
             // Inserção pela API
             await api
                 .inserirQuestao(novaQuestao)
                 .then(res => {
                     // Limpa os campos
                     if (res.status === 201) {
+                        window.alert("Questão inserida com sucesso.")
                         setQuestao(initialQuestionState);
                         setOpcoes([initialOptionState]);
                     }
@@ -93,7 +104,7 @@ function QuestionInsert() {
     return (
         <QuestionForm 
             title="Criar Questão"
-            disciplina={disciplina}
+            listaDisciplinas={listaDisciplinas}
             questao={questao}
             setQuestao={setQuestao}
             saveQuestion={saveQuestion}

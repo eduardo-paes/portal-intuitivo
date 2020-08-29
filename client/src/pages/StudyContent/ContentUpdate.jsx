@@ -44,7 +44,6 @@ function Content(props) {
     fetchConteudoAPI();
     return abortController.abort();
 
-    
   // eslint-disable-next-line
   }, []);
 
@@ -61,7 +60,6 @@ function Content(props) {
   }, []);
 
   // -- Definição das Funções
-
   const onMaterialChange = (event) => {
       const {name, value} = event.target;
       setMaterial(preValue => ({
@@ -71,7 +69,6 @@ function Content(props) {
       }
       
   const handleUpload = async event => {
-    
     const file = event.target.files[0];
     setMaterial(preValue => ({
       ...preValue,
@@ -92,7 +89,7 @@ function Content(props) {
       autor: autor.push(token.userID)
     }))
 
-    if(error.validated) {
+    if (error.validated) {
       
       const conteudoAtualizado = {
         area,
@@ -119,13 +116,10 @@ function Content(props) {
                 })
               .then(res => res.json())
           }
-
-
               window.alert("Conteúdo inserido com sucesso.")
           })
   
       if (conteudo) {
-        
         const formData = new FormData();
         formData.append("conteudo", conteudo);
         fetch('http://localhost:5000/api/upload-conteudo', {
@@ -136,8 +130,7 @@ function Content(props) {
       }  
     }
   }
-
-
+  
   return (
       <ContentForm 
         data={material}

@@ -4,7 +4,6 @@ const Questao = require('../models/question-model');
 inserirQuestao = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
-    console.log(req.body);
 
     if (!body) {
         return res.status(400).json({
@@ -53,10 +52,10 @@ atualizarQuestao = async (req, res) => {
         })
     }
 
-    const questao = new Questao(body);
+    const questaoAtualizada = new Questao(body);
 
     // Verifica se dados não são nulos
-    if (!questao) {
+    if (!questaoAtualizada) {
         return res
             .status(400)
             .json({success: false, error: "Os dados são nulos ou incompatíveis."})
@@ -69,12 +68,19 @@ atualizarQuestao = async (req, res) => {
         if (err) {
             return res
                 .status(404)
-                .json({err, message: "Questao não encontrada."})
+                .json({
+                    err, 
+                    message: "Questao não encontrada."
+                })
         }
 
-        // Atualiza dados do questao encontrado
-        questaoEncontrada.nome = questao.nome
-        questaoEncontrada.diaSemana = questao.diaSemana
+        // Atualiza dados da questão encontrada
+        questaoEncontrada.disciplina = questaoAtualizada.disciplina
+        questaoEncontrada.topico = questaoAtualizada.topico
+        questaoEncontrada.enunciado = questaoAtualizada.enunciado
+        questaoEncontrada.tipoResposta = questaoAtualizada.tipoResposta
+        questaoEncontrada.resposta = questaoAtualizada.resposta
+        questaoEncontrada.dataEdicao = questaoAtualizada.dataEdicao
 
         // Salva alterações
         questaoEncontrada
@@ -123,8 +129,6 @@ removerQuestao = async (req, res) => {
 
 // Função para buscar questao por ID
 encQuestaoPorID = async (req, res) => {
-    // 5f3d287466f48605a627fed0
-    console.log(req.params.id)
     // Encontra questao por ID fornecido na rota
     await Questao
         .findOne({

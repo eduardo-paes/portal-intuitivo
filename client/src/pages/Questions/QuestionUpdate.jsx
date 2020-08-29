@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import api from '../../api'
-import { StoreContext } from "../../utils";
 import QuestionForm from "../../components/Form/QuestionForm";
 import validate from "../../components/Form/Validation/FormValidateQuestion";
 
@@ -8,9 +7,14 @@ import validate from "../../components/Form/Validation/FormValidateQuestion";
 function QuestionUpdate(props) {
     // -- Dados iniciais da constante Questão
     const initialQuestionState = {
-        id: props.match.params.id,
-        disciplina: "",
-        topico: "",
+        disciplina: {
+            id: "",
+            nome: ""
+        },
+        topico: {
+            id: "",
+            nome: ""
+        },
         enunciado: "",
         resposta: [],
         tipoResposta: "multiplaEscolha",
@@ -25,22 +29,53 @@ function QuestionUpdate(props) {
         gabarito: false
     }
 
-    const [disciplina, setDisciplina] = useState([]);
+    const questionID = props.match.params.id;
+    const [listaDisciplinas, setListaDisciplinas] = useState([]);
     const [questao, setQuestao] = useState(initialQuestionState);
     const [opcoes, setOpcoes] = useState([initialOptionState]);
-    const {token} = useContext(StoreContext);
-
+    
     // -- Carrega as Disciplinas existentes no banco
     useEffect(() => {
         const abortController = new AbortController();
         async function fetchDisciplinaAPI() {
             const response = await api.listarDisciplinas();
             const value = response.data.data;
-            setDisciplina(value);
+            setListaDisciplinas(value);
         }
         fetchDisciplinaAPI()
         return abortController.abort();
     }, []);
+
+    // -- Carrega questão selecionada pelo usuário
+    useEffect(() => {
+        const abortController = new AbortController();
+        async function fetchQuestaoAPI() {
+            const response = await api.encQuestaoPorID(questionID);
+            const value = response.data.data;
+            setQuestao(preValue => ({
+                ...preValue,
+                disciplina: {
+                    id: value.disciplina.id,
+                    nome: value.disciplina.nome
+                },
+                topico: {
+                    id: value.topico.id,
+                    nome: value.topico.nome,
+                },
+                enunciado: value.enunciado,
+                resposta: value.resposta,
+                tipoResposta: value.tipoResposta,
+                dataCriacao: value.dataCriacao,
+                dataEdicao: value.dataEdicao,
+                erros: []
+            }));
+            if (value.tipoResposta === "multiplaEscolha") {
+                setOpcoes(value.resposta)
+            }
+        }
+        fetchQuestaoAPI()
+        return abortController.abort();
+    }, [questionID]);
 
     // -- Confirma mudanças realizadas em opcoes
     useEffect(() => {
@@ -49,41 +84,41 @@ function QuestionUpdate(props) {
 
     // -- Salva questão no banco de dados
     async function saveQuestion() {
-        const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, dataEdicao} = questao;
-        
         // Valida se há algum erro no preenchimento dos campos
         const error = validate(questao);
         setQuestao(preValue => ({
             ...preValue,
             erros: error
         }))
+        
         // Verifica se há erro
         if (error.validated) {
+            const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, autor} = questao;
+
             if (tipoResposta === "multiplaEscolha") {
                 var respostaValidada = resposta.filter(item => {
                     return item.opcao !== "";
                 })
             }
 
-            const novaQuestao = {
+            const questaoAtualizada = {
                 disciplina,
                 topico,
                 enunciado,
                 resposta: respostaValidada,
                 tipoResposta,
                 dataCriacao,
-                dataEdicao,
-                autor: token.userID
+                dataEdicao: new Date(),
+                autor
             }
-        
+
             // Inserção pela API
             await api
-                .inserirQuestao(novaQuestao)
+                .atualizarQuestao(questionID, questaoAtualizada)
                 .then(res => {
                     // Limpa os campos
-                    if (res.status === 201) {
-                        setQuestao(initialQuestionState);
-                        setOpcoes([initialOptionState]);
+                    if (res.status === 200) {
+                        window.alert("Questão atualizada com sucesso.")
                     }
                 })
         }
@@ -92,7 +127,7 @@ function QuestionUpdate(props) {
     return (
         <QuestionForm 
             title="Criar Questão"
-            disciplina={disciplina}
+            listaDisciplinas={listaDisciplinas}
             questao={questao}
             setQuestao={setQuestao}
             saveQuestion={saveQuestion}

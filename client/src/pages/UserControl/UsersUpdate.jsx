@@ -84,8 +84,6 @@ class UsersUpdate extends Component {
                     })
                     .then(res => res.json())    
                 })
-
-            
         }
     }
 
