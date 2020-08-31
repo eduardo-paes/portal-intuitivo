@@ -58,27 +58,43 @@ function CreateButton(props) {
 }    
 
 // -- Others
-const MyTextField = styled(TextField)(
-    {marginBottom: "10px", backgroundColor: "#fff", display: "flex", color: "primary"}
-);
+const MyTextField = styled(TextField)({
+    marginBottom: "10px", 
+    backgroundColor: "#fff", 
+    display: "flex", 
+    color: "primary"
+});
 
-const MyContainer = styled(Container)(
-    {padding: "20px 30px 20px 30px", margin: "0"}
-);
+const MyContainer = styled(Container)({
+    padding: "20px 30px 20px 30px", 
+    margin: "0"
+});
 
-const MyTypography = styled(Typography)(
-    {marginBottom: "5%", padding: "1%", color: "#606161"}
-);
+const MyTypography = styled(Typography)({
+    marginBottom: "5%", 
+    padding: "1%", 
+    color: "#606161"
+});
 
-const LoginCard = styled(CardContent)(
-    {padding: "15px", alignContent: "center", textAlign: "center"}
-);
+const LoginCard = styled(CardContent)({
+    padding: "15px", 
+    alignContent: "center", 
+    textAlign: "center"
+});
 
-const MyCard = styled(Card)({backgroundColor: "#fff"});
+const MyCard = styled(Card)({
+    padding: "0", 
+    margin: "0", 
+    backgroundColor: "#fff"
+});
 
-const MyCardContent = styled(CardContent)(
-    {padding: "15px", alignContent: "left", textAlign: "left"}
-);
+const MyCardContent = styled(CardContent)({
+    margin: "1rem",
+    marginBottom: "0",
+    padding: "0", 
+    alignContent: "left", 
+    textAlign: "left"
+});
 
 const MyAvatar = styled(Avatar) ({
     marginLeft: "60px",

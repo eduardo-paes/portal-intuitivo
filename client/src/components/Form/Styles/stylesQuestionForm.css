@@ -17,11 +17,13 @@
 }
 
 .questionEditor {
-    border-bottom: 1px solid #9e9e9e;
+    border-bottom: 1px solid #fff;
+    transition: 0s border-bottom;
 }
 
 .questionEditor:hover {
     border-bottom: 1.5px solid #00bcd4;
+    transition: 0.2s;
  }
 
  .questaoTipo {

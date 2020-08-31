@@ -28,6 +28,9 @@ import TextEditor from "./Editor/Editor"
 // -- Upload Content
 import UploadContent from './Upload/UploadContent'
 
+// -- Cards
+import QuestionCard from './Cards/QuestionCard'
+
 export { 
     UserTable,
     ContentTable,
@@ -44,5 +47,6 @@ export {
     TopBar,
     DialogForm,
     TextEditor,
-    UploadContent
+    UploadContent,
+    QuestionCard
 }

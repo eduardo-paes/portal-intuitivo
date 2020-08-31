@@ -1,41 +1,26 @@
 import React, { useState, useEffect } from "react";
 import api from '../../api'
 
-// -- Styles
-// import { Grid } from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
-
 // -- Components
-import { MyContainer, CreateButton, MyCard, MyCardContent } from "../../assets/styles/styledComponents"
-import { QuestionTable } from "../../components"
+import { MyContainer, CreateButton } from "../../assets/styles/styledComponents"
+import { QuestionTable, QuestionCard } from "../../components"
+import { Card, Grid } from "@material-ui/core";
 
-// -- Local Styles
+// -- Styles
+import { makeStyles } from '@material-ui/core/styles';
+import "./ListStyles.css"
+
 const useStyles = makeStyles((theme) => ({
-    cardQuestion: {
-        marginTop: "1rem",
-        maxWidth: "500px",
-        alignSelf: "center",
-        alignItems: "center",
-        alignText: "center"
-    }, 
-    cardList: {
-        alignItems: "center",
-        alignText: "center"
+    root: {
+      flexGrow: 1,
     }
 }));
-
-function DecodeFromHTML (value) {
-
-    const parser = new DOMParser();
-    const decodedString = parser.parseFromString(`<!doctype html><body>${value}`, 'text/html').body.textContent;
-    console.log(decodedString);
-}
-
 
 function QuestionInsert() {
     const classes = useStyles();
     const [questoes, setQuestoes] = useState([]);
     const [questaoSelecionada, setQuestaoSelecionada] = useState('');
+    const [hiddenCard, setHiddenCard] = useState(true);
 
     // -- Lista as questões do banco
     useEffect(() => {
@@ -51,31 +36,29 @@ function QuestionInsert() {
 
     // -- Observa mudanças em questão selecionada
     useEffect(() => {
-        console.log(questaoSelecionada)
         setQuestaoSelecionada(questaoSelecionada)
-        DecodeFromHTML(questaoSelecionada.enunciado)
     }, [questaoSelecionada]);
 
         return (
         <MyContainer>
-            <section id="cabecalhoListaQuestao">
-                <h1 className="heading-page">Banco de Questões</h1>
-                <QuestionTable data={questoes} setQuestion={setQuestaoSelecionada}/>
-                <CreateButton title="Inserir Questão" url="/controle-questoes/create"/>
-            </section>
+            <h1 className="heading-page">Banco de Questões</h1>
+            <Grid container={true} className={classes.root} spacing={2}>
 
-            <section id="cardsListaQuestao" className={classes.cardList} hidden={questaoSelecionada === '' ? true : false}>
-                <MyCard className={classes.cardQuestion}>
-                    <MyCardContent>
-                        <div dangerouslySetInnerHTML={{__html: questaoSelecionada.enunciado}} />
-                        { questaoSelecionada.tipoResposta === "multiplaEscolha" 
-                            && questaoSelecionada.resposta.map((item, index) => {
-                                return (<div key={index} dangerouslySetInnerHTML={{__html: item.opcao}} />);
-                            })
-                        }
-                    </MyCardContent>
-                </MyCard>
-            </section>
+                <Grid id="cabecalhoListaQuestao" item={true} xs={12} sm={hiddenCard ? 12 : 6} lg={hiddenCard ? 12 : 6} justify="center" spacing={2}>
+                    <QuestionTable data={questoes} setQuestion={setQuestaoSelecionada} setHidden={setHiddenCard}/>
+                    <CreateButton title="Inserir Questão" url="/controle-questoes/create"/>
+                </Grid>
+
+                <Grid id="cardsListaQuestao" item={true} xs={12} sm={hiddenCard ? 12 : 6} lg={hiddenCard ? 12 : 6} justify="center" spacing={2}>
+                    <Card id="questaoCard" hidden={hiddenCard}>
+                        <QuestionCard 
+                            enunciado={questaoSelecionada.enunciado}
+                            tipoResposta={questaoSelecionada.tipoResposta}
+                            resposta={questaoSelecionada.resposta}
+                        />
+                    </Card>
+                </Grid>
+            </Grid>
         </MyContainer>
     );
 };
