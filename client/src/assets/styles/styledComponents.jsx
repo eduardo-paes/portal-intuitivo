@@ -62,6 +62,10 @@ const MyTextField = styled(TextField)(
     {marginBottom: "10px", backgroundColor: "#fff", display: "flex", color: "primary"}
 );
 
+const FilterField = styled(TextField)(
+    {marginBottom: "10px",height: "10px" ,backgroundColor: "#fff", display: "flex", color: "primary"}
+);
+
 const MyContainer = styled(Container)(
     {padding: "20px 30px 20px 30px", margin: "0"}
 );
@@ -90,6 +94,7 @@ export {
     AddButton,
     CreateButton,
     DeleteButton,
+    FilterField,
     MyContainer,
     MyTextField,
     MyTypography,

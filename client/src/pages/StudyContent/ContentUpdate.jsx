@@ -9,8 +9,10 @@ function initialState(props) {
   return {
     id: props.match.params.id,
     area: "",
-    disciplinaID: '',
-    disciplinaNome: '',  
+    disciplina: {
+      id: '',
+      nome: ''
+    },  
     topico: "",
     numeracao: 0,
     autor: [],
@@ -35,8 +37,7 @@ function Content(props) {
       setMaterial(preValue => ({ 
         ...preValue,
         area: response.data.data.area, 
-        disciplinaID: response.data.data.disciplinaID, 
-        disciplinaNome: response.data.data.disciplinaNome,
+        disciplina: response.data.data.disciplina,
         numeracao: response.data.data.numeracao, 
         topico: response.data.data.topico
       }))
@@ -61,12 +62,12 @@ function Content(props) {
 
   // -- Definição das Funções
   const onMaterialChange = (event) => {
-      const {name, value} = event.target;
-      setMaterial(preValue => ({
-          ...preValue,
-          [name]: value
-        }));
-      }
+    const {name, value} = event.target;
+    setMaterial(preValue => ({
+        ...preValue,
+        [name]: value
+    }));
+  }
       
   const handleUpload = async event => {
     const file = event.target.files[0];
@@ -78,10 +79,21 @@ function Content(props) {
     setConteudo(URL.createObjectURL(file));
   }
 
+  function onDisciplineChange (nameField, ID, nome) {
+    setMaterial(preValue => ({
+      ...preValue,
+      [nameField]: {
+        id: ID,
+        nome: nome
+      }
+    }));
+  }
+
   const onSubmit = async event => {
-    const {area, disciplinaID, topico, numeracao, conteudo, id, autor} = material;
+    const {area, disciplina, topico, numeracao, conteudo, id, autor} = material;
     const error = validate(material);
-    const response = await api.encDisciplinaPorID(disciplinaID);
+    const response = await api.encDisciplinaPorID(disciplina.id);
+    disciplina.nome = response.data.data.nome; 
 
     setMaterial(preValue => ({
       ...preValue,
@@ -94,8 +106,7 @@ function Content(props) {
       const conteudoAtualizado = {
         area,
         autor,
-        disciplinaID, 
-        disciplinaNome: response.data.data.nome, 
+        disciplina, 
         topico, 
         numeracao
       };  
@@ -139,6 +150,7 @@ function Content(props) {
         conteudo={conteudo}
         handleUpload={handleUpload}
         onMaterialChange={onMaterialChange}
+        onDisciplineChange={onDisciplineChange}
       />
   );
 

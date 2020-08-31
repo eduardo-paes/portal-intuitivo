@@ -87,8 +87,8 @@ function QuestionForm (props) {
         setQuestao(preValue => ({
             ...preValue,
             [nameField]: {
-                id: ID,
-                nome: nome
+                id: [ID],
+                nome: [nome]
             }
         }));
     }

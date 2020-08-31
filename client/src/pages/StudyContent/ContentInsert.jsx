@@ -10,8 +10,10 @@ import validate from "../../components/Form/Validation/FormValidateContent";
 function initialState() {
   return {
     area: "",
-    disciplinaID: '', 
-    disciplinaNome: '',  
+    disciplina: {
+      id: '', 
+      nome: ''
+    },    
     topico: "",
     numeracao: 0,
     autor: [],
@@ -27,7 +29,7 @@ function Content(props) {
   
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
-  const [disciplina, setDisciplina] = useState(["Disciplina"]);           // Disciplinas do Banco de Dados
+  const [disciplina, setDisciplina] = useState([]);           // Disciplinas do Banco de Dados
   const [conteudo, setConteudo] = useState("");
 
   // -- Carrega as Disciplinas existentes no banco
@@ -63,15 +65,26 @@ function Content(props) {
     setConteudo(URL.createObjectURL(file));
   }
 
+  function onDisciplineChange (nameField, ID, nome) {
+    setMaterial(preValue => ({
+      ...preValue,
+      [nameField]: {
+        id: ID,
+        nome: nome
+      }
+    }));
+  }
+
   const onSubmit = async event => {
-    const {area, disciplinaID, topico, numeracao, autor} = material;
+    const {area, disciplina, topico, numeracao, autor} = material;
     const error = validate(material);
-    const response = await api.encDisciplinaPorID(disciplinaID);
+    const response = await api.encDisciplinaPorID(disciplina.id);
+    disciplina.nome = response.data.data.nome;
 
     setMaterial(preValue => ({
       ...preValue,
       erros: error,
-      autor: autor.push(token.userID)
+      autor: token.userID
     }))
 
     if(error.validated) {
@@ -79,8 +92,7 @@ function Content(props) {
       const novoConteudo = {
         area,
         autor,
-        disciplinaID,
-        disciplinaNome: response.data.data.nome, 
+        disciplina,
         topico, 
         numeracao
       };
@@ -106,7 +118,7 @@ function Content(props) {
         }
 
         // Limpa os campos
-        setMaterial({area: "", disciplinaID: "", disciplinaNome: "", topico: "", numeracao: 0,  conteudo: {}, autor: {}})
+        setMaterial({area: "", disciplina: { id: "", nome: "" }, topico: "", numeracao: 0,  conteudo: {}, autor: {}})
         setConteudo("");
       })
     }
@@ -122,6 +134,8 @@ function Content(props) {
         conteudo={conteudo}
         handleUpload={handleUpload}
         onMaterialChange={onMaterialChange}
+        onDisciplineChange={onDisciplineChange}
+
       />
   );
 

@@ -8,12 +8,16 @@ const Conteudo = new Schema({
         type: String,
         // required: true
     },
-    disciplinaID: {
-        type: Schema.Types.ObjectId, 
-        ref: 'Disciplina'
-    },
-    disciplinaNome: {
-        type: String,
+    disciplina: {
+        id: {
+            type: Schema.Types.ObjectId, 
+            ref: 'Disciplina',
+            required: true
+        },
+        nome: {
+            type: String,
+            required: true
+        }
     },
     topico: {
         type: String,

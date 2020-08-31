@@ -17,8 +17,7 @@ class UsersUpdate extends Component {
             email: "",
             acesso: "",
             erros: [],
-            nomeArquivo: "",
-            urlArquivo: "",
+            url: "",
             foto: {}
         }
     }
@@ -37,8 +36,7 @@ class UsersUpdate extends Component {
         const file = event.target.files[0];
         this.setState({
             ...this.state,
-            nomeArquivo: "profile."+file.name,
-            urlArquivo: URL.createObjectURL(file),
+            url: URL.createObjectURL(file),
             foto: file
         });
     }
@@ -46,15 +44,9 @@ class UsersUpdate extends Component {
     // Salva as mudanças no banco
     handleUpdateUser = async () => {
         // Recebe os campos coletados
-        const {id, nome, email, acesso, senha, nomeArquivo, urlArquivo, foto} = this.state
+        const {id, nome, email, acesso, senha, foto} = this.state
         const error = validate(this.state)
         
-        /*
-        await api.post(
-            `/controle-usuario/${id}`,
-            data
-        );
-        */
         this.setState({
             ...this.state,
             erros: error
@@ -66,9 +58,7 @@ class UsersUpdate extends Component {
                 nome,
                 email,
                 acesso,
-                senha,
-                nomeArquivo,
-                urlArquivo
+                senha
             }
 
             // Guarda usuário atualizado no banco
@@ -91,9 +81,13 @@ class UsersUpdate extends Component {
         const {id} = this.state;
         const usuario = await api.encUsuarioPorID(id);
         
-        this.setState(
-            {nome: usuario.data.data.nome, email: usuario.data.data.email, acesso: usuario.data.data.acesso, senha: usuario.data.data.senha, nomeArquivo: usuario.data.data.nomeArquivo, urlArquivo: usuario.data.data.urlArquivo}
-        );
+        this.setState({
+            nome: usuario.data.data.nome, 
+            email: usuario.data.data.email, 
+            acesso: usuario.data.data.acesso, 
+            senha: usuario.data.data.senha, 
+            url: `http://localhost:5000/uploads/profile/${id}.jpeg`
+        });
     }
 
     // Formulário - Atualização

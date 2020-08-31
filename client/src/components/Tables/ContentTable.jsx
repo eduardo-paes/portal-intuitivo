@@ -315,7 +315,7 @@ export default function EnhancedTable(props) {
                                             <TableRow hover={true} tabIndex={-1} key={conteudo._id}>
                                                 <TableCell className={classes.row} align="left">{conteudo.area}</TableCell>
 
-                                                {(wd.width > 700) && <TableCell className={classes.row} align="left">{conteudo.disciplinaNome}</TableCell>}
+                                                {(wd.width > 700) && <TableCell className={classes.row} align="left">{conteudo.disciplina.nome}</TableCell>}
                                                 {(wd.width > 700) && <TableCell className={classes.row} align="left">{conteudo.topico}</TableCell>}
                                                 {(wd.width > 700) && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
 

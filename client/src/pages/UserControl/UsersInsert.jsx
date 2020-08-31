@@ -18,8 +18,7 @@ class UsersInsert extends Component {
             acesso: "",
             senha: "",
             erros: [],
-            nomeArquivo: "",
-            urlArquivo: "",
+            url: "",
             foto: {}
         }
     }
@@ -37,7 +36,6 @@ class UsersInsert extends Component {
         const file = event.target.files[0];
         this.setState({ 
             ...this.state,
-            nomeArquivo: file.name,
             urlArquivo: URL.createObjectURL(file),
             foto: file
         })
@@ -46,7 +44,7 @@ class UsersInsert extends Component {
     // Salva os dados do formulário no banco
     handleIncludeUser = async (event) => {
         // Recebe os campos coletados
-        const {nome, email, acesso, senha, nomeArquivo, urlArquivo, foto} = this.state;
+        const {nome, email, acesso, senha, foto} = this.state;
         const error = validate(this.state);
 
         this.setState({
@@ -60,9 +58,7 @@ class UsersInsert extends Component {
                 nome,
                 email,
                 acesso,
-                senha,
-                nomeArquivo,
-                urlArquivo
+                senha
             };
             
             // Guarda novo usuário no banco
@@ -82,7 +78,7 @@ class UsersInsert extends Component {
                 }
                 
                 // Limpa os campos
-                    this.setState({nome: "", email: "", acesso: "", senha: "", nomeArquivo: "", urlArquivo: ""})
+                    this.setState({nome: "", email: "", acesso: "", senha: "", urlArquivo: ""})
                 })
         }
     }

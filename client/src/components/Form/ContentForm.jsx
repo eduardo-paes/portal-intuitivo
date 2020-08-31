@@ -4,7 +4,7 @@ import { Grid, MenuItem } from "@material-ui/core";
 import UploadContent from "../Upload/UploadContent";
 
 function ContentForm (props) {
-    const { data, onMaterialChange, conteudo, listaDisciplina, handleUpload, onSubmit } = props;
+    const { data, onMaterialChange, conteudo, listaDisciplina, handleUpload, onSubmit, onDisciplineChange } = props;
     const { area, disciplina, numeracao, topico } = data;
 
     return (
@@ -21,10 +21,10 @@ function ContentForm (props) {
                 name="area"
                 value={area ? area : ""}
                 onChange={onMaterialChange}>
-                <MenuItem value="Ciências Humanas">Ciências Humanas</MenuItem>
-                <MenuItem value="Ciências da Natureza">Ciências da Natureza</MenuItem>
-                <MenuItem value="Linguagens">Linguagens</MenuItem>
-                <MenuItem value="Matemática">Matemática</MenuItem>
+                    <MenuItem value="Ciências Humanas">Ciências Humanas</MenuItem>
+                    <MenuItem value="Ciências da Natureza">Ciências da Natureza</MenuItem>
+                    <MenuItem value="Linguagens">Linguagens</MenuItem>
+                    <MenuItem value="Matemática">Matemática</MenuItem>
                 </MyTextField>
             </Grid>
             <Grid item={true} xs={12} sm={4}>
@@ -35,11 +35,10 @@ function ContentForm (props) {
                     label="Disciplina"
                     name="disciplinaID"
                     autoFocus={true}
-                    value={disciplina}
-                    onChange={onMaterialChange}>
+                    value={disciplina.nome}>
                     {
                         listaDisciplina.map((row, index) => {
-                            return <MenuItem key={index} value={row._id}>{row.nome}</MenuItem>
+                            return <MenuItem key={index} value={row.nome} onClick={() => onDisciplineChange("disciplina", row._id, row.nome)}>{row.nome}</MenuItem>
                         })
                     }
                 </MyTextField>

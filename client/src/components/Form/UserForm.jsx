@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {Link} from '../../../node_modules/react-router-dom'
 import {AddButton, DeleteButton, MyAvatar, MyTextField, MyContainer} from "../../assets/styles/styledComponents"
 import { MenuItem } from '@material-ui/core'
@@ -9,8 +9,7 @@ import "./Styles/styleUserForm.css"
 
 function UserForm (props) {
     const { data, handleChange, handleUpload, onSubmit, typeForm, edit } = props;
-    const { nome, email, acesso, senha, erros, id, urlArquivo } = data;
-    const { url, setUrl } = useState(`http://localhost:5000/uploads/profile/${id}.jpeg`);
+    const { nome, email, acesso, senha, erros, url } = data;
     
     return (
         <MyContainer>

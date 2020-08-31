@@ -75,8 +75,7 @@ atualizarConteudo = async (req, res) => {
         // Atualiza dados do conteúdo encontrado
         conteudoEncontrado.topico = conteudo.topico
         conteudoEncontrado.area = conteudo.area
-        conteudoEncontrado.disciplinaID = conteudo.disciplinaID
-        conteudoEncontrado.disciplinaNome = conteudo.disciplinaNome
+        conteudoEncontrado.disciplina = conteudo.disciplina
         conteudoEncontrado.numeracao = conteudo.numeracao
         conteudoEncontrado.autor = conteudo.autor
 
@@ -156,7 +155,7 @@ listarConteudoPorDisciplina = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
     await Conteudo
         .find({
-            disciplinaID: req.params.id
+            disciplinaID: req.params.id,
         }, (err, conteudoEncontrado) => {
             if (err) {
                 return res
