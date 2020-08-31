@@ -6,7 +6,7 @@ html, body, #root {
     padding:0;
 }
 
-/* --- Cabeçalho --- */
+/* --- Cabeçalhos --- */
 .heading-page {
     font-style: normal;
     font-weight: 500;
@@ -19,7 +19,6 @@ html, body, #root {
     font-weight: 500;
     margin-bottom: 1rem;
     color: #606161;
-    /* border-bottom: 1px solid #606161; */
     padding-bottom: 0.5rem;
 }
 

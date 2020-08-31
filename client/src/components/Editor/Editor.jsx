@@ -31,11 +31,13 @@ const generalConfig = {}
 
 // -- Função Principal
 function TextEditor (props) {
-    const {text, setText, optionType, position} = props;                        // Dados passados ao editor
+    const {text, setText, optionType, position, readOnly} = props;                        // Dados passados ao editor
     const [defaultMessage, setDefaultMessage] = useState('');
 
     useEffect(() => {
-        optionType ? setText(position, text) : setText(text);
+        if (!readOnly) {
+            optionType ? setText(position, text) : setText(text);
+        }
     // eslint-disable-next-line    
     }, [text])
 
@@ -61,7 +63,9 @@ function TextEditor (props) {
     const handleEditorChange = (event, editor) => {
         const data = editor.getData();
         // Verifica qual o modo de inserção apropriado (opção ou enunciado)
-        optionType ? setText(position, data) : setText(data);
+        if (!readOnly) {
+            optionType ? setText(position, data) : setText(data);
+        }
     }
     
     return (
@@ -72,6 +76,7 @@ function TextEditor (props) {
                     data={ text === '' ? defaultMessage : text }
                     onInit={ editor => { 
                         editor.ui.focusTracker.on('change:isFocused', (evt, name, value) => {value && onEditorFocus()});
+                        editor.isReadOnly = readOnly;
                         uploadAdapterPlugin(editor);
                         handleDefaultMessage() 
                     }}

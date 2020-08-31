@@ -37,14 +37,14 @@ function UpdateQuestion(props) {
 
 // Botão de Atualização
 function ShowQuestion(props) {
-    const {id, setQuestion} = props;
+    const {id, setQuestion, setHidden} = props;
     const [clicked, setClicked] = useState(false);
     let question;
 
     // -- Carrega questão selecionada pelo usuário
     useEffect(() => {
+        const abortController = new AbortController();
         if (clicked) {
-            const abortController = new AbortController();
             async function fetchQuestaoAPI() {
                 const response = await api.encQuestaoPorID(id);
                 const value = response.data.data;
@@ -55,10 +55,11 @@ function ShowQuestion(props) {
                     tipoResposta: value.tipoResposta,
                 }
                 setQuestion(question);
+                setHidden(false);
             }
-            fetchQuestaoAPI()
-            return abortController.abort();
+            fetchQuestaoAPI();
         }
+        return abortController.abort();
     }, [clicked]);
 
     return (
@@ -256,7 +257,7 @@ export default function EnhancedTable(props) {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     
     const wd = WindowDimension();
-    const {data, setQuestion} = props;
+    const {data, setQuestion, setHidden} = props;
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -321,7 +322,7 @@ export default function EnhancedTable(props) {
                                                 {(wd.width > 500) && <TableCell className={classes.row} align="left">{dataCriacao}</TableCell>}
 
                                                 <TableCell align="left">
-                                                    <ShowQuestion id={row._id} setQuestion={setQuestion}/>
+                                                    <ShowQuestion id={row._id} setQuestion={setQuestion} setHidden={setHidden}/>
                                                     <UpdateQuestion id={row._id}/>
                                                     <DeleteQuestion id={row._id}/>
                                                 </TableCell>

@@ -1,0 +1,8 @@
+.optionSection {
+    transition: 0s background-color;
+}
+
+.optionSection:hover {
+    background-color: #eeeeee;
+    transition: 0.2s;
+}

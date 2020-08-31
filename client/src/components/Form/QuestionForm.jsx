@@ -69,18 +69,12 @@ function QuestionForm (props) {
 
     // -- Salva alterações de 'opcoes' em 'questao'
     useEffect(() => {
-        console.log(opcoes)
         setQuestao(preValue => ({
             ...preValue,
             resposta: opcoes
         }));
         // eslint-disable-next-line
     }, [opcoes])
-
-    // -- Confirma mudanças realizadas em questao
-    useEffect(() => {
-        console.log(questao)
-    }, [questao]);
 
     // -- Salvar dados do formulário inicial
     function handleChange (nameField, ID, nome) {        
@@ -258,6 +252,7 @@ function QuestionForm (props) {
                         optionType={false}
                         text={questao.enunciado} 
                         setText={handleEnunciado}
+                        readOnly={false}
                     />
                 </MyCard>
                 {questao.erros.enunciado && <p className={classes.errorMessage}>{questao.erros.enunciado}</p>}
@@ -313,7 +308,7 @@ function QuestionForm (props) {
                                                         text={item.opcao} 
                                                         setText={handleOpcao}
                                                         position={index}
-                                                        styles={classes.questionEditor}
+                                                        readOnly={false}
                                                         />
                                                 </div>
                                             </Grid>
