@@ -10,7 +10,9 @@ import QuestionList from "./Questions/QuestionList"
 import QuestionInsert from "./Questions/QuestionInsert"
 import QuestionUpdate from "./Questions/QuestionUpdate"
 
+import ActivityList from "./Activities/ActivityList"
 import ActivityInsert from "./Activities/ActivityInsert"
+import ActivityUpdate from "./Activities/ActivityUpdate"
 
 import Classroom from "./Student/Classroom"
 import Desempenho from "./Student/Desempenho"
@@ -33,7 +35,10 @@ export {
     QuestionList,
     QuestionInsert,
     QuestionUpdate,
+
+    ActivityList,
     ActivityInsert,
+    ActivityUpdate,
 
     Classroom, 
     Desempenho, 

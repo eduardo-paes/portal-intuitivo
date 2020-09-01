@@ -3,8 +3,8 @@ import api from '../../api'
 
 // -- Components
 import { MyContainer, CreateButton } from "../../assets/styles/styledComponents"
-import { QuestionTable, QuestionCard } from "../../components"
-import { Card, Grid } from "@material-ui/core";
+import { QuestionTable, CustomDialog } from "../../components"
+import { Grid } from "@material-ui/core";
 
 // -- Styles
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,7 +20,7 @@ function QuestionInsert() {
     const classes = useStyles();
     const [questoes, setQuestoes] = useState([]);
     const [questaoSelecionada, setQuestaoSelecionada] = useState('');
-    const [hiddenCard, setHiddenCard] = useState(true);
+    const [hiddenDialog, setHiddenDialog] = useState(false);
 
     // -- Lista as questões do banco
     useEffect(() => {
@@ -32,7 +32,7 @@ function QuestionInsert() {
         }
         fetchQuestoesAPI()
         return abortController.abort();
-    }, [questoes]);
+    }, []);
 
     // -- Observa mudanças em questão selecionada
     useEffect(() => {
@@ -42,23 +42,21 @@ function QuestionInsert() {
         return (
         <MyContainer>
             <h1 className="heading-page">Banco de Questões</h1>
-            <Grid container={true} className={classes.root} spacing={2}>
-
-                <Grid id="cabecalhoListaQuestao" item={true} xs={12} sm={hiddenCard ? 12 : 6} lg={hiddenCard ? 12 : 6} justify="center" spacing={2}>
-                    <QuestionTable data={questoes} setQuestion={setQuestaoSelecionada} setHidden={setHiddenCard}/>
+            <Grid container={true} className={classes.root} spacing={2} justify="center">
+                <Grid id="cabecalhoListaQuestao" item={true} xs={12} sm={12} lg={12}>
+                    <QuestionTable data={questoes} setQuestion={setQuestaoSelecionada} setHidden={setHiddenDialog}/>
                     <CreateButton title="Inserir Questão" url="/controle-questoes/create"/>
                 </Grid>
-
-                <Grid id="cardsListaQuestao" item={true} xs={12} sm={hiddenCard ? 12 : 6} lg={hiddenCard ? 12 : 6} justify="center" spacing={2}>
-                    <Card id="questaoCard" hidden={hiddenCard}>
-                        <QuestionCard 
-                            enunciado={questaoSelecionada.enunciado}
-                            tipoResposta={questaoSelecionada.tipoResposta}
-                            resposta={questaoSelecionada.resposta}
-                        />
-                    </Card>
-                </Grid>
             </Grid>
+
+            <CustomDialog 
+                enunciado={questaoSelecionada.enunciado}
+                tipoResposta={questaoSelecionada.tipoResposta}
+                resposta={questaoSelecionada.resposta}
+                open={hiddenDialog}
+                setOpen={setHiddenDialog}
+            />
+
         </MyContainer>
     );
 };

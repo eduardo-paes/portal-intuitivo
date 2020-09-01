@@ -39,6 +39,7 @@ const theme = createMuiTheme({
     },
     button: {
       textDecoration: "none",
+      brackgroundColor: "#fff"
     },
     overrides: {
       MuiCssBaseline: {

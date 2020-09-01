@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {useState, useEffect} from "react";
 import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
@@ -22,66 +22,66 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
-// Função para abrir popup com o pdf do conteúdo
-import Popup from 'reactjs-popup';
-import PDFViewer from "../PDFViewer/PDFViewer";
-
-/*
-Funcionalidade pendente:
-    -> Um card de Filtragem;
-*/
-
-// Botão para visualização do conteúdo
-function ContentVisualization (props) {
-
+// Botão de Atualização
+function UpdateQuestion(props) {
     return (
-        <Popup
-            trigger={
-                <IconButton 
-                    aria-label="visualization" 
-                    color="primary" 
-                    size="small"> 
-                    <VisibilityIcon/> 
-                </IconButton>
-            }
-            modal
-            closeOnDocumentClick
-        >
-            <PDFViewer source={`http://localhost:5000/uploads/content/${props.id}.pdf`}/>
-        </Popup>
-            
+        <RouterLink to={"/controle-atividades/update/" + props.id}>
+            <IconButton aria-label="update" color="primary" size="small">
+                <EditIcon/>
+            </IconButton>
+        </RouterLink>
     )
 }
 
 // Botão de Atualização
-class UpdateContent extends Component {
-    // Retorna o botão
-    render() {
-        return (
-            <RouterLink to={"/controle-conteudo/update/" + this.props.id}>
-                <IconButton aria-label="update" color="primary" size="small">
-                    <EditIcon/>
-                </IconButton>
-            </RouterLink>
-        )
-    }
+function ShowQuestion(props) {
+    const {id, setQuestion, setHidden} = props;
+    const [clicked, setClicked] = useState(false);
+    let question;
+
+    // -- Carrega questão selecionada pelo usuário
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (clicked) {
+            async function fetchQuestaoAPI() {
+                const response = await api.encQuestaoPorID(id);
+                const value = response.data.data;
+                // eslint-disable-next-line
+                question = {
+                    enunciado: value.enunciado,
+                    resposta: value.resposta,
+                    tipoResposta: value.tipoResposta,
+                }
+                setQuestion(question);
+                setHidden(true);
+            }
+            fetchQuestaoAPI();
+        }
+        return abortController.abort();
+    }, [clicked]);
+
+    return (
+        <IconButton aria-label="update" color="primary" size="small" onClick={() => setClicked(!clicked)}>
+            <VisibilityIcon/>
+        </IconButton>
+    )
 }
 
 // Botão de Remoção
-function DeleteContent(props) {
+function DeleteQuestion(props) {
     function removing() {
-        if (window.confirm(`Quer remover o conteúdo ${props.nome} permanentemente?`)) {
-            api.removerConteudo(props.id)
+        if (window.confirm(`Tem certeza que quer remover esta atividade permanentemente?`)) {
+            api.removerQuestao(props.id)
         }
     }
 
     return (
-        <RouterLink to={"/controle-conteudo"}>
+        <RouterLink to={"/controle-questoes/list"}>
             <IconButton
-                aria-label="delete"
-                color="secondary"
-                size="small"
-                onClick={removing}>
+                    aria-label="delete"
+                    color="secondary"
+                    size="small"
+                    onClick={removing}>
                 <DeleteIcon/>
             </IconButton>
         </RouterLink>
@@ -119,30 +119,36 @@ function stableSort(array, comparator) {
 // -- Componentes das Células de Cabeçalho
 const headCells = [
     {
-        id: 'area',
-        label: 'Área'
+        id: 'tipoAtividade',
+        label: 'Tipo'
     }, {
         id: 'disciplina',
         label: 'Disciplina'
     }, {
+        id: 'areaConhecimento',
+        label: 'Área'
+    }, {
         id: 'topico',
         label: 'Tópico'
     }, {
-        id: 'numeracao',
-        label: 'Numeração'
+        id: 'questoes',
+        label: 'Questões'
     }, {
-        id: 'conteudo',
-        label: 'Conteúdo'
+        id: 'funcoes',
+        label: ''
     }
 ];
 
 const phoneHeadCells = [
     {
-        id: 'disciplina',
-        label: 'Disciplina'
+        id: 'tipoAtividade',
+        label: 'Tipo'
     }, {
-        id: 'conteudo',
-        label: 'Conteúdo'
+        id: 'areaConhecimento',
+        label: 'Área'
+    }, {
+        id: 'funcoes',
+        label: ''
     }
 ]
 
@@ -169,26 +175,26 @@ function EnhancedTableHead(props) {
                                 (headCell.id !== "funcoes")
 
                                     ? <TableSortLabel
-                                        active={orderBy === headCell.id}
-                                        direction={orderBy === headCell.id
-                                            ? order
-                                            : 'asc'}
-                                        className={classes.row}
-                                        onClick={createSortHandler(headCell.id)}>
-                                        {headCell.label}
-                                        {
-                                            orderBy === headCell.id
-                                                ? (
-                                                    <span className={classes.visuallyHidden}>
-                                                        {
-                                                            order === 'desc'
-                                                                ? 'sorted descending'
-                                                                : 'sorted ascending'
-                                                        }
-                                                    </span>
-                                                )
-                                                : null
-                                        }
+                                            active={orderBy === headCell.id}
+                                            direction={orderBy === headCell.id
+                                                ? order
+                                                : 'asc'}
+                                            className={classes.row}
+                                            onClick={createSortHandler(headCell.id)}>
+                                            {headCell.label}
+                                            {
+                                                orderBy === headCell.id
+                                                    ? (
+                                                        <span className={classes.visuallyHidden}>
+                                                            {
+                                                                order === 'desc'
+                                                                    ? 'sorted descending'
+                                                                    : 'sorted ascending'
+                                                            }
+                                                        </span>
+                                                    )
+                                                    : null
+                                            }
                                         </TableSortLabel>
                                     : <div>{headCell.label}</div>
                             }
@@ -240,16 +246,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function EnhancedTable(props) {
-    const conteudos = props.data;
+export default function ActivityTable(props) {
     const classes = useStyles();
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('nome');
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('nome');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const {data, setQuestion, setHidden} = props;
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -275,7 +282,7 @@ export default function EnhancedTable(props) {
     // -- Rows vazias para complementação
     const emptyRows = rowsPerPage - Math.min(
         rowsPerPage,
-        conteudos.length - page * rowsPerPage
+        data.length - page * rowsPerPage
     );
 
     // -- Tabela: Body
@@ -296,26 +303,27 @@ export default function EnhancedTable(props) {
                             width={smScreen}/>
                         <TableBody>
                             {
-                                stableSort(conteudos, getComparator(order, orderBy))
+                                stableSort(data, getComparator(order, orderBy))
                                     .slice(
                                         page * rowsPerPage,
                                         page * rowsPerPage + rowsPerPage
                                     )
-                                    .map((conteudo, index) => {
-                                        ;
-                                        
-                                        return (
-                                            <TableRow hover={true} tabIndex={-1} key={conteudo._id}>
-                                                <TableCell className={classes.row} align="left">{conteudo.area}</TableCell>
+                                    .map((row, index) => {
+                                        const {disciplina, topico, tipoResposta, dataCriacao} = row;
+                                        const resposta = tipoResposta === "discursiva" ? "Discursiva" : "Múltipla escolha";
 
-                                                {!smScreen && <TableCell className={classes.row} align="left">{conteudo.disciplina.nome}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{conteudo.topico}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
+                                        return (
+                                            <TableRow hover={true} tabIndex={-1} key={row._id}>
+                                                <TableCell className={classes.row} align="left">{disciplina.nome}</TableCell>
+
+                                                {!smScreen && <TableCell className={classes.row} align="left">{topico.nome}</TableCell>}
+                                                {!smScreen && <TableCell className={classes.row} align="left">{resposta}</TableCell>}
+                                                {!smScreen && <TableCell className={classes.row} align="left">{dataCriacao}</TableCell>}
 
                                                 <TableCell align="left">
-                                                    <ContentVisualization id={conteudo._id}/>
-                                                    <UpdateContent id={conteudo._id}/>
-                                                    <DeleteContent id={conteudo._id} nome={conteudo.topico}/>
+                                                    <ShowQuestion id={row._id} setQuestion={setQuestion} setHidden={setHidden}/>
+                                                    <UpdateQuestion id={row._id}/>
+                                                    <DeleteQuestion id={row._id}/>
                                                 </TableCell>
                                             </TableRow>
                                         );
@@ -340,7 +348,7 @@ export default function EnhancedTable(props) {
                     className={classes.row}
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={conteudos.length}
+                    count={data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}

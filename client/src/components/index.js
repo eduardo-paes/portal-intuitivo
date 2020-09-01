@@ -3,10 +3,13 @@ import UserTable from "./Tables/UserTable"
 import ContentTable from "./Tables/ContentTable"
 import DisTable from "./Tables/DisTable"
 import QuestionTable from "./Tables/QuestionTable"
+import ActivityTable from "./Tables/ActivityTable"
 
 // -- Forms
 import UserForm from "./Form/UserForm"
 import ContentForm from "./Form/ContentForm"
+import QuestionForm from "./Form/QuestionForm"
+import ActivityForm from "./Form/ActivityForm"
 
 // -- Validators
 import UserValidater from "./Form/Validation/FormValidateUser"
@@ -21,6 +24,7 @@ import TopBar from "./Drawer/TopBar"
 
 // -- Dialogs
 import DialogForm from "./Dialogs/DialogForm"
+import CustomDialog from "./Dialogs/CustomDialog"
 
 // -- Editor
 import TextEditor from "./Editor/Editor"
@@ -36,16 +40,25 @@ export {
     ContentTable,
     DisTable, 
     QuestionTable,
+    ActivityTable,
+
     UserForm, 
+    QuestionForm,
+    ActivityForm,
+    ContentForm,
+
     UserValidater, 
     QuestionValidater,
-    ContentForm,
     ContentValidater,
+
     ItemsDrawer, 
     ProfileMenu, 
     SideBar, 
     TopBar,
+
     DialogForm,
+    CustomDialog,
+    
     TextEditor,
     UploadContent,
     QuestionCard

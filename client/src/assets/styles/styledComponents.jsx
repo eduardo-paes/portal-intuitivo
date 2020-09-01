@@ -59,26 +59,24 @@ function CreateButton(props) {
 
 // -- Others
 const MyTextField = styled(TextField)({
-    marginBottom: "10px", 
+    marginBottom: "0.625rem", 
     backgroundColor: "#fff", 
     display: "flex", 
     color: "primary"
 });
 
-<<<<<<< HEAD
-const FilterField = styled(TextField)(
-    {marginBottom: "10px",height: "10px" ,backgroundColor: "#fff", display: "flex", color: "primary"}
-);
+const FilterField = styled(TextField)({
+    marginBottom: "0.625rem",
+    height: "0.625rem",
+    backgroundColor: "#fff", 
+    display: "flex", 
+    color: "primary"
+});
 
-const MyContainer = styled(Container)(
-    {padding: "20px 30px 20px 30px", margin: "0"}
-);
-=======
 const MyContainer = styled(Container)({
-    padding: "20px 30px 20px 30px", 
+    padding: "1.2rem 1.875rem 1.2rem 1.875rem", 
     margin: "0"
 });
->>>>>>> 2b6e6793fe0cb51efc0584e03b84fc2faabe7d72
 
 const MyTypography = styled(Typography)({
     marginBottom: "5%", 
@@ -87,7 +85,7 @@ const MyTypography = styled(Typography)({
 });
 
 const LoginCard = styled(CardContent)({
-    padding: "15px", 
+    padding: "0.94rem", 
     alignContent: "center", 
     textAlign: "center"
 });
@@ -107,9 +105,9 @@ const MyCardContent = styled(CardContent)({
 });
 
 const MyAvatar = styled(Avatar) ({
-    marginLeft: "60px",
-    width: "150px",
-    height: "150px"
+    marginLeft: "3.75rem",
+    width: "9.375rem",
+    height: "9.375rem"
 })
 
 export {

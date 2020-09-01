@@ -51,22 +51,7 @@ function QuestionForm (props) {
     const classes = useStyles();
     const {title, listaDisciplinas, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
     const [topico, setTopico] = useState([]);
-
-    // -- Carrega os Tópicos, por Disciplina, existentes no banco
-    useEffect(() => {
-        if (questao.disciplina.id !== '') {
-            const abortController = new AbortController();
-            async function fetchTopicoAPI() {
-                const response = await api.listarConteudoPorDisciplina(questao.disciplina.id);
-                const value = response.data.data;
-                setTopico(value);
-            }
-            fetchTopicoAPI()
-            return abortController.abort();
-        }
-        // eslint-disable-next-line
-    }, [questao.disciplina.id]);
-
+    
     // -- Salva alterações de 'opcoes' em 'questao'
     useEffect(() => {
         setQuestao(preValue => ({
@@ -76,13 +61,34 @@ function QuestionForm (props) {
         // eslint-disable-next-line
     }, [opcoes])
 
+    // -- Confirma mudanças realizadas em questao
+    useEffect(() => {
+        setQuestao(questao);
+        // eslint-disable-next-line
+    }, [questao]);
+
+    // -- Carrega os Tópicos, por Disciplina, existentes no banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (questao.disciplina.id !== '') {
+            async function fetchTopicoAPI() {
+                const response = await api.listarConteudoPorDisciplina(questao.disciplina.id);
+                const value = response.data.data;
+                setTopico(value);
+            }
+            fetchTopicoAPI()
+        }
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [questao.disciplina.id]);
+
     // -- Salvar dados do formulário inicial
-    function handleChange (nameField, ID, nome) {        
+    function handleChange (nameField, ID, nome) {  
         setQuestao(preValue => ({
             ...preValue,
             [nameField]: {
-                id: [ID],
-                nome: [nome]
+                id: ID,
+                nome: nome
             }
         }));
     }
@@ -289,33 +295,29 @@ function QuestionForm (props) {
                         {opcoes.map((item, index) => {
                             let tam = opcoes.length;
                             return (
-                                <Grid key={index} className={classes.questaoOpcoes} container={true} spacing={1}>
-                                    
-                                    <Grid item={true} xs={10} sm={11}>
-                                        <Grid container={true} spacing={1}>
-                                            <Grid item={true} xs={2} sm={1}>
-                                                <Checkbox
-                                                    checked={item.gabarito}
-                                                    className={classes.checkBox}
-                                                    onChange={() => handleGabarito(index)}
-                                                    inputProps={{ 'aria-label': 'primary checkbox' }}/>
-                                            </Grid>
-                                            <Grid item={true} xs={10} sm={11}>
-                                                <div className="questionEditor">
-                                                    <TextEditor 
-                                                        optionType={true}
-                                                        opcoes={opcoes}
-                                                        text={item.opcao} 
-                                                        setText={handleOpcao}
-                                                        position={index}
-                                                        readOnly={false}
-                                                        />
-                                                </div>
-                                            </Grid>
-                                        </Grid>
+                                <Grid key={index} className={classes.questaoOpcoes} container={true} spacing={2}>
+                                    <Grid item={true} xs={2} sm={1} lg={1}>
+                                        <Checkbox
+                                            checked={item.gabarito}
+                                            className={classes.checkBox}
+                                            onChange={() => handleGabarito(index)}
+                                            inputProps={{ 'aria-label': 'primary checkbox' }}/>
                                     </Grid>
 
-                                    <Grid item={true} xs={2} sm={1}>
+                                    <Grid item={true} xs={8} sm={10} lg={10}>
+                                        <div className="questionEditor">
+                                            <TextEditor 
+                                                optionType={true}
+                                                opcoes={opcoes}
+                                                text={item.opcao} 
+                                                setText={handleOpcao}
+                                                position={index}
+                                                readOnly={false}
+                                                />
+                                        </div>
+                                    </Grid>
+
+                                    <Grid item={true} xs={2} sm={1} lg={1}>
                                         {index === tam-1 
                                             ?   <Fab className={classes.fabButton} onClick={addNewOption} size="small" color="primary" aria-label="add">
                                                     <AddIcon />

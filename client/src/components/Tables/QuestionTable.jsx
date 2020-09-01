@@ -3,8 +3,9 @@ import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
 // -- Material UI - Table
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import {makeStyles} from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -20,9 +21,6 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-
-// Função para retornar as dimensões da tela
-import WindowDimension from "../WindowDimension"
 
 // Botão de Atualização
 function UpdateQuestion(props) {
@@ -55,7 +53,7 @@ function ShowQuestion(props) {
                     tipoResposta: value.tipoResposta,
                 }
                 setQuestion(question);
-                setHidden(false);
+                setHidden(true);
             }
             fetchQuestaoAPI();
         }
@@ -151,17 +149,10 @@ const phoneHeadCells = [
 // -- Table: Head
 function EnhancedTableHead(props) {
     const {classes, order, orderBy, onRequestSort, width} = props;
+    var cells = !width ? headCells : phoneHeadCells;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
-    
-    var cells = [];
-
-    if (width > 500) {
-        cells = headCells;
-    } else {
-        cells = phoneHeadCells
-    }
 
     return (
         <TableHead>
@@ -234,7 +225,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#606161"
     },
     table: {
-        minWidth: 300,
+        minWidth: "18.75rem",
     },
     visuallyHidden: {
         border: 0,
@@ -249,14 +240,16 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function EnhancedTable(props) {
+export default function QuestionTable(props) {
     const classes = useStyles();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('nome');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    
-    const wd = WindowDimension();
+
+    const theme = useTheme();
+    const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
     const {data, setQuestion, setHidden} = props;
 
     // -- Solicita Ordenação
@@ -301,7 +294,7 @@ export default function EnhancedTable(props) {
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
-                            width={wd.width}/>
+                            width={smScreen}/>
                         <TableBody>
                             {
                                 stableSort(data, getComparator(order, orderBy))
@@ -317,9 +310,9 @@ export default function EnhancedTable(props) {
                                             <TableRow hover={true} tabIndex={-1} key={row._id}>
                                                 <TableCell className={classes.row} align="left">{disciplina.nome}</TableCell>
 
-                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{topico.nome}</TableCell>}
-                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{resposta}</TableCell>}
-                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{dataCriacao}</TableCell>}
+                                                {!smScreen && <TableCell className={classes.row} align="left">{topico.nome}</TableCell>}
+                                                {!smScreen && <TableCell className={classes.row} align="left">{resposta}</TableCell>}
+                                                {!smScreen && <TableCell className={classes.row} align="left">{dataCriacao}</TableCell>}
 
                                                 <TableCell align="left">
                                                     <ShowQuestion id={row._id} setQuestion={setQuestion} setHidden={setHidden}/>

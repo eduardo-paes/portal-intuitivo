@@ -16,7 +16,7 @@ import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles({
     table: {
-        minWidth: 300,
+        minWidth: "18.75rem",
         color: "#606161"
     },
     row: {

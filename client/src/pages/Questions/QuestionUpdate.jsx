@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from '../../api'
-import QuestionForm from "../../components/Form/QuestionForm";
+import { QuestionForm } from "../../components";
 import validate from "../../components/Form/Validation/FormValidateQuestion";
 
 // -- Função Principal
