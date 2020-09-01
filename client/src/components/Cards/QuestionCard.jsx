@@ -1,21 +1,12 @@
 import React from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
 import "./QuestionStyles.css"
 
 // -- Components
 import { TextEditor } from "../";
-import { MyCard, MyCardContent } from "../../assets/styles/styledComponents"
-
-// -- Local Styles
-const useStyles = makeStyles((theme) => ({
-    cardQuestion: {
-        maxWidth: "500px"
-    }
-}));
+import { MyCardContent } from "../../assets/styles/styledComponents"
 
 export default function QuestionCard (props) {
-    const classes = useStyles();
     const {enunciado, tipoResposta, resposta} = props;
 
     return (

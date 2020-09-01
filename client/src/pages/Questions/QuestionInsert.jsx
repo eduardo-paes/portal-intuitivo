@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import api from '../../api'
 import { StoreContext } from "../../utils";
-import QuestionForm from "../../components/Form/QuestionForm";
+import { QuestionForm } from "../../components";
 import validate from "../../components/Form/Validation/FormValidateQuestion";
 
 // -- Função Principal
@@ -49,12 +49,16 @@ function QuestionInsert() {
 
     // -- Confirma mudanças realizadas em opcoes
     useEffect(() => {
+        const abortController = new AbortController();
         setOpcoes(opcoes);
+        return abortController.abort();
     }, [opcoes]);
 
     // -- Confirma mudanças realizadas em questao
     useEffect(() => {
+        const abortController = new AbortController();
         setQuestao(questao);
+        return abortController.abort();
     }, [questao]);
 
     // -- Salva questão no banco de dados

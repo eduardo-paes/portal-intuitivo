@@ -24,16 +24,21 @@ html, body, #root {
 
 /* --- Botões --- */
 .create-button {
-    margin-top: 15px;
+    margin-top: 0.9375rem;
     text-align: center;
 }
 
 .group-buttons {
     text-align: center;
-    min-width: 300px;
+    min-width: 18.75rem;
 }
 
 .button {
     text-decoration: none;
 	cursor: pointer;
+}
+
+.MuiButton-outlined	.MuiButton-outlinedPrimary .MuiButton-root {
+    background-color: #fff;
+    color: #fff;
 }

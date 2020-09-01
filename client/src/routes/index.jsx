@@ -12,10 +12,12 @@ import {
     Library,
     Desempenho,
     Classroom,
-    ActivityInsert,
     QuestionList,
     QuestionInsert,
     QuestionUpdate,
+    ActivityList,
+    ActivityInsert,
+    ActivityUpdate,
     Login,
     GeneralPage,
     ContentInsert,
@@ -50,13 +52,16 @@ function PrivateRoutes() {
             
             {/* --- Rotas do Professor */}
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo" component={ContentList}/>
-            <ConditionalRoute exact={true} type="Professor" from="/atividades" component={ActivityInsert}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo/create" component={ContentInsert}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo/update/:id" component={ContentUpdate}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes" component={QuestionList}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/list" component={QuestionList}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/create" component={QuestionInsert}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/update/:id" component={QuestionUpdate}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-atividades" component={ActivityList}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-atividades/list" component={ActivityList}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-atividades/create" component={ActivityInsert}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-atividades/update/:id" component={ActivityUpdate}/>
 
             {/* --- Rotas do Administrador */}
             <ConditionalRoute exact={true} type="Administrador" from="/" component={UsersList}/>

@@ -3,8 +3,9 @@ import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
 // -- Material UI - Table
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import {makeStyles} from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -19,9 +20,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-
-// Função para retornar as dimensões da tela
-import WindowDimension from "../WindowDimension"
 
 // Botão de Atualização
 class UpdateUser extends Component {
@@ -116,17 +114,10 @@ const phoneHeadCells = [
 // -- Table: Head
 function EnhancedTableHead(props) {
     const {classes, order, orderBy, onRequestSort, width} = props;
+    var cells = !width ? headCells : phoneHeadCells;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
-    
-    var cells = [];
-
-    if (width > 500) {
-        cells = headCells;
-    } else {
-        cells = phoneHeadCells
-    }
 
     return (
         <TableHead>
@@ -199,7 +190,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#606161"
     },
     table: {
-        minWidth: 300,
+        minWidth: "18.75rem",
     },
     visuallyHidden: {
         border: 0,
@@ -221,7 +212,9 @@ export default function EnhancedTable(props) {
     const [orderBy, setOrderBy] = React.useState('nome');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const wd = WindowDimension();
+
+    const theme = useTheme();
+    const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -265,7 +258,7 @@ export default function EnhancedTable(props) {
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
-                            width={wd.width}/>
+                            width={smScreen}/>
                         <TableBody>
                             {
                                 stableSort(usuarios, getComparator(order, orderBy))
@@ -279,8 +272,8 @@ export default function EnhancedTable(props) {
                                             <TableRow hover={true} tabIndex={-1} key={usuario._id}>
                                                 <TableCell className={classes.row} align="left">{usuario.nome}</TableCell>
 
-                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{usuario.email}</TableCell>}
-                                                {(wd.width > 500) && <TableCell className={classes.row} align="left">{usuario.acesso}</TableCell>}
+                                                {!smScreen && <TableCell className={classes.row} align="left">{usuario.email}</TableCell>}
+                                                {!smScreen && <TableCell className={classes.row} align="left">{usuario.acesso}</TableCell>}
 
                                                 <TableCell align="left">
                                                     <UpdateUser id={usuario._id}/>

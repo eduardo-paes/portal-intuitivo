@@ -81,7 +81,7 @@ function ItemsDrawer(props) {
             }, {
                 text: "Atividades",
                 icon: <Exercises/>,
-                onClick: () => history.push("/atividades")
+                onClick: () => history.push("/controle-atividades")
             }, {
                 text: "Material de Estudo",
                 icon: <ContentControl/>,
