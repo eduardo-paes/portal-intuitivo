@@ -21,6 +21,7 @@ import TopBar from "./Drawer/TopBar"
 
 // -- Dialogs
 import DialogForm from "./Dialogs/DialogForm"
+import PDFPreviewDialog from "./Dialogs/PDFPreviewDialog"
 
 // -- Editor
 import TextEditor from "./Editor/Editor"
@@ -45,6 +46,7 @@ export {
     ProfileMenu, 
     SideBar, 
     TopBar,
+    PDFPreviewDialog,
     DialogForm,
     TextEditor,
     UploadContent,

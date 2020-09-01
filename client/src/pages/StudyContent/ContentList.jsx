@@ -5,7 +5,6 @@ import { MyContainer, CreateButton, MyTextField } from "../../assets/styles/styl
 import { Grid, MenuItem, Button } from "@material-ui/core";
 import {makeStyles} from '@material-ui/core/styles';
 import { ContentTable } from '../../components';
-import { Link } from 'react-router-dom';
 // import {TextEditor} from "../../components"
 
 const useStyles = makeStyles((theme) => ({
@@ -36,6 +35,8 @@ function ContentList () {
     numeracao: ""
   });
   const [ listaDisciplina, setListaDisciplina ] = useState([  ]);
+  const { area, disciplina, numeracao } = filter;
+  const [ filtro, setFiltro ] = useState(false);
   
   const classes = useStyles();
 
@@ -45,6 +46,7 @@ function ContentList () {
   
   function onFilterChange (event) {
     const { name, value } = event.target;
+    console.log(name, value)
     setFilter (preValue => ({
       ...preValue,
       [name]: value
@@ -87,12 +89,29 @@ function ContentList () {
     return () => {unmounted = true};
   }, []);
   
+  // -- Carrega os Tópicos, por Disciplina, existentes no banco
+  useEffect(() => {
+    console.log(filter);
+    if (area !== '') {
+      const abortController = new AbortController();
+      async function fetchConteudoAPI() {
+        const response = await api.listarConteudoPersonalizado(area, disciplina.id, numeracao);
+        console.log(response);
+          const value = response.data.data;
+          setContent({ conteudos: value });
+      }
+      fetchConteudoAPI()
+      return abortController.abort();
+      // eslint-disable-next-line
+    }  
+  }, [filtro]);
+
   const {conteudos} = content;
 
   return (
     <MyContainer>
       <header>
-          <Grid container={true} className={classes.root} spacing={2}>
+          <Grid container={true} className={classes.root} spacing={3}>
               <Grid item={true} xs={12} sm={9}>
                   <h1 className="heading-page">Conteúdos Disciplinares</h1>
               </Grid>
@@ -100,8 +119,9 @@ function ContentList () {
               <Grid item={true} xs={12} sm={3}>
                   <CreateButton title="Inserir Conteúdo" url="/controle-conteudo/create"/>
               </Grid>
-
-              <Grid item={true} xs={3} sm={3}>
+          </Grid>
+          <Grid container={true} className={classes.root} spacing={4}>
+              <Grid item={true} lg={3} sm={12}>
                 <MyTextField
                   id="campoArea"
                   variant="outlined"
@@ -117,7 +137,7 @@ function ContentList () {
                     <MenuItem value="Matemática">Matemática</MenuItem>
                 </MyTextField>
               </Grid>
-              <Grid item={true} xs={3} sm={3}>
+              <Grid item={true} lg={3} sm={12}>
                 <MyTextField
                   id="campoDisciplina"
                   variant="outlined"
@@ -133,7 +153,7 @@ function ContentList () {
                   }
                 </MyTextField>
               </Grid>
-              <Grid item={true} xs={3} sm={3}>
+              <Grid item={true} lg={2} sm={6}>
                 <MyTextField
                   id="filtroNumeracao"
                   className={classes.filter}
@@ -144,13 +164,35 @@ function ContentList () {
                   value={filter.numeracao}
                   onChange={onFilterChange}/>
               </Grid>
-              <Grid item={true} xs={3} sm={3}>
-                <Link to="/controle-conteudo/?numeracao=1">
-                  <Button color="primary" variant="outlined">Filtrar</Button>
-                </Link>
+              <Grid item={true} lg={2} sm={3}>
+                <Button 
+                  color="primary" 
+                  variant="outlined"
+                  size="large"
+                  onClick={ () => {
+                    setFiltro(!filtro);
+                  }}
+                >Filtrar</Button>
+              </Grid>
+              <Grid item={true} lg={2} sm={3}>
+                <Button 
+                  color="primary" 
+                  variant="outlined"
+                  size="large"
+                  onClick={() => {
+                    setFilter({
+                      area: "",
+                      disciplina: {
+                        id: "",
+                        nome: ""
+                      },
+                      numeracao: ""
+                    })
+                  }}
+                >Limpar</Button>
               </Grid>
 
-              <Grid item={true} xs={12} sm={12}>
+              <Grid item={true} lg={12} sm={12}>
                 <ContentTable data={conteudos}/>
               </Grid>
           </Grid>

@@ -65,20 +65,10 @@ const MyTextField = styled(TextField)({
     color: "primary"
 });
 
-<<<<<<< HEAD
-const FilterField = styled(TextField)(
-    {marginBottom: "10px",height: "10px" ,backgroundColor: "#fff", display: "flex", color: "primary"}
-);
-
-const MyContainer = styled(Container)(
-    {padding: "20px 30px 20px 30px", margin: "0"}
-);
-=======
 const MyContainer = styled(Container)({
     padding: "20px 30px 20px 30px", 
     margin: "0"
 });
->>>>>>> 2b6e6793fe0cb51efc0584e03b84fc2faabe7d72
 
 const MyTypography = styled(Typography)({
     marginBottom: "5%", 
@@ -116,7 +106,6 @@ export {
     AddButton,
     CreateButton,
     DeleteButton,
-    FilterField,
     MyContainer,
     MyTextField,
     MyTypography,
