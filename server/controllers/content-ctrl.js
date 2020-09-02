@@ -155,8 +155,9 @@ listarConteudoPorDisciplina = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
     await Conteudo
         .find({
-            disciplinaID: req.params.id,
+            'disciplina.id': req.params.id,
         }, (err, conteudoEncontrado) => {
+
             if (err) {
                 return res
                     .status(400)

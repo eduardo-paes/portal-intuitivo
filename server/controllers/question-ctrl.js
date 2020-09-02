@@ -19,10 +19,13 @@ inserirQuestao = (req, res) => {
         console.log("Erro - nova questão")
         return res
             .status(400)
-            .json({success: false, error: err});
+            .json({
+                success: false, 
+                error: err
+            });
     }
 
-    // Salva novo usário
+    // Salva nova questão
     novaQuestao
         .save()
         .then(() => {
@@ -155,6 +158,26 @@ encQuestaoPorID = async (req, res) => {
 
 // Função para listar os questaos contidos no banco
 listarQuestao = async (req, res) => {
+    await Questao.find({}, (err, listaQuestao) => {
+        // Verificação de erros
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        // Verifica se há dados na lista
+        if (!listaQuestao.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: "Dados não encontrados." })
+        }
+        // Caso não haja erros, retorna lista de questaos
+        return res.status(200).json({ success: true, data: listaQuestao })
+    })
+    // Havendo erro, retorna o erro
+    .catch(err => console.log(err))
+}
+
+// Função para listar os questaos contidos no banco
+listarQuestaoPorCondicao = async (req, res) => {
     await Questao.find({}, (err, listaQuestao) => {
         // Verificação de erros
         if (err) {
