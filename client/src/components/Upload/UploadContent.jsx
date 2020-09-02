@@ -3,12 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import Popup from 'reactjs-popup';
-import PDFViewer from "../PDFViewer/PDFViewer";
 
 import { makeStyles } from '@material-ui/core/styles';
 import DescriptionIcon from '@material-ui/icons/Description';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import PDFPreviewDialog from '../Dialogs/PDFPreviewDialog';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -32,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
  function UploadContent(props) {
-  const {onChange, onSubmit, backTo, conteudo } = props;
+  const {onChange, onSubmit, backTo, conteudo, topico } = props;
   const classes = useStyles();
 
   return (
@@ -60,25 +58,11 @@ const useStyles = makeStyles((theme) => ({
         </label>
       </Grid>
       <Grid item={true} xs={6} sm={3}>
-        <Popup
-            trigger={
-              <Button
-                variant="contained"
-                color="primary"
-                component="span"
-                disabled={conteudo === "" ? true : false}
-                className={classes.button}
-                startIcon={<VisibilityIcon />}
-              >
-                Visualizar
-              </Button>
-            }
-            modal
-            closeOnDocumentClick
-        >
-            <PDFViewer source={conteudo}/>
-        </Popup>
-        
+        <PDFPreviewDialog 
+          topico={topico} 
+          conteudo={conteudo}
+          type={true}
+        />
       </Grid>
       <Grid item={true} xs={6} sm={3}>
         <Button 

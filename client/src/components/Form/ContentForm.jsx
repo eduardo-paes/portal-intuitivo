@@ -65,7 +65,8 @@ function ContentForm (props) {
             </Grid>
             </Grid>
             <UploadContent 
-                onChange={handleUpload} 
+                onChange={handleUpload}
+                topico={topico} 
                 conteudo={conteudo} 
                 backTo="/controle-conteudo" 
                 onSubmit={onSubmit}

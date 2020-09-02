@@ -24,6 +24,7 @@ import TopBar from "./Drawer/TopBar"
 
 // -- Dialogs
 import DialogForm from "./Dialogs/DialogForm"
+import PDFPreviewDialog from "./Dialogs/PDFPreviewDialog"
 import CustomDialog from "./Dialogs/CustomDialog"
 
 // -- Editor
@@ -55,10 +56,11 @@ export {
     ProfileMenu, 
     SideBar, 
     TopBar,
-
+    
+    PDFPreviewDialog,
     DialogForm,
     CustomDialog,
-    
+
     TextEditor,
     UploadContent,
     QuestionCard

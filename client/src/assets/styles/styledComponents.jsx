@@ -65,6 +65,8 @@ const MyTextField = styled(TextField)({
     color: "primary"
 });
 
+<<<<<<< HEAD
+=======
 const FilterField = styled(TextField)({
     marginBottom: "0.625rem",
     height: "0.625rem",
@@ -73,6 +75,7 @@ const FilterField = styled(TextField)({
     color: "primary"
 });
 
+>>>>>>> 2090391163d8e5ed268fd6a4f858484cf014d8f1
 const MyContainer = styled(Container)({
     padding: "1.2rem 1.875rem 1.2rem 1.875rem", 
     margin: "0"
@@ -114,7 +117,6 @@ export {
     AddButton,
     CreateButton,
     DeleteButton,
-    FilterField,
     MyContainer,
     MyTextField,
     MyTypography,

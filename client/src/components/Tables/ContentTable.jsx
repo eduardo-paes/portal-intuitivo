@@ -20,11 +20,9 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 
 // Função para abrir popup com o pdf do conteúdo
-import Popup from 'reactjs-popup';
-import PDFViewer from "../PDFViewer/PDFViewer";
+import PDFPreviewDialog from "../Dialogs/PDFPreviewDialog";
 
 /*
 Funcionalidade pendente:
@@ -35,21 +33,11 @@ Funcionalidade pendente:
 function ContentVisualization (props) {
 
     return (
-        <Popup
-            trigger={
-                <IconButton 
-                    aria-label="visualization" 
-                    color="primary" 
-                    size="small"> 
-                    <VisibilityIcon/> 
-                </IconButton>
-            }
-            modal
-            closeOnDocumentClick
-        >
-            <PDFViewer source={`http://localhost:5000/uploads/content/${props.id}.pdf`}/>
-        </Popup>
-            
+        <PDFPreviewDialog 
+            conteudo={`http://localhost:5000/uploads/content/${props.id}.pdf`}
+            topico={props.nome}
+            type={false}
+        />
     )
 }
 
@@ -313,7 +301,7 @@ export default function EnhancedTable(props) {
                                                 {!smScreen && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
 
                                                 <TableCell align="left">
-                                                    <ContentVisualization id={conteudo._id}/>
+                                                    <ContentVisualization id={conteudo._id} nome={conteudo.topico}/>
                                                     <UpdateContent id={conteudo._id}/>
                                                     <DeleteContent id={conteudo._id} nome={conteudo.topico}/>
                                                 </TableCell>

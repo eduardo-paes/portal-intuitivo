@@ -177,6 +177,35 @@ listarConteudoPorDisciplina = async (req, res) => {
         .catch(err => console.log(err))
 }
 
+// Função para listar conteúdo utilizando filtro
+listarConteudoPersonalizado = async (req, res) => {
+    // Encontra conteúdo pela ID da Disciplina fornecido pela rota
+    await Conteudo
+    .find({
+        area: req.params.area,
+        'disciplina.id': req.params.disciplina.id,
+        numeracao: req.params.numeracao
+    }, (err, conteudoEncontrado) => {
+        if (err) {
+            return res
+            .status(400)
+            .json({success: false, error: err})
+        }
+        
+        if (!conteudoEncontrado) {
+            return res
+            .status(404)
+            .json({success: false, error: "Conteúdo não encontrado."})
+        }
+        
+        return res
+        .status(200)
+        .json({success: true, data: conteudoEncontrado})
+    })
+    .catch(err => console.log(err))
+    console.log(req.params);
+}
+
 // Função para listar os conteúdos contidos no banco
 listarConteudos = async (req, res) => {
     await Conteudo.find({}, (err, listaConteudos) => {
@@ -204,5 +233,6 @@ module.exports = {
     removerConteudo,
     encConteudoPorID,
     listarConteudos,
-    listarConteudoPorDisciplina
+    listarConteudoPorDisciplina,
+    listarConteudoPersonalizado
 }
