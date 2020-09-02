@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import api from '../../api'
 
+import { QuestionTable } from "../../components";
+
 // -- Estilos
-import {Grid, MenuItem, Button} from '@material-ui/core';
-import {MyContainer, MyTextField, MyCard, MyCardContent} from "../../assets/styles/styledComponents"
-import {makeStyles} from '@material-ui/core/styles';
+import { Grid, MenuItem, Button } from '@material-ui/core';
+import { MyContainer, MyTextField } from "../../assets/styles/styledComponents"
+import { makeStyles } from '@material-ui/core/styles';
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
@@ -24,6 +26,15 @@ export default function ActivityForm (props) {
     const classes = useStyles();
     const [listaDisciplinas, setListaDisciplinas] = useState([]);               // Disciplinas do Banco de Dados
     const [topicos, setTopicos] = useState([]);                                 // Tópicos do Banco de Dados
+    const [questoes, setQuestoes] = useState([]);                               // Questões do Banco de Dados
+    const [revisao, setRevisao] = useState(false);
+    const [indexNumeracao, setIndexNumeracao] = useState(() => {
+        let array = [];
+        for (let index = 1; index < 33; index++) {
+            array.push(index);
+        }
+        return array;
+    });
 
     // -- Carrega as Disciplinas existentes no banco
     useEffect(() => {
@@ -51,6 +62,36 @@ export default function ActivityForm (props) {
         return abortController.abort();
         // eslint-disable-next-line
     }, [atividade.disciplina.id]);
+
+    // -- Carrega as Questões, por Tópico, existentes no banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (atividade.topico.id !== '' && atividade.tipoExercicio !== "revisao") {
+            async function fetchQuestoesPorTopicoAPI() {
+                const response = await api.listarQuestaoPorTopico(atividade.topico.id);
+                const value = response.data.data;
+                setQuestoes(value);
+            }
+            fetchQuestoesPorTopicoAPI()
+        }
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [atividade.topico.id]);
+
+    // -- Carrega as Questões, por Área do conhecimento, existentes no banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (atividade.areaConhecimento !== "" && atividade.tipoExercicio === "revisao") {
+            async function fetchQuestoesPorAreaAPI() {
+                const response = await api.listarQuestaoPorArea(atividade.topico.id);
+                const value = response.data.data;
+                setQuestoes(value);
+            }
+            fetchQuestoesPorAreaAPI()
+        }
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [atividade.areaConhecimento]);
 
     // -- Definição das Funções
     function handleChange (event) {
@@ -87,7 +128,13 @@ export default function ActivityForm (props) {
     function clearChange (event) {
         event.preventDefault();
         setAtividade(initialState)
+        setQuestoes([])
     }
+
+    useEffect(() => {
+        atividade.tipoExercicio === "revisao" ? setRevisao(true) : setRevisao(false);
+        console.log(atividade)
+    }, [atividade])
 
     return (
         <MyContainer>
@@ -102,7 +149,7 @@ export default function ActivityForm (props) {
                             select={true}
                             label="Tipo de Atividade"
                             name="tipoExercicio"
-                            value={atividade.tipoExercicio}
+                            value={atividade.tipoExercicio ? atividade.tipoExercicio : ""}
                             onChange={handleChange}>
                             <MenuItem value="fixacao">Fixação</MenuItem>
                             <MenuItem value="retomada">Retomada</MenuItem>
@@ -118,7 +165,7 @@ export default function ActivityForm (props) {
                             select={true}
                             label="Disciplina"
                             name="disciplina"
-                            disabled={atividade.tipoExercicio === "revisao" ? true : false}
+                            disabled={revisao}
                             value={atividade.disciplina.nome}>
                             {
                                 listaDisciplinas.map((row, index) => {
@@ -127,15 +174,17 @@ export default function ActivityForm (props) {
                             }
                         </MyTextField>
                     </Grid>
-
-                    <Grid item={true} xs={12} sm={6}>
+                </Grid>
+                
+                <Grid container={true} spacing={1}>
+                    <Grid item={true} xs={12} sm={revisao ? 5 : 6}>
                         <MyTextField
                             id="campoTopico"
                             variant="outlined"
                             select={true}
                             label="Tópico"
                             name="topico"
-                            disabled={(topicos.length === 0 ? true : false) || (atividade.tipoExercicio === "revisao" ? true : false)}
+                            disabled={(topicos.length === 0 ? true : false) || (revisao)}
                             value={atividade.topico.nome}>
 
                             { topicos !== undefined &&
@@ -149,11 +198,26 @@ export default function ActivityForm (props) {
                         </MyTextField>
                     </Grid>
 
-                    <Grid item={true} xs={12} sm={6}>
+                    <Grid item={true} hidden={!revisao} xs={12} sm={revisao && 2}>
+                        <MyTextField
+                            id="campoNumeracao"
+                            variant="outlined"
+                            select={true}
+                            label="Numeração"
+                            name="numeracao"
+                            value={atividade.numeracao}
+                            onChange={handleChange}>
+                            {indexNumeracao.map(item => {
+                                return <MenuItem key={item} value={item}>{item}</MenuItem>
+                            })}
+                        </MyTextField>
+                    </Grid>
+
+                    <Grid item={true} xs={12} sm={revisao ? 5 : 6}>
                         <MyTextField
                             id="campoArea"
                             variant="outlined"
-                            disabled={atividade.tipoExercicio === "revisao" ? false : (atividade.disciplina !== '' ? true : false)}
+                            disabled={revisao ? false : (atividade.disciplina !== '' ? true : false)}
                             select={true}
                             label="Área do Conhecimento"
                             name="areaConhecimento"
@@ -166,35 +230,30 @@ export default function ActivityForm (props) {
                         </MyTextField>
                     </Grid>
                 </Grid>
-
-                <div className={classes.group}>
-                    <Button
-                        className={classes.buttons}
-                        variant="outlined"
-                        type="submit"
-                        color="secondary"
-                        onClick={clearChange}>
-                        Limpar
-                    </Button>
-                    <Button
-                        className={classes.buttons}
-                        variant="outlined"
-                        type="submit"
-                        color="primary"
-                        onClick={saveChange}>
-                        Salvar
-                    </Button>
-                </div>
             </section>
 
             <section id="escolherQuestoes">
                 <h2 className="heading-page">Escolha as Questões</h2>
-                
-                <MyCard>
-                    <MyCardContent>
-                        <p>Questões aqui</p>
-                    </MyCardContent>
-                </MyCard>
+                <QuestionTable data={questoes} tableSelection={true} setData={setAtividade}/>
+            </section>
+
+            <section id="submitButtons" className={classes.group}>
+                <Button
+                    className={classes.buttons}
+                    variant="outlined"
+                    type="submit"
+                    color="secondary"
+                    onClick={clearChange}>
+                    Limpar
+                </Button>
+                <Button
+                    className={classes.buttons}
+                    variant="outlined"
+                    type="submit"
+                    color="primary"
+                    onClick={saveChange}>
+                    Salvar
+                </Button>
             </section>
 
         </MyContainer>

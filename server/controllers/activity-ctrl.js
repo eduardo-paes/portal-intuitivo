@@ -78,12 +78,12 @@ atualizarAtividade = async (req, res) => {
         }
 
         // Atualiza dados da atividade encontrada
+        atividadeEncontrada.tipoAtividade = atividadeAtualizada.tipoAtividade
         atividadeEncontrada.disciplina = atividadeAtualizada.disciplina
-        atividadeEncontrada.topico = atividadeAtualizada.topico
-        atividadeEncontrada.enunciado = atividadeAtualizada.enunciado
-        atividadeEncontrada.tipoResposta = atividadeAtualizada.tipoResposta
-        atividadeEncontrada.resposta = atividadeAtualizada.resposta
-        atividadeEncontrada.dataEdicao = atividadeAtualizada.dataEdicao
+        atividadeEncontrada.areaConhecimento = atividadeAtualizada.areaConhecimento
+        atividadeEncontrada.numeracao = atividadeAtualizada.numeracao
+        atividadeEncontrada.questoes = atividadeAtualizada.questoes
+        atividadeEncontrada.dataModificacao = atividadeAtualizada.dataModificacao
 
         // Salva alterações
         atividadeEncontrada
@@ -195,15 +195,6 @@ listarAtividadePorCondicao = async (req, res) => {
     // Havendo erro, retorna o erro
     .catch(err => console.log(err))
 }
-
-// Disciplina.aggregate([
-//     {$lookup: {
-//         from: "Questoes",
-//         localField: "_id",
-//         foreignField: "disciplinaID",
-//         as: "disciplina"
-//     }}
-// ])
 
 // Exporta os módulos
 module.exports = {

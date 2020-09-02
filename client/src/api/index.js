@@ -17,7 +17,7 @@ export const listarConteudos = () => api.get("/controle-conteudo");
 export const atualizarConteudo = (id, conteudoAtualizado) => api.put(`/controle-conteudo/${id}`, conteudoAtualizado);
 export const removerConteudo = id => api.delete(`/controle-conteudo/${id}`);
 export const encConteudoPorID = id => api.get(`/controle-conteudo/${id}`);
-export const listarConteudoPorDisciplina = id => api.get(`/controle-conteudo/topicos/${id}`);
+export const listarConteudoPorDisciplina = id => api.get(`/controle-conteudo/disciplina/${id}`);
 export const listarConteudoPersonalizado = (area, id, numeracao) => api.get(`/controle-conteudo/topicos/${id || area || numeracao}`);
 
 // -- Funções relacionadas à Disciplina
@@ -33,6 +33,7 @@ export const listarQuestao = () => api.get("/controle-questao");
 export const atualizarQuestao = (id, questaoAtualizada) => api.put(`/controle-questao/${id}`, questaoAtualizada);
 export const removerQuestao = id => api.delete(`/controle-questao/${id}`);
 export const encQuestaoPorID = id => api.get(`/controle-questao/${id}`);
+export const listarQuestaoPorTopico = id => api.get(`/controle-questao/topico/${id}`);
 
 const apis = {
     // Usuário
@@ -60,7 +61,8 @@ const apis = {
     listarQuestao,
     atualizarQuestao,
     removerQuestao,
-    encQuestaoPorID
+    encQuestaoPorID,
+    listarQuestaoPorTopico
 }
 
 export default apis;

@@ -29,28 +29,14 @@ function QuestionUpdate(props) {
         gabarito: false
     }
 
-    const questionID = props.match.params.id;
-    const [listaDisciplinas, setListaDisciplinas] = useState([]);
     const [questao, setQuestao] = useState(initialQuestionState);
     const [opcoes, setOpcoes] = useState([initialOptionState]);
     
-    // -- Carrega as Disciplinas existentes no banco
-    useEffect(() => {
-        const abortController = new AbortController();
-        async function fetchDisciplinaAPI() {
-            const response = await api.listarDisciplinas();
-            const value = response.data.data;
-            setListaDisciplinas(value);
-        }
-        fetchDisciplinaAPI()
-        return abortController.abort();
-    }, []);
-
     // -- Carrega questão selecionada pelo usuário
     useEffect(() => {
         const abortController = new AbortController();
         async function fetchQuestaoAPI() {
-            const response = await api.encQuestaoPorID(questionID);
+            const response = await api.encQuestaoPorID(props.match.params.id);
             const value = response.data.data;
             setQuestao(preValue => ({
                 ...preValue,
@@ -75,12 +61,21 @@ function QuestionUpdate(props) {
         }
         fetchQuestaoAPI()
         return abortController.abort();
-    }, [questionID]);
+    }, [props.match.params.id]);
 
     // -- Confirma mudanças realizadas em opcoes
     useEffect(() => {
+        const abortController = new AbortController();
         setOpcoes(opcoes);
+        return abortController.abort();
     }, [opcoes]);
+
+    // -- Confirma mudanças realizadas em questao
+    useEffect(() => {
+        const abortController = new AbortController();
+        setQuestao(questao);
+        return abortController.abort();
+    }, [questao]);
 
     // -- Salva questão no banco de dados
     async function saveQuestion() {
@@ -114,7 +109,7 @@ function QuestionUpdate(props) {
 
             // Inserção pela API
             await api
-                .atualizarQuestao(questionID, questaoAtualizada)
+                .atualizarQuestao(props.match.params.id, questaoAtualizada)
                 .then(res => {
                     // Limpa os campos
                     if (res.status === 200) {
@@ -127,7 +122,6 @@ function QuestionUpdate(props) {
     return (
         <QuestionForm 
             title="Criar Questão"
-            listaDisciplinas={listaDisciplinas}
             questao={questao}
             setQuestao={setQuestao}
             saveQuestion={saveQuestion}

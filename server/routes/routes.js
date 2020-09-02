@@ -17,34 +17,35 @@ const ConteudoCtrl = require("../controllers/content-ctrl");
 const DisciplinaCtrl = require("../controllers/subject-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
 
-// Definição dos métodos para cada rota do usuário
+// USUÁRIO -- Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
 router.put("/controle-usuario/:id", UsuarioCtrl.atualizarUsuario);
 router.delete("/controle-usuario/:id", UsuarioCtrl.removerUsuario);
 router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
 
-// Definição dos métodos para cada rota do conteúdo
+// CONTEÚDO -- Definição dos métodos para cada rota do conteúdo
 router.post("/controle-conteudo", ConteudoCtrl.inserirConteudo);
 router.put("/controle-conteudo/:id", ConteudoCtrl.atualizarConteudo);
 router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
 router.get("/controle-conteudo/:id", ConteudoCtrl.encConteudoPorID);
 router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);
-router.get("/controle-conteudo/topicos/:id", ConteudoCtrl.listarConteudoPorDisciplina);
+router.get("/controle-conteudo/disciplina/:id", ConteudoCtrl.listarConteudoPorDisciplina);
 
-// Definição dos métodos para cada rota da disciplina
+// DISCIPLINA -- Definição dos métodos para cada rota da disciplina
 router.post("/configuracoes/disciplina", DisciplinaCtrl.inserirDisciplina);
 router.put("/configuracoes/disciplina/:id", DisciplinaCtrl.atualizarDisciplina);
 router.delete("/configuracoes/disciplina/:id", DisciplinaCtrl.removerDisciplina);
 router.get("/configuracoes/disciplina/:id", DisciplinaCtrl.encDisciplinaPorID);
 router.get("/configuracoes", DisciplinaCtrl.listarDisciplinas);
 
-// Definição dos métodos para cada rota do conteúdo
+// QUESTÃO -- Definição dos métodos para cada rota de questão
 router.post("/controle-questao", QuestaoCtrl.inserirQuestao);
 router.put("/controle-questao/:id", QuestaoCtrl.atualizarQuestao);
 router.delete("/controle-questao/:id", QuestaoCtrl.removerQuestao);
 router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
+router.get("/controle-questao/topico/:id", QuestaoCtrl.listarQuestaoPorTopico);
 
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {

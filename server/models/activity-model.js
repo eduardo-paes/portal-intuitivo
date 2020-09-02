@@ -20,6 +20,10 @@ const Atividade = new Schema({
         type: String,
         required: true
     },
+    numeracao: {
+        type: Number,
+        required: false
+    },
     topicoID: {
         type: Schema.Types.ObjectId,
         ref: 'Conteudo',

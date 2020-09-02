@@ -13,6 +13,7 @@ export default function ActivityInsert() {
             nome: ""
         },
         areaConhecimento: "",
+        numeracao: "",
         topico: {
             id: "",
             nome: ""

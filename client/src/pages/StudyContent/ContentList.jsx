@@ -91,9 +91,9 @@ function ContentList () {
   
   // -- Carrega os Tópicos, por Disciplina, existentes no banco
   useEffect(() => {
+    const abortController = new AbortController();
     console.log(filter);
     if (area !== '') {
-      const abortController = new AbortController();
       async function fetchConteudoAPI() {
         const response = await api.listarConteudoPersonalizado(area, disciplina.id, numeracao);
         console.log(response);
@@ -101,9 +101,9 @@ function ContentList () {
           setContent({ conteudos: value });
       }
       fetchConteudoAPI()
-      return abortController.abort();
-      // eslint-disable-next-line
     }  
+    return abortController.abort();
+    // eslint-disable-next-line
   }, [filtro]);
 
   const {conteudos} = content;
@@ -120,8 +120,9 @@ function ContentList () {
                   <CreateButton title="Inserir Conteúdo" url="/controle-conteudo/create"/>
               </Grid>
           </Grid>
-          <Grid container={true} className={classes.root} spacing={4}>
-              <Grid item={true} lg={3} sm={12}>
+          <Grid container={true} className={classes.root} spacing={2}>
+
+              <Grid item={true} xs={12} lg={3} sm={3}>
                 <MyTextField
                   id="campoArea"
                   variant="outlined"
@@ -137,7 +138,7 @@ function ContentList () {
                     <MenuItem value="Matemática">Matemática</MenuItem>
                 </MyTextField>
               </Grid>
-              <Grid item={true} lg={3} sm={12}>
+              <Grid item={true} xs={12} lg={3} sm={3}>
                 <MyTextField
                   id="campoDisciplina"
                   variant="outlined"
@@ -153,7 +154,7 @@ function ContentList () {
                   }
                 </MyTextField>
               </Grid>
-              <Grid item={true} lg={2} sm={6}>
+              <Grid item={true} xs={12} lg={3} sm={3}>
                 <MyTextField
                   id="filtroNumeracao"
                   className={classes.filter}
@@ -164,21 +165,22 @@ function ContentList () {
                   value={filter.numeracao}
                   onChange={onFilterChange}/>
               </Grid>
-              <Grid item={true} lg={2} sm={3}>
+              
+              <Grid item={true} xs={6} lg={1} sm={1}>
                 <Button 
                   color="primary" 
                   variant="outlined"
-                  size="large"
+                  size="small"
                   onClick={ () => {
                     setFiltro(!filtro);
                   }}
                 >Filtrar</Button>
               </Grid>
-              <Grid item={true} lg={2} sm={3}>
+              <Grid item={true} xs={6} lg={1} sm={1}>
                 <Button 
                   color="primary" 
                   variant="outlined"
-                  size="large"
+                  size="small"
                   onClick={() => {
                     setFilter({
                       area: "",

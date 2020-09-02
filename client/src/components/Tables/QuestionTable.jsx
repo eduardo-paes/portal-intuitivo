@@ -15,6 +15,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 // -- Material UI - Icons
 import IconButton from '@material-ui/core/IconButton';
@@ -76,7 +77,7 @@ function DeleteQuestion(props) {
     }
 
     return (
-        <RouterLink to={"/controle-questoes/list"}>
+        <RouterLink to={"/controle-questoes"}>
             <IconButton
                     aria-label="delete"
                     color="secondary"
@@ -148,7 +149,8 @@ const phoneHeadCells = [
 
 // -- Table: Head
 function EnhancedTableHead(props) {
-    const {classes, order, orderBy, onRequestSort, width} = props;
+    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, width, tableSelection } = props;
+
     var cells = !width ? headCells : phoneHeadCells;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -157,6 +159,17 @@ function EnhancedTableHead(props) {
     return (
         <TableHead>
             <TableRow>
+                {
+                    tableSelection && 
+                        <TableCell padding="checkbox">
+                            <Checkbox
+                                indeterminate={numSelected > 0 && numSelected < rowCount}
+                                checked={rowCount > 0 && numSelected === rowCount}
+                                onChange={onSelectAllClick}
+                                inputProps={{ 'aria-label': 'select all desserts' }}
+                            />
+                        </TableCell>
+                }
                 {
                     cells.map((headCell) => (
                         <TableCell
@@ -203,11 +216,12 @@ function EnhancedTableHead(props) {
 // -- Definição de Funções do Cabeçalho
 EnhancedTableHead.propTypes = {
     classes: PropTypes.object.isRequired,
+    numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    order: PropTypes
-        .oneOf(['asc', 'desc'])
-        .isRequired,
-    orderBy: PropTypes.string.isRequired
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
 };
 
 // -- Styles: Tabela-Body
@@ -246,11 +260,10 @@ export default function QuestionTable(props) {
     const [orderBy, setOrderBy] = useState('nome');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-
+    const [selected, setSelected] = useState([]);
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-    const {data, setQuestion, setHidden} = props;
+    const {data, setQuestion, setHidden, tableSelection, setData} = props;
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -273,11 +286,50 @@ export default function QuestionTable(props) {
         setPage(0);
     };
 
+    // -- Funções de Seleção
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+        const newSelecteds = data.map((n) => n._id);
+        setSelected(newSelecteds);
+        return;
+        }
+        setSelected([]);
+    };
+    
+    const handleClick = (event, id) => {
+        const selectedIndex = selected.indexOf(id);
+        let newSelected = [];
+    
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, id);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+                selected.slice(0, selectedIndex),
+                selected.slice(selectedIndex + 1),
+            );
+        }
+    
+        setSelected(newSelected);
+    };
+
+    useEffect(() => {
+        if (tableSelection) {
+            setData(preValue => ({
+                ...preValue,
+                questoes: selected
+            }))
+        }
+    // eslint-disable-next-line
+    }, [selected])
+
     // -- Rows vazias para complementação
-    const emptyRows = rowsPerPage - Math.min(
-        rowsPerPage,
-        data.length - page * rowsPerPage
-    );
+    const emptyRows = rowsPerPage - Math.min( rowsPerPage, data.length - page * rowsPerPage );
+
+    const isSelected = (name) => selected.indexOf(name) !== -1;
 
     // -- Tabela: Body
     return (
@@ -289,11 +341,15 @@ export default function QuestionTable(props) {
                         aria-labelledby="tableTitle"
                         size={'small'}
                         aria-label="enhanced table">
-                        <EnhancedTableHead
+                        <EnhancedTableHead                            
                             classes={classes}
+                            numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
+                            rowCount={data.length}
+                            tableSelection={tableSelection}
                             width={smScreen}/>
                         <TableBody>
                             {
@@ -303,11 +359,33 @@ export default function QuestionTable(props) {
                                         page * rowsPerPage + rowsPerPage
                                     )
                                     .map((row, index) => {
-                                        const {disciplina, topico, tipoResposta, dataCriacao} = row;
+                                        const { disciplina, topico, tipoResposta, dataCriacao} = row;
                                         const resposta = tipoResposta === "discursiva" ? "Discursiva" : "Múltipla escolha";
 
+                                        const isItemSelected = isSelected(row._id);
+                                        const labelId = `enhanced-table-checkbox-${row._id}`;
+
                                         return (
-                                            <TableRow hover={true} tabIndex={-1} key={row._id}>
+                                            <TableRow
+                                                hover={true}
+                                                onClick={event => { tableSelection && handleClick(event, row._id) }}
+                                                role="checkbox"
+                                                aria-checked={tableSelection && isItemSelected}
+                                                tabIndex={-1}
+                                                key={row._id}
+                                                selected={tableSelection && isItemSelected}
+                                            >
+
+                                                {
+                                                    tableSelection && 
+                                                        <TableCell padding="checkbox">
+                                                            <Checkbox
+                                                                checked={isItemSelected}
+                                                                inputProps={{ 'aria-labelledby': labelId }}
+                                                            />
+                                                        </TableCell>
+                                                }
+
                                                 <TableCell className={classes.row} align="left">{disciplina.nome}</TableCell>
 
                                                 {!smScreen && <TableCell className={classes.row} align="left">{topico.nome}</TableCell>}
