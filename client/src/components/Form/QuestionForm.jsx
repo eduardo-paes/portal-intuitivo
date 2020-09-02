@@ -49,9 +49,22 @@ const useStyles = makeStyles((theme) => ({
 
 function QuestionForm (props) {
     const classes = useStyles();
-    const {title, listaDisciplinas, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
+    const {title, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
+    const [listaDisciplinas, setListaDisciplinas] = useState([]);
     const [topico, setTopico] = useState([]);
     
+    // -- Carrega as Disciplinas existentes no banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        async function fetchDisciplinaAPI() {
+            const response = await api.listarDisciplinas();
+            const value = response.data.data;
+            setListaDisciplinas(value);
+        }
+        fetchDisciplinaAPI()
+        return abortController.abort();
+    }, []);
+
     // -- Salva alterações de 'opcoes' em 'questao'
     useEffect(() => {
         setQuestao(preValue => ({
@@ -198,7 +211,7 @@ function QuestionForm (props) {
         <MyContainer>
             <section className="cabecalhoQuestao">
                 <Grid container={true} className={classes.root} spacing={2}>
-                    <Grid item={true} xs={12} sm={9}>
+                    <Grid item={true} xs={12}>
                         <h1 className="heading-page">{title}</h1>
                     </Grid>
                 </Grid>
@@ -211,7 +224,6 @@ function QuestionForm (props) {
                             select={true}
                             label="Disciplina"
                             name="disciplina"
-                            autoFocus={true}
                             value={questao.disciplina.nome}
                             error={questao.erros.disciplina ? true : false}>
                             {

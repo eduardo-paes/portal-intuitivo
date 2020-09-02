@@ -159,6 +159,7 @@ listarConteudoPorDisciplina = async (req, res) => {
         .find({
             'disciplina.id': req.params.id,
         }, (err, conteudoEncontrado) => {
+
             if (err) {
                 return res
                     .status(400)

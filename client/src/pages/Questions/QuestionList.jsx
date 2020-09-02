@@ -32,7 +32,7 @@ function QuestionInsert() {
         }
         fetchQuestoesAPI()
         return abortController.abort();
-    }, []);
+    }, [questoes]);
 
     // -- Observa mudanças em questão selecionada
     useEffect(() => {
@@ -44,7 +44,7 @@ function QuestionInsert() {
             <h1 className="heading-page">Banco de Questões</h1>
             <Grid container={true} className={classes.root} spacing={2} justify="center">
                 <Grid id="cabecalhoListaQuestao" item={true} xs={12} sm={12} lg={12}>
-                    <QuestionTable data={questoes} setQuestion={setQuestaoSelecionada} setHidden={setHiddenDialog}/>
+                    <QuestionTable data={questoes} setQuestion={setQuestaoSelecionada} setHidden={setHiddenDialog} tableSelection={false}/>
                     <CreateButton title="Inserir Questão" url="/controle-questoes/create"/>
                 </Grid>
             </Grid>

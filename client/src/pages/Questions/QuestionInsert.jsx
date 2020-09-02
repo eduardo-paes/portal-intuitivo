@@ -30,22 +30,9 @@ function QuestionInsert() {
         gabarito: false
     }
 
-    const [listaDisciplinas, setListaDisciplinas] = useState([]);
     const [questao, setQuestao] = useState(initialQuestionState);
     const [opcoes, setOpcoes] = useState([initialOptionState]);
     const {token} = useContext(StoreContext);
-
-    // -- Carrega as Disciplinas existentes no banco
-    useEffect(() => {
-        const abortController = new AbortController();
-        async function fetchDisciplinaAPI() {
-            const response = await api.listarDisciplinas();
-            const value = response.data.data;
-            setListaDisciplinas(value);
-        }
-        fetchDisciplinaAPI()
-        return abortController.abort();
-    }, []);
 
     // -- Confirma mudanças realizadas em opcoes
     useEffect(() => {
@@ -108,7 +95,6 @@ function QuestionInsert() {
     return (
         <QuestionForm 
             title="Criar Questão"
-            listaDisciplinas={listaDisciplinas}
             questao={questao}
             setQuestao={setQuestao}
             saveQuestion={saveQuestion}

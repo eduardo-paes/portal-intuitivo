@@ -15,7 +15,7 @@ const editorConfig = {
 			'subscript',
 			'superscript',
 			'|',
-			'MathType',
+            'MathType',
             'specialCharacters',
             'imageUpload',
 			'undo',
@@ -26,8 +26,6 @@ const editorConfig = {
         'List'
     ],
 }
-
-const generalConfig = {}
 
 // -- Função Principal
 function TextEditor (props) {
@@ -80,7 +78,7 @@ function TextEditor (props) {
                         uploadAdapterPlugin(editor);
                         handleDefaultMessage() 
                     }}
-                    config={ optionType ? editorConfig : generalConfig }
+                    config={ optionType && editorConfig }
                     onError={ err => console.log(err) }
                     onChange={ handleEditorChange }
                 />

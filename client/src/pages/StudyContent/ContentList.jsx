@@ -93,6 +93,7 @@ function ContentList () {
   
   // -- Carrega os Tópicos, por Disciplina, existentes no banco
   useEffect(() => {
+    const abortController = new AbortController();
     console.log(filter);
     if (disciplina.id !== '') {
       const abortController = new AbortController();
@@ -103,9 +104,9 @@ function ContentList () {
           setContent({ conteudos: value });
       }
       fetchConteudoAPI()
-      return abortController.abort();
-      // eslint-disable-next-line
     }  
+    return abortController.abort();
+    // eslint-disable-next-line
   }, [filtro]);
 
   const array = [];
