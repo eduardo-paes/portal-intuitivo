@@ -16,7 +16,7 @@ function initialState() {
     },    
     topico: "",
     numeracao: 0,
-    autor: [],
+    autor: "",
     conteudo: {},
     erros: []
   }
@@ -24,8 +24,6 @@ function initialState() {
 
 function Content(props) {
   const {token} = useContext(StoreContext);
-
-  //console.log(autor);
   
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
@@ -76,22 +74,21 @@ function Content(props) {
   }
 
   const onSubmit = async event => {
-    const {area, disciplina, topico, numeracao, autor} = material;
+    const {area, disciplina, topico, numeracao} = material;
     const error = validate(material);
     const response = await api.encDisciplinaPorID(disciplina.id);
     disciplina.nome = response.data.data.nome;
 
     setMaterial(preValue => ({
       ...preValue,
-      erros: error,
-      autor: token.userID
+      erros: error
     }))
 
     if(error.validated) {
       
       const novoConteudo = {
         area,
-        autor,
+        autor: token.userID,
         disciplina,
         topico, 
         numeracao
@@ -118,7 +115,7 @@ function Content(props) {
         }
 
         // Limpa os campos
-        setMaterial({area: "", disciplina: { id: "", nome: "" }, topico: "", numeracao: 0,  conteudo: {}, autor: {}})
+        setMaterial({area: "", disciplina: { id: "", nome: "" }, topico: "", numeracao: 0,  conteudo: {}, autor: ''})
         setConteudo("");
       })
     }

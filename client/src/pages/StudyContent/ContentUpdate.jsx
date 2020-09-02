@@ -40,7 +40,8 @@ function Content(props) {
         disciplina: response.data.data.disciplina,
         numeracao: response.data.data.numeracao, 
         topico: response.data.data.topico
-      }))
+      }));
+      setConteudo(`http://localhost:5000/uploads/content/${material.id}.pdf`)
     }
     fetchConteudoAPI();
     return abortController.abort();

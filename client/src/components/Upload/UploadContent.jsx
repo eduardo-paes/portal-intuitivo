@@ -6,7 +6,9 @@ import Button from '@material-ui/core/Button';
 
 import { makeStyles } from '@material-ui/core/styles';
 import DescriptionIcon from '@material-ui/icons/Description';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import PDFPreviewDialog from '../Dialogs/PDFPreviewDialog';
+import { useState } from 'react';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
  function UploadContent(props) {
   const {onChange, onSubmit, backTo, conteudo, topico } = props;
+  const [open, setOpen] = useState(false);
   const classes = useStyles();
 
   return (
@@ -58,10 +61,20 @@ const useStyles = makeStyles((theme) => ({
         </label>
       </Grid>
       <Grid item={true} xs={6} sm={3}>
+        <Button 
+          variant="contained"
+          color="primary"
+          component="span"
+          disabled={conteudo === "" ? true : false}
+          startIcon={<VisibilityIcon />} 
+          onClick={() => {setOpen(!open)}}
+        >Visualizar
+        </Button>
         <PDFPreviewDialog 
           topico={topico} 
           conteudo={conteudo}
-          type={true}
+          open={open}
+          setOpen={setOpen}
         />
       </Grid>
       <Grid item={true} xs={6} sm={3}>

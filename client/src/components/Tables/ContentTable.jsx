@@ -20,9 +20,7 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-
-// Função para abrir popup com o pdf do conteúdo
-import PDFPreviewDialog from "../Dialogs/PDFPreviewDialog";
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 /*
 Funcionalidade pendente:
@@ -32,12 +30,20 @@ Funcionalidade pendente:
 // Botão para visualização do conteúdo
 function ContentVisualization (props) {
 
+    const { open, setOpen, setId, setTitulo, ID, nome } = props;
+
     return (
-        <PDFPreviewDialog 
-            conteudo={`http://localhost:5000/uploads/content/${props.id}.pdf`}
-            topico={props.nome}
-            type={false}
-        />
+        <IconButton 
+            aria-label="visualization" 
+            color="primary" 
+            size="small"
+            onClick={() => {
+                setOpen(!open);
+                setId(ID);
+                setTitulo(nome);
+            }}> 
+            <VisibilityIcon/> 
+        </IconButton>
     )
 }
 
@@ -290,7 +296,6 @@ export default function EnhancedTable(props) {
                                         page * rowsPerPage + rowsPerPage
                                     )
                                     .map((conteudo, index) => {
-                                        ;
                                         
                                         return (
                                             <TableRow hover={true} tabIndex={-1} key={conteudo._id}>
@@ -301,7 +306,14 @@ export default function EnhancedTable(props) {
                                                 {!smScreen && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
 
                                                 <TableCell align="left">
-                                                    <ContentVisualization id={conteudo._id} nome={conteudo.topico}/>
+                                                    <ContentVisualization 
+                                                        ID={conteudo._id} 
+                                                        nome={conteudo.topico} 
+                                                        open={props.open} 
+                                                        setOpen={props.setOpen}
+                                                        setTitulo={props.setTitulo}
+                                                        setId={props.setId}
+                                                    />    
                                                     <UpdateContent id={conteudo._id}/>
                                                     <DeleteContent id={conteudo._id} nome={conteudo.topico}/>
                                                 </TableCell>
