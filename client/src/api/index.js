@@ -22,10 +22,18 @@ export const listarConteudoPersonalizado = (id, area, numeracao) => api.get(`/co
 
 // -- Funções relacionadas à Disciplina
 export const inserirDisciplina = novaDisciplina => api.post("/configuracoes/disciplina", novaDisciplina);
-export const listarDisciplinas = () => api.get("/configuracoes");
+export const listarDisciplinas = () => api.get("/configuracoes/disciplina");
 export const atualizarDisciplina = (id, disciplinaAtualizada) => api.put(`/configuracoes/disciplina/${id}`, disciplinaAtualizada);
 export const removerDisciplina = id => api.delete(`/configuracoes/disciplina/${id}`);
 export const encDisciplinaPorID = id => api.get(`/configuracoes/disciplina/${id}`);
+
+// -- Funções relacionadas à Tag
+export const inserirTag = novaTag => api.post("/configuracoes/tag", novaTag);
+export const listarTags = () => api.get("/configuracoes/tag");
+export const atualizarTag = (id, tagAtualizada) => api.put(`/configuracoes/tag/${id}`, tagAtualizada);
+export const removerTag = id => api.delete(`/configuracoes/tag/${id}`);
+export const encTagPorID = id => api.get(`/configuracoes/tag/${id}`);
+export const listarTagsPorDisciplina = id => api.get(`/configuracoes/tags/${id}`);
 
 // -- Funções relacionadas à Questão
 export const inserirQuestao = novaQuestao => api.post("/controle-questao", novaQuestao);
@@ -56,6 +64,13 @@ const apis = {
     atualizarDisciplina,
     removerDisciplina,
     encDisciplinaPorID,
+    // Tag
+    inserirTag,
+    listarTags,
+    atualizarTag,
+    removerTag,
+    encTagPorID,
+    listarTagsPorDisciplina,
     // Questão
     inserirQuestao,
     listarQuestao,

@@ -51,8 +51,8 @@ export default function SplitButton(props) {
     return (
         <Grid container ={true} direction="column" alignItems="flex-end">
             <Grid item xs={12}>
-                <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
-                    <Button onClick={handleClick}>{options[selectedIndex].label}</Button>
+                <ButtonGroup variant="contained" color="primary" ref={anchorRef} disabled={options[0].nome === "Tags" ? true : false} aria-label="split button">
+                    <Button onClick={handleClick}>{options[selectedIndex].nome}</Button>
                     <Button
                         color="primary"
                         size="small"
@@ -83,10 +83,10 @@ export default function SplitButton(props) {
                                                 key={option.key}
                                                 selected={index === selectedIndex}
                                                 disabled={option.selected}
-                                                value={option.label}
+                                                value={option.nome}
                                                 onClick={event => handleMenuItemClick(event, option, index)}
                                             >
-                                                {option.label}
+                                                {option.nome}
                                             </MenuItem>
 
                                         ))}
