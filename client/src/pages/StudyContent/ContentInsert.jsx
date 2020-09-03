@@ -15,7 +15,7 @@ function initialState() {
       nome: ''
     },    
     topico: "",
-    numeracao: 0,
+    numeracao: '',
     autor: "",
     conteudo: {},
     erros: []

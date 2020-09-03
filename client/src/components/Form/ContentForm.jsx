@@ -7,6 +7,9 @@ function ContentForm (props) {
     const { data, onMaterialChange, conteudo, listaDisciplina, handleUpload, onSubmit, onDisciplineChange } = props;
     const { area, disciplina, numeracao, topico } = data;
 
+    const array = [];
+    for (let i = 1; i < 33; ++i) array[i-1] = i;
+
     return (
         <MyContainer>
             <h1 className="heading-page">Criar Conteúdo</h1>
@@ -50,8 +53,15 @@ function ContentForm (props) {
                     variant="outlined"
                     name="numeracao"
                     type="text"
+                    select={true}
                     value={numeracao}
-                    onChange={onMaterialChange}/>
+                    onChange={onMaterialChange}>
+                        {
+                            array.map((row, index) => {
+                                return <MenuItem key={index} value={row}>{row}</MenuItem>
+                            })
+                        }
+                </MyTextField>
             </Grid>
             <Grid item={true} xs={12}>
                 <MyTextField

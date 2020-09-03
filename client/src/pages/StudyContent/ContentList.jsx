@@ -35,11 +35,10 @@ function ContentList () {
     numeracao: ""
   });
   const [ listaDisciplina, setListaDisciplina ] = useState([  ]);
-  const { area, disciplina, numeracao } = filter;
   const [ filtro, setFiltro ] = useState(false);
   
   const classes = useStyles();
-
+  
   const [content, setContent] = useState({
     conteudos: []
   })
@@ -52,7 +51,7 @@ function ContentList () {
       [name]: value
     }))
   }
-
+  
   function onDisciplineChange (nameField, ID, nome) {
     setFilter(preValue => ({
       ...preValue,
@@ -62,7 +61,7 @@ function ContentList () {
       }
     }));
   };
-
+  
   // -- Carrega as Disciplinas existentes no banco
   useEffect(() => {
     let unmounted = false;
@@ -91,20 +90,23 @@ function ContentList () {
     }
   }, [filter]);
   
-  // -- Carrega os Tópicos, por Disciplina, existentes no banco
+  // -- Carrega os Tópicos, filtrados, existentes no banco
   useEffect(() => {
+    
+    const { area, disciplina, numeracao } = filter;
+    const { id } = disciplina;
     const abortController = new AbortController();
-    console.log(filter);
-    if (disciplina.id !== '') {
-      const abortController = new AbortController();
+    
+    if (id !== '') {
       async function fetchConteudoAPI() {
-        const response = await api.listarConteudoPersonalizado(disciplina.id, area, numeracao);
+        const response = await api.listarConteudoPersonalizado(id, area, numeracao);
         console.log(response);
-          const value = response.data.data;
-          setContent({ conteudos: value });
+        const value = response.data.data;
+        setContent({ conteudos: value });
       }
-      fetchConteudoAPI()
-    }  
+      fetchConteudoAPI();
+    }
+
     return abortController.abort();
     // eslint-disable-next-line
   }, [filtro]);

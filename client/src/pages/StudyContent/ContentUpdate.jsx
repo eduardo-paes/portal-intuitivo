@@ -14,7 +14,7 @@ function initialState(props) {
       nome: ''
     },  
     topico: "",
-    numeracao: 0,
+    numeracao: '',
     autor: [],
     conteudo: {},
     erros: []
@@ -128,7 +128,7 @@ function Content(props) {
                 })
               .then(res => res.json())
           }
-              window.alert("Conteúdo inserido com sucesso.")
+              window.alert("Conteúdo atualizado com sucesso.")
           })
   
       if (conteudo) {

@@ -182,13 +182,12 @@ listarConteudoPorDisciplina = async (req, res) => {
 // Função para listar conteúdo utilizando filtro
 listarConteudoPersonalizado = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
-    const { area, id, numeracao } = req.query;
     
     await Conteudo
     .find({
-        "disciplina.id": req.query.id,
-        area: req.query.area,
-        numeracao: req.query.numeracao
+        "disciplina.id": req.params.id,
+        area: req.params.area,
+        $or: [{ numeracao: req.params.numeracao }, { numeracao: { $gte: 1 } } ]
     }, (err, conteudoEncontrado) => {
         if (err) {
             return res
@@ -201,6 +200,7 @@ listarConteudoPersonalizado = async (req, res) => {
             .status(404)
             .json({success: false, error: "Conteúdo não encontrado."})
         }
+
         console.log(req.params);
         
         return res
@@ -208,7 +208,6 @@ listarConteudoPersonalizado = async (req, res) => {
         .json({success: true, data: conteudoEncontrado})
     })
     .catch(err => console.log(err))
-    console.log(req.params);
 }
 
 // Função para listar os conteúdos contidos no banco
