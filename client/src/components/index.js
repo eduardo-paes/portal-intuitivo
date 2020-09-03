@@ -2,6 +2,7 @@
 import UserTable from "./Tables/UserTable"
 import ContentTable from "./Tables/ContentTable"
 import DisTable from "./Tables/DisTable"
+import TagTable from "./Tables/TagTable"
 import QuestionTable from "./Tables/QuestionTable"
 import ActivityTable from "./Tables/ActivityTable"
 
@@ -40,6 +41,7 @@ export {
     UserTable,
     ContentTable,
     DisTable, 
+    TagTable,
     QuestionTable,
     ActivityTable,
 

@@ -15,6 +15,7 @@ const multer = require("multer");
 const UsuarioCtrl = require("../controllers/user-ctrl");
 const ConteudoCtrl = require("../controllers/content-ctrl");
 const DisciplinaCtrl = require("../controllers/subject-ctrl");
+const TagCtrl = require("../controllers/tag-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
 
 // USUÁRIO -- Definição dos métodos para cada rota do usuário
@@ -37,7 +38,15 @@ router.post("/configuracoes/disciplina", DisciplinaCtrl.inserirDisciplina);
 router.put("/configuracoes/disciplina/:id", DisciplinaCtrl.atualizarDisciplina);
 router.delete("/configuracoes/disciplina/:id", DisciplinaCtrl.removerDisciplina);
 router.get("/configuracoes/disciplina/:id", DisciplinaCtrl.encDisciplinaPorID);
-router.get("/configuracoes", DisciplinaCtrl.listarDisciplinas);
+router.get("/configuracoes/disciplina", DisciplinaCtrl.listarDisciplinas);
+
+// TAG -- Definição dos métodos para cada rota da tag
+router.post("/configuracoes/tag", TagCtrl.inserirTag);
+router.put("/configuracoes/tag/:id", TagCtrl.atualizarTag);
+router.delete("/configuracoes/tag/:id", TagCtrl.removerTag);
+router.get("/configuracoes/tag/:id", TagCtrl.encTagPorID);
+router.get("/configuracoes/tag", TagCtrl.listarTags);
+router.get("/configuracoes/tags/:id", TagCtrl.listarTagsPorDisciplina);
 
 // QUESTÃO -- Definição dos métodos para cada rota de questão
 router.post("/controle-questao", QuestaoCtrl.inserirQuestao);

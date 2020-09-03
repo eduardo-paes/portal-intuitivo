@@ -259,7 +259,9 @@ function QuestionForm (props) {
                     </Grid>
                 </Grid>
 
-                <ChipsArray/>
+                <ChipsArray
+                    disciplinaID={questao.disciplina.id}
+                />
 
             </section>
                 

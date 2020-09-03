@@ -2,27 +2,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Disciplina = require("./subject-model.js");
-const Conteudo = require("./content-model.js");
 const Questao = require("./question-model.js");
 const Usuario = require("./user-model.js");
 
-const Atividade = new Schema({
+const Revisao = new Schema({
     tipoAtividade: {
         type: String,
         required: true
-    },
-    disciplinaID: {
-        type: Schema.Types.ObjectId, 
-        ref: 'Disciplina'
     },
     areaConhecimento: {
         type: String,
         required: true
     },
-    topicoID: {
-        type: Schema.Types.ObjectId,
-        ref: 'Conteudo',
+    numeracao: {
+        type: Number,
+        required: false
     },
     questoes: [
         {
@@ -46,4 +40,4 @@ const Atividade = new Schema({
     }
 });
 
-module.exports = mongoose.model("atividade", Atividade);
+module.exports = mongoose.model("revisoe", Revisao);
