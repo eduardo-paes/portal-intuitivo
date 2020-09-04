@@ -29,7 +29,7 @@ const Revisao = new Schema({
         type: Date, 
         default: Date.now
     },
-    dataEdicao: { 
+    dataModificacao: { 
         type: Date, 
         default: Date.now
     },

@@ -71,12 +71,12 @@ function ShowQuestion(props) {
 function DeleteQuestion(props) {
     function removing() {
         if (window.confirm(`Tem certeza que quer remover esta atividade permanentemente?`)) {
-            api.removerQuestao(props.id)
+            api.removerAtividade(props.id)
         }
     }
 
     return (
-        <RouterLink to={"/controle-questoes/list"}>
+        <RouterLink to={"/controle-atividades/list"}>
             <IconButton
                     aria-label="delete"
                     color="secondary"
@@ -117,7 +117,7 @@ function stableSort(array, comparator) {
 }
 
 // -- Componentes das Células de Cabeçalho
-const headCells = [
+const headActivityCells = [
     {
         id: 'tipoAtividade',
         label: 'Tipo'
@@ -125,14 +125,33 @@ const headCells = [
         id: 'disciplina',
         label: 'Disciplina'
     }, {
-        id: 'areaConhecimento',
-        label: 'Área'
-    }, {
         id: 'topico',
         label: 'Tópico'
     }, {
+        id: 'areaConhecimento',
+        label: 'Área'
+    }, {
         id: 'questoes',
-        label: 'Questões'
+        label: 'Nº Questões'
+    }, {
+        id: 'funcoes',
+        label: ''
+    }
+];
+
+const headRevisionCells = [
+    {
+        id: 'tipoAtividade',
+        label: 'Tipo'
+    }, {
+        id: 'numeracao',
+        label: 'Numeração'
+    }, {
+        id: 'areaConhecimento',
+        label: 'Área'
+    }, {
+        id: 'questoes',
+        label: 'Nº Questões'
     }, {
         id: 'funcoes',
         label: ''
@@ -147,6 +166,9 @@ const phoneHeadCells = [
         id: 'areaConhecimento',
         label: 'Área'
     }, {
+        id: 'questoes',
+        label: 'Nº Questões'
+    }, {
         id: 'funcoes',
         label: ''
     }
@@ -154,11 +176,23 @@ const phoneHeadCells = [
 
 // -- Table: Head
 function EnhancedTableHead(props) {
-    const {classes, order, orderBy, onRequestSort, width} = props;
-    var cells = !width ? headCells : phoneHeadCells;
+    const {classes, order, orderBy, onRequestSort, width, revision} = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
+    const [cells, setCells] = useState([]);
+
+    // Altera o cabeçalho da tabela, conforme tipo de listage: Revisão ou Atividades
+    useEffect(() => {
+        if (width) {
+            setCells(phoneHeadCells);
+        }
+        else if (revision) {
+            setCells(headRevisionCells);
+        } else {
+            setCells(headActivityCells);
+        }
+    }, [revision])
 
     return (
         <TableHead>
@@ -173,7 +207,6 @@ function EnhancedTableHead(props) {
                             sortDirection={order}>
                             {
                                 (headCell.id !== "funcoes")
-
                                     ? <TableSortLabel
                                             active={orderBy === headCell.id}
                                             direction={orderBy === headCell.id
@@ -256,7 +289,7 @@ export default function ActivityTable(props) {
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const {data, setQuestion, setHidden} = props;
+    const {data, setQuestion, setHidden, revision} = props;
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -280,10 +313,7 @@ export default function ActivityTable(props) {
     };
 
     // -- Rows vazias para complementação
-    const emptyRows = rowsPerPage - Math.min(
-        rowsPerPage,
-        data.length - page * rowsPerPage
-    );
+    const emptyRows = rowsPerPage - Math.min( rowsPerPage, data.length - page * rowsPerPage );
 
     // -- Tabela: Body
     return (
@@ -300,6 +330,7 @@ export default function ActivityTable(props) {
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
+                            revision={revision}
                             width={smScreen}/>
                         <TableBody>
                             {
@@ -308,17 +339,17 @@ export default function ActivityTable(props) {
                                         page * rowsPerPage,
                                         page * rowsPerPage + rowsPerPage
                                     )
-                                    .map((row, index) => {
-                                        const {disciplina, topico, tipoResposta, dataCriacao} = row;
-                                        const resposta = tipoResposta === "discursiva" ? "Discursiva" : "Múltipla escolha";
+                                    .map(row=> {
+                                        const {tipoAtividade, disciplina, topico, areaConhecimento, numeracao, questoes} = row;
 
                                         return (
                                             <TableRow hover={true} tabIndex={-1} key={row._id}>
-                                                <TableCell className={classes.row} align="left">{disciplina.nome}</TableCell>
-
-                                                {!smScreen && <TableCell className={classes.row} align="left">{topico.nome}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{resposta}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{dataCriacao}</TableCell>}
+                                                <TableCell className={classes.row} align="left">{tipoAtividade}</TableCell>
+                                                {!smScreen && !revision && <TableCell className={classes.row} align="left">{disciplina.nome}</TableCell>}
+                                                {!smScreen && !revision && <TableCell className={classes.row} align="left">{topico.nome}</TableCell>}
+                                                {!smScreen && revision && <TableCell className={classes.row} align="left">{numeracao}</TableCell>}
+                                                <TableCell className={classes.row} align="left">{areaConhecimento}</TableCell>
+                                                <TableCell className={classes.row} align="left">{questoes.length}</TableCell>
 
                                                 <TableCell align="left">
                                                     <ShowQuestion id={row._id} setQuestion={setQuestion} setHidden={setHidden}/>

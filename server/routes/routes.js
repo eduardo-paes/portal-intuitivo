@@ -17,6 +17,8 @@ const ConteudoCtrl = require("../controllers/content-ctrl");
 const DisciplinaCtrl = require("../controllers/subject-ctrl");
 const TagCtrl = require("../controllers/tag-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
+const AtividadeCtrl = require("../controllers/activity-ctrl");
+const RevisaoCtrl = require("../controllers/revision-ctrl");
 
 // USUÁRIO -- Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
@@ -56,6 +58,20 @@ router.delete("/controle-questao/:id", QuestaoCtrl.removerQuestao);
 router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 router.get("/controle-questao/topico/:id", QuestaoCtrl.listarQuestaoPorTopico);
+
+// ATIVIDADE -- Definição dos métodos para cada rota de atividade
+router.post("/controle-atividade", AtividadeCtrl.inserirAtividade);
+router.put("/controle-atividade/:id", AtividadeCtrl.atualizarAtividade);
+router.delete("/controle-atividade/:id", AtividadeCtrl.removerAtividade);
+router.get("/controle-atividade/:id", AtividadeCtrl.encAtividadePorID);
+router.get("/controle-atividade", AtividadeCtrl.listarAtividade);
+
+// REVISAO -- Definição dos métodos para cada rota de atividade
+router.post("/controle-atividade/revisao", RevisaoCtrl.inserirRevisao);
+router.put("/controle-atividade/revisao:id", RevisaoCtrl.atualizarRevisao);
+router.delete("/controle-atividade/revisao:id", RevisaoCtrl.removerRevisao);
+router.get("/controle-atividade/revisao:id", RevisaoCtrl.encRevisaoPorID);
+router.get("/controle-atividade/revisao", RevisaoCtrl.listarRevisao);
 
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {

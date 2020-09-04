@@ -29,7 +29,6 @@ inserirAtividade = (req, res) => {
     novaAtividade
         .save()
         .then(() => {
-            console.log(novaAtividade._id) // Aqui é possível inserir questões em AtividadeQuestao
             return res.status(201).json({
                 success: true,
                 id: novaAtividade._id,
@@ -84,6 +83,7 @@ atualizarAtividade = async (req, res) => {
         atividadeEncontrada.areaConhecimento = atividadeAtualizada.areaConhecimento
         atividadeEncontrada.numeracao = atividadeAtualizada.numeracao
         atividadeEncontrada.questoes = atividadeAtualizada.questoes
+        atividadeEncontrada.dataCriacao = atividadeAtualizada.dataCriacao
         atividadeEncontrada.dataModificacao = atividadeAtualizada.dataModificacao
 
         // Salva alterações
