@@ -84,13 +84,23 @@ function DeleteContent(props) {
 
 // -- Funções auxiliares para Ordenação
 function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
+    if (orderBy === 'disciplina.nome') {
+        if (b.disciplina.nome < a.disciplina.nome) {
+            return -1;
+        }
+        if (b.disciplina.nome > a.disciplina.nome) {
+            return 1;
+        }
+        return 0;
+    } else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }    
 }
 
 function getComparator(order, orderBy) {
@@ -116,7 +126,7 @@ const headCells = [
         id: 'area',
         label: 'Área'
     }, {
-        id: 'disciplina',
+        id: 'disciplina.nome',
         label: 'Disciplina'
     }, {
         id: 'topico',
@@ -147,7 +157,7 @@ function EnhancedTableHead(props) {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
-
+    
     return (
         <TableHead>
             <TableRow>
@@ -160,7 +170,7 @@ function EnhancedTableHead(props) {
                             padding={'default'}
                             sortDirection={order}>
                             {
-                                (headCell.id !== "funcoes")
+                                (headCell.id !== "conteudo")
 
                                     ? <TableSortLabel
                                         active={orderBy === headCell.id}
