@@ -120,10 +120,10 @@ function stableSort(array, comparator) {
 // -- Componentes das Células de Cabeçalho
 const headCells = [
     {
-        id: 'disciplinaNome',
+        id: 'disciplina.nome',
         label: 'Disciplina'
     }, {
-        id: 'topicoNome',
+        id: 'topico.nome',
         label: 'Topico'
     }, {
         id: 'tipoQuestao',
@@ -317,14 +317,17 @@ export default function QuestionTable(props) {
     };
 
     useEffect(() => {
-        if (tableSelection) {
-            setData(preValue => ({
-                ...preValue,
-                questoes: selected
-            }))
-        }
+        tableSelection && setData(preValue => ({
+            ...preValue,
+            questoes: selected
+        }))
     // eslint-disable-next-line
     }, [selected])
+
+    useEffect(() => {
+        tableSelection && setSelected([]);
+        // eslint-disable-next-line
+    }, [data])
 
     // -- Rows vazias para complementação
     const emptyRows = rowsPerPage - Math.min( rowsPerPage, data.length - page * rowsPerPage );

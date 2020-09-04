@@ -16,6 +16,7 @@ import ActivityForm from "./Form/ActivityForm"
 import UserValidater from "./Form/Validation/FormValidateUser"
 import ContentValidater from "./Form/Validation/FormValidateContent"
 import QuestionValidater from "./Form/Validation/FormValidateQuestion"
+import ActivityValidater from "./Form/Validation/FormValidateActivity"
 
 // -- Drawer
 import ItemsDrawer from "./Drawer/ItemsDrawer"
@@ -53,6 +54,7 @@ export {
     UserValidater, 
     QuestionValidater,
     ContentValidater,
+    ActivityValidater,
 
     ItemsDrawer, 
     ProfileMenu, 

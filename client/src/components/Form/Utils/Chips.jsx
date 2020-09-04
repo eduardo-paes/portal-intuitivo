@@ -52,8 +52,8 @@ export default function ChipsArray(props) {
     }, [disciplinaID])
 
     useEffect(() => {
-        console.log(tagList)
-    }, [tagList])
+        console.log(selectedTag)
+    }, [selectedTag])
 
     // Função callback após adicionar/remover uma tag
     const handleTagSelection = (index) => {
@@ -76,7 +76,6 @@ export default function ChipsArray(props) {
                 value
             ]);
         }
-
         handleTagSelection(value.key);
     }
 

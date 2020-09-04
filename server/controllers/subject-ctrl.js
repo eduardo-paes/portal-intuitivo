@@ -74,6 +74,7 @@ atualizarDisciplina = async (req, res) => {
         // Atualiza dados do disciplina encontrado
         disciplinaEncontrado.nome = disciplina.nome
         disciplinaEncontrado.diaSemana = disciplina.diaSemana
+        disciplinaEncontrado.areaConhecimento = disciplina.areaConhecimento
 
         // Salva alterações
         disciplinaEncontrado

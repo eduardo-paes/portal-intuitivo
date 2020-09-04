@@ -204,6 +204,7 @@ listarQuestaoPorTopico = async (req, res) => {
                 error: err 
             })
         }
+
         // Verifica se há dados na lista
         if (!listaQuestao.length) {
             return res
@@ -213,8 +214,14 @@ listarQuestaoPorTopico = async (req, res) => {
                     error: "Dados não encontrados." 
                 })
         }
+
         // Caso não haja erros, retorna lista de questaos
-        return res.status(200).json({ success: true, data: listaQuestao })
+        return res
+            .status(200)
+            .json({ 
+                success: true, 
+                data: listaQuestao 
+            })
     })
     // Havendo erro, retorna o erro
     .catch(err => console.log(err))

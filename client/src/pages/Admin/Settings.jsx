@@ -202,10 +202,10 @@ function Settings(props) {
                                         name="areaConhecimento"
                                         value={disciplina.areaConhecimento ? disciplina.areaConhecimento : ""}
                                         onChange={handleChange}>
-                                            <MenuItem value="cienciasHumanas">Ciências Humanas</MenuItem>
-                                            <MenuItem value="cienciasDaNatureza">Ciências da Natureza</MenuItem>
-                                            <MenuItem value="linguagens">Linguagens</MenuItem>
-                                            <MenuItem value="matematica">Matemática</MenuItem>
+                                            <MenuItem value="Ciências Humanas">Ciências Humanas</MenuItem>
+                                            <MenuItem value="Ciências da Natureza">Ciências da Natureza</MenuItem>
+                                            <MenuItem value="Linguagens">Linguagens</MenuItem>
+                                            <MenuItem value="Matemática">Matemática</MenuItem>
                                     </MyTextField>
 
                                     <div className={classes.group}>

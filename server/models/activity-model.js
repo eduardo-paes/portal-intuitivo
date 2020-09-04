@@ -5,24 +5,36 @@ const Schema = mongoose.Schema;
 const Disciplina = require("./subject-model.js");
 const Conteudo = require("./content-model.js");
 const Questao = require("./question-model.js");
-const Usuario = require("./user-model.js");
+const Usuario = require("./users-model.js");
 
 const Atividade = new Schema({
     tipoAtividade: {
         type: String,
         required: true
     },
-    disciplinaID: {
-        type: Schema.Types.ObjectId, 
-        ref: 'Disciplina'
+    disciplina: {
+        id: {
+            type: Schema.Types.ObjectId, 
+            ref: 'Disciplina'
+        },
+        nome: {
+            type: String,
+            required: true
+        }
     },
     areaConhecimento: {
         type: String,
         required: true
     },
-    topicoID: {
-        type: Schema.Types.ObjectId,
-        ref: 'Conteudo',
+    topico: {
+        id: {
+            type: Schema.Types.ObjectId,
+            ref: 'Conteudo',
+        },
+        nome: {
+            type: String,
+            required: true
+        }
     },
     questoes: [
         {
@@ -35,7 +47,7 @@ const Atividade = new Schema({
         type: Date, 
         default: Date.now
     },
-    dataEdicao: { 
+    dataModificacao: { 
         type: Date, 
         default: Date.now
     },
