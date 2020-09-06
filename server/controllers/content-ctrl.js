@@ -182,32 +182,73 @@ listarConteudoPorDisciplina = async (req, res) => {
 // Função para listar conteúdo utilizando filtro
 listarConteudoPersonalizado = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
-    
-    await Conteudo
-    .find({
-        "disciplina.id": req.params.id,
-        area: req.params.area,
-        $or: [{ numeracao: req.params.numeracao }, { numeracao: { $gte: 1 } } ]
-    }, (err, conteudoEncontrado) => {
-        if (err) {
-            return res
-            .status(400)
-            .json({success: false, error: err})
-        }
-        
-        if (!conteudoEncontrado) {
-            return res
-            .status(404)
-            .json({success: false, error: "Conteúdo não encontrado."})
-        }
 
-        console.log(req.params);
+    let paramsID = '';
+    let paramsArea = '';
+    let paramsNumeracao = [];
+    
+    if (req.params.area) paramsArea = req.params.area;
+    if (req.params.numeracao) paramsNumeracao[0] = req.params.numeracao;
+    else {
+        for (let i = 1; i < 33; ++i) paramsNumeracao[i-1] = i;
+    }
+
+    if (req.params.id === '000000000000000000000000') {
+        await Conteudo
+        .find({ 
+            'disciplina.id': { $gte: req.params.id },
+            area: { $eq: paramsArea },
+            numeracao: { $in: paramsNumeracao }
         
-        return res
-        .status(200)
-        .json({success: true, data: conteudoEncontrado})
-    })
-    .catch(err => console.log(err))
+        }, (err, conteudoEncontrado) => {
+            if (err) {
+                return res
+                .status(400)
+                .json({success: false, error: err})
+            }
+            
+            if (!conteudoEncontrado) {
+                return res
+                .status(404)
+                .json({success: false, error: "Conteúdo não encontrado."})
+            }
+
+            console.log(req.params);
+            
+            return res
+            .status(200)
+            .json({success: true, data: conteudoEncontrado})
+            })
+            .catch(err => console.log(err))
+    } else {
+        await Conteudo
+        .find({ 
+            'disciplina.id': { $eq: req.params.id },
+            area: { $eq: paramsArea },
+            numeracao: { $in: paramsNumeracao }
+        
+        }, (err, conteudoEncontrado) => {
+            if (err) {
+                return res
+                .status(400)
+                .json({success: false, error: err})
+            }
+            
+            if (!conteudoEncontrado) {
+                return res
+                .status(404)
+                .json({success: false, error: "Conteúdo não encontrado."})
+            }
+    
+            console.log(req.params);
+            
+            return res
+            .status(200)
+            .json({success: true, data: conteudoEncontrado})
+        })
+        .catch(err => console.log(err))
+    }
+        
 }
 
 // Função para listar os conteúdos contidos no banco

@@ -93,11 +93,14 @@ function ContentList () {
   // -- Carrega os Tópicos, filtrados, existentes no banco
   useEffect(() => {
     
-    const { area, disciplina, numeracao } = filter;
-    const { id } = disciplina;
+    let { area, disciplina, numeracao } = filter;
+    let { id } = disciplina;
     const abortController = new AbortController();
     
-    if (id !== '') {
+    if (id === '') id = '000000000000000000000000';
+    if (area === '') area = 'area';
+    
+    if (filtro !== false) {
       async function fetchConteudoAPI() {
         const response = await api.listarConteudoPersonalizado(id, area, numeracao);
         console.log(response);
@@ -106,7 +109,7 @@ function ContentList () {
       }
       fetchConteudoAPI();
     }
-
+    setFiltro(false);
     return abortController.abort();
     // eslint-disable-next-line
   }, [filtro]);
