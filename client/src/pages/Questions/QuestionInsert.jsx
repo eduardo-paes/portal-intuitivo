@@ -21,6 +21,8 @@ function QuestionInsert() {
         tipoResposta: "multiplaEscolha",
         dataCriacao: new Date(),
         dataEdicao: new Date(),
+        padraoResposta: "",
+        tags: [],
         erros: []
     }
 
@@ -59,7 +61,7 @@ function QuestionInsert() {
         
         // Verifica se há erro
         if (error.validated) {
-            const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, dataEdicao} = questao;
+            const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, dataEdicao, padraoResposta, tags} = questao;
 
             if (tipoResposta === "multiplaEscolha") {
                 var respostaValidada = resposta.filter(item => {
@@ -75,6 +77,8 @@ function QuestionInsert() {
                 tipoResposta,
                 dataCriacao,
                 dataEdicao,
+                padraoResposta,
+                tags,
                 autor: token.userID
             }
 

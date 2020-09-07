@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { makeStyles } from '@material-ui/core/styles';
 import { 
-    Grid,
     Button,
     ButtonGroup,
     ClickAwayListener,
@@ -11,7 +11,17 @@ import {
     MenuItem,
     MenuList } from '@material-ui/core';
 
+// -- Styles
+const useStyles = makeStyles({
+    lgScreen: {
+        display: "flex",
+        justifyContent: "flex-end",
+    }
+});
+
 export default function SplitButton(props) {
+    const classes = useStyles();
+
     const {data, setTag} = props;
     const [options, setOptions] = useState(data);
     
@@ -49,55 +59,50 @@ export default function SplitButton(props) {
     };
 
     return (
-        <Grid container ={true} direction="column" alignItems="flex-end">
-            <Grid item xs={12}>
-                <ButtonGroup variant="contained" color="primary" ref={anchorRef} disabled={options[0].nome === "Tags" ? true : false} aria-label="split button">
-                    <Button onClick={handleClick}>{options[selectedIndex].nome}</Button>
-                    <Button
-                        color="primary"
-                        size="small"
-                        aria-controls={open ? 'split-button-menu' : undefined}
-                        aria-expanded={open ? 'true' : undefined}
-                        aria-label="select merge strategy"
-                        aria-haspopup="menu"
-                        onClick={handleToggle}
+        <div className={classes.lgScreen}>
+            <ButtonGroup variant="contained" color="primary" ref={anchorRef} disabled={options[0].nome === "Tags" ? true : false} aria-label="split button">
+                <Button onClick={handleClick}>{options[selectedIndex].nome}</Button>
+                <Button
+                    color="primary"
+                    size="small"
+                    aria-controls={open ? 'split-button-menu' : undefined}
+                    aria-expanded={open ? 'true' : undefined}
+                    aria-label="select merge strategy"
+                    aria-haspopup="menu"
+                    onClick={handleToggle}
+                >
+                    <ArrowDropDownIcon />
+                </Button>
+            </ButtonGroup>
+
+            <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                {({ TransitionProps, placement }) => (
+                    <Grow
+                        {...TransitionProps}
+                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
                     >
-                        <ArrowDropDownIcon />
-                    </Button>
-                </ButtonGroup>
+                        <Paper>
+                            <ClickAwayListener onClickAway={handleClose}>
+                                <MenuList id="split-button-menu">
+                                    {options.map((option, index) => (
 
-                <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                    {({ TransitionProps, placement }) => (
-                        <Grow
-                            {...TransitionProps}
-                            style={{
-                                transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
-                            }}
-                        >
-                            <Paper>
-                                <ClickAwayListener onClickAway={handleClose}>
-                                    <MenuList id="split-button-menu">
-                                        {options.map((option, index) => (
+                                        <MenuItem
+                                            key={option.key}
+                                            selected={index === selectedIndex}
+                                            disabled={option.selected}
+                                            value={option.nome}
+                                            onClick={event => handleMenuItemClick(event, option, index)}
+                                        >
+                                            {option.nome}
+                                        </MenuItem>
 
-                                            <MenuItem
-                                                key={option.key}
-                                                selected={index === selectedIndex}
-                                                disabled={option.selected}
-                                                value={option.nome}
-                                                onClick={event => handleMenuItemClick(event, option, index)}
-                                            >
-                                                {option.nome}
-                                            </MenuItem>
-
-                                        ))}
-                                    </MenuList>
-                                </ClickAwayListener>
-                            </Paper>
-                        </Grow>
-                    )}
-                    </Popper>
-                
-                </Grid>
-            </Grid>
+                                    ))}
+                                </MenuList>
+                            </ClickAwayListener>
+                        </Paper>
+                    </Grow>
+                )}
+                </Popper>
+            </div>
         );
 }

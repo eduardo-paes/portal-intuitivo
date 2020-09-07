@@ -58,6 +58,7 @@ router.delete("/controle-questao/:id", QuestaoCtrl.removerQuestao);
 router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 router.get("/controle-questao/topico/:id", QuestaoCtrl.listarQuestaoPorTopico);
+router.get("/controle-questao/area/:area", QuestaoCtrl.listarQuestaoPorArea);
 
 // ATIVIDADE -- Definição dos métodos para cada rota de atividade
 router.post("/controle-atividade", AtividadeCtrl.inserirAtividade);
@@ -67,11 +68,11 @@ router.get("/controle-atividade/:id", AtividadeCtrl.encAtividadePorID);
 router.get("/controle-atividade", AtividadeCtrl.listarAtividade);
 
 // REVISAO -- Definição dos métodos para cada rota de atividade
-router.post("/controle-atividade/revisao", RevisaoCtrl.inserirRevisao);
-router.put("/controle-atividade/revisao:id", RevisaoCtrl.atualizarRevisao);
-router.delete("/controle-atividade/revisao:id", RevisaoCtrl.removerRevisao);
-router.get("/controle-atividade/revisao:id", RevisaoCtrl.encRevisaoPorID);
-router.get("/controle-atividade/revisao", RevisaoCtrl.listarRevisao);
+router.post("/controle-revisao", RevisaoCtrl.inserirRevisao);
+router.put("/controle-revisao/:id", RevisaoCtrl.atualizarRevisao);
+router.delete("/controle-revisao/:id", RevisaoCtrl.removerRevisao);
+router.get("/controle-revisao/:id", RevisaoCtrl.encRevisaoPorID);
+router.get("/controle-revisao", RevisaoCtrl.listarRevisao);
 
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {

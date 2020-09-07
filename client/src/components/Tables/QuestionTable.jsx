@@ -397,8 +397,8 @@ export default function QuestionTable(props) {
 
                                                 <TableCell align="left">
                                                     <ShowQuestion id={row._id} setQuestion={setQuestion} setHidden={setHidden}/>
-                                                    <UpdateQuestion id={row._id}/>
-                                                    <DeleteQuestion id={row._id}/>
+                                                    {!tableSelection && <UpdateQuestion id={row._id}/>}
+                                                    {!tableSelection && <DeleteQuestion id={row._id}/>}
                                                 </TableCell>
                                             </TableRow>
                                         );

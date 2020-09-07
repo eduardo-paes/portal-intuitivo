@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Questao = require("./question-model.js");
-const Usuario = require("./user-model.js");
+const Usuario = require("./users-model.js");
 
 const Revisao = new Schema({
     tipoAtividade: {
@@ -16,7 +16,7 @@ const Revisao = new Schema({
     },
     numeracao: {
         type: Number,
-        required: false
+        required: true
     },
     questoes: [
         {

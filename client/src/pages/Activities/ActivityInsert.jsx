@@ -6,33 +6,34 @@ import api from '../../api'
 // -- Estilos
 import { ActivityForm } from "../../components/";
 
-export default function ActivityInsert() {
-    // -- Dados iniciais da constante Atividade
-    const initialState = {
-        tipoAtividade: "",
-        disciplina: {
-            id: "",
-            nome: ""
-        },
-        areaConhecimento: "",
-        numeracao: "",
-        topico: {
-            id: "",
-            nome: ""
-        },
-        questoes: [],
-        dataCriacao: new Date(),
-        dataModificacao: new Date(),
-        autor: "",
-        erros: []
-    }
+// -- Dados iniciais da constante Atividade
+const initialState = {
+    tipoAtividade: "",
+    disciplina: {
+        id: "",
+        nome: ""
+    },
+    areaConhecimento: "",
+    numeracao: "",
+    topico: {
+        id: "",
+        nome: ""
+    },
+    questoes: [],
+    dataCriacao: new Date(),
+    dataModificacao: new Date(),
+    autor: "",
+    erros: []
+}
 
+export default function ActivityInsert() {
     const [atividade, setAtividade] = useState(initialState);
+    const [clear, setClear] = useState(false);
     const {token} = useContext(StoreContext);
 
     // -- Salva as alterações feitas no banco*
-    async function saveActivity() {
-        // Caso seja uma Avaliação Diagnóstica, não está relacionada com uma disciplina
+    async function inserirAtividade() {
+        // Validação de erros
         const error = ActivityValidater(atividade);
         setAtividade(preValue => ({
             ...preValue,
@@ -62,6 +63,46 @@ export default function ActivityInsert() {
                     if (res.status === 201) {
                         window.alert("Atividade inserida com sucesso.")
                         setAtividade(initialState);
+                        setClear(true);
+                    }
+                })
+        }
+    }
+
+    // -- Salva as alterações feitas no banco*
+    async function inserirRevisao() {
+        // Validação de erros
+        const error = ActivityValidater(atividade);
+        setAtividade(preValue => ({
+            ...preValue,
+            erros: error
+        }));
+
+        // Verifica se há erro
+        if (error.validated) {
+            const { tipoAtividade, questoes, areaConhecimento, numeracao, dataCriacao } = atividade;
+            
+            const novaRevisao = {
+                tipoAtividade,
+                areaConhecimento,
+                numeracao,
+                questoes,
+                dataCriacao,
+                dataModificacao: new Date(),
+                autor: token.userID,
+            }
+
+            // console.log(novaRevisao);
+
+            // Inserção pela API
+            await api
+                .inserirRevisao(novaRevisao)
+                .then(res => {
+                    // Limpa os campos
+                    if (res.status === 201) {
+                        window.alert("Avaliação Diagnóstica inserida com sucesso.")
+                        setAtividade(initialState);
+                        setClear(true);
                     }
                 })
         }
@@ -72,8 +113,10 @@ export default function ActivityInsert() {
             atividade={atividade}
             setAtividade={setAtividade}
             initialState={initialState}
-            saveActivity={saveActivity}
-            saveRevision={ActivityValidater}
+            saveActivity={inserirAtividade}
+            saveRevision={inserirRevisao}
+            isRevision={false}
+            clear={clear}
         />
     );
 };

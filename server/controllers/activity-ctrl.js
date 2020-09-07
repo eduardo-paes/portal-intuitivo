@@ -16,9 +16,8 @@ inserirAtividade = (req, res) => {
 
     // Verifica se dados não são nulos
     if (!novaAtividade) {
-        console.log("Erro - nova atividade")
         return res
-            .status(400)
+            .status(406)
             .json({
                 success: false, 
                 error: err
@@ -36,7 +35,7 @@ inserirAtividade = (req, res) => {
             })
         })
         .catch(error => {
-            return res.status(400).json({
+            return res.status(404).json({
                 error,
                 message: "Atividade não inserida.",
             })

@@ -173,27 +173,23 @@ listarTags = async (req, res) => {
     .catch(err => console.log(err))
 }
 
-// Função para listar os tags contidos no banco
+// Função para listar os tags, ordenadamente, contidos no banco
 listarTagsPorDisciplina = async (req, res) => {
-    await Tag
-        .find({
-            disciplinaID: req.params.id
-        }, (err, listaTags) => {
-        // Verificação de erros
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        // Verifica se há dados na lista
-        if (!listaTags.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
-        }
-        // Caso não haja erros, retorna lista de tags
-        return res.status(200).json({ success: true, data: listaTags })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+    await Tag.find({disciplinaID: req.params.id}).sort({nome: 1})
+        .then((listaTags, err) => {
+            // Verificação de erros
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            // Verifica se há dados na lista
+            if (!listaTags.length) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: "Dados não encontrados." })
+            }
+            // Caso não haja erros, retorna lista de tags
+            return res.status(200).json({ success: true, data: listaTags })
+        }).catch(err => console.log(err));
 }
 
 // Exporta os módulos

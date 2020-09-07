@@ -16,44 +16,68 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function AcitivityList() {
+export default function ActivityList() {
     const classes = useStyles();
     const [atividades, setAtividades] = useState([]);
+    const [revisoes, setRevisoes] = useState([]);
     const [revision, setRevision] = useState(false);
+
+    async function fetchAtividadesAPI() {
+        const response = await api.listarAtividades();
+        if (response.status === 200) {
+            setAtividades(response.data.data);
+        }
+    }
+
+    async function fetchRevisoesAPI() {
+        const response = await api.listarRevisao();
+        if (response.status === 200) {
+            setRevisoes(response.data.data);
+        }
+    }
 
     // -- Lista as atividades do banco
     useEffect(() => {
         const abortController = new AbortController();
-        async function fetchAtividadesAPI() {
-            const response = await api.listarAtividades();
-            if (response.status === 200) {
-                setAtividades(response.data.data);
-            }
+        if (!revision) {
+            fetchAtividadesAPI()
         }
-        fetchAtividadesAPI()
         return abortController.abort();
-    }, [atividades]);
+    }, [atividades, revision]);
+
+    // -- Lista as revisões do banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (revision) {
+            fetchRevisoesAPI()
+        }
+        return abortController.abort();
+    }, [revisoes, revision]);
 
     return (
         <MyContainer>
-            <Grid container={true}>
-                <Grid item={true} xs={12} sm={6} lg={6}>
-                    <h1 className="heading-page">Atividades</h1>
+            <section id="cabecalhoListaAtividade">
+                <Grid container={true}>
+                    <Grid item={true} xs={12} sm={6} lg={6}>
+                        <h1 className="heading-page">Atividades</h1>
+                    </Grid>
+                    <Grid item={true} xs={12} sm={6} lg={6} className={classes.activityMode}>
+                        <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
+                            <Button onClick={() => setRevision(true)}>ADs</Button>
+                            <Button onClick={() => setRevision(false)}>Atividades</Button>
+                        </ButtonGroup>
+                    </Grid>
                 </Grid>
-                <Grid item={true} xs={12} sm={6} lg={6} className={classes.activityMode}>
-                    <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-                        <Button onClick={() => setRevision(!revision)}>ADs</Button>
-                        <Button onClick={() => setRevision(false)}>Atividades</Button>
-                    </ButtonGroup>
-                </Grid>
-            </Grid>
+            </section>
 
-            <Grid container={true} spacing={2} justify="center">
-                <Grid id="cabecalhoListaAtividade" item={true} xs={12} sm={12} lg={12}>
-                    <ActivityTable data={atividades} revision={revision}/>
-                    <CreateButton title="Inserir Atividade" url="/controle-atividades/create"/>
+            <section id="dadosListaAtividades">
+                <Grid container={true} spacing={2} justify="center">
+                    <Grid  item={true} xs={12} sm={12} lg={12}>
+                        <ActivityTable data={revision ? revisoes : atividades} revision={revision}/>
+                        <CreateButton title="Inserir Atividade" url="/controle-atividade/create"/>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </section>
 
         </MyContainer>
     );

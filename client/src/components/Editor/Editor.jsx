@@ -29,8 +29,8 @@ const editorConfig = {
 
 // -- Função Principal
 function TextEditor (props) {
-    const {text, setText, optionType, position, readOnly} = props;                        // Dados passados ao editor
-    const [defaultMessage, setDefaultMessage] = useState('');
+    const {text, setText, optionType, position, readOnly, initialMessage} = props;                        // Dados passados ao editor
+    const [defaultMessage, setDefaultMessage] = useState(initialMessage);
 
     useEffect(() => {
         if (!readOnly) {
@@ -38,19 +38,7 @@ function TextEditor (props) {
         }
     // eslint-disable-next-line    
     }, [text])
-
-    // -- Função para determinar mensagem inicial do editor
-    const handleDefaultMessage = () => {
-        // Opções de Resposta
-        if (optionType) {
-            setDefaultMessage(`<p><span style='color:hsl(0, 0%, 30%)'>Opção de resposta</span></p>`);
-        } 
-        // Enunciado da Questão
-        else {
-            setDefaultMessage("<p><span style='color:hsl(0, 0%, 30%)'>Digite o enunciado aqui</span></p>");
-        }
-    }
-    
+   
     // -- Função acionada quando editor entra em foco
     const onEditorFocus = (isFocused) => {
         // Mensagem do editor se adapta caso haja valores em text
@@ -76,7 +64,6 @@ function TextEditor (props) {
                         editor.ui.focusTracker.on('change:isFocused', (evt, name, value) => {value && onEditorFocus()});
                         editor.isReadOnly = readOnly;
                         uploadAdapterPlugin(editor);
-                        handleDefaultMessage() 
                     }}
                     config={ optionType && editorConfig }
                     onError={ err => console.log(err) }

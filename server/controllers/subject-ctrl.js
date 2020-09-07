@@ -149,22 +149,21 @@ encDisciplinaPorID = async (req, res) => {
 
 // Função para listar os disciplinas contidos no banco
 listarDisciplinas = async (req, res) => {
-    await Disciplina.find({}, (err, listaDisciplinas) => {
-        // Verificação de erros
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        // Verifica se há dados na lista
-        if (!listaDisciplinas.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
-        }
-        // Caso não haja erros, retorna lista de disciplinas
-        return res.status(200).json({ success: true, data: listaDisciplinas })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+    await Disciplina.find({}).sort({nome: 1})
+        .then((listaDisciplinas, err) => {
+            // Verificação de erros
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            // Verifica se há dados na lista
+            if (!listaDisciplinas.length) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: "Dados não encontrados." })
+            }
+            // Caso não haja erros, retorna lista de tags
+            return res.status(200).json({ success: true, data: listaDisciplinas })
+        }).catch(err => console.log(err));
 }
 
 // Exporta os módulos

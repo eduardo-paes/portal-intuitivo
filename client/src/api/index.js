@@ -42,6 +42,7 @@ export const atualizarQuestao = (id, questaoAtualizada) => api.put(`/controle-qu
 export const removerQuestao = id => api.delete(`/controle-questao/${id}`);
 export const encQuestaoPorID = id => api.get(`/controle-questao/${id}`);
 export const listarQuestaoPorTopico = id => api.get(`/controle-questao/topico/${id}`);
+export const listarQuestaoPorArea = area => api.get(`/controle-questao/area/${area}`);
 
 // -- Funções relacionadas à Atividade
 export const inserirAtividade = novaAtividade => api.post("/controle-atividade", novaAtividade);
@@ -51,11 +52,11 @@ export const removerAtividade = id => api.delete(`/controle-atividade/${id}`);
 export const encAtividadePorID = id => api.get(`/controle-atividade/${id}`);
 
 // -- Funções relacionadas à Revisao
-export const inserirRevisao = novaRevisao => api.post("/controle-atividade/revisao", novaRevisao);
-export const listarRevisaos = () => api.get("/controle-atividade/revisao");
-export const atualizarRevisao = (id, atividadeAtualizada) => api.put(`/controle-atividade/revisao/${id}`, atividadeAtualizada);
-export const removerRevisao = id => api.delete(`/controle-atividade/revisao/${id}`);
-export const encRevisaoPorID = id => api.get(`/controle-atividade/revisao/${id}`);
+export const inserirRevisao = novaRevisao => api.post("/controle-revisao", novaRevisao);
+export const listarRevisao = () => api.get("/controle-revisao");
+export const atualizarRevisao = (id, revisaoAtualizada) => api.put(`/controle-revisao/${id}`, revisaoAtualizada);
+export const removerRevisao = id => api.delete(`/controle-revisao/${id}`);
+export const encRevisaoPorID = id => api.get(`/controle-revisao/${id}`);
 
 const apis = {
     // Usuário
@@ -92,6 +93,7 @@ const apis = {
     removerQuestao,
     encQuestaoPorID,
     listarQuestaoPorTopico,
+    listarQuestaoPorArea,
     // Atividade
     inserirAtividade,
     listarAtividades,
@@ -100,7 +102,7 @@ const apis = {
     encAtividadePorID,
     // Revisão
     inserirRevisao,
-    listarRevisaos,
+    listarRevisao,
     atualizarRevisao,
     removerRevisao,
     encRevisaoPorID,

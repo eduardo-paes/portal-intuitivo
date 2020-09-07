@@ -24,8 +24,16 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 
 // Botão de Atualização
 function UpdateQuestion(props) {
+    let updateURL;
+
+    if (props.revision) {
+        updateURL = "/controle-revisao/update/";
+    } else {
+        updateURL = "/controle-atividade/update/";
+    }
+
     return (
-        <RouterLink to={"/controle-atividades/update/" + props.id}>
+        <RouterLink to={updateURL + props.id}>
             <IconButton aria-label="update" color="primary" size="small">
                 <EditIcon/>
             </IconButton>
@@ -35,7 +43,7 @@ function UpdateQuestion(props) {
 
 // Botão de Atualização
 function ShowQuestion(props) {
-    const {id, setQuestion, setHidden} = props;
+    const {id, setAtividade, setHidden} = props;
     const [clicked, setClicked] = useState(false);
     let question;
 
@@ -43,7 +51,7 @@ function ShowQuestion(props) {
     useEffect(() => {
         const abortController = new AbortController();
         if (clicked) {
-            async function fetchQuestaoAPI() {
+            async function fetchAPI() {
                 const response = await api.encQuestaoPorID(id);
                 const value = response.data.data;
                 // eslint-disable-next-line
@@ -52,10 +60,10 @@ function ShowQuestion(props) {
                     resposta: value.resposta,
                     tipoResposta: value.tipoResposta,
                 }
-                setQuestion(question);
+                setAtividade(question);
                 setHidden(true);
             }
-            fetchQuestaoAPI();
+            fetchAPI();
         }
         return abortController.abort();
     }, [clicked]);
@@ -70,8 +78,14 @@ function ShowQuestion(props) {
 // Botão de Remoção
 function DeleteQuestion(props) {
     function removing() {
-        if (window.confirm(`Tem certeza que quer remover esta atividade permanentemente?`)) {
-            api.removerAtividade(props.id)
+        if (props.revision) {
+            if (window.confirm(`Tem certeza que quer remover esta avaliação diagnóstica permanentemente?`)) {
+                api.removerRevisao(props.id)
+            }
+        } else {
+            if (window.confirm(`Tem certeza que quer remover esta atividade permanentemente?`)) {
+                api.removerAtividade(props.id)
+            }
         }
     }
 
@@ -192,7 +206,7 @@ function EnhancedTableHead(props) {
         } else {
             setCells(headActivityCells);
         }
-    }, [revision])
+    }, [revision, width])
 
     return (
         <TableHead>
@@ -353,8 +367,8 @@ export default function ActivityTable(props) {
 
                                                 <TableCell align="left">
                                                     <ShowQuestion id={row._id} setQuestion={setQuestion} setHidden={setHidden}/>
-                                                    <UpdateQuestion id={row._id}/>
-                                                    <DeleteQuestion id={row._id}/>
+                                                    <UpdateQuestion id={row._id} revision={revision}/>
+                                                    <DeleteQuestion id={row._id} revision={revision}/>
                                                 </TableCell>
                                             </TableRow>
                                         );

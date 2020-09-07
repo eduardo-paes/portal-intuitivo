@@ -1,58 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Grid, Chip } from "@material-ui/core";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import SplitButton from './SplitButton'
 import api from '../../../api'
-
 
 // -- Styles
 const useStyles = makeStyles((theme) => ({
     root: {
+        marginBottom: "1rem",
+        marginTop: "1rem"
+    },
+    tagGroup: {
         display: 'flex',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        listStyle: 'none',
-        padding: theme.spacing(0.5),
-        margin: 0,
+    },
+    buttomGroup: {
+        display: 'flex',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        marginTop: "1rem"
     },
     chip: {
         margin: theme.spacing(0.5),
     },
     emptyTagMessage: {
         color: '#606161',
-    }
+    },
 }));
 
 export default function ChipsArray(props) {
-    const {disciplinaID} = props;
+    const {disciplinaID, setTags} = props;
     const classes = useStyles();
-    const emptyTagMessage = "Selecione as tags desejadas no botão ao lado."     // Mensagem para quando não há tags selecionadas
-    const [selectedTag, setSelectedTag] = useState([]);                         // Lista de tags selecionadas
-    const [tagList, setTagList] = useState([                                    // Lista de tags disponíveis
-        { key: 0, nome: 'Tags', selected: true }
-    ]);
+    const initialTag = [{key: 0, nome: 'Tags', selected: true}];                            // Valor inicial da lista de tags
+    const emptyTagMessage = "Selecione as tags desejadas no botão ao lado."                 // Mensagem para quando não há tags selecionadas
+    const [selectedTag, setSelectedTag] = useState([]);                                     // Lista de tags selecionadas
+    const [tagList, setTagList] = useState(initialTag);                                     // Lista de tags disponíveis
 
+    const theme = useTheme();
+    const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+    // Carrega Tags por Disciplina
     useEffect(() => {
         const abortController = new AbortController();
-
         if (disciplinaID) {
-            console.log(disciplinaID)
             async function fetchTagAPI() {
+                setSelectedTag([]);
                 const response = await api.listarTagsPorDisciplina(disciplinaID);
                 const value = response.data.data;
-                console.log(value)
                 setTagList(value.map((item, index) => {
                     return { ...item, key: index, selected: false }
                 }));
             }
             fetchTagAPI()
         }
-
         return abortController.abort();
     }, [disciplinaID])
 
+    // Salva tags selecionadas no objeto principal
     useEffect(() => {
-        console.log(selectedTag)
+        setTags(selectedTag)
+    // eslint-disable-next-line
     }, [selectedTag])
 
     // Função callback após adicionar/remover uma tag
@@ -68,7 +77,7 @@ export default function ChipsArray(props) {
 
     // Função para adicionar uma nova tag à lista de seleção
     const handleAdd = (value) => {
-        if (selectedTag[0] === emptyTagMessage) {
+        if (selectedTag.length === 0) {
             setSelectedTag([value]);
         } else {
             setSelectedTag([
@@ -86,8 +95,8 @@ export default function ChipsArray(props) {
     };
 
     return (
-        <Grid container={true}>
-            <Grid item={true} xs={12} sm={9}>
+        <Grid container={true} className={classes.root}>
+            <Grid item={true} xs={12} sm={9} className={smScreen ? classes.tagGroup : 'none'}>
                 {selectedTag.length === 0
                 ? <p className={classes.emptyTagMessage}>{emptyTagMessage}</p>
                 : selectedTag.map((tag, index) => {
@@ -101,8 +110,7 @@ export default function ChipsArray(props) {
                     );
                 })}
             </Grid>
-
-            <Grid item={true} xs={12} sm={3}>
+            <Grid item={true} xs={12} sm={3} className={smScreen ? classes.buttomGroup : 'none'}>
                 <SplitButton
                     data={tagList}
                     setData={setTagList}

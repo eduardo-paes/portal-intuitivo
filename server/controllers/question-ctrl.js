@@ -229,14 +229,21 @@ listarQuestaoPorTopico = async (req, res) => {
 
 // Função para listar os questaos contidos no banco
 listarQuestaoPorArea = async (req, res) => {
-    await Questao.aggregate([{
-        $lookup: {
-            from: "disciplinas",
-            localField: "disciplina.id",
-            foreignField: "_id",
-            as:"listaDisciplina"
-        }
-    }], (err, listaQuestao) => {
+    await Questao.aggregate([
+        {
+            $lookup: {
+                from: "disciplinas",
+                localField: "disciplina.id",
+                foreignField: "_id",
+                as:"disciplinaInfo"
+            }
+        },
+        {
+            $match : {
+                "disciplinaInfo.areaConhecimento": req.params.area
+            }
+        },
+    ], (err, listaQuestao) => {
         // Verificação de erros
         if (err) {
             return res.status(400).json({ 
@@ -267,5 +274,6 @@ module.exports = {
     removerQuestao,
     encQuestaoPorID,
     listarQuestao,
-    listarQuestaoPorTopico
+    listarQuestaoPorTopico,
+    listarQuestaoPorArea
 }

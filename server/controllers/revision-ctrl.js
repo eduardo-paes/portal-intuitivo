@@ -1,4 +1,4 @@
-const Revisao = require('../models/activity-model');
+const Revisao = require('../models/revision-model');
 
 // Função para inserir revisao no banco
 inserirRevisao = (req, res) => {
@@ -16,14 +16,15 @@ inserirRevisao = (req, res) => {
 
     // Verifica se dados não são nulos
     if (!novaRevisao) {
-        console.log("Erro - nova revisão")
         return res
-            .status(400)
+            .status(406)
             .json({
                 success: false, 
                 error: err
             });
     }
+
+    console.log(novaRevisao)
 
     // Salva nova revisao
     novaRevisao
@@ -36,7 +37,8 @@ inserirRevisao = (req, res) => {
             })
         })
         .catch(error => {
-            return res.status(400).json({
+            console.log(error)
+            return res.status(404).json({
                 error,
                 message: "Revisão não inserida.",
             })
@@ -161,16 +163,26 @@ listarRevisao = async (req, res) => {
     await Revisao.find({}, (err, listaRevisao) => {
         // Verificação de erros
         if (err) {
-            return res.status(400).json({ success: false, error: err })
+            return res.status(400).json({ 
+                success: false, 
+                error: err 
+            })
         }
+
         // Verifica se há dados na lista
         if (!listaRevisao.length) {
             return res
                 .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
+                .json({ 
+                    success: false, 
+                    error: "Dados não encontrados." 
+                })
         }
         // Caso não haja erros, retorna lista de revisaos
-        return res.status(200).json({ success: true, data: listaRevisao })
+        return res.status(200).json({ 
+            success: true, 
+            data: listaRevisao 
+        })
     })
     // Havendo erro, retorna o erro
     .catch(err => console.log(err))

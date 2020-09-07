@@ -20,6 +20,8 @@ function QuestionUpdate(props) {
         tipoResposta: "multiplaEscolha",
         dataCriacao: new Date(),
         dataEdicao: new Date(),
+        padraoResposta: "",
+        tags: [],
         erros: []
     }
 
@@ -78,7 +80,7 @@ function QuestionUpdate(props) {
     }, [questao]);
 
     // -- Salva questão no banco de dados
-    async function saveQuestion() {
+    async function updateQuestion() {
         // Valida se há algum erro no preenchimento dos campos
         const error = validate(questao);
         setQuestao(preValue => ({
@@ -88,7 +90,7 @@ function QuestionUpdate(props) {
         
         // Verifica se há erro
         if (error.validated) {
-            const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, autor} = questao;
+            const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, padraoResposta, tags, autor} = questao;
 
             if (tipoResposta === "multiplaEscolha") {
                 var respostaValidada = resposta.filter(item => {
@@ -104,6 +106,8 @@ function QuestionUpdate(props) {
                 tipoResposta,
                 dataCriacao,
                 dataEdicao: new Date(),
+                padraoResposta,
+                tags,
                 autor
             }
 
@@ -124,7 +128,7 @@ function QuestionUpdate(props) {
             title="Criar Questão"
             questao={questao}
             setQuestao={setQuestao}
-            saveQuestion={saveQuestion}
+            saveQuestion={updateQuestion}
             opcoes={opcoes}
             setOpcoes={setOpcoes}
             initialOptionState={initialOptionState}

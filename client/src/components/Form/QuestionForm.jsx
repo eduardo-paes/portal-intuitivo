@@ -52,7 +52,7 @@ function QuestionForm (props) {
     const {title, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
     const [listaDisciplinas, setListaDisciplinas] = useState([]);
     const [topico, setTopico] = useState([]);
-    
+
     // -- Carrega as Disciplinas existentes no banco
     useEffect(() => {
         const abortController = new AbortController();
@@ -111,6 +111,22 @@ function QuestionForm (props) {
         setQuestao(preValue => ({
             ...preValue,
             enunciado: value
+        }));
+    }
+
+    // -- Salvar dados do enunciado da questão
+    function handlePadraoResposta(value) {
+        setQuestao(preValue => ({
+            ...preValue,
+            padraoResposta: value
+        }));
+    }
+
+    // -- Salvar dados do enunciado da questão
+    function handleTags(value) {
+        setQuestao(preValue => ({
+            ...preValue,
+            tags: value
         }));
     }
 
@@ -261,6 +277,8 @@ function QuestionForm (props) {
 
                 <ChipsArray
                     disciplinaID={questao.disciplina.id}
+                    tags={questao.tags}
+                    setTags={handleTags}
                 />
 
             </section>
@@ -273,6 +291,7 @@ function QuestionForm (props) {
                         text={questao.enunciado} 
                         setText={handleEnunciado}
                         readOnly={false}
+                        initialMessage="<p><span style='color:hsl(0, 0%, 30%)'>Digite o enunciado aqui</span></p>"
                     />
                 </MyCard>
                 {questao.erros.enunciado && <p className={classes.errorMessage}>{questao.erros.enunciado}</p>}
@@ -327,6 +346,7 @@ function QuestionForm (props) {
                                                 setText={handleOpcao}
                                                 position={index}
                                                 readOnly={false}
+                                                initialMessage={`<p><span style='color:hsl(0, 0%, 30%)'>Opção de resposta</span></p>`}
                                                 />
                                         </div>
                                     </Grid>
@@ -348,6 +368,19 @@ function QuestionForm (props) {
                     {questao.erros.resposta && <p className={classes.errorMessage}>{questao.erros.resposta}</p>}
             </section>
         
+            <section className="padraoResposta">
+                <h2 className="subtitle-page">Padrão Resposta</h2>
+                <MyCard className={questao.erros.enunciado && classes.errorAlarm}>
+                    <TextEditor 
+                        optionType={false}
+                        text={questao.padraoResposta} 
+                        setText={handlePadraoResposta}
+                        readOnly={false}
+                        initialMessage="<p><span style='color:hsl(0, 0%, 30%)'>Digite aqui o padrão resposta da questão</span></p>"
+                    />
+                </MyCard>
+            </section>
+
             <section className="grupoBotoes">
                 <AddButton onClick={saveQuestion}>Salvar</AddButton>
                 <Link to="/controle-questoes/list" style={{ textDecoration: 'none' }}>

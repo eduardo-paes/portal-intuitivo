@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Link } from 'react-router-dom'
 import api from '../../api'
 
-import { QuestionTable, CustomDialog } from "../../components";
-
-// -- Estilos
-import { Grid, MenuItem, Button } from '@material-ui/core';
-import { MyContainer, MyTextField } from "../../assets/styles/styledComponents"
+// -- Estilos e Componentes
 import { makeStyles } from '@material-ui/core/styles';
+import { Grid, MenuItem } from '@material-ui/core';
+import { QuestionTable, CustomDialog } from "../../components";
+import { MyContainer, MyTextField, AddButton, DeleteButton } from "../../assets/styles/styledComponents"
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
@@ -28,79 +28,64 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ActivityForm (props) {
-    const {atividade, setAtividade, saveActivity, initialState} = props;
+    const {atividade, setAtividade, saveActivity, saveRevision, initialState, isRevision, clear} = props;
 
     // -- Define principais constantes
     const classes = useStyles();
     const [listaDisciplinas, setListaDisciplinas] = useState([]);               // Disciplinas do Banco de Dados
     const [topicos, setTopicos] = useState([]);                                 // Tópicos do Banco de Dados
     const [questoes, setQuestoes] = useState([]);                               // Questões do Banco de Dados
-    const [revisao, setRevisao] = useState(false);
+    const [revisao, setRevisao] = useState(isRevision);
     const [questaoSelecionada, setQuestaoSelecionada] = useState('');
     const [hiddenDialog, setHiddenDialog] = useState(false);
     const indexNumeracao = [1, 2, 3, 4]
 
-    // -- Carrega as Disciplinas existentes no banco
-    useEffect(() => {
-        const abortController = new AbortController();
-        async function fetchDisciplinaAPI() {
-            const response = await api.listarDisciplinas();
-            const value = response.data.data;
-            setListaDisciplinas(value);
-        }
-        fetchDisciplinaAPI()
-        return abortController.abort();
-    }, []);
+    // -- Funções de Carregamento da API
+    // =================================
+    // -- CARREGA DISCIPLINAS
+    async function fetchDisciplinaAPI() {
+        const response = await api.listarDisciplinas();
+        const value = response.data.data;
+        setListaDisciplinas(value);
+    }
 
-    // -- Carrega os Tópicos, por Disciplina, existentes no banco
-    useEffect(() => {
-        const abortController = new AbortController();
+    // -- CARREGA TÓPICOS
+    async function fetchTopicoAPI() {
         if (atividade.disciplina.id !== '') {
+            const response = await api.listarConteudoPorDisciplina(atividade.disciplina.id);
+            setTopicos(response.data.data);
+            setAtividade(preValue => ({ 
+                ...preValue, 
+                topico: { id: "", nome: "" }
+            }));
+        }
+    }
+
+    // -- CARREGA QUESTÕES POR TÓPICO
+    async function fetchQuestoesPorTopicoAPI() {
+        if (atividade.topico.id !== '') {
             setQuestoes([]);
-            async function fetchTopicoAPI() {
-                const response = await api.listarConteudoPorDisciplina(atividade.disciplina.id);
-                setTopicos(response.data.data);
-                setAtividade(preValue => ({ ...preValue, topico: { id: "", nome: "" }}));
+            const response = await api.listarQuestaoPorTopico(atividade.topico.id);
+            if (response.status === 200) {
+                setQuestoes(response.data.data);
             }
-            fetchTopicoAPI()
         }
-        return abortController.abort();
-        // eslint-disable-next-line
-    }, [atividade.disciplina.id]);
+    }
 
-    // -- Carrega as Questões, por Tópico, existentes no banco
-    useEffect(() => {
-        const abortController = new AbortController();
-        if (atividade.topico.id !== '' && !revisao) {
+    // -- CARREGA QUESTÕES POR ÁREA DO CONHECIMENTO
+    async function fetchQuestoesPorAreaAPI() {
+        if (atividade.areaConhecimento !== '') {
             setQuestoes([]);
-            async function fetchQuestoesPorTopicoAPI() {
-                const response = await api.listarQuestaoPorTopico(atividade.topico.id);
-                if (response.status === 200) {
-                    setQuestoes(response.data.data);
-                }
+            const response = await api.listarQuestaoPorArea(atividade.areaConhecimento);
+            if (response.status === 200) {
+                setQuestoes(response.data.data);
             }
-            fetchQuestoesPorTopicoAPI()
         }
-        return abortController.abort();
-        // eslint-disable-next-line
-    }, [atividade.topico.id]);
+    }
 
-    // -- Carrega as Questões, por Área do conhecimento, existentes no banco
-    useEffect(() => {
-        const abortController = new AbortController();
-        if (atividade.areaConhecimento !== "" && revisao) {
-            async function fetchQuestoesPorAreaAPI() {
-                const response = await api.listarQuestaoPorArea(atividade.topico.id);
-                const value = response.data.data;
-                setQuestoes(value);
-            }
-            fetchQuestoesPorAreaAPI()
-        }
-        return abortController.abort();
-        // eslint-disable-next-line
-    }, [atividade.areaConhecimento]);
-
-    // -- Definição das Funções
+    // -- Funções de Alteração no formulário
+    // =================================
+    // -- Salva alterações do formulário
     function handleChange (event) {
         const {name, value} = event.target;
         setAtividade(preValue => ({
@@ -131,30 +116,91 @@ export default function ActivityForm (props) {
         }
     }
 
+    // -- Funções UseEffect
+    // =================================
+    // -- Carregamentos iniciais
+    useEffect(() => {
+        const abortController = new AbortController();
+        fetchDisciplinaAPI();
+        setAtividade(atividade);
+        // Verifica se é revisão
+        if (isRevision) {
+            fetchQuestoesPorAreaAPI();
+        } else {
+            fetchTopicoAPI();
+            fetchQuestoesPorTopicoAPI();
+        }
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, []);
+
+    useEffect(() => {
+        const abortController = new AbortController();
+        setAtividade(atividade);
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [atividade]);
+
     // -- Limpa os campos do formulário
-    function clearChange (event) {
-        event.preventDefault();
-        setAtividade(initialState)
-        setQuestoes([])
-    }
+    useEffect(() => {
+        if (clear) {
+            setAtividade(initialState)
+            setQuestoes([])
+            setQuestaoSelecionada('')
+        }
+        // eslint-disable-next-line
+    }, [clear]);
 
     // -- Altera o valor de revisão e limpa campos, caso o tipo de exercício seja igual à revisao
     useEffect(() => { 
+        // Verifica se é uma avaliação diagnóstica
         if (atividade.tipoAtividade === "Avaliação Diagnóstica") {
-            setRevisao(true);
-            // Limpa campos Disciplina e Tópico
-            setAtividade(preValue => ({ ...preValue, topico: { id: "", nome: "" }, disciplina: { id: "", nome: "" }}));
+            // Limpa campos Disciplina, Tópico e Questões
+            setAtividade(preValue => ({ 
+                ...preValue, 
+                topico: { id: "", nome: "" }, 
+                disciplina: { id: "", nome: "" }
+            }));
             setQuestoes([]);
+            setRevisao(true);
         } else {
             setRevisao(false);
         }
+        console.log(atividade)
     // eslint-disable-next-line
     }, [atividade.tipoAtividade])
 
     // -- Observa mudanças em questão selecionada
-    useEffect(() => {
-        setQuestaoSelecionada(questaoSelecionada)
+    useEffect(() => { 
+        setQuestaoSelecionada(questaoSelecionada) 
     }, [questaoSelecionada]);
+
+    // -- Carrega os Tópicos, por Disciplina, existentes no banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        // Só procede se disciplina.id não for vazio
+        !revisao && fetchTopicoAPI();
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [atividade.disciplina.id]);
+
+    // -- Carrega as Questões, por Tópico, existentes no banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        // Só procede se não for revisão e topico.id não for vazio
+        !revisao && fetchQuestoesPorTopicoAPI();
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [atividade.topico.id]);
+
+    // -- Carrega as Questões, por Área do conhecimento, existentes no banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        // Só procede se for revisão e areaConhecimento não for vazio
+        revisao&& fetchQuestoesPorAreaAPI();
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [atividade.areaConhecimento]);
 
     return (
         <MyContainer>
@@ -162,6 +208,7 @@ export default function ActivityForm (props) {
                 <h1 className="heading-page">Inserir Atividade</h1>
 
                 <Grid container={true} spacing={1}>
+                    {/* TipoAtividade */}
                     <Grid item={true} xs={12} sm={6}>
                         <MyTextField
                             id="campoTipo"
@@ -180,6 +227,7 @@ export default function ActivityForm (props) {
                         {atividade.erros.tipoAtividade && <p className={classes.errorMessage}>{atividade.erros.tipoAtividade}</p>}
                     </Grid>
 
+                    {/* Disciplina */}
                     <Grid item={true} xs={12} sm={6}>
                         <MyTextField
                             id="campoDisciplina"
@@ -201,6 +249,7 @@ export default function ActivityForm (props) {
                 </Grid>
                 
                 <Grid container={true} spacing={1}>
+                    {/* Topico */}
                     <Grid item={true} xs={12} sm={revisao ? 5 : 6}>
                         <MyTextField
                             id="campoTopico"
@@ -221,7 +270,7 @@ export default function ActivityForm (props) {
                         </MyTextField>
                         {atividade.erros.topico && <p className={classes.errorMessage}>{atividade.erros.topico}</p>}
                     </Grid>
-
+                    {/* Numeração */}
                     <Grid item={true} hidden={!revisao} xs={12} sm={revisao && 2}>
                         <MyTextField
                             id="campoNumeracao"
@@ -238,7 +287,7 @@ export default function ActivityForm (props) {
                         </MyTextField>
                         { (revisao && atividade.erros.numeracao) && <p className={classes.errorMessage}>{atividade.erros.numeracao}</p> }
                     </Grid>
-
+                    {/* ÁreaConhecimento */}
                     <Grid item={true} xs={12} sm={revisao ? 5 : 6}>
                         <MyTextField
                             id="campoArea"
@@ -275,22 +324,10 @@ export default function ActivityForm (props) {
             </section>
 
             <section id="submitButtons" className={classes.group}>
-                <Button
-                    className={classes.buttons}
-                    variant="outlined"
-                    type="submit"
-                    color="secondary"
-                    onClick={clearChange}>
-                    Limpar
-                </Button>
-                <Button
-                    className={classes.buttons}
-                    variant="outlined"
-                    type="submit"
-                    color="primary"
-                    onClick={saveActivity}>
-                    Salvar
-                </Button>
+                <AddButton onClick={revisao ? saveRevision : saveActivity}>Salvar</AddButton>
+                <Link to="/controle-atividade/list" style={{ textDecoration: 'none' }}>
+                    <DeleteButton>Cancelar</DeleteButton>
+                </Link>
             </section>
 
         </MyContainer>

@@ -58,10 +58,11 @@ function PrivateRoutes() {
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/list" component={QuestionList}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/create" component={QuestionInsert}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-questoes/update/:id" component={QuestionUpdate}/>
-            <ConditionalRoute exact={true} type="Professor" from="/controle-atividades" component={ActivityList}/>
-            <ConditionalRoute exact={true} type="Professor" from="/controle-atividades/list" component={ActivityList}/>
-            <ConditionalRoute exact={true} type="Professor" from="/controle-atividades/create" component={ActivityInsert}/>
-            <ConditionalRoute exact={true} type="Professor" from="/controle-atividades/update/:id" component={ActivityUpdate}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-atividade" component={ActivityList}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-atividade/list" component={ActivityList}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-atividade/create" component={ActivityInsert}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-atividade/update/:id" component={ActivityUpdate}/>
+            <ConditionalRoute exact={true} type="Professor" from="/controle-revisao/update/:id" component={ActivityUpdate}/>
 
             {/* --- Rotas do Administrador */}
             <ConditionalRoute exact={true} type="Administrador" from="/" component={UsersList}/>
