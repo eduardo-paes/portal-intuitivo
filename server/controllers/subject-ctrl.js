@@ -161,6 +161,30 @@ listarDisciplinas = async (req, res) => {
                     .status(404)
                     .json({ success: false, error: "Dados não encontrados." })
             }
+            return res.value;
+            // Caso não haja erros, retorna lista de tags
+            return res.status(200).json({ success: true, data: listaDisciplinas })
+        }).catch(err => console.log(err));
+}
+
+listarDisciplinasPorDiaDaSemana = async (req, res) => {
+    
+    await Disciplina.find({
+        id: { $ne: '000000000000000000000000' },
+        diaSemana: { $eq: req.params.dia }
+    })
+        .then((err, listaDisciplinas) => {
+            // Verificação de erros
+            console.log(req);
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            // Verifica se há dados na lista
+            if (!listaDisciplinas.length) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: "Dados não encontrados." })
+            }
             // Caso não haja erros, retorna lista de tags
             return res.status(200).json({ success: true, data: listaDisciplinas })
         }).catch(err => console.log(err));
@@ -172,5 +196,6 @@ module.exports = {
     atualizarDisciplina,
     removerDisciplina,
     encDisciplinaPorID,
-    listarDisciplinas
+    listarDisciplinas,
+    listarDisciplinasPorDiaDaSemana
 }

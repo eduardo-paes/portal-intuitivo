@@ -35,7 +35,6 @@ function ContentList () {
     numeracao: ""
   });
   const [ listaDisciplina, setListaDisciplina ] = useState([  ]);
-  const [ filtro, setFiltro ] = useState(false);
   
   const classes = useStyles();
   
@@ -76,21 +75,7 @@ function ContentList () {
     return () => {unmounted = true};
   }, []);
   
-  useEffect(() => {
-    let unmounted = false;
-    if (filter.disciplina.id === '' && filter.area === '' && filter.numeracao === '') {
-      async function fetchAPI () {
-        let response = await api.listarConteudos();
-        if (!unmounted) {
-          setContent({ conteudos: response.data.data })
-        }
-      }
-      fetchAPI();
-      return () => {unmounted = true};
-    }
-  }, [filter]);
-  
-  // -- Carrega os Tópicos, filtrados, existentes no banco
+  // -- Carrega os Tópicos existentes no banco
   useEffect(() => {
     
     let { area, disciplina, numeracao } = filter;
@@ -100,19 +85,16 @@ function ContentList () {
     if (id === '') id = '000000000000000000000000';
     if (area === '') area = 'area';
     
-    if (filtro !== false) {
-      async function fetchConteudoAPI() {
-        const response = await api.listarConteudoPersonalizado(id, area, numeracao);
-        console.log(response);
-        const value = response.data.data;
-        setContent({ conteudos: value });
-      }
-      fetchConteudoAPI();
+    async function fetchConteudoAPI() {
+      const response = await api.listarConteudoPersonalizado(id, area, numeracao);
+      console.log(response);
+      const value = response.data.data;
+      setContent({ conteudos: value });
     }
-    setFiltro(false);
+    fetchConteudoAPI();
     return abortController.abort();
     // eslint-disable-next-line
-  }, [filtro]);
+  }, [filter]);
 
   const array = [];
   for (let i = 1; i < 33; ++i) array[i-1] = i;
@@ -154,7 +136,6 @@ function ContentList () {
                   select={true}
                   label="Disciplina"
                   name="disciplinaID"
-                  autoFocus={true}
                   value={filter.disciplina === undefined ? "" : filter.disciplina.nome}>
                   {
                       listaDisciplina.map((row, index) => {
@@ -183,17 +164,7 @@ function ContentList () {
               </Grid>
               <Grid item={true} xs={12} lg={3} sm={3}>
                 <Grid container={true} className={classes.root} spacing={6}>
-                  <Grid item={true} xs={6} lg={6} sm={6}>
-                    <Button 
-                      color="primary" 
-                      variant="outlined"
-                      size="large"
-                      onClick={ () => {
-                        setFiltro(!filtro);
-                      }}
-                    >Filtrar</Button>
-                  </Grid>
-                  <Grid item={true} xs={6} lg={6} sm={6}>
+                  <Grid item={true} xs={12} lg={12} sm={12}>
                     <Button 
                       color="primary" 
                       variant="outlined"
@@ -208,7 +179,7 @@ function ContentList () {
                           numeracao: ""
                         })
                       }}
-                    >Limpar</Button>
+                    >Limpar filtro</Button>
                   </Grid>
                 </Grid>
               </Grid>

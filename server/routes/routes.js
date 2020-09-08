@@ -42,6 +42,7 @@ router.put("/configuracoes/disciplina/:id", DisciplinaCtrl.atualizarDisciplina);
 router.delete("/configuracoes/disciplina/:id", DisciplinaCtrl.removerDisciplina);
 router.get("/configuracoes/disciplina/:id", DisciplinaCtrl.encDisciplinaPorID);
 router.get("/configuracoes/disciplina", DisciplinaCtrl.listarDisciplinas);
+router.get("/plano-estudo/disciplina/:id?/:dia?", DisciplinaCtrl.listarDisciplinasPorDiaDaSemana);
 
 // TAG -- Definição dos métodos para cada rota da tag
 router.post("/configuracoes/tag", TagCtrl.inserirTag);

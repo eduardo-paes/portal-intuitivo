@@ -182,22 +182,25 @@ listarConteudoPorDisciplina = async (req, res) => {
 // Função para listar conteúdo utilizando filtro
 listarConteudoPersonalizado = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
+    let flag = 0;
 
-    let paramsID = '';
-    let paramsArea = '';
     let paramsNumeracao = [];
-    
-    if (req.params.area) paramsArea = req.params.area;
     if (req.params.numeracao) paramsNumeracao[0] = req.params.numeracao;
-    else {
-        for (let i = 1; i < 33; ++i) paramsNumeracao[i-1] = i;
-    }
+    else for (let i = 1; i < 33; ++i) paramsNumeracao[i-1] = i;
 
     if (req.params.id === '000000000000000000000000') {
+        if (req.params.area === 'area') flag = 1;
+        else flag = 2;
+    } else {
+        if (req.params.area === 'area') flag = 3;
+        else flag = 4;
+    }
+
+    if (flag === 1) {
         await Conteudo
         .find({ 
             'disciplina.id': { $gte: req.params.id },
-            area: { $eq: paramsArea },
+            area: { $ne: req.params.area },
             numeracao: { $in: paramsNumeracao }
         
         }, (err, conteudoEncontrado) => {
@@ -220,11 +223,11 @@ listarConteudoPersonalizado = async (req, res) => {
             .json({success: true, data: conteudoEncontrado})
             })
             .catch(err => console.log(err))
-    } else {
+    } else if (flag === 2) {
         await Conteudo
         .find({ 
-            'disciplina.id': { $eq: req.params.id },
-            area: { $eq: paramsArea },
+            'disciplina.id': { $gte: req.params.id },
+            area: { $eq: req.params.area },
             numeracao: { $in: paramsNumeracao }
         
         }, (err, conteudoEncontrado) => {
@@ -239,14 +242,68 @@ listarConteudoPersonalizado = async (req, res) => {
                 .status(404)
                 .json({success: false, error: "Conteúdo não encontrado."})
             }
-    
+
             console.log(req.params);
             
             return res
             .status(200)
             .json({success: true, data: conteudoEncontrado})
-        })
-        .catch(err => console.log(err))
+            })
+            .catch(err => console.log(err))
+    } else if (flag === 3) {
+        await Conteudo
+        .find({ 
+            'disciplina.id': { $eq: req.params.id },
+            area: { $ne: req.params.area },
+            numeracao: { $in: paramsNumeracao }
+        
+        }, (err, conteudoEncontrado) => {
+            if (err) {
+                return res
+                .status(400)
+                .json({success: false, error: err})
+            }
+            
+            if (!conteudoEncontrado) {
+                return res
+                .status(404)
+                .json({success: false, error: "Conteúdo não encontrado."})
+            }
+
+            console.log(req.params);
+            
+            return res
+            .status(200)
+            .json({success: true, data: conteudoEncontrado})
+            })
+            .catch(err => console.log(err))
+    } else if (flag === 4) {
+        await Conteudo
+        .find({ 
+            'disciplina.id': { $eq: req.params.id },
+            area: { $eq: req.params.area },
+            numeracao: { $in: paramsNumeracao }
+        
+        }, (err, conteudoEncontrado) => {
+            if (err) {
+                return res
+                .status(400)
+                .json({success: false, error: err})
+            }
+            
+            if (!conteudoEncontrado) {
+                return res
+                .status(404)
+                .json({success: false, error: "Conteúdo não encontrado."})
+            }
+
+            console.log(req.params);
+            
+            return res
+            .status(200)
+            .json({success: true, data: conteudoEncontrado})
+            })
+            .catch(err => console.log(err))
     }
         
 }
