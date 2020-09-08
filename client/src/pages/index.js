@@ -14,7 +14,9 @@ import ActivityList from "./Activities/ActivityList"
 import ActivityInsert from "./Activities/ActivityInsert"
 import ActivityUpdate from "./Activities/ActivityUpdate"
 
+import Home from "./Student/Home"
 import Classroom from "./Student/Classroom"
+import Dashboard from "./Student/Dashboard"
 import Desempenho from "./Student/Desempenho"
 import Library from "./Student/Library"
 import StudyPlan from "./Student/StudyPlan"
@@ -40,7 +42,9 @@ export {
     ActivityInsert,
     ActivityUpdate,
 
+    Home,
     Classroom, 
+    Dashboard,
     Desempenho, 
     StudyPlan, 
     Library,

@@ -44,6 +44,16 @@ const DeleteButton = withStyles((theme) => ({
     }
 }))(Button);
 
+const YellowButton = withStyles((theme) => ({
+    root: {
+        color: theme.palette.getContrastText("#ffc010"),
+        backgroundColor: "#ffc010",
+        '&:hover': {
+            backgroundColor: "#daa40d",
+        },
+    },
+}))(Button);
+
 function CreateButton(props) {
     const {title, url} = props;
     return (
@@ -105,6 +115,7 @@ const MyAvatar = styled(Avatar) ({
 export {
     AddButton,
     CreateButton,
+    YellowButton,
     DeleteButton,
     MyContainer,
     MyTextField,

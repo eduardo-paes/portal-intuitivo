@@ -11,11 +11,12 @@ import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import Typography from '@material-ui/core/Typography';
 
-
 const styles = (theme) => ({
   root: {
     margin: 0,
     padding: theme.spacing(2),
+    minWidth: "18.75rem",
+    maxWidth: "31.25rem",
   },
 });
 
@@ -31,7 +32,8 @@ const DialogTitle = withStyles(styles)((props) => {
 const DialogContent = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
-    width: "31.25rem"
+    minWidth: "18.75rem",
+    maxWidth: "31.25rem",
   },
 }))(MuiDialogContent);
 
@@ -39,6 +41,9 @@ const DialogActions = withStyles((theme) => ({
   root: {
     margin: 0,
     padding: theme.spacing(1),
+    alignContent: "flex-end",
+    minWidth: "18.75rem",
+    maxWidth: "31.25rem",
   },
 }))(MuiDialogActions);
 

@@ -1,58 +1,75 @@
-import React, {Component} from 'react'
+import React, { useState } from 'react'
 import api from '../../api'
 
 // Formulário
 import UserForm from "../../components/Form/UserForm"
 // Função de validação dos campos do formulário
 import validate from "../../components/Form/Validation/FormValidateUser"
+import { useEffect } from 'react';
 
 // -- Hook Principal
-class UsersUpdate extends Component {
-    // Definição do construtor
-    constructor(props) {
-        super(props)
-        this.state = {
-            id: this.props.match.params.id,
-            nome: "",
-            email: "",
-            acesso: "",
-            erros: [],
-            url: "",
-            foto: {}
-        }
+export default function UsersUpdate (props) {
+    const initialState = {
+        id: props.match.params.id,
+        nome: "",
+        email: "",
+        acesso: "",
+        erros: [],
+        url: "",
+        foto: {}
     }
+    const [usuario, setUsuario] = useState(initialState);
+
+    useEffect(() => {
+        const abortController = new AbortController();
+        async function fetchUsuarioAPI () {
+            const response = await api.encUsuarioPorID(props.match.params.id);
+            const value = response.data.data;
+    
+            setUsuario(preValue => ({
+                ...preValue,
+                nome: value.nome, 
+                email: value.email, 
+                acesso: value.acesso, 
+                senha: value.senha, 
+                url: `http://localhost:5000/uploads/profile/${props.match.params.id}.jpeg`
+            }));
+        }
+        fetchUsuarioAPI();
+        return abortController.abort();
+    }, [props.match.params.id])
 
     // Guarda o dado vindo do input
-    handleChange = async event => {
+    async function handleChange (event) {
         const {name, value} = event.target;
-        this.setState({
-            ...this.state,
+        setUsuario(preValue => ({
+            ...preValue,
             [name]: value
-        });
+        }));
     }
 
     // Guarda o dado vindo do upload da imagem de perfil
-    handleUpload = async event => {
+    async function handleUpload (event) {
         const file = event.target.files[0];
-        this.setState({
-            ...this.state,
+        setUsuario(preValue => ({
+            ...preValue,
             url: URL.createObjectURL(file),
             foto: file
-        });
+        }));
     }
 
     // Salva as mudanças no banco
-    handleUpdateUser = async () => {
+    async function handleUpdateUser () {
         // Recebe os campos coletados
-        const {id, nome, email, acesso, senha, foto} = this.state
-        const error = validate(this.state)
-        
-        this.setState({
-            ...this.state,
+        const error = validate(usuario)
+        setUsuario(preValue => ({
+            ...preValue,
             erros: error
-        });
+        }));
 
         if (error.validated) {
+            const {id, nome, email, acesso, senha, foto} = usuario;
+
             // Cria usuário atualizado
             const usuarioAtualizado = {
                 nome,
@@ -77,34 +94,17 @@ class UsersUpdate extends Component {
         }
     }
 
-    componentDidMount = async () => {
-        const {id} = this.state;
-        const usuario = await api.encUsuarioPorID(id);
-        
-        this.setState({
-            nome: usuario.data.data.nome, 
-            email: usuario.data.data.email, 
-            acesso: usuario.data.data.acesso, 
-            senha: usuario.data.data.senha, 
-            url: `http://localhost:5000/uploads/profile/${id}.jpeg`
-        });
-    }
-
     // Formulário - Atualização
-    render() {
-        return (
-            <div>
-                <UserForm
-                    data={this.state}
-                    handleChange={this.handleChange}
-                    handleUpload={this.handleUpload}
-                    onSubmit={this.handleUpdateUser}
-                    typeForm="Atualizar"
-                    edit={true}
-                /> 
-            </div>
-        )
-    }
+    return (
+        <div>
+            <UserForm
+                data={usuario}
+                handleChange={handleChange}
+                handleUpload={handleUpload}
+                onSubmit={handleUpdateUser}
+                typeForm="Atualizar"
+                edit={true}
+            /> 
+        </div>
+    );
 }
-
-export default UsersUpdate

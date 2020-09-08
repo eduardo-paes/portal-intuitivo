@@ -7,6 +7,7 @@ import {List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/
 import {makeStyles} from "@material-ui/core/styles";
 
 // -- Material UI: Icon
+import Dashboard from '@material-ui/icons/Dashboard';
 import StudyPlan from '@material-ui/icons/LibraryBooks';
 import Library from '@material-ui/icons/MenuBook';
 import Classroom from '@material-ui/icons/Class';
@@ -55,6 +56,11 @@ function ItemsDrawer(props) {
     const classes = useStyles();
     const itens = {
         aluno: [
+            {
+                text: "Dashboard",
+                icon: <Dashboard/>,
+                onClick: () => history.push("/dashboard")
+            },
             {
                 text: "Plano de Estudos",
                 icon: <StudyPlan/>,
