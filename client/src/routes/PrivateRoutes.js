@@ -12,8 +12,8 @@ const RoutesPrivate = ({ component: Component, ...rest }) => {
             {...rest}
             render={
                 (props) => token
-                ? <Component {...props}/>
-                : <Redirect to="/login"/>
+                    ? <Component {...props}/>
+                    : <Redirect to="/login"/>
             }
         />
     )
@@ -23,24 +23,36 @@ const RoutesPrivate = ({ component: Component, ...rest }) => {
 const ConditionalRoute = ({ component: Component, type, ...rest }) => {
     const {token} = useContext(StoreContext);
     const access = token.accessType;
-
+    let validation = true;
     let defaultURL = "/";
 
+    // Verifica se o tipo de acesso é correto
     if (access === "Professor") {
         defaultURL = "/controle-conteudo";
     } else if (access === "Administrador") {
         defaultURL = "/controle-usuario";
-        type === "Professor" && (type = "Administrador")
-        
+        (type === "Professor") && (type = "Administrador")
+    }
+
+    // Verifica se o usuário que está tentando acessar o perfil é o propietário do mesmo
+    if (rest.location.pathname.includes("perfil")) {
+        let checkID = rest.location.pathname.split("/").map(item => {
+            return item;
+        })
+        if (checkID[2] === token.userID) {
+            validation = true;
+        } else {
+            validation = false;
+        }
     }
 
     return (
         <Route
             {...rest}
             render={
-                (props) => (access === type)
-                ? <Component {...props}/>
-                : <Redirect to={defaultURL}/>
+                (props) => (access === type && validation)
+                    ? <Component {...props}/>
+                    : <Redirect to={defaultURL}/>
             }
         />
     )

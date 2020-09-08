@@ -28,6 +28,7 @@ import TopBar from "./Drawer/TopBar"
 import DialogForm from "./Dialogs/DialogForm"
 import PDFPreviewDialog from "./Dialogs/PDFPreviewDialog"
 import CustomDialog from "./Dialogs/CustomDialog"
+import SlideDialog from "./Dialogs/SlideDialog"
 
 // -- Editor
 import TextEditor from "./Editor/Editor"
@@ -64,6 +65,7 @@ export {
     PDFPreviewDialog,
     DialogForm,
     CustomDialog,
+    SlideDialog,
 
     TextEditor,
     UploadContent,

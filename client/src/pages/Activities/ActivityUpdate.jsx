@@ -29,8 +29,7 @@ const initialState = {
 export default function ActivityUpdate(props) {
     const [atividade, setAtividade] = useState(initialState);
     const {token} = useContext(StoreContext);
-    const {history} = props;
-    const isRevision = history.location.pathname.includes("revisao");
+    const isRevision = props.history.location.pathname.includes("revisao");     // Verifica se é uma atividade do tipo Revisão
     
     // -- Carrega atividade do banco
     async function fetchAtividadeAPI() {
@@ -114,7 +113,7 @@ export default function ActivityUpdate(props) {
                 .atualizarAtividade(props.match.params.id, atividadeAtualizada)
                 .then(res => {
                     // Limpa os campos
-                    if (res.status === 201) {
+                    if (res.status === 200) {
                         window.alert("Atividade atualizada com sucesso.")
                     }
                 })
@@ -149,7 +148,7 @@ export default function ActivityUpdate(props) {
                 .atualizarRevisao(props.match.params.id, novaRevisao)
                 .then(res => {
                     // Limpa os campos
-                    if (res.status === 201) {
+                    if (res.status === 200) {
                         window.alert("Avaliação Diagnóstica atualizada com sucesso.")
                     }
                 })

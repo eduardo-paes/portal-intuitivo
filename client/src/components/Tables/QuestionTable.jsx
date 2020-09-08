@@ -263,7 +263,7 @@ export default function QuestionTable(props) {
     const [selected, setSelected] = useState([]);
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const {data, setQuestion, setHidden, tableSelection, setData} = props;
+    const {data, setQuestion, setHidden, tableSelection, setData, selectedQuestions} = props;
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -325,7 +325,9 @@ export default function QuestionTable(props) {
     }, [selected])
 
     useEffect(() => {
-        tableSelection && setSelected([]);
+        if (tableSelection) {
+            setSelected(selectedQuestions);
+        }
         // eslint-disable-next-line
     }, [data])
 
