@@ -149,6 +149,7 @@ encDisciplinaPorID = async (req, res) => {
 
 // Função para listar os disciplinas contidos no banco
 listarDisciplinas = async (req, res) => {
+    
     await Disciplina.find({}).sort({nome: 1})
         .then((listaDisciplinas, err) => {
             // Verificação de erros
@@ -169,12 +170,11 @@ listarDisciplinas = async (req, res) => {
 listarDisciplinasPorDiaDaSemana = async (req, res) => {
     
     await Disciplina.find({
-        id: { $ne: '000000000000000000000000' },
-        diaSemana: { $eq: req.params.dia }
+        diaSemana: req.params.dia
     })
-        .then((err, listaDisciplinas) => {
+        .then((listaDisciplinas, err) => {
+            
             // Verificação de erros
-            console.log(req);
             if (err) {
                 return res.status(400).json({ success: false, error: err })
             }

@@ -26,7 +26,7 @@ export const listarDisciplinas = () => api.get("/configuracoes/disciplina");
 export const atualizarDisciplina = (id, disciplinaAtualizada) => api.put(`/configuracoes/disciplina/${id}`, disciplinaAtualizada);
 export const removerDisciplina = id => api.delete(`/configuracoes/disciplina/${id}`);
 export const encDisciplinaPorID = id => api.get(`/configuracoes/disciplina/${id}`);
-export const listarDisciplinasPorDiaDaSemana = (id, dia) => api.get(`/plano-estudo/disciplina/${id}/${dia}`);
+export const listarDisciplinasPorDiaDaSemana = (dia) => api.get(`/plano-estudo/disciplina/${dia}`);
 
 // -- Funções relacionadas à Tag
 export const inserirTag = novaTag => api.post("/configuracoes/tag", novaTag);
