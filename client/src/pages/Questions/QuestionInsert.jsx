@@ -5,7 +5,7 @@ import { QuestionForm } from "../../components";
 import validate from "../../components/Form/Validation/FormValidateQuestion";
 
 // -- Função Principal
-function QuestionInsert() {
+export default function QuestionInsert() {
     // -- Dados iniciais da constante Questão
     const initialQuestionState = {
         disciplina: {
@@ -108,5 +108,3 @@ function QuestionInsert() {
         />
     );
 };
-
-export default QuestionInsert;

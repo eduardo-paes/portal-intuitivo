@@ -75,7 +75,6 @@ export default function ActivityForm (props) {
 
     // -- CARREGA QUESTÕES POR ÁREA DO CONHECIMENTO
     async function fetchQuestoesPorAreaAPI() {
-        console.log(atividade.areaConhecimento)
         if (atividade.areaConhecimento !== '') {
             setQuestoes([]);
             const response = await api.listarQuestaoPorArea(atividade.areaConhecimento);
@@ -88,7 +87,7 @@ export default function ActivityForm (props) {
     // --- Funções de Alteração no formulário
     // =================================
     // -- Salva alterações do formulário
-    function handleChange (event) {
+    async function handleChange (event) {
         const {name, value} = event.target;
         setAtividade(preValue => ({
             ...preValue,
@@ -97,7 +96,7 @@ export default function ActivityForm (props) {
     }
 
     // -- Salva Disciplina/Tópico e Área do Conhecimento juntos
-    function handleSubjectChange (field, id, nome, area) {
+    async function handleSubjectChange (field, id, nome, area) {
         if (field === "disciplina") {
             setAtividade(preValue => ({
                 ...preValue,
@@ -264,7 +263,7 @@ export default function ActivityForm (props) {
                             label="Tópico"
                             name="topico"
                             disabled={(topicos.length === 0 ? true : false) || (revisao)}
-                            value={atividade.topico.nome ? atividade.topico.nome : ""}
+                            value={(atividade.disciplina.nome !== '') ? (topicos.length > 0 ? atividade.topico.nome : '') : ''}
                             error={atividade.erros.topico ? true : false}>
                                 { topicos !== undefined &&
                                     topicos.length >= 1 

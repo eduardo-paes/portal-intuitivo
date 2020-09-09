@@ -4,7 +4,7 @@ import { QuestionForm } from "../../components";
 import validate from "../../components/Form/Validation/FormValidateQuestion";
 
 // -- Função Principal
-function QuestionUpdate(props) {
+export default function QuestionUpdate(props) {
     // -- Dados iniciais da constante Questão
     const initialQuestionState = {
         disciplina: {
@@ -55,6 +55,7 @@ function QuestionUpdate(props) {
                 tipoResposta: value.tipoResposta,
                 dataCriacao: value.dataCriacao,
                 dataEdicao: value.dataEdicao,
+                tags: value.tags,
                 erros: []
             }));
             if (value.tipoResposta === "multiplaEscolha") {
@@ -111,6 +112,8 @@ function QuestionUpdate(props) {
                 autor
             }
 
+            console.log(questaoAtualizada)
+
             // Inserção pela API
             await api
                 .atualizarQuestao(props.match.params.id, questaoAtualizada)
@@ -135,5 +138,3 @@ function QuestionUpdate(props) {
         />
     );
 };
-
-export default QuestionUpdate;

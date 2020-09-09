@@ -45,8 +45,3 @@ html, body, #root {
     text-decoration: none;
 	cursor: pointer;
 }
-
-.MuiButton-outlined	.MuiButton-outlinedPrimary .MuiButton-root {
-    background-color: #fff;
-    color: #fff;
-}

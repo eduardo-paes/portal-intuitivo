@@ -84,6 +84,9 @@ atualizarQuestao = async (req, res) => {
         questaoEncontrada.tipoResposta = questaoAtualizada.tipoResposta
         questaoEncontrada.resposta = questaoAtualizada.resposta
         questaoEncontrada.dataEdicao = questaoAtualizada.dataEdicao
+        questaoEncontrada.tags = questaoAtualizada.tags
+
+        console.log(questaoEncontrada)
 
         // Salva alterações
         questaoEncontrada
