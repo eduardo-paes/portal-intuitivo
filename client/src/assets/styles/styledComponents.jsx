@@ -76,8 +76,12 @@ const MyTextField = styled(TextField)({
 });
 
 const MyContainer = styled(Container)({
+    justifyContent: "center",
+    justifySelf: "center",
+    justifyItems: "center",
     padding: "1.2rem 1.875rem 1.2rem 1.875rem", 
-    margin: "0"
+    margin: "0",
+    maxWidth: "none",
 });
 
 const MyTypography = styled(Typography)({
@@ -107,7 +111,6 @@ const MyCardContent = styled(CardContent)({
 });
 
 const MyAvatar = styled(Avatar) ({
-    marginLeft: "3.75rem",
     width: "9.375rem",
     height: "9.375rem"
 })

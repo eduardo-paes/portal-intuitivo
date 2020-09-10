@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
@@ -29,9 +29,7 @@ Funcionalidade pendente:
 
 // Botão para visualização do conteúdo
 function ContentVisualization (props) {
-
     const { open, setOpen, setId, setTitulo, ID, nome } = props;
-
     return (
         <IconButton 
             aria-label="visualization" 
@@ -48,17 +46,15 @@ function ContentVisualization (props) {
 }
 
 // Botão de Atualização
-class UpdateContent extends Component {
+function UpdateContent (props) {
     // Retorna o botão
-    render() {
-        return (
-            <RouterLink to={"/controle-conteudo/update/" + this.props.id}>
-                <IconButton aria-label="update" color="primary" size="small">
-                    <EditIcon/>
-                </IconButton>
-            </RouterLink>
-        )
-    }
+    return (
+        <RouterLink to={"/controle-conteudo/update/" + props.id}>
+            <IconButton aria-label="update" color="primary" size="small">
+                <EditIcon/>
+            </IconButton>
+        </RouterLink>
+    )
 }
 
 // Botão de Remoção

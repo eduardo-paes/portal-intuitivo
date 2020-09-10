@@ -39,25 +39,6 @@ export default function UsersUpdate (props) {
         return abortController.abort();
     }, [props.match.params.id])
 
-    // Guarda o dado vindo do input
-    async function handleChange (event) {
-        const {name, value} = event.target;
-        setUsuario(preValue => ({
-            ...preValue,
-            [name]: value
-        }));
-    }
-
-    // Guarda o dado vindo do upload da imagem de perfil
-    async function handleUpload (event) {
-        const file = event.target.files[0];
-        setUsuario(preValue => ({
-            ...preValue,
-            url: URL.createObjectURL(file),
-            foto: file
-        }));
-    }
-
     // Salva as mudanças no banco
     async function handleUpdateUser () {
         // Recebe os campos coletados
@@ -96,15 +77,12 @@ export default function UsersUpdate (props) {
 
     // Formulário - Atualização
     return (
-        <div>
-            <UserForm
-                data={usuario}
-                handleChange={handleChange}
-                handleUpload={handleUpload}
-                onSubmit={handleUpdateUser}
-                typeForm="Atualizar"
-                edit={true}
-            /> 
-        </div>
+        <UserForm
+            data={usuario}
+            onSubmit={handleUpdateUser}
+            setUsuario={setUsuario}
+            typeForm="Atualizar"
+            edit={true}
+        /> 
     );
 }

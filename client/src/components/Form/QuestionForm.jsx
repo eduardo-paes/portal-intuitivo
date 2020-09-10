@@ -47,11 +47,13 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function QuestionForm (props) {
+export default function QuestionForm (props) {
     const classes = useStyles();
     const {title, questao, setQuestao, opcoes, setOpcoes, saveQuestion, initialOptionState} = props;
     const [listaDisciplinas, setListaDisciplinas] = useState([]);
+    const [selectedTag, setSelectedTag] = useState([]);
     const [topico, setTopico] = useState([]);
+    const [count, setCount] = useState(1);
 
     // -- Carrega as Disciplinas existentes no banco
     useEffect(() => {
@@ -77,8 +79,20 @@ function QuestionForm (props) {
     // -- Confirma mudanças realizadas em questao
     useEffect(() => {
         setQuestao(questao);
+        if (count) {
+            if (questao.tags.length > 0 && selectedTag.length === 0) {
+                setSelectedTag(questao.tags);
+                setCount(count-1)
+            }
+        }
         // eslint-disable-next-line
     }, [questao]);
+
+    // -- Confirma mudanças realizadas em questao
+    useEffect(() => {
+        handleTag();
+        // eslint-disable-next-line
+    }, [selectedTag]);
 
     // -- Carrega os Tópicos, por Disciplina, existentes no banco
     useEffect(() => {
@@ -86,8 +100,7 @@ function QuestionForm (props) {
         if (questao.disciplina.id !== '') {
             async function fetchTopicoAPI() {
                 const response = await api.listarConteudoPorDisciplina(questao.disciplina.id);
-                const value = response.data.data;
-                setTopico(value);
+                setTopico(response.data.data);
             }
             fetchTopicoAPI()
         }
@@ -106,6 +119,14 @@ function QuestionForm (props) {
         }));
     }
 
+    // -- Salvar dados de tags
+    function handleTag () {
+        setQuestao(preValue => ({
+            ...preValue,
+            tags: selectedTag
+        }));
+    }
+
     // -- Salvar dados do enunciado da questão
     function handleEnunciado(value) {
         setQuestao(preValue => ({
@@ -119,14 +140,6 @@ function QuestionForm (props) {
         setQuestao(preValue => ({
             ...preValue,
             padraoResposta: value
-        }));
-    }
-
-    // -- Salvar dados do enunciado da questão
-    function handleTags(value) {
-        setQuestao(preValue => ({
-            ...preValue,
-            tags: value
         }));
     }
 
@@ -259,7 +272,7 @@ function QuestionForm (props) {
                             label="Tópico"
                             name="topico"
                             disabled={topico.length === 0 ? true : false}
-                            value={questao.topico.nome}
+                            value={(questao.disciplina.nome !== '') ? (topico.length > 0 ? questao.topico.nome : '') : ''}
                             error={questao.erros.topico ? true : false}>
 
                             { topico !== undefined &&
@@ -277,8 +290,9 @@ function QuestionForm (props) {
 
                 <ChipsArray
                     disciplinaID={questao.disciplina.id}
-                    tags={questao.tags}
-                    setTags={handleTags}
+                    selectedTag={selectedTag}
+                    setSelectedTag={setSelectedTag}
+                    handleTag={handleTag}
                 />
 
             </section>
@@ -390,5 +404,3 @@ function QuestionForm (props) {
         </MyContainer> 
     )
 }
-
-export default QuestionForm;

@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: theme.spacing(1),
-    marginLeft: theme.spacing(7.5),
   },
 }));
 
@@ -35,11 +34,11 @@ export default function UploadButtons(props) {
         />
       <label htmlFor="contained-button-photo">
         <Button
-        variant="contained"
-        color="primary"
-        component="span"
-        className={classes.button}
-        startIcon={<PhotoCamera />}
+          variant="contained"
+          color="primary"
+          component="span"
+          className={classes.button}
+          startIcon={<PhotoCamera />}
       >
         Upload
         </Button>

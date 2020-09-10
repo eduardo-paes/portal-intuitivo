@@ -31,13 +31,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ChipsArray(props) {
-    const {disciplinaID, setTags} = props;
+    const { disciplinaID, selectedTag, setSelectedTag, handleTag } = props;
     const classes = useStyles();
     const initialTag = [{key: 0, nome: 'Tags', selected: true}];                            // Valor inicial da lista de tags
     const emptyTagMessage = "Selecione as tags desejadas no botão ao lado."                 // Mensagem para quando não há tags selecionadas
-    const [selectedTag, setSelectedTag] = useState([]);                                     // Lista de tags selecionadas
     const [tagList, setTagList] = useState(initialTag);                                     // Lista de tags disponíveis
-
+    const [count, setCount] = useState(1);
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -56,13 +55,39 @@ export default function ChipsArray(props) {
             fetchTagAPI()
         }
         return abortController.abort();
+        // eslint-disable-next-line
     }, [disciplinaID])
 
-    // Salva tags selecionadas no objeto principal
     useEffect(() => {
-        setTags(selectedTag)
-    // eslint-disable-next-line
-    }, [selectedTag])
+        if (count) {
+            // console.log(selectedTag)
+            if (selectedTag.length > 0 && tagList.length > 0) {
+                let arrayAux = [];
+                selectedTag.map(tag => {
+                    return setTagList(chips => 
+                    chips.map(chip => {
+                        // console.log(tag, chip._id)
+                            if (chip._id === tag) {
+                                arrayAux.push(chip);
+                                return {...chip, selected: true}
+                            } else {
+                                return chip;
+                            }
+                        })
+                    );
+                })
+                setSelectedTag(arrayAux);
+                setCount(count-1)
+            }
+        }
+        // eslint-disable-next-line
+    }, [tagList])
+
+    // -- Confirma mudanças realizadas em Tag
+    useEffect(() => {
+        handleTag();
+        // eslint-disable-next-line
+    }, [selectedTag]);
 
     // Função callback após adicionar/remover uma tag
     const handleTagSelection = (index) => {
@@ -96,13 +121,14 @@ export default function ChipsArray(props) {
 
     return (
         <Grid container={true} className={classes.root}>
+            {/* -- Tags -- */}
             <Grid item={true} xs={12} sm={9} className={smScreen ? classes.tagGroup : 'none'}>
                 {selectedTag.length === 0
                 ? <p className={classes.emptyTagMessage}>{emptyTagMessage}</p>
                 : selectedTag.map((tag, index) => {
                     return (
                         <Chip
-                            key={tag.key}
+                            key={index}
                             label={tag.nome}
                             onDelete={handleDelete(tag)}
                             className={classes.chip}
@@ -110,6 +136,7 @@ export default function ChipsArray(props) {
                     );
                 })}
             </Grid>
+            {/* -- Button -- */}
             <Grid item={true} xs={12} sm={3} className={smScreen ? classes.buttomGroup : 'none'}>
                 <SplitButton
                     data={tagList}
