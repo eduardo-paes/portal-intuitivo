@@ -9,19 +9,18 @@ import {
   makeStyles,
   Button,
   Checkbox,
-  FormControlLabel,
   Dialog,
   AppBar,
   Toolbar,
   IconButton,
   List,
-  Slide
+  Slide,
+  ListItem
 } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useEffect } from "react";
 import api from "../../api";
 import PDFViewer from "../../components/PDFViewer/PDFViewer";
-import { TextEditor } from "../../components";
 import CloseIcon from '@material-ui/icons/Close';
 
 // function getTheCurrentDay() {
@@ -66,10 +65,10 @@ function getTheWeek() {
   let month = new Date().getMonth();
 
   let today = new Date(year, month, day);
-  let firstday = new Date(2020, 0, 1, 0, 0, 0, 0);
+  let firstday = new Date(2020, 8, 10, 0, 0, 0, 0);
   let week = Math.trunc(((((today.valueOf() - firstday.valueOf())/1000)/3600)/24)/7);
 
-  return week;
+  return week+1;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -91,6 +90,14 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginLeft: theme.spacing(2),
     flex: 1,
+  },
+  finalizedButton: {
+    display: 'flex',
+    alignContent: 'center',
+    justifyContent: 'center'
+  },
+  material: {
+    width: '100%'
   }
 }));
 
@@ -101,18 +108,17 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function StudyPlan (props) {
 
   const classes = useStyles();
-  // const [ content, setContent ] = useState({ conteudos: [] });
-  const [ listaDisciplina, setListaDisciplina ] = useState([]);
-  const [ question, setQuestion ] = useState({
-    enunciado: '',
-    resposta: '',
-    tipoResposta: ''
-  });
-  const optionsLetter = ["A)", "B)", "C)", "D)", "E)", "F)", "G)"]
-  let flag = 0;
+  const [ content, setContent ] = useState([]);
+  const [ disciplinas, setDisciplinas ] = useState([]);
+
+  const dia = new Date().getDay();
+  const diasDaSemana = [ "Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado" ]
   
   const [open, setOpen] = React.useState(false);
-  const [check, setCheck] = React.useState(false);
+  const [checkME, setCheckME] = React.useState(false);
+  const [checkEF, setCheckEF] = React.useState(false);
+  const [checkVA, setCheckVA] = React.useState(false);
+  const [checkEA, setCheckEA] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -122,70 +128,53 @@ function StudyPlan (props) {
     setOpen(false);
   };
 
-  const handleFinalized = () => {
+  const handleFinalizedME = () => {
     setOpen(false);
-    setCheck(true);
+    setCheckME(true);
   };
   
-  // -- Carrega as Disciplinas existentes no banco
+  // -- Carrega as Disciplinas do dia correspondente
   useEffect(() => {
 
-    let dia = new Date().getDay();
-    let unmounted = false;
-
-    if (flag === 0) {
-      async function fetchDisciplinaAPI() {
-        const response = await api.listarDisciplinasPorDiaDaSemana(dia);
-        const value = response.data.data;
-        console.log(value);
-        if (!unmounted) {
-          setListaDisciplina(value);
-        }  
-      }
-      fetchDisciplinaAPI()
-      console.log(listaDisciplina);
-    }
-    
-    return () => {unmounted = true};
-    // eslint-disable-next-line   
-  }, [flag]);
-
-  // -- Carrega questão selecionada pelo usuário
-  useEffect(() => {
     const abortController = new AbortController();
-    async function fetchAPI() {
-      const response = await api.encQuestaoPorID('5f4e56947a76e70f5b9090eb');
-      const value = response.data.data;
-      // eslint-disable-next-line
-      setQuestion ({
-          enunciado: value.enunciado,
-          resposta: value.resposta,
-          tipoResposta: value.tipoResposta,
-      })
-    }
-    fetchAPI();
-    return abortController.abort();
-}, []);
 
-  // useEffect(() => {
-      
-  //   let area = 'area';
-  //   const abortController = new AbortController();
+   
+    async function fetchDisciplinaAPI() {
+      const response = await api.listarDisciplinasPorDiaDaSemana(dia);
+      const value = response.data.data;
+      setDisciplinas(value);
+    }
+    fetchDisciplinaAPI();
     
-  //   async function fetchConteudoAPI() {
-  //     const response = await api.listarConteudoPersonalizado();
-  //     console.log(response);
-  //     const value = response.data.data;
-  //     setContent({ conteudos: value });
-  //   }
-  //   fetchConteudoAPI();
-  //   return abortController.abort();
-  //   // eslint-disable-next-line
-  // }, []);
+    return abortController.abort();
+    // eslint-disable-next-line   
+  }, []);
+
+  // -- Carrega os tópicos do dia correspondente
+  useEffect(() => {
+    
+    let area = 'area';
+    var value = [];
+    const abortController = new AbortController();
+    // console.log(disciplinas)
+    
+    async function fetchConteudoAPI() {
+      for (let i = 0; i < disciplinas.length; ++i) {
+        const response = await api.listarConteudoPersonalizado(disciplinas[i]._id, area, getTheWeek());
+        // console.log(response);
+        if (response.data.data[0]) value[i] = response.data.data;
+      }
+      setContent(value);
+    }
+    fetchConteudoAPI();
+    return abortController.abort();
+    // eslint-disable-next-line
+  }, [disciplinas]);
 
 
   return (
     <MyContainer>
+      
       <header>
         <Grid container={true} spacing={3}>
           <Grid item={true} xs={12} sm={12}>
@@ -197,138 +186,85 @@ function StudyPlan (props) {
             <h3 className="heading-page">Estudo do dia</h3>
           </Grid>
           <Grid item={true} align="right" xs={6} lg={6} sm={6}>
-            <h3 className="heading-page">{"Semana " + getTheWeek()}</h3>
+            <h3 className="heading-page">{diasDaSemana[dia] + ", Semana " + getTheWeek()}</h3>
           </Grid>
         </Grid>
       </header>
       <Grid container={true} spacing={6}>
-        <Grid item={true} xs={12} lg={12} sm={12}>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header">
-                <Typography className={classes.heading}>Introdução à História</Typography>
-                <Typography className={classes.secondaryHeading}>História</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Grid container={true} spacing={6}>
-                <Grid item={true} xs={12} lg={12} sm={12}>
-                  <Accordion className={classes.root}>
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header">
-                        <FormControlLabel
-                          aria-label="Material de Estudo"
-                          onClick={(event) => event.stopPropagation()}
-                          onFocus={(event) => event.stopPropagation()}
-                          control={<Checkbox />}
-                          className={classes.heading}
-                          label="Material de Estudo"
-                        />
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <PDFViewer source={`http://localhost:5000/uploads/content/5f4d5ec1d4822a5ad40b16c4.pdf`}/>
-                    </AccordionDetails>
-                  </Accordion>  
-                </Grid>
-                <Grid item={true} xs={12} lg={12} sm={12}>
-                  <Accordion className={classes.root}>
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header">
-                        <FormControlLabel
-                          aria-label="Material de Estudo"
-                          onClick={(event) => event.stopPropagation()}
-                          onFocus={(event) => event.stopPropagation()}
-                          control={<Checkbox />}
-                          className={classes.heading}
-                          label="Exercício de Fixação"
-                        />
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Grid container={true} spacing={6}>
-                          <Grid item={true} xs={12} lg={12} sm={12}>
-                            <TextEditor 
-                              id="mostrarEnunciadoQuestao"
-                              text={question.enunciado}
-                              readOnly={true}
-                            />
-                          </Grid>
-                          <Grid item={true} xs={12} lg={12} sm={12}>
-                            { 
-                              (question.tipoResposta === "multiplaEscolha") 
-                                  && question.resposta.map((item, index) => {
-                                    return (
-                                      <div key={index} className="optionSection">
-                                        <Grid key={index} container={true} spacing={2}>
-                                              <Grid item={true} xs={1} sm={1} lg={1}>
-                                                <p className="optionsLetter">{optionsLetter[index]}</p>
-                                              </Grid>
-                                              <Grid item={true} xs={11} sm={11} lg={11}>
-                                                    <TextEditor 
-                                                        id="mostrarOpcoesQuestao"
-                                                        text={item.opcao}
-                                                        readOnly={true}
-                                                    />
-                                              </Grid>
-                                        </Grid>
-                                      </div>
-                                      );
-                                  })
-                            }
-                          </Grid>
+        {
+          content.map((row, index) => {
+            let topico = row[0].topico;
+            console.log(topico)
+            return (
+              <Grid key={index} item={true} xs={12} lg={12} sm={12}>
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header">
+                      <Typography className={classes.heading}>{topico}</Typography>
+                      <Typography className={classes.secondaryHeading}>{row[0].disciplina.nome}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid container={true} spacing={6}>
+                      <Grid item={true} xs={12} lg={12} sm={12}>
+                        <Grid item={true} xs={12} lg={12} sm={12}>
+                          <Checkbox disabled={true} checked={checkME}/>
+                          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+                            Material de Estudo
+                          </Button>
+                          <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+                            <AppBar className={classes.appBar}>
+                              <Toolbar>
+                                <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                                  <CloseIcon />
+                                </IconButton>
+                                <Typography variant="h6" className={classes.title}>
+                                  {topico}
+                                </Typography>
+                              </Toolbar>
+                            </AppBar>
+                            <Grid container={true} spacing={3}>
+                              <Grid item={true} xs={12} lg={12} sm={12} align='center'>
+                                <PDFViewer className={classes.material} source={`http://localhost:5000/uploads/content/${row[0]._id}.pdf`}/>
+                              </Grid>
+                              <Grid item={true} xs={12} lg={12} sm={12} align='center' >
+                                <Button autoFocus variant='contained' color="primary" onClick={handleFinalizedME}>
+                                    Finalizado
+                                </Button>
+                              </Grid>
+                            </Grid>
+                          </Dialog>
                         </Grid>
-                    </AccordionDetails>
-                  </Accordion>  
-                </Grid>
+                        <Grid item={true} xs={12} lg={12} sm={12}>
+                          <Checkbox disabled={true} checked={checkEF}/>
+                          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+                            Exercícios de Fixação
+                          </Button>
+                        </Grid>
+                        <Grid item={true} xs={12} lg={12} sm={12}>
+                          <Checkbox disabled={true} checked={checkVA}/>
+                          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+                            Vídeoaula
+                          </Button>
+                        </Grid>
+                        <Grid item={true} xs={12} lg={12} sm={12}>
+                          <Checkbox disabled={true} checked={checkEA}/>
+                          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+                            Exercícios de Aprofundamento 
+                          </Button>
+                        </Grid>
+                      </Grid>
+                      <Grid item={true} xs={12} lg={12} sm={12}>
+                      </Grid>
+                    </Grid>
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
-            </AccordionDetails>
-          </Accordion>
-        </Grid>
-        <Grid item={true} xs={12} lg={12} sm={12}>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header">
-                <Typography className={classes.heading}>Introdução à Química</Typography>
-                <Typography className={classes.secondaryHeading}>Química</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Grid container={true} spacing={6}>
-                <Grid item={true} xs={12} lg={12} sm={12}>
-                  <Checkbox disabled={true} checked={check}/>
-                  <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                    Material de Estudo
-                  </Button>
-                  <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-                    <AppBar className={classes.appBar}>
-                      <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-                          <CloseIcon />
-                        </IconButton>
-                        <Typography variant="h6" className={classes.title}>
-                          Introdução à Química
-                        </Typography>
-                        <Button autoFocus color="inherit" onClick={handleFinalized}>
-                          Finalizado
-                        </Button>
-                      </Toolbar>
-                    </AppBar>
-                    <List>
-                      <PDFViewer source={`http://localhost:5000/uploads/content/5f4d5ec1d4822a5ad40b16c4.pdf`}/>
-                    </List>
-                  </Dialog>
-                </Grid>
-                <Grid item={true} xs={12} lg={12} sm={12}>
-                </Grid>
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
-        </Grid>
+            )
+          })
+        }
+        
       </Grid>      
     </MyContainer>
   );
