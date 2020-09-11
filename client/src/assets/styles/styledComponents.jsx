@@ -3,7 +3,7 @@ import {Link as RouterLink} from 'react-router-dom';
 
 // -- Material UI
 import {withStyles, styled} from '@material-ui/core/styles';
-import {red, cyan} from '@material-ui/core/colors';
+import {red, cyan, green} from '@material-ui/core/colors';
 import {
     Avatar,
     Typography,
@@ -50,6 +50,16 @@ const YellowButton = withStyles((theme) => ({
         backgroundColor: "#ffc010",
         '&:hover': {
             backgroundColor: "#daa40d",
+        },
+    },
+}))(Button);
+
+const GreenButton = withStyles((theme) => ({
+    root: {
+        color: theme.palette.getContrastText(green[700]),
+        backgroundColor: green[500],
+        '&:hover': {
+            backgroundColor: green[700],
         },
     },
 }))(Button);
@@ -119,6 +129,7 @@ export {
     AddButton,
     CreateButton,
     YellowButton,
+    GreenButton,
     DeleteButton,
     MyContainer,
     MyTextField,

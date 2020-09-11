@@ -1,27 +1,9 @@
 import React, { useState } from "react";
-import {MyContainer} from "../../assets/styles/styledComponents"
-import {
-  Grid,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  makeStyles,
-  Button,
-  Checkbox,
-  Dialog,
-  AppBar,
-  Toolbar,
-  IconButton,
-  List,
-  Slide,
-  ListItem
-} from '@material-ui/core'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {MyContainer} from "../../assets/styles/styledComponents";
+import { Grid } from '@material-ui/core';
 import { useEffect } from "react";
 import api from "../../api";
-import PDFViewer from "../../components/PDFViewer/PDFViewer";
-import CloseIcon from '@material-ui/icons/Close';
+import ContentAccordion from "../../components/Accordions/ContentAccordion";
 
 // function getTheCurrentDay() {
 //   const today = new Date();
@@ -71,67 +53,14 @@ function getTheWeek() {
   return week+1;
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: '33.33%',
-    flexShrink: 0,
-  },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
-  },
-  appBar: {
-    position: 'relative',
-  },
-  title: {
-    marginLeft: theme.spacing(2),
-    flex: 1,
-  },
-  finalizedButton: {
-    display: 'flex',
-    alignContent: 'center',
-    justifyContent: 'center'
-  },
-  material: {
-    width: '100%'
-  }
-}));
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 function StudyPlan (props) {
 
-  const classes = useStyles();
+  let topico = [];
   const [ content, setContent ] = useState([]);
   const [ disciplinas, setDisciplinas ] = useState([]);
 
   const dia = new Date().getDay();
-  const diasDaSemana = [ "Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado" ]
-  
-  const [open, setOpen] = React.useState(false);
-  const [checkME, setCheckME] = React.useState(false);
-  const [checkEF, setCheckEF] = React.useState(false);
-  const [checkVA, setCheckVA] = React.useState(false);
-  const [checkEA, setCheckEA] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleFinalizedME = () => {
-    setOpen(false);
-    setCheckME(true);
-  };
+  const diaDaSemana = [ "Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado" ]
   
   // -- Carrega as Disciplinas do dia correspondente
   useEffect(() => {
@@ -140,7 +69,7 @@ function StudyPlan (props) {
 
    
     async function fetchDisciplinaAPI() {
-      const response = await api.listarDisciplinasPorDiaDaSemana(dia);
+      const response = await api.listarDisciplinasPorDiaDaSemana(dia - 1);
       const value = response.data.data;
       setDisciplinas(value);
     }
@@ -186,80 +115,17 @@ function StudyPlan (props) {
             <h3 className="heading-page">Estudo do dia</h3>
           </Grid>
           <Grid item={true} align="right" xs={6} lg={6} sm={6}>
-            <h3 className="heading-page">{diasDaSemana[dia] + ", Semana " + getTheWeek()}</h3>
+            <h3 className="heading-page">{diaDaSemana[dia] + ", Semana " + getTheWeek()}</h3>
           </Grid>
         </Grid>
       </header>
       <Grid container={true} spacing={6}>
         {
           content.map((row, index) => {
-            let topico = row[0].topico;
-            console.log(topico)
+            topico[index] = row[0].topico;
             return (
               <Grid key={index} item={true} xs={12} lg={12} sm={12}>
-                <Accordion>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header">
-                      <Typography className={classes.heading}>{topico}</Typography>
-                      <Typography className={classes.secondaryHeading}>{row[0].disciplina.nome}</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Grid container={true} spacing={6}>
-                      <Grid item={true} xs={12} lg={12} sm={12}>
-                        <Grid item={true} xs={12} lg={12} sm={12}>
-                          <Checkbox disabled={true} checked={checkME}/>
-                          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                            Material de Estudo
-                          </Button>
-                          <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-                            <AppBar className={classes.appBar}>
-                              <Toolbar>
-                                <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-                                  <CloseIcon />
-                                </IconButton>
-                                <Typography variant="h6" className={classes.title}>
-                                  {topico}
-                                </Typography>
-                              </Toolbar>
-                            </AppBar>
-                            <Grid container={true} spacing={3}>
-                              <Grid item={true} xs={12} lg={12} sm={12} align='center'>
-                                <PDFViewer className={classes.material} source={`http://localhost:5000/uploads/content/${row[0]._id}.pdf`}/>
-                              </Grid>
-                              <Grid item={true} xs={12} lg={12} sm={12} align='center' >
-                                <Button autoFocus variant='contained' color="primary" onClick={handleFinalizedME}>
-                                    Finalizado
-                                </Button>
-                              </Grid>
-                            </Grid>
-                          </Dialog>
-                        </Grid>
-                        <Grid item={true} xs={12} lg={12} sm={12}>
-                          <Checkbox disabled={true} checked={checkEF}/>
-                          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                            Exercícios de Fixação
-                          </Button>
-                        </Grid>
-                        <Grid item={true} xs={12} lg={12} sm={12}>
-                          <Checkbox disabled={true} checked={checkVA}/>
-                          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                            Vídeoaula
-                          </Button>
-                        </Grid>
-                        <Grid item={true} xs={12} lg={12} sm={12}>
-                          <Checkbox disabled={true} checked={checkEA}/>
-                          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                            Exercícios de Aprofundamento 
-                          </Button>
-                        </Grid>
-                      </Grid>
-                      <Grid item={true} xs={12} lg={12} sm={12}>
-                      </Grid>
-                    </Grid>
-                  </AccordionDetails>
-                </Accordion>
+                <ContentAccordion id={row[0]._id} topico={row[0].topico} disciplina={row[0].disciplina}/>
               </Grid>
             )
           })
