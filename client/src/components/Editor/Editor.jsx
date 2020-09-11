@@ -16,6 +16,7 @@ const editorConfig = {
 			'superscript',
 			'|',
             'MathType',
+            'ChemType',
             'specialCharacters',
             'imageUpload',
 			'undo',
@@ -53,7 +54,7 @@ function TextEditor (props) {
             optionType ? setText(position, data) : setText(data);
         }
     }
-    
+
     return (
         <div>
             <CKEditor

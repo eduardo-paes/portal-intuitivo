@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
@@ -22,17 +22,15 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
 // Botão de Atualização
-class UpdateUser extends Component {
+function UpdateUser (props) {
     // Retorna o botaão
-    render() {
-        return (
-            <RouterLink to={"/controle-usuario/update/" + this.props.id}>
-                <IconButton aria-label="update" color="primary" size="small">
-                    <EditIcon/>
-                </IconButton>
-            </RouterLink>
-        )
-    }
+    return (
+        <RouterLink to={"/controle-usuario/update/" + props.id}>
+            <IconButton aria-label="update" color="primary" size="small">
+                <EditIcon/>
+            </IconButton>
+        </RouterLink>
+    )
 }
 
 // Botão de Remoção
@@ -40,6 +38,7 @@ function DeleteUser(props) {
     function removing() {
         if (window.confirm(`Quer remover o usuário ${props.nome} permanentemente?`)) {
             api.removerUsuario(props.id)
+            props.setMount(preValue => ({...preValue, wasChanged: true}));
         }
     }
 
@@ -206,7 +205,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EnhancedTable(props) {
-    const usuarios = props.data;
+    const {usuarios, setMount} = props;
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('nome');
@@ -277,7 +276,7 @@ export default function EnhancedTable(props) {
 
                                                 <TableCell align="left">
                                                     <UpdateUser id={usuario._id}/>
-                                                    <DeleteUser id={usuario._id} nome={usuario.nome}/>
+                                                    <DeleteUser id={usuario._id} nome={usuario.nome} setMount={setMount}/>
                                                 </TableCell>
                                             </TableRow>
                                         );

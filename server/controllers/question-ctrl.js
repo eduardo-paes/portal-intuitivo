@@ -1,4 +1,15 @@
+const TagQuestaoCtrl = require("../controllers/tag&question-ctrl");
 const Questao = require('../models/question-model');
+const mongoose = require('mongoose');
+
+const TagQuestao = require('../models/tag&question-model');
+
+// Função para inserir tagQuestao no banco
+inserirTagQuestao = (tag, questao) => {
+    const body = { tagID: tag, questaoID: questao };
+    const novaTagQuestao = new TagQuestao(body);
+    return novaTagQuestao.save();
+}
 
 // Função para inserir questao no banco
 inserirQuestao = (req, res) => {
@@ -12,7 +23,7 @@ inserirQuestao = (req, res) => {
         })
     }
 
-    const novaQuestao = new Questao(body);
+    let novaQuestao = new Questao(body);
 
     // Verifica se dados não são nulos
     if (!novaQuestao) {
@@ -23,6 +34,19 @@ inserirQuestao = (req, res) => {
                 success: false, 
                 error: err
             });
+    }
+
+    // Inserir QuestaoTag
+    if (novaQuestao.tags.length > 0) {
+        novaQuestao._id = mongoose.Types.ObjectId();
+        let tqID, arrayTags = [];
+        // Insere as TQs
+        novaQuestao.tags.map(tagID => {
+            tqID = mongoose.Types.ObjectId();
+            arrayTags.push(tqID);
+            inserirTagQuestao(tagID, novaQuestao._id, tqID);
+        })
+        novaQuestao.tags = arrayTags;
     }
 
     // Salva nova questão
@@ -84,7 +108,16 @@ atualizarQuestao = async (req, res) => {
         questaoEncontrada.tipoResposta = questaoAtualizada.tipoResposta
         questaoEncontrada.resposta = questaoAtualizada.resposta
         questaoEncontrada.dataEdicao = questaoAtualizada.dataEdicao
-        questaoEncontrada.tags = questaoAtualizada.tags
+        questaoEncontrada.padraoResposta = questaoAtualizada.padraoResposta
+        
+        if (questaoEncontrada.tags === questaoAtualizada.tags) {
+            questaoEncontrada.tags = questaoAtualizada.tags
+        } else {
+            let differentTags = questaoAtualizada.tags.filter(newTag => {
+                return questaoAtualizada.tags !== questaoEncontrada.tags;
+            })
+
+        }
 
         console.log(questaoEncontrada)
 

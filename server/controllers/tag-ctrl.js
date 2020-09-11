@@ -147,7 +147,6 @@ encTagPorID = async (req, res) => {
 
 // Função para listar os tags contidos no banco
 listarTags = async (req, res) => {
-    const results = 
     await Tag.aggregate([{
         $lookup: {
             from: "disciplinas",

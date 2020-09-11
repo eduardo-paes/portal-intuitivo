@@ -5,6 +5,10 @@ const Questao = require("./question-model.js");
 const Tag = require("./tag-model.js");
 
 const TagQuestao = new Schema({
+    _id: {
+        type: Schema.Types.ObjectId,
+        required: true,
+    },
     tagID: {
         type: Schema.Types.ObjectId, 
         ref: 'Tag'

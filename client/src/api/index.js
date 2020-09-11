@@ -36,6 +36,20 @@ export const removerTag = id => api.delete(`/configuracoes/tag/${id}`);
 export const encTagPorID = id => api.get(`/configuracoes/tag/${id}`);
 export const listarTagsPorDisciplina = id => api.get(`/configuracoes/tags/${id}`);
 
+// -- Funções relacionadas à TagQuestao
+export const inserirTagQuestao = novaTagQuestao => api.post("/tag-questao", novaTagQuestao);
+export const listarTagQuestao = () => api.get("/tag-questao");
+export const atualizarTagQuestao = (id, tagQuestaoAtualizada) => api.put(`/tag-questao/${id}`, tagQuestaoAtualizada);
+export const removerTagQuestao = id => api.delete(`/tag-questao/${id}`);
+export const encTagQuestaoPorID = id => api.get(`/tag-questao/${id}`);
+
+// -- Funções relacionadas à AnoLetivo
+export const inserirAnoLetivo = novaAnoLetivo => api.post("/configuracoes/ano-letivo", novaAnoLetivo);
+export const listarAnoLetivo = () => api.get("/configuracoes/ano-letivo");
+export const atualizarAnoLetivo = (id, anoLetivoAtualizado) => api.put(`/configuracoes/ano-letivo/${id}`, anoLetivoAtualizado);
+export const removerAnoLetivo = id => api.delete(`/configuracoes/ano-letivo/${id}`);
+export const encAnoLetivoPorID = id => api.get(`/configuracoes/ano-letivo/${id}`);
+
 // -- Funções relacionadas à Questão
 export const inserirQuestao = novaQuestao => api.post("/controle-questao", novaQuestao);
 export const listarQuestao = () => api.get("/controle-questao");
@@ -88,6 +102,18 @@ const apis = {
     removerTag,
     encTagPorID,
     listarTagsPorDisciplina,
+    // Tag-Questão
+    inserirTagQuestao,
+    listarTagQuestao,
+    atualizarTagQuestao,
+    removerTagQuestao,
+    encTagQuestaoPorID,
+    // Ano Letivo
+    inserirAnoLetivo,
+    listarAnoLetivo,
+    atualizarAnoLetivo,
+    removerAnoLetivo,
+    encAnoLetivoPorID,
     // Questão
     inserirQuestao,
     listarQuestao,

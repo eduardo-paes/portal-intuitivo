@@ -20,12 +20,10 @@ const useStyles = makeStyles({
 });
 
 export default function SplitButton(props) {
-    const classes = useStyles();
-
     const {data, setTag} = props;
-    const [options, setOptions] = useState(data);
-    
+    const classes = useStyles();
     const anchorRef = useRef(null);
+    const [options, setOptions] = useState(data);
     const [open, setOpen] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -33,12 +31,7 @@ export default function SplitButton(props) {
         setOptions(data);
     }, [data])
 
-    // Ao clicar numa opção 2
-    const handleClick = () => {
-        console.info(`You clicked ${options[selectedIndex].label}`);
-    };
-
-    // Ao clicar numa opção 1
+    // Ao clicar numa opção
     const handleMenuItemClick = (event, value, index) => {
         setTag(value);
         setSelectedIndex(index);
@@ -61,7 +54,7 @@ export default function SplitButton(props) {
     return (
         <div className={classes.lgScreen}>
             <ButtonGroup variant="contained" color="primary" ref={anchorRef} disabled={options[0].nome === "Tags" ? true : false} aria-label="split button">
-                <Button onClick={handleClick}>{options[selectedIndex].nome}</Button>
+                <Button>Tags</Button>
                 <Button
                     color="primary"
                     size="small"
@@ -85,7 +78,7 @@ export default function SplitButton(props) {
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MenuList id="split-button-menu">
                                     {options.map((option, index) => (
-
+                                        (option.nome !== undefined) &&
                                         <MenuItem
                                             key={option.key}
                                             selected={index === selectedIndex}

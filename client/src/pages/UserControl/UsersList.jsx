@@ -6,30 +6,41 @@ import {UserTable} from "../../components"
 import {CreateButton, MyContainer} from "../../assets/styles/styledComponents"
 
 function UsersList() {
-    const [user, setUser] = useState({
-        usuarios: []
+    const [usuario, setUsuario] = useState([])
+    const [mount, setMount] = useState({
+        isMounted: true,
+        wasChanged: false
     })
 
+    async function fetchAPI () {
+        let response = await api.listarUsuarios();
+        setUsuario(response.data.data);
+    }
+
     useEffect(() => {
-        let unmounted = false;
-        async function fetchAPI () {
-            let response = await api.listarUsuarios();
-
-            if (!unmounted) {
-                setUser({ usuarios: response.data.data })
-            }
+        const abortController = new AbortController();
+        if (mount.isMounted) {
+            fetchAPI();
+            setMount(preValue => ({...preValue, isMounted: false}))
         }
-        fetchAPI();
-        return () => {unmounted = true};
-    }, [user]);
+        return abortController.abort();
+    // eslint-disable-next-line
+    }, []);
 
-    const {usuarios} = user;
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (mount.wasChanged) {
+            fetchAPI();
+            setMount(preValue => ({...preValue, wasChanged: false}))
+        }
+        return abortController.abort();
+    }, [mount]);
 
     // Retorna a Tabela
     return (
         <MyContainer>
             <h1 className="heading-page">Controle de Usuário</h1>
-            <UserTable data={usuarios}/>
+            <UserTable usuarios={usuario} setMount={setMount}/>
             <CreateButton title="Registrar" url="/controle-usuario/create"/>
         </MyContainer>
     )

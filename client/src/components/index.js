@@ -33,6 +33,9 @@ import SlideDialog from "./Dialogs/SlideDialog"
 // -- Editor
 import TextEditor from "./Editor/Editor"
 
+// -- Date
+import DatePicker from "./Calendar/DatePicker"
+
 // -- Upload Content
 import UploadContent from './Upload/UploadContent'
 
@@ -68,6 +71,7 @@ export {
     SlideDialog,
 
     TextEditor,
+    DatePicker,
     UploadContent,
     QuestionCard
 }

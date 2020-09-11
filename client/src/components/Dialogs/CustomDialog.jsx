@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { TextEditor } from "../";
 import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -55,46 +54,42 @@ export default function CustomDialog(props) {
     setOpen(false);
   };
 
+  const check = (value) => {
+    let aux = value.includes("math");
+    console.log(aux)
+  };
+
   return (
-    <div>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
-        <DialogTitle id="customized-dialog-title">
-            Visualizar Questão
-        </DialogTitle>
-        <DialogContent dividers>
-          <TextEditor 
-            id="mostrarEnunciadoQuestao"
-            text={enunciado}
-            readOnly={true}
-          />
-          { 
-            (tipoResposta === "multiplaEscolha") 
-                && resposta.map((item, index) => {
-                  return (
-                    <div key={index} className="optionSection">
-                      <Grid key={index} container={true} spacing={2}>
-                            <Grid item={true} xs={1} sm={1} lg={1}>
-                              <p className="optionsLetter">{optionsLetter[index]}</p>
-                            </Grid>
-                            <Grid item={true} xs={11} sm={11} lg={11}>
-                                  <TextEditor 
-                                      id="mostrarOpcoesQuestao"
-                                      text={item.opcao}
-                                      readOnly={true}
-                                  />
-                            </Grid>
-                      </Grid>
-                    </div>
-                    );
-                })
-          }
-        </DialogContent>
-        <DialogActions>
-            <Button autoFocus onClick={handleClose} color="primary">
-                Voltar
-            </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
+      <DialogTitle id="customized-dialog-title">
+          Visualizar Questão
+      </DialogTitle>
+      <DialogContent dividers>
+        <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: enunciado}} />
+        { 
+          (tipoResposta === "multiplaEscolha") 
+              && resposta.map((item, index) => {
+                check(item.opcao)
+                return (
+                  <div key={index} className="optionSection">
+                    <Grid key={index} container={true} spacing={2} justify="center">
+                          <Grid item={true} xs={1} sm={1} lg={1}>
+                            <p className="optionsLetter">{optionsLetter[index]}</p>
+                          </Grid>
+                          <Grid item={true} xs={11} sm={11} lg={11}>
+                            <div id="mostrarOpcoesQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: item.opcao }} />
+                          </Grid>
+                    </Grid>
+                  </div>
+                  );
+              })
+        }
+      </DialogContent>
+      <DialogActions>
+          <Button autoFocus onClick={handleClose} color="primary">
+              Voltar
+          </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

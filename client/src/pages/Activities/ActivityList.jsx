@@ -22,6 +22,17 @@ export default function ActivityList() {
     const [revisoes, setRevisoes] = useState([]);
     const [revision, setRevision] = useState(false);
 
+    const [mount, setMount] = useState({
+        activity: {
+            isMounted: true,
+            wasChanged: false
+        },
+        revision: {
+            isMounted: true,
+            wasChanged: false
+        }
+    })
+
     async function fetchAtividadesAPI() {
         const response = await api.listarAtividades();
         if (response.status === 200) {
@@ -39,20 +50,50 @@ export default function ActivityList() {
     // -- Lista as atividades do banco
     useEffect(() => {
         const abortController = new AbortController();
-        if (!revision) {
-            fetchAtividadesAPI()
-        }
+        fetchAtividadesAPI()
         return abortController.abort();
-    }, [atividades, revision]);
+    }, []);
 
-    // -- Lista as revisões do banco
+    // -- Atualização apartir de montagem
     useEffect(() => {
         const abortController = new AbortController();
-        if (revision) {
-            fetchRevisoesAPI()
+        if (mount.revision.wasChanged) {
+            fetchRevisoesAPI();
+            setMount(preValue => ({
+                ...preValue, 
+                revision: { 
+                    isMounted: mount.revision.isMounted, 
+                    wasChanged: false
+                }
+            }));
         }
+        if (mount.activity.wasChanged) {
+            fetchAtividadesAPI();
+            setMount(preValue => ({
+                ...preValue, 
+                activity: { 
+                    isMounted: mount.activity.isMounted, 
+                    wasChanged: false
+                }
+            }));
+        } 
         return abortController.abort();
-    }, [revisoes, revision]);
+    }, [mount]);
+
+    // -- Lista as revisões do banco
+    const initialRevisionLoad = () => {
+        setRevision(true);
+        if (mount.revision.isMounted) {
+            fetchRevisoesAPI()
+            setMount(preValue => ({
+                ...preValue, 
+                revision: { 
+                    isMounted: false, 
+                    wasChanged: mount.revision.wasChanged 
+                }
+            }));
+        }
+    }
 
     return (
         <MyContainer>
@@ -63,7 +104,7 @@ export default function ActivityList() {
                     </Grid>
                     <Grid item={true} xs={12} sm={6} lg={6} className={classes.activityMode}>
                         <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-                            <Button onClick={() => setRevision(true)}>ADs</Button>
+                            <Button onClick={() => initialRevisionLoad()}>ADs</Button>
                             <Button onClick={() => setRevision(false)}>Atividades</Button>
                         </ButtonGroup>
                     </Grid>
@@ -73,7 +114,7 @@ export default function ActivityList() {
             <section id="dadosListaAtividades">
                 <Grid container={true} spacing={2} justify="center">
                     <Grid  item={true} xs={12} sm={12} lg={12}>
-                        <ActivityTable data={revision ? revisoes : atividades} revision={revision}/>
+                        <ActivityTable data={revision ? revisoes : atividades} revision={revision} setMount={setMount}/>
                         <CreateButton title="Inserir Atividade" url="/controle-atividade/create"/>
                     </Grid>
                 </Grid>
