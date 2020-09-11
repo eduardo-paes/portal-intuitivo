@@ -184,6 +184,7 @@ listarDisciplinasPorDiaDaSemana = async (req, res) => {
                     .status(404)
                     .json({ success: false, error: "Dados não encontrados." })
             }
+
             // Caso não haja erros, retorna lista de tags
             return res.status(200).json({ success: true, data: listaDisciplinas })
         }).catch(err => console.log(err));

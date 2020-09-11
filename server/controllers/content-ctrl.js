@@ -215,8 +215,6 @@ listarConteudoPersonalizado = async (req, res) => {
                 .status(404)
                 .json({success: false, error: "Conteúdo não encontrado."})
             }
-
-            console.log(req.params);
             
             return res
             .status(200)
@@ -242,8 +240,6 @@ listarConteudoPersonalizado = async (req, res) => {
                 .status(404)
                 .json({success: false, error: "Conteúdo não encontrado."})
             }
-
-            console.log(req.params);
             
             return res
             .status(200)
@@ -269,8 +265,6 @@ listarConteudoPersonalizado = async (req, res) => {
                 .status(404)
                 .json({success: false, error: "Conteúdo não encontrado."})
             }
-
-            console.log(req.params);
             
             return res
             .status(200)
@@ -296,8 +290,6 @@ listarConteudoPersonalizado = async (req, res) => {
                 .status(404)
                 .json({success: false, error: "Conteúdo não encontrado."})
             }
-
-            console.log(req.params);
             
             return res
             .status(200)
