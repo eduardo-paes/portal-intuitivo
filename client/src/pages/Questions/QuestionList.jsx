@@ -21,18 +21,37 @@ function QuestionInsert() {
     const [questoes, setQuestoes] = useState([]);
     const [questaoSelecionada, setQuestaoSelecionada] = useState('');
     const [hiddenDialog, setHiddenDialog] = useState(false);
+    const [mount, setMount] = useState({
+        isMounted: true,
+        wasChanged: false
+    })
+
+    async function fetchQuestoesAPI() {
+        const response = await api.listarQuestao();
+        const value = response.data.data;
+        setQuestoes(value);
+    }
 
     // -- Lista as questões do banco
     useEffect(() => {
         const abortController = new AbortController();
-        async function fetchQuestoesAPI() {
-            const response = await api.listarQuestao();
-            const value = response.data.data;
-            setQuestoes(value);
+        if (mount.isMounted) {
+            fetchQuestoesAPI()
+            setMount(preValue => ({ ...preValue, isMounted:false }));
         }
-        fetchQuestoesAPI()
         return abortController.abort();
-    }, [questoes]);
+    // eslint-disable-next-line
+    }, []);
+
+    // -- Lista as questões do banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (mount.wasChanged) {
+            fetchQuestoesAPI()
+            setMount(preValue => ({ ...preValue, wasChanged:false }));
+        }
+        return abortController.abort();
+    }, [mount]);
 
     // -- Observa mudanças em questão selecionada
     useEffect(() => {
@@ -44,7 +63,7 @@ function QuestionInsert() {
             <h1 className="heading-page">Banco de Questões</h1>
             <Grid container={true} className={classes.root} spacing={2} justify="center">
                 <Grid id="cabecalhoListaQuestao" item={true} xs={12} sm={12} lg={12}>
-                    <QuestionTable data={questoes} setQuestion={setQuestaoSelecionada} setHidden={setHiddenDialog} tableSelection={false}/>
+                    <QuestionTable data={questoes} setMount={setMount} setQuestion={setQuestaoSelecionada} setHidden={setHiddenDialog} tableSelection={false}/>
                     <CreateButton title="Inserir Questão" url="/controle-questoes/create"/>
                 </Grid>
             </Grid>

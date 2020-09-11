@@ -51,6 +51,7 @@ export default function ChipsArray(props) {
                 setTagList(value.map((item, index) => {
                     return { ...item, key: index, selected: false }
                 }));
+                console.log(value);
             }
             fetchTagAPI()
         }
@@ -60,7 +61,6 @@ export default function ChipsArray(props) {
 
     useEffect(() => {
         if (count) {
-            // console.log(selectedTag)
             if (selectedTag.length > 0 && tagList.length > 0) {
                 let arrayAux = [];
                 selectedTag.map(tag => {
@@ -119,22 +119,30 @@ export default function ChipsArray(props) {
         handleTagSelection(chipToDelete.key);
     };
 
-    return (
-        <Grid container={true} className={classes.root}>
-            {/* -- Tags -- */}
-            <Grid item={true} xs={12} sm={9} className={smScreen ? classes.tagGroup : 'none'}>
-                {selectedTag.length === 0
-                ? <p className={classes.emptyTagMessage}>{emptyTagMessage}</p>
-                : selectedTag.map((tag, index) => {
-                    return (
+    // Retorna as Tags em tela
+    function returnTags () {
+        if (selectedTag.length === 0) {
+            return <p className={classes.emptyTagMessage}>{emptyTagMessage}</p>;
+        } else {
+            return selectedTag.map((tag, index) => {
+                return (
+                    tag.nome !== undefined &&
                         <Chip
                             key={index}
                             label={tag.nome}
                             onDelete={handleDelete(tag)}
                             className={classes.chip}
                         />
-                    );
-                })}
+                );
+            })
+        }
+    }
+
+    return (
+        <Grid container={true} className={classes.root}>
+            {/* -- Tags -- */}
+            <Grid item={true} xs={12} sm={9} className={smScreen ? classes.tagGroup : 'none'}>
+                {returnTags()}
             </Grid>
             {/* -- Button -- */}
             <Grid item={true} xs={12} sm={3} className={smScreen ? classes.buttomGroup : 'none'}>

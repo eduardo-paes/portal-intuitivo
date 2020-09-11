@@ -4,12 +4,16 @@ const Schema = mongoose.Schema;
 const Disciplina = require("./subject-model.js");
 
 const AnoLetivo = new Schema({
-    anoInicio: {
+    dataInicio: {
         type: Date, 
         required: true
     },
-    anoFim: {
+    dataFim: {
         type: Date, 
+        required: true
+    },
+    contagem: {
+        type: Number,
         required: true
     }
 });

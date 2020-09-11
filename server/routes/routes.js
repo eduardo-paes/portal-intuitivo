@@ -16,6 +16,8 @@ const UsuarioCtrl = require("../controllers/user-ctrl");
 const ConteudoCtrl = require("../controllers/content-ctrl");
 const DisciplinaCtrl = require("../controllers/subject-ctrl");
 const TagCtrl = require("../controllers/tag-ctrl");
+const TagQuestaoCtrl = require("../controllers/tag&question-ctrl");
+const AnoLetivoCtrl = require("../controllers/school-year-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
 const AtividadeCtrl = require("../controllers/activity-ctrl");
 const RevisaoCtrl = require("../controllers/revision-ctrl");
@@ -51,6 +53,20 @@ router.delete("/configuracoes/tag/:id", TagCtrl.removerTag);
 router.get("/configuracoes/tag/:id", TagCtrl.encTagPorID);
 router.get("/configuracoes/tag", TagCtrl.listarTags);
 router.get("/configuracoes/tags/:id", TagCtrl.listarTagsPorDisciplina);
+
+// TAG QUESTÃO -- Definição dos métodos para cada rota da tag
+router.post("/tag-questao", TagQuestaoCtrl.inserirTagQuestao);
+router.put("/tag-questao/:id", TagQuestaoCtrl.atualizarTagQuestao);
+router.delete("/tag-questao/:id", TagQuestaoCtrl.removerTagQuestao);
+router.get("/tag-questao/:id", TagQuestaoCtrl.encTagQuestaoPorID);
+router.get("/tag-questao", TagQuestaoCtrl.listarTagQuestao);
+
+// ANO LETIVO -- Definição dos métodos para cada rota da ano letivo
+router.post("/configuracoes/ano-letivo", AnoLetivoCtrl.inserirAnoLetivo);
+router.put("/configuracoes/ano-letivo/:id", AnoLetivoCtrl.atualizarAnoLetivo);
+router.delete("/configuracoes/ano-letivo/:id", AnoLetivoCtrl.removerAnoLetivo);
+router.get("/configuracoes/ano-letivo/:id", AnoLetivoCtrl.encAnoLetivoPorID);
+router.get("/configuracoes/ano-letivo", AnoLetivoCtrl.listarAnoLetivo);
 
 // QUESTÃO -- Definição dos métodos para cada rota de questão
 router.post("/controle-questao", QuestaoCtrl.inserirQuestao);

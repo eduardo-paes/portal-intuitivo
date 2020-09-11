@@ -109,6 +109,7 @@ Editor.defaultConfig = {
 			'outdent',
 			'|',
 			'MathType',
+			'ChemType',
 			'specialCharacters',
 			'blockQuote',
 			'insertTable',

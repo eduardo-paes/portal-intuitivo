@@ -36,33 +36,13 @@ function UpdateQuestion(props) {
 
 // Botão de Atualização
 function ShowQuestion(props) {
-    const {id, setQuestion, setHidden} = props;
-    const [clicked, setClicked] = useState(false);
-    let question;
-
-    // -- Carrega questão selecionada pelo usuário
-    useEffect(() => {
-        const abortController = new AbortController();
-        if (clicked) {
-            async function fetchQuestaoAPI() {
-                const response = await api.encQuestaoPorID(id);
-                const value = response.data.data;
-                // eslint-disable-next-line
-                question = {
-                    enunciado: value.enunciado,
-                    resposta: value.resposta,
-                    tipoResposta: value.tipoResposta,
-                }
-                setQuestion(question);
-                setHidden(true);
-            }
-            fetchQuestaoAPI();
-        }
-        return abortController.abort();
-    }, [clicked]);
-
+    const { setQuestion, setHidden, question } = props;
+    const choosingQuestion = () => {
+        setQuestion(question);
+        setHidden(true);
+    }
     return (
-        <IconButton aria-label="update" color="primary" size="small" onClick={() => setClicked(!clicked)}>
+        <IconButton aria-label="update" color="primary" size="small" onClick={() => choosingQuestion()}>
             <VisibilityIcon/>
         </IconButton>
     )
@@ -73,6 +53,7 @@ function DeleteQuestion(props) {
     function removing() {
         if (window.confirm(`Tem certeza que quer remover esta questão permanentemente?`)) {
             api.removerQuestao(props.id)
+            props.setMount(preValue => ({...preValue, wasChanged: true}));
         }
     }
 
@@ -91,13 +72,36 @@ function DeleteQuestion(props) {
 
 // -- Funções auxiliares para Ordenação
 function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
+
+    if (orderBy === 'topico.nome') {
+        if (b.topico.nome < a.topico.nome) {
+            return -1;
+        }
+        if (b.topico.nome > a.topico.nome) {
+            return 1;
+        }
+        return 0;
+    } 
+    
+    else if (orderBy === 'disciplina.nome') {
+        if (b.disciplina.nome < a.disciplina.nome) {
+            return -1;
+        }
+        if (b.disciplina.nome > a.disciplina.nome) {
+            return 1;
+        }
+        return 0;
     }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
+    
+    else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }  
 }
 
 function getComparator(order, orderBy) {
@@ -126,7 +130,7 @@ const headCells = [
         id: 'topico.nome',
         label: 'Topico'
     }, {
-        id: 'tipoQuestao',
+        id: 'tipoResposta',
         label: 'Tipo'
     }, {
         id: 'dataCriacao',
@@ -139,7 +143,7 @@ const headCells = [
 
 const phoneHeadCells = [
     {
-        id: 'topicoNome',
+        id: 'topico.nome',
         label: 'Topico'
     }, {
         id: 'funcoes',
@@ -263,7 +267,7 @@ export default function QuestionTable(props) {
     const [selected, setSelected] = useState([]);
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const {data, setQuestion, setHidden, tableSelection, setData, selectedQuestions} = props;
+    const {data, setQuestion, setHidden, tableSelection, setData, selectedQuestions, setMount} = props;
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -398,9 +402,9 @@ export default function QuestionTable(props) {
                                                 {!smScreen && <TableCell className={classes.row} align="left">{dataCriacao}</TableCell>}
 
                                                 <TableCell align="left">
-                                                    <ShowQuestion id={row._id} setQuestion={setQuestion} setHidden={setHidden}/>
+                                                    <ShowQuestion id={row._id} question={row} setQuestion={setQuestion} setHidden={setHidden}/>
                                                     {!tableSelection && <UpdateQuestion id={row._id}/>}
-                                                    {!tableSelection && <DeleteQuestion id={row._id}/>}
+                                                    {!tableSelection && <DeleteQuestion id={row._id} setMount={setMount}/>}
                                                 </TableCell>
                                             </TableRow>
                                         );

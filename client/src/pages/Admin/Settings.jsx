@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { MyContainer, MyTextField } from "../../assets/styles/styledComponents"
-import { DisTable, TagTable } from "../../components"
+import { DisTable, TagTable, DatePicker } from "../../components"
 import api from '../../api'
 
 // Material-UI
@@ -13,7 +13,7 @@ import {
     AccordionDetails
 } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     buttons: {
@@ -26,12 +26,12 @@ const useStyles = makeStyles((theme) => ({
     group: {
         textAlign: "center"
     },
-    sectionTag: {
+    section: {
         marginTop: theme.spacing(2),
     }
 }));
 
-const initialState = {
+const initialSubjectState = {
     nome: "",
     diaSemana: '',
     areaConhecimento: ''
@@ -42,46 +42,102 @@ const initialTagState = {
     disciplinaID: ''
 }
 
-function Settings(props) {
+const initialYearState = {
+    dataInicio: new Date(),
+    dataFim: new Date(),
+    contagem: ''
+}
+
+export default function Settings(props) {
     const classes = useStyles();
-    const [listaDisciplina, setListaDisciplina] = useState([]);     // Disciplinas do Banco
-    const [listaTag, setListaTag] = useState([]);                   // Tags do Banco
-    const [disciplina, setDisciplina] = useState(initialState);     // Constante para armazenamento da DISCIPLINA
-    const [tag, setTag] = useState(initialTagState)                 // Constante para armazenamento da TAG
-    const [subjectID, setEditSubject] = useState(null);             // Constante para verificar se há edição em DISCIPLINA
-    const [tagID, setEditTag] = useState(null);                     // Constante para verificar se há edição em TAG
+    // -->
+    const [listaDisciplina, setListaDisciplina] = useState([]);             // Disciplinas do Banco
+    const [listaTag, setListaTag] = useState([]);                           // Tags do Banco
+    const [listaAnoLetivo, setListaAnoLetivo] = useState([]);               // AnoLetivo do Banco
+    // -->
+    const [disciplina, setDisciplina] = useState(initialSubjectState);      // Constante para armazenamento da DISCIPLINA
+    const [tag, setTag] = useState(initialTagState)                         // Constante para armazenamento da TAG
+    const [anoLetivo, setAnoLetivo] = useState(initialYearState)            // Constante para armazenamento da ANOLETIVO
+    // -->
+    const [subjectID, setEditSubject] = useState(null);                     // Constante para verificar se há edição em DISCIPLINA
+    const [tagID, setEditTag] = useState(null);                             // Constante para verificar se há edição em TAG
+    // -->
     const [mount, setMount] = useState({
-        disciplina: true,
-        tag: true
+        disciplina: false,
+        isMountedSubject: true,
+        tag: false,
+        isMountedTag: true,
+        anoLetivo: false,
+        isMountedYear: true
     })
-    
+
+    // -- API Fetchs
     // Lista DISCIPLINAS em tela
-    useEffect(() => {
-        const abortController = new AbortController();
-        async function fetchDisciplinaAPI() {
-            let response = await api.listarDisciplinas();
-            setListaDisciplina(response.data.data);
-        }
-        fetchDisciplinaAPI();
-        setMount(preValue => ({...preValue, disciplina: false}));
-        return abortController.abort();
-    }, [mount.disciplina]);
+    async function fetchDisciplinaAPI() {
+        let response = await api.listarDisciplinas();
+        setListaDisciplina(response.data.data);
+    }
 
     // Lista TAGS em tela
+    async function fetchTagAPI() {
+        let response = await api.listarTags();
+        setListaTag(response.data.data);
+    }
+
+    // Lista ANO LETIVO em tela
+    async function fetchYearAPI() {
+        let response = await api.listarAnoLetivo();
+        if (response.data.data.length) {
+            setListaAnoLetivo(response.data.data);
+        }
+    }
+    
+    // Observa mudanças no conteúdo de listagem - Disciplina
     useEffect(() => {
         const abortController = new AbortController();
-        async function fetchTagAPI() {
-            let response = await api.listarTags();
-            let value = response.data.data;
-            setListaTag(value);
+        setMount(mount);
+
+        // Caso haja mudança em disciplina
+        if (mount.disciplina) {
+            fetchDisciplinaAPI();
+            setMount(preValue => ({...preValue, disciplina: false}));
         }
-        fetchTagAPI();
-        setMount(preValue => ({...preValue, tag: false}));
+
+        // Caso haja mudança em tag
+        if (mount.tag) {
+            fetchTagAPI();
+            setMount(preValue => ({...preValue, tag: false}));
+        }
         return abortController.abort();
-    }, [mount.tag]);
+    }, [mount])
+
+    // Carregamento Inicial - Disciplina
+    const initialSubjectLoad = () => {
+        if (mount.isMountedSubject) {
+            fetchDisciplinaAPI();
+            setMount(preValue => ({...preValue, isMountedSubject: false}));
+        }
+    }
+
+    // Carregamento Inicial - Tags
+    const initialTagLoad = () => {
+        if (mount.isMountedTag) {
+            fetchTagAPI();
+            setMount(preValue => ({...preValue, isMountedTag: false}));
+            initialSubjectLoad();
+        }
+    }
+
+    // Carregamento Inicial - Ano Letivo
+    const initialYearLoad = () => {
+        if (mount.isMountedYear) {
+            fetchYearAPI();
+            setMount(preValue => ({...preValue, isMountedYear: false}));
+        }
+    }
 
     // Função para pegar os valores do formulário
-    const handleChange = event => {
+    const handleSubjectChange = event => {
         const {name, value} = event.target;
         setDisciplina(preValue => ({
             ...preValue,
@@ -99,13 +155,14 @@ function Settings(props) {
     }
 
     // Guarda nova disciplina no banco
-    async function saveChange() {
+    async function saveSubjectChange() {
         await api
             .inserirDisciplina(disciplina)
             .then(res => {
+                console.log(disciplina)
                 // Limpa os campos
                 if (res.status === 201) {
-                    setDisciplina(initialState);
+                    setDisciplina(initialSubjectState);
                     setMount(preValue => ({...preValue, disciplina: true}));
                 }
             })
@@ -113,7 +170,6 @@ function Settings(props) {
 
     // Guarda nova tag no banco
     async function saveTagChange() {
-        console.log(tag)
         await api
             .inserirTag(tag)
             .then(res => {
@@ -125,17 +181,28 @@ function Settings(props) {
             })
     }
 
+    // Guarda ano letivo no banco
+    async function saveYearChange() {
+        await api
+            .inserirAnoLetivo(anoLetivo)
+            .then(res => {
+                // Limpa os campos
+                if (res.status === 201) {
+                    setMount(preValue => ({...preValue, anoLetivo: true}));
+                }
+            })
+    }
+
     // Guarda disciplina atualizada no banco
-    async function editChange() {
+    async function editSubjectChange() {
         await api
             .atualizarDisciplina(subjectID, disciplina)
             .then(res => {
-                console.log(disciplina);
                 // Limpa os campos
-                if (res.status === 201) {
-                    setDisciplina(initialState);
-                    setMount(preValue => ({...preValue, disciplina: true}));
+                if (res.status === 200) {
+                    setDisciplina(initialSubjectState);
                     setEditSubject(null);
+                    setMount(preValue => ({...preValue, disciplina: true}));
                 }
             })
     }
@@ -146,10 +213,22 @@ function Settings(props) {
             .atualizarTag(tagID, tag)
             .then(res => {
                 // Limpa os campos
-                if (res.status === 201) {
+                if (res.status === 200) {
                     setTag(initialTagState);
-                    setMount(preValue => ({...preValue, tag: true}));
                     setEditTag(null);
+                    setMount(preValue => ({...preValue, tag: true}));
+                }
+            })
+    }
+
+    // Guarda ano letivo atualizado no banco
+    async function editYearChange() {
+        await api
+            .atualizarYear(tagID, tag)
+            .then(res => {
+                // Limpa os campos
+                if (res.status === 200) {
+                    setMount(preValue => ({...preValue, anoLetivo: true}));
                 }
             })
     }
@@ -162,6 +241,7 @@ function Settings(props) {
                     <Accordion>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
+                            onClick={() => initialSubjectLoad()}
                             aria-controls="panel1a-content"
                             id="panel1a-header">
                             <h2 className="heading-page">Gerenciar Disciplinas</h2>
@@ -177,7 +257,7 @@ function Settings(props) {
                                         name="nome"
                                         type="text"
                                         value={disciplina.nome}
-                                        onChange={handleChange}/>
+                                        onChange={handleSubjectChange}/>
 
                                     <MyTextField
                                         id="campoDia"
@@ -186,7 +266,7 @@ function Settings(props) {
                                         label="Dia da Semana"
                                         name="diaSemana"
                                         value={disciplina.diaSemana}
-                                        onChange={handleChange}>
+                                        onChange={handleSubjectChange}>
                                         <MenuItem value="1">Segunda-feira</MenuItem>
                                         <MenuItem value="2">Terça-feira</MenuItem>
                                         <MenuItem value="3">Quarta-feira</MenuItem>
@@ -201,7 +281,7 @@ function Settings(props) {
                                         label="Área do Conhecimento"
                                         name="areaConhecimento"
                                         value={disciplina.areaConhecimento ? disciplina.areaConhecimento : ""}
-                                        onChange={handleChange}>
+                                        onChange={handleSubjectChange}>
                                             <MenuItem value="Ciências Humanas">Ciências Humanas</MenuItem>
                                             <MenuItem value="Ciências da Natureza">Ciências da Natureza</MenuItem>
                                             <MenuItem value="Linguagens">Linguagens</MenuItem>
@@ -214,7 +294,7 @@ function Settings(props) {
                                             variant="outlined"
                                             type="submit"
                                             color="secondary"
-                                            onClick={() => setDisciplina(initialState)}>
+                                            onClick={() => setDisciplina(initialSubjectState)}>
                                             Limpar
                                         </Button>
                                         <Button
@@ -222,7 +302,7 @@ function Settings(props) {
                                             variant="outlined"
                                             type="submit"
                                             color="primary"
-                                            onClick={subjectID ? editChange : saveChange}>
+                                            onClick={subjectID ? editSubjectChange : saveSubjectChange}>
                                             Salvar
                                         </Button>
                                     </div>
@@ -232,17 +312,19 @@ function Settings(props) {
                                     <DisTable 
                                         pushSubject={setDisciplina}
                                         setID={setEditSubject}
-                                        data={listaDisciplina}/>
+                                        data={listaDisciplina}
+                                        setMount={setMount}/>
                                 </Grid>
                             </Grid>
                         </AccordionDetails>
                     </Accordion>
             </section>
             
-            <section id="gerenciarTag" className={classes.sectionTag}>
+            <section id="gerenciarTag" className={classes.section}>
                     <Accordion>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
+                            onClick={() => initialTagLoad()}
                             aria-controls="panel1a-content"
                             id="panel1a-header">
                             <h2 className="heading-page">Gerenciar Tags</h2>
@@ -298,6 +380,7 @@ function Settings(props) {
                                         pushTag={setTag}
                                         setTagID={setEditTag}
                                         data={listaTag}
+                                        setMount={setMount}
                                     />
                                 </Grid>
                             </Grid>
@@ -305,8 +388,76 @@ function Settings(props) {
                     </Accordion>
             </section>
             
+            <section id="gerenciarAnoLetivo" className={classes.section}>
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            onClick={() => initialYearLoad()}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header">
+                            <h2 className="heading-page">Gerenciar Ano Letivo</h2>
+                        </AccordionSummary>
+
+                        <AccordionDetails>
+                            <Grid container={true} className={classes.root} spacing={2}>
+                                <Grid item={true} xs={12} sm={6}>
+                                    
+                                    <Grid container={true} spacing={1}>
+                                        <Grid item={true} xs={12} sm={6}>
+                                            <DatePicker 
+                                                selectedDate={anoLetivo.dataInicio} 
+                                                setSelectedDate={setAnoLetivo} 
+                                                label="Data de Início" 
+                                                name="dataInicio"/>
+                                        </Grid>
+
+                                        <Grid item={true} xs={12} sm={6}>
+                                            <DatePicker 
+                                                selectedDate={anoLetivo.dataFim} 
+                                                setSelectedDate={setAnoLetivo} 
+                                                label="Data de Fim" 
+                                                name="dataFim"/>
+                                        </Grid>
+                                    </Grid>
+
+                                    <div className={classes.group}>
+                                        <Button
+                                            className={classes.buttons}
+                                            variant="outlined"
+                                            type="submit"
+                                            color="secondary"
+                                            onClick={() => setAnoLetivo(initialYearState)}>
+                                            Limpar
+                                        </Button>
+                                        <Button
+                                            className={classes.buttons}
+                                            variant="outlined"
+                                            type="submit"
+                                            color="primary"
+                                            onClick={tagID ? editYearChange : saveYearChange}>
+                                            Salvar
+                                        </Button>
+                                    </div>
+                                </Grid>
+
+                                <Grid item={true} xs={12} sm={6}>
+                                    <p>Ano Letivo</p>
+                                    {/* <p>{anoLetivo.dataInicio}</p>
+                                    <p>{anoLetivo.dataFim}</p> */}
+                                </Grid>
+                            </Grid>
+                        </AccordionDetails>
+                    
+                    </Accordion>
+            </section>
+        
         </MyContainer>
     );
 };
 
-export default Settings;
+
+// npm i @date-io/date-fns@1.3.13 date-fns
+// npm i @date-io/moment@1.3.13 moment
+
+// npm i -s @date-io/luxon@1.3.13 luxon
+// npm i -s @date-io/dayjs@1.3.13 dayjs

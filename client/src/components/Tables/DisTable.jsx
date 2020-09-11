@@ -31,9 +31,10 @@ const useStyles = makeStyles({
 const semana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
 function UpdateSubject(props) {
-    const {setDisciplina, disciplina, setEditSubject} = props;
+    const {setDisciplina, disciplina, setEditSubject, setMount} = props;
 
     function updating() {
+        setMount(preValue => ({...preValue, disciplina: true}));
         setEditSubject(disciplina._id)
         setDisciplina(disciplina);
     }
@@ -47,9 +48,12 @@ function UpdateSubject(props) {
 
 // Botão de Remoção
 function DeleteSubject(props) {
+    const {nome, id, setMount} = props;
+
     function removing() {
-        if (window.confirm(`Quer remover a disciplina ${props.nome} permanentemente?`)) {
-            api.removerDisciplina(props.id)
+        if (window.confirm(`Quer remover a disciplina ${nome} permanentemente?`)) {
+            setMount(preValue => ({...preValue, disciplina: true}));
+            api.removerDisciplina(id);
         }
     }
 
@@ -67,7 +71,7 @@ function DeleteSubject(props) {
 }
 
 export default function DisTable(props) {
-    const {data, pushSubject, setID} = props;
+    const {data, pushSubject, setID, setMount} = props;
     const classes = useStyles();
 
     return (
@@ -89,8 +93,8 @@ export default function DisTable(props) {
                                     <TableCell className={classes.row} component="th" scope="row">{nome}</TableCell>
                                     <TableCell className={classes.row} component="th" scope="row">{semana[diaSemana]}</TableCell>
                                     <TableCell className={classes.row} component="th" scope="row">
-                                        <UpdateSubject disciplina={row} setDisciplina={pushSubject} setEditSubject={setID}/>
-                                        <DeleteSubject id={row._id} nome={row.nome}/>
+                                        <UpdateSubject disciplina={row} setMount={setMount} setDisciplina={pushSubject} setEditSubject={setID}/>
+                                        <DeleteSubject id={row._id} setMount={setMount} nome={row.nome}/>
                                     </TableCell>
                                 </TableRow>
                             )

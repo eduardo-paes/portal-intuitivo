@@ -29,11 +29,12 @@ const useStyles = makeStyles({
 });
 
 function UpdateSubject(props) {
-    const {setTag, tag, setEditTag} = props;
+    const {setTag, tag, setEditTag, setMount} = props;
 
     function updating() {
         setEditTag(tag._id)
         setTag(tag);
+        setMount(preValue => ({...preValue, tag: true}));
     }
     // Retorna o botaão
     return (
@@ -45,9 +46,11 @@ function UpdateSubject(props) {
 
 // Botão de Remoção
 function DeleteSubject(props) {
+    const {id, nome, setMount} = props;
     function removing() {
-        if (window.confirm(`Quer remover a tag ${props.nome} permanentemente?`)) {
-            api.removerTag(props.id)
+        if (window.confirm(`Quer remover a tag ${nome} permanentemente?`)) {
+            api.removerTag(id)
+            setMount(preValue => ({...preValue, tag: true}));
         }
     }
 
@@ -65,7 +68,7 @@ function DeleteSubject(props) {
 }
 
 export default function DisTable(props) {
-    const {data, pushTag, setTagID} = props;
+    const {data, pushTag, setTagID, setMount} = props;
     const classes = useStyles();
 
     return (
@@ -87,8 +90,8 @@ export default function DisTable(props) {
                                     <TableCell className={classes.row} component="th" scope="row">{nome}</TableCell>
                                     <TableCell className={classes.row} component="th" scope="row">{disciplina[0].nome}</TableCell>
                                     <TableCell className={classes.row} component="th" scope="row">
-                                        <UpdateSubject tag={row} setTag={pushTag} setEditTag={setTagID}/>
-                                        <DeleteSubject id={row._id} nome={row.nome}/>
+                                        <UpdateSubject tag={row} setTag={pushTag} setMount={setMount} setEditTag={setTagID}/>
+                                        <DeleteSubject id={row._id} nome={row.nome} setMount={setMount}/>
                                     </TableCell>
                                 </TableRow>
                             )

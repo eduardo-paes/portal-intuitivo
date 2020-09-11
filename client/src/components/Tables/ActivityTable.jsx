@@ -81,16 +81,30 @@ function DeleteQuestion(props) {
         if (props.revision) {
             if (window.confirm(`Tem certeza que quer remover esta avaliação diagnóstica permanentemente?`)) {
                 api.removerRevisao(props.id)
+                props.setMount(preValue => ({
+                    ...preValue, 
+                    revision: { 
+                        isMounted: false, 
+                        wasChanged: true
+                    }
+                }))
             }
         } else {
             if (window.confirm(`Tem certeza que quer remover esta atividade permanentemente?`)) {
                 api.removerAtividade(props.id)
+                props.setMount(preValue => ({
+                    ...preValue, 
+                    activity: { 
+                        isMounted: false, 
+                        wasChanged: true
+                    }
+                }))
             }
         }
     }
 
     return (
-        <RouterLink to={"/controle-atividades/list"}>
+        <RouterLink to={"/controle-atividade/list"}>
             <IconButton
                     aria-label="delete"
                     color="secondary"
@@ -303,7 +317,7 @@ export default function ActivityTable(props) {
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const {data, setQuestion, setHidden, revision} = props;
+    const {data, setQuestion, setHidden, revision, setMount} = props;
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -368,7 +382,7 @@ export default function ActivityTable(props) {
                                                 <TableCell align="left">
                                                     <ShowQuestion id={row._id} setQuestion={setQuestion} setHidden={setHidden}/>
                                                     <UpdateQuestion id={row._id} revision={revision}/>
-                                                    <DeleteQuestion id={row._id} revision={revision}/>
+                                                    <DeleteQuestion id={row._id} revision={revision} setMount={setMount}/>
                                                 </TableCell>
                                             </TableRow>
                                         );

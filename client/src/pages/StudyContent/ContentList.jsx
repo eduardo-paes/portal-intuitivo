@@ -24,9 +24,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ContentList () {
-
-  const [ filter, setFilter ] = useState({
+export default function ContentList () {
+  const classes = useStyles();
+  const [filter, setFilter] = useState({
     area: "",
     disciplina: {
       id: "",
@@ -34,10 +34,7 @@ function ContentList () {
     },
     numeracao: ""
   });
-  const [ listaDisciplina, setListaDisciplina ] = useState([  ]);
-  
-  const classes = useStyles();
-  
+  const [listaDisciplina, setListaDisciplina] = useState([  ]);
   const [content, setContent] = useState({
     conteudos: []
   })
@@ -63,21 +60,18 @@ function ContentList () {
   
   // -- Carrega as Disciplinas existentes no banco
   useEffect(() => {
-    let unmounted = false;
+    const abortController = new AbortController();
     async function fetchDisciplinaAPI() {
       const response = await api.listarDisciplinas();
       const value = response.data.data;
-      if (!unmounted) {
-        setListaDisciplina(value);
-      }  
+      setListaDisciplina(value);
     }
     fetchDisciplinaAPI()
-    return () => {unmounted = true};
+    return abortController.abort();
   }, []);
   
   // -- Carrega os Tópicos existentes no banco
   useEffect(() => {
-    
     let { area, disciplina, numeracao } = filter;
     let { id } = disciplina;
     const abortController = new AbortController();
@@ -87,7 +81,6 @@ function ContentList () {
     
     async function fetchConteudoAPI() {
       const response = await api.listarConteudoPersonalizado(id, area, numeracao);
-      console.log(response);
       const value = response.data.data;
       setContent({ conteudos: value });
     }
@@ -100,9 +93,9 @@ function ContentList () {
   for (let i = 1; i < 33; ++i) array[i-1] = i;
 
   const {conteudos} = content;
-  const [ open, setOpen ] = useState(false);
-  const [ titulo, setTitulo ] = useState('');
-  const [ id, setId ] = useState('');
+  const [open, setOpen] = useState(false);
+  const [titulo, setTitulo] = useState('');
+  const [id, setId] = useState('');
 
   return (
     <MyContainer>
@@ -207,5 +200,3 @@ function ContentList () {
     </MyContainer>
   );
 };
-
-export default ContentList;

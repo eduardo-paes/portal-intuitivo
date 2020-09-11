@@ -3,10 +3,14 @@ const mongoose = require('mongoose');
 const Usuario = require("./users-model")
 const Disciplina = require("./subject-model")
 const Conteudo = require("./content-model")
-const Tag = require("./tag-model")
+const TagQuestao = require("./tag&question-model")
 const Schema = mongoose.Schema;
 
 const Questao = new Schema({
+    _id: {
+        type: Schema.Types.ObjectId,
+        required: true,
+    },
     disciplina: {
         id: {
             type: Schema.Types.ObjectId, 
@@ -37,6 +41,9 @@ const Questao = new Schema({
         type: String,
         required: true
     },
+    padraoResposta: {
+        type: String,
+    },
     resposta: [
         {
             opcao: String, 
@@ -47,7 +54,7 @@ const Questao = new Schema({
     tags: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Tag',
+            ref: 'TagQuestao',
             required: true
         }
     ],

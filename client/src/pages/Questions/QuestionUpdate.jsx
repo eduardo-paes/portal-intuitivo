@@ -33,12 +33,13 @@ export default function QuestionUpdate(props) {
 
     const [questao, setQuestao] = useState(initialQuestionState);
     const [opcoes, setOpcoes] = useState([initialOptionState]);
+    const _id = props.match.params.id;
     
     // -- Carrega questão selecionada pelo usuário
     useEffect(() => {
         const abortController = new AbortController();
         async function fetchQuestaoAPI() {
-            const response = await api.encQuestaoPorID(props.match.params.id);
+            const response = await api.encQuestaoPorID(_id);
             const value = response.data.data;
             setQuestao(preValue => ({
                 ...preValue,
@@ -64,7 +65,7 @@ export default function QuestionUpdate(props) {
         }
         fetchQuestaoAPI()
         return abortController.abort();
-    }, [props.match.params.id]);
+    }, [_id]);
 
     // -- Confirma mudanças realizadas em opcoes
     useEffect(() => {
