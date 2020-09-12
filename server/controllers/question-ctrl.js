@@ -4,12 +4,32 @@ const mongoose = require('mongoose');
 
 const TagQuestao = require('../models/tag&question-model');
 
+// ======================================
+// FUNÇÕES DE TAG-QUESTÃO
+// ======================================
+
 // Função para inserir tagQuestao no banco
-inserirTagQuestao = (tag, questao) => {
-    const body = { tagID: tag, questaoID: questao };
+inserirTagQuestao = async (tag, questao, tqID) => {
+    const body = { _id: tqID, tagID: tag, questaoID: questao };
     const novaTagQuestao = new TagQuestao(body);
-    return novaTagQuestao.save();
+    await novaTagQuestao.save();
 }
+
+// Função para remover tagQuestao no banco
+removerTagQuestao = (tqID) => {
+    TagQuestao.findOneAndDelete({ _id: tqID}, err => {
+            if (err) {
+                console.log(err);
+                return false;
+            }
+            return true;
+        })
+        .catch(err => console.log(err))
+}
+
+// ======================================
+// FUNÇÕES DE QUESTÃO
+// ======================================
 
 // Função para inserir questao no banco
 inserirQuestao = (req, res) => {
@@ -110,16 +130,33 @@ atualizarQuestao = async (req, res) => {
         questaoEncontrada.dataEdicao = questaoAtualizada.dataEdicao
         questaoEncontrada.padraoResposta = questaoAtualizada.padraoResposta
         
-        if (questaoEncontrada.tags === questaoAtualizada.tags) {
-            questaoEncontrada.tags = questaoAtualizada.tags
-        } else {
-            let differentTags = questaoAtualizada.tags.filter(newTag => {
-                return questaoAtualizada.tags !== questaoEncontrada.tags;
+        // Verificação de Tags
+        let tagsAntigas = questaoEncontrada.tags;
+        let tagsAtualizadas = questaoAtualizada.tags;
+
+        // Caso ambas as versões possuam tags
+        if (tagsAtualizadas.length > 0) {
+            // Remove todas as TagQuestao antigas
+            if (tagsAntigas.length > 0) {
+                tagsAntigas.forEach(oldQtID => {
+                    removerTagQuestao(oldQtID);
+                })
+            }
+
+            // Insere todas as TagQuestao novas
+            let questaoID = questaoEncontrada._id;
+            let tqID, arrayTags = [];
+            
+            tagsAtualizadas.forEach(tagID => {
+                tqID = mongoose.Types.ObjectId();
+                arrayTags.push(tqID);
+                inserirTagQuestao(tagID, questaoID, tqID);
             })
 
-        }
+            // Atualiza TQs
+            questaoEncontrada.tags = arrayTags;
 
-        console.log(questaoEncontrada)
+        }
 
         // Salva alterações
         questaoEncontrada
@@ -159,8 +196,6 @@ removerQuestao = async (req, res) => {
                     })
             }
             
-            console.log (questaoEncontrada);
-
             // Caso não encontre nenhuma questão
             if (!questaoEncontrada) {
                 return res
@@ -169,6 +204,14 @@ removerQuestao = async (req, res) => {
                         success: false, 
                         error: "Questao não encontrado."
                     })
+            }
+
+            // Remove QuestaoTag antes de remover a questão
+            let tagsAntigas = questaoEncontrada.tags;
+            if (tagsAntigas.length > 0) {
+                tagsAntigas.map(oldQtID => {
+                    removerTagQuestao(oldQtID);
+                })
             }
 
             // Caso não haja erros, conclui operação.

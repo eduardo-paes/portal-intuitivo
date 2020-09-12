@@ -21,11 +21,11 @@ const Conteudo = new Schema({
     },
     topico: {
         type: String,
-        // required: true
+        required: true
     },
     numeracao: {
         type: Number,
-        // required: true
+        required: true
     },
     autor: {
         type: Schema.Types.ObjectId,

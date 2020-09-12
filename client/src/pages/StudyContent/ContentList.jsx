@@ -2,10 +2,8 @@ import React, {useState, useEffect} from 'react';
 import api from '../../api';
 
 import { MyContainer, CreateButton, MyTextField } from "../../assets/styles/styledComponents";
-import { Grid, MenuItem, Button } from "@material-ui/core";
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles, Grid, MenuItem, Button } from "@material-ui/core";
 import { ContentTable, PDFPreviewDialog } from '../../components';
-// import {TextEditor} from "../../components"
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -35,13 +33,10 @@ export default function ContentList () {
     numeracao: ""
   });
   const [listaDisciplina, setListaDisciplina] = useState([  ]);
-  const [content, setContent] = useState({
-    conteudos: []
-  })
+  const [content, setContent] = useState({ conteudos: [] })
   
   function onFilterChange (event) {
     const { name, value } = event.target;
-    console.log(name, value)
     setFilter (preValue => ({
       ...preValue,
       [name]: value
@@ -99,13 +94,15 @@ export default function ContentList () {
 
   return (
     <MyContainer>
-      <header>
+
+      <section>
           <Grid container={true} className={classes.root} spacing={3}>
               <Grid item={true} xs={12} sm={12}>
                   <h1 className="heading-page">Conteúdos Disciplinares</h1>
               </Grid>
           </Grid>
           <Grid container={true} className={classes.root} spacing={6}>
+              {/* -- Filtro -- */}
               <Grid item={true} xs={12} lg={3} sm={3}>
                 <MyTextField
                   id="campoArea"
@@ -177,6 +174,7 @@ export default function ContentList () {
                 </Grid>
               </Grid>
 
+              {/* -- Tabela -- */}
               <Grid item={true} lg={12} sm={12}>
                 <ContentTable 
                   data={conteudos} 
@@ -190,7 +188,8 @@ export default function ContentList () {
           <Grid item={true} xs={12} sm={12} align="center">
             <CreateButton title="Inserir Conteúdo" url="/controle-conteudo/create"/>
           </Grid>
-      </header>
+      </section>
+
           <PDFPreviewDialog 
             conteudo={`http://localhost:5000/uploads/content/${id}.pdf`}
             topico={titulo}

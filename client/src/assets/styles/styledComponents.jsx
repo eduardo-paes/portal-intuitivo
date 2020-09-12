@@ -92,6 +92,7 @@ const MyContainer = styled(Container)({
     padding: "1.2rem 1.875rem 1.2rem 1.875rem", 
     margin: "0",
     maxWidth: "none",
+    maxHeight: "none",
 });
 
 const MyTypography = styled(Typography)({
@@ -113,8 +114,7 @@ const MyCard = styled(Card)({
 });
 
 const MyCardContent = styled(CardContent)({
-    margin: "1rem",
-    marginBottom: "0",
+    margin: "0",
     padding: "0", 
     alignContent: "left", 
     textAlign: "left"

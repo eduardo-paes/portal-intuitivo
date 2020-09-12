@@ -447,7 +447,6 @@ export default function Settings(props) {
                                 </Grid>
                             </Grid>
                         </AccordionDetails>
-                    
                     </Accordion>
             </section>
         

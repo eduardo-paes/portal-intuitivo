@@ -60,6 +60,7 @@ router.put("/tag-questao/:id", TagQuestaoCtrl.atualizarTagQuestao);
 router.delete("/tag-questao/:id", TagQuestaoCtrl.removerTagQuestao);
 router.get("/tag-questao/:id", TagQuestaoCtrl.encTagQuestaoPorID);
 router.get("/tag-questao", TagQuestaoCtrl.listarTagQuestao);
+router.get("/tag-questao/questao", TagQuestaoCtrl.listarTQPorQuestaoID);
 
 // ANO LETIVO -- Definição dos métodos para cada rota da ano letivo
 router.post("/configuracoes/ano-letivo", AnoLetivoCtrl.inserirAnoLetivo);

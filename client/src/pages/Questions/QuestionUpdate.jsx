@@ -41,6 +41,20 @@ export default function QuestionUpdate(props) {
         async function fetchQuestaoAPI() {
             const response = await api.encQuestaoPorID(_id);
             const value = response.data.data;
+
+            console.log(value.tags);
+            
+            if (value.tags.length > 0) {
+                const resTags = await api.listarTQPorQuestaoID(_id);
+                const resValue = resTags.data.data;
+
+                resValue.map(tagFound => {
+                    console.log(tagFound);
+                })
+
+                console.log(resValue);
+            }
+
             setQuestao(preValue => ({
                 ...preValue,
                 disciplina: {
@@ -59,6 +73,7 @@ export default function QuestionUpdate(props) {
                 tags: value.tags,
                 erros: []
             }));
+
             if (value.tipoResposta === "multiplaEscolha") {
                 setOpcoes(value.resposta)
             }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {MyContainer} from "../../assets/styles/styledComponents";
+import { MyContainer } from "../../assets/styles/styledComponents";
 import { Grid } from '@material-ui/core';
 import { useEffect } from "react";
 import api from "../../api";
@@ -54,7 +54,6 @@ function getTheWeek() {
 }
 
 function StudyPlan (props) {
-
   let topico = [];
   const [ content, setContent ] = useState([]);
   const [ disciplinas, setDisciplinas ] = useState([]);
@@ -64,24 +63,19 @@ function StudyPlan (props) {
   
   // -- Carrega as Disciplinas do dia correspondente
   useEffect(() => {
-
     const abortController = new AbortController();
-
-   
     async function fetchDisciplinaAPI() {
       const response = await api.listarDisciplinasPorDiaDaSemana(dia - 1);
       const value = response.data.data;
       setDisciplinas(value);
     }
     fetchDisciplinaAPI();
-    
     return abortController.abort();
     // eslint-disable-next-line   
   }, []);
 
   // -- Carrega os tópicos do dia correspondente
   useEffect(() => {
-    
     let area = 'area';
     var value = [];
     const abortController = new AbortController();
@@ -99,7 +93,6 @@ function StudyPlan (props) {
     return abortController.abort();
     // eslint-disable-next-line
   }, [disciplinas]);
-
 
   return (
     <MyContainer>

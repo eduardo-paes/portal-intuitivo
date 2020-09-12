@@ -4,8 +4,8 @@ import api from '../../api'
 
 // -- Material UI - Table
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';

@@ -42,6 +42,7 @@ export const listarTagQuestao = () => api.get("/tag-questao");
 export const atualizarTagQuestao = (id, tagQuestaoAtualizada) => api.put(`/tag-questao/${id}`, tagQuestaoAtualizada);
 export const removerTagQuestao = id => api.delete(`/tag-questao/${id}`);
 export const encTagQuestaoPorID = id => api.get(`/tag-questao/${id}`);
+export const listarTQPorQuestaoID = questaoID => api.get(`/tag-questao/questao/${questaoID}`);
 
 // -- Funções relacionadas à AnoLetivo
 export const inserirAnoLetivo = novaAnoLetivo => api.post("/configuracoes/ano-letivo", novaAnoLetivo);
@@ -108,6 +109,7 @@ const apis = {
     atualizarTagQuestao,
     removerTagQuestao,
     encTagQuestaoPorID,
+    listarTQPorQuestaoID,
     // Ano Letivo
     inserirAnoLetivo,
     listarAnoLetivo,

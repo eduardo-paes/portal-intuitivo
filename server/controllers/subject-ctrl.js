@@ -149,7 +149,6 @@ encDisciplinaPorID = async (req, res) => {
 
 // Função para listar os disciplinas contidos no banco
 listarDisciplinas = async (req, res) => {
-    
     await Disciplina.find({}).sort({nome: 1})
         .then((listaDisciplinas, err) => {
             // Verificação de erros

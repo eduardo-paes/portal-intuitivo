@@ -4,7 +4,6 @@ const Conteudo = require('../models/content-model');
 inserirConteudo = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
-    console.log(body);
 
     if (!body) {
         return res.status(400).json({
@@ -44,7 +43,7 @@ inserirConteudo = (req, res) => {
 atualizarConteudo = async (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
-    console.log(body);
+
     if (!body) {
         return res.status(400).json({
             success: false,
@@ -154,7 +153,6 @@ encConteudoPorID = async (req, res) => {
 // Função para buscar conteúdo por ID da Disciplina
 listarConteudoPorDisciplina = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
-
     await Conteudo
         .find({
             'disciplina.id': req.params.id,
@@ -185,8 +183,13 @@ listarConteudoPersonalizado = async (req, res) => {
     let flag = 0;
 
     let paramsNumeracao = [];
-    if (req.params.numeracao) paramsNumeracao[0] = req.params.numeracao;
-    else for (let i = 1; i < 33; ++i) paramsNumeracao[i-1] = i;
+    if (req.params.numeracao) {
+        paramsNumeracao[0] = req.params.numeracao;
+    } else {
+        for (let i = 1; i < 33; ++i) {
+            paramsNumeracao[i-1] = i;
+        }
+    }
 
     if (req.params.id === '000000000000000000000000') {
         if (req.params.area === 'area') flag = 1;
@@ -202,7 +205,6 @@ listarConteudoPersonalizado = async (req, res) => {
             'disciplina.id': { $gte: req.params.id },
             area: { $ne: req.params.area },
             numeracao: { $in: paramsNumeracao }
-        
         }, (err, conteudoEncontrado) => {
             if (err) {
                 return res
@@ -302,22 +304,25 @@ listarConteudoPersonalizado = async (req, res) => {
 
 // Função para listar os conteúdos contidos no banco
 listarConteudos = async (req, res) => {
-    await Conteudo.find({}, (err, listaConteudos) => {
-        // Verifica se os dados foram encontrados
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        // Verifica se há dados na lista
-        if (!listaConteudos.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
-        }
-        // Caso não haja erros, retorna lista de conteúdos
-        return res.status(200).json({ success: true, data: listaConteudos })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+    await Conteudo
+        .find({})
+        .sort({topico: 1})
+        .then((listaConteudos, err) => {
+            // Verifica se os dados foram encontrados
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            // Verifica se há dados na lista
+            if (!listaConteudos.length) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: "Dados não encontrados." })
+            }
+            // Caso não haja erros, retorna lista de conteúdos
+            return res.status(200).json({ success: true, data: listaConteudos })
+        })
+        // Havendo erro, retorna o erro
+        .catch(err => console.log(err))
 }
 
 // Exporta os módulos

@@ -1,4 +1,4 @@
-#login-screen {
+#loginScreen {
     background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
     width: 100vw;
     height: 100vh;
@@ -9,46 +9,7 @@
     align-items: center;
 }
 
-/* .container {
-    width: 90vw;
-    max-width: 700px;
-    margin: 0 20%;
-} */
-
-/* -- Header -- */
-.loginHeader {
-    margin-top: -5rem;
-}
-
-.loginLogo {
-    width: 100%;
-    height: 100%;
-    margin-bottom: 5rem;
-}
-
-.loginHeading {
-    margin: 0 0 2rem;
-    font-style: normal;
-    font-size: 2.5rem;
-    font-weight: 400;
-    color: #606161;
-}
-
-/* -- Main -- */
-.loginMain {
-    margin: 1rem 0 1rem;
-    padding: 0 1rem;
-}
-
-/* -- Footer -- */
-.loginGroupButtons {
-    margin-top: 3rem;
-    margin-bottom: -5rem;
-}
-
-@media(min-width: 700px) {
-    #login-screen {
-        width: 100vw;
-        display: flex;
-    }
+#loginHeader {
+    align-content: center;
+    align-items: center;
 }
