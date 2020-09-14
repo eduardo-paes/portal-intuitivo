@@ -38,18 +38,11 @@ const useStyles = makeStyles(theme => ({
         }
     },
     logo: {
-<<<<<<< HEAD
-        width: "10rem",
-        minWidth: "10rem",
-        height: "30px",
-        minHeight: "30px"
-=======
         width: "9.375rem",
         minWidth: "9.375rem",
         height: "1.875rem",
         minHeight: "1.875rem",
         margin: "0.5rem",
->>>>>>> b9bc88b312e708c8d1890c8e862f78e4c4ad7ad1
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -61,10 +54,6 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         flexGrow: 1,
-<<<<<<< HEAD
-        minWidth: '8rem',
-=======
->>>>>>> b9bc88b312e708c8d1890c8e862f78e4c4ad7ad1
         display: "block",
         textAlign: "center",
         alignSelf: "center"
