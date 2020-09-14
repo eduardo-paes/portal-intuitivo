@@ -33,26 +33,23 @@ export default function QuestionUpdate(props) {
 
     const [questao, setQuestao] = useState(initialQuestionState);
     const [opcoes, setOpcoes] = useState([initialOptionState]);
-    const _id = props.match.params.id;
+    const questaoID = props.match.params.id;
     
     // -- Carrega questão selecionada pelo usuário
     useEffect(() => {
         const abortController = new AbortController();
         async function fetchQuestaoAPI() {
-            const response = await api.encQuestaoPorID(_id);
+            const response = await api.encQuestaoPorID(questaoID);
             const value = response.data.data;
-
-            console.log(value.tags);
+            let tags = [];
             
             if (value.tags.length > 0) {
-                const resTags = await api.listarTQPorQuestaoID(_id);
+                const resTags = await api.listarTQPorQuestaoID(questaoID);
                 const resValue = resTags.data.data;
-
+                
                 resValue.map(tagFound => {
-                    console.log(tagFound);
+                    tags.push(tagFound.tagID)
                 })
-
-                console.log(resValue);
             }
 
             setQuestao(preValue => ({
@@ -70,7 +67,7 @@ export default function QuestionUpdate(props) {
                 tipoResposta: value.tipoResposta,
                 dataCriacao: value.dataCriacao,
                 dataEdicao: value.dataEdicao,
-                tags: value.tags,
+                tags: tags,
                 erros: []
             }));
 
@@ -80,7 +77,7 @@ export default function QuestionUpdate(props) {
         }
         fetchQuestaoAPI()
         return abortController.abort();
-    }, [_id]);
+    }, [questaoID]);
 
     // -- Confirma mudanças realizadas em opcoes
     useEffect(() => {

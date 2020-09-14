@@ -1,32 +1,45 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { StoreContext } from "../../utils";
-
-import { Avatar } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
+import { makeStyles, Avatar, IconButton, Grid, MenuItem, Menu, Typography } from '@material-ui/core';
 
 // Esta função retorna o ícone e menu do usuário na barra de topo 
 // contendo funções de logout e edição de perfil
 
-export default function ProfileMenu() {
+const useStyles = makeStyles((theme) => ({
+    userName: {
+        fontSize: "1rem",
+        color: "#fff",
+        fontWeight: "500",
+    }
+}));
+
+const userName = (nomeAluno) => {
+    var name = nomeAluno.split(' ').map(name => {
+        return name;
+    })
+    return name[0];
+}
+
+export default function ProfileMenu(props) {
+    const classes = useStyles();
     const { token, setToken } = useContext(StoreContext)
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [srcImg, setSrcImg] = useState('');
     const profileOpen = Boolean(anchorEl);
     const history = useHistory();
-    const [srcImg, setSrcImg] = useState('');
+    const nomeAluno = userName(token.userName)
 
-    const handleMenu = (event) => {
+    function handleMenu (event) {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
+    function handlePerfil () {
         setAnchorEl(null);
         history.push(`/perfil/${token.userID}`);
     };
 
-    const handleLogout = () => {
+    function handleLogout () {
         setToken(null);
         history.push('/login');
     };
@@ -36,15 +49,23 @@ export default function ProfileMenu() {
     }, [token])
 
     return (
-        <>
-            <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit">
-                <Avatar sizes="small" src={srcImg} alt="Preview"/>
-            </IconButton>
+        <Grid container={true} style={{display: "flex"}} justify="center">
+            <Grid item={true} xs={6} sm={6}>
+                <IconButton
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleMenu}
+                    label="Nome"
+                    color="inherit">
+                        <Avatar sizes="small" src={srcImg} alt="Preview"/>
+                </IconButton>
+            </Grid>
+
+            <Grid item={true} xs={6} sm={6} style={{alignSelf: "center"}}>
+                <Typography className={classes.userName}>{nomeAluno}</Typography>
+            </Grid>
+
             <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -58,10 +79,10 @@ export default function ProfileMenu() {
                     horizontal: 'right'
                 }}
                 open={profileOpen}
-                onClose={handleClose}>
-                <MenuItem onClick={handleClose}>Perfil</MenuItem>
+                onClose={() => setAnchorEl(null)}>
+                <MenuItem onClick={handlePerfil}>Perfil</MenuItem>
                 <MenuItem button={true} onClick={handleLogout}>Sair</MenuItem>
             </Menu>
-        </>
+        </Grid>
     );
 }
