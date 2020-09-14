@@ -1,12 +1,12 @@
 import React from "react";
-import {MyContainer} from "../../assets/styles/styledComponents"
+import { MyContainer } from "../../assets/styles/styledComponents"
+import { Typography } from "@material-ui/core";
 
-const Desempenho = props => {
+export default function Desempenho (props) {
   return (
     <MyContainer>
-      <h1 className="heading-page">Desempenho</h1>
+      <Typography id="libraryTitle" variant="h4">Desempenho</Typography>
+      <Typography id="librarySubTitle" variant="h6">Material Estudado</Typography>
     </MyContainer>
   );
 };
-
-export default Desempenho;

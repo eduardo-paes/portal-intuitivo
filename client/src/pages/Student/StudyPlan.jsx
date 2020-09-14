@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MyContainer } from "../../assets/styles/styledComponents";
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { useEffect } from "react";
 import api from "../../api";
 import ContentAccordion from "../../components/Accordions/ContentAccordion";
@@ -100,15 +100,15 @@ function StudyPlan (props) {
       <header>
         <Grid container={true} spacing={3}>
           <Grid item={true} xs={12} sm={12}>
-            <h1 className="heading-page">Plano de Estudo</h1>
+            <Typography id="studyPlanTitle" variant="h4">Plano de Estudo</Typography>
           </Grid>
-        </Grid>
-        <Grid container={true} spacing={6}>
+        
           <Grid item={true} xs={6} lg={6} sm={6}>
-            <h3 className="heading-page">Estudo do dia</h3>
+            <Typography id="studyPlanSubTitle" variant="h6">Estudo do dia</Typography>
           </Grid>
+          
           <Grid item={true} align="right" xs={6} lg={6} sm={6}>
-            <h3 className="heading-page">{diaDaSemana[dia] + ", Semana " + getTheWeek()}</h3>
+            <Typography id="studyPlanSubTitle" variant="h6">{diaDaSemana[dia] + ", Semana " + getTheWeek()}</Typography>
           </Grid>
         </Grid>
       </header>

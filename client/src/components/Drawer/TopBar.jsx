@@ -1,18 +1,13 @@
 import React from "react";
 
 // -- Componentes
-import ProfileMenu from "./ProfileMenu"
 import logo from "../../assets/images/TopLogo.png"
 
 // -- Material-UI
 import clsx from "clsx";
 import MenuIcon from "@material-ui/icons/Menu";
-import {
-    makeStyles,
-    AppBar,
-    Toolbar,
-    IconButton
-} from "@material-ui/core";
+import { makeStyles, AppBar, Grid, Toolbar, IconButton } from "@material-ui/core";
+import "./styles.css"
 
 const drawerWidth = 240;
 
@@ -40,34 +35,30 @@ const useStyles = makeStyles(theme => ({
             })
     },
     logo: {
-        width: "150px",
-        minWidth: "150px",
-        height: "30px",
-        minHeight: "30px"
+        width: "9.375rem",
+        minWidth: "9.375rem",
+        height: "1.875rem",
+        minHeight: "1.875rem",
+        margin: "0.5rem",
     },
     menuButton: {
         marginRight: theme.spacing(2),
-        backgroundColor: "inherit"
+        backgroundColor: "inherit",
+        color: "#fff"
     },
     hide: {
         display: "none"
     },
     title: {
         flexGrow: 1,
-        minWidth: drawerWidth,
-        display: "block",
         textAlign: "center",
-        paddingTop: "7px",
+        alignSelf: "center"
     }
 }));
 
-function TopBar(props) {
+export default function TopBar(props) {
     const classes = useStyles();
     const {open, setOpen} = props;
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
 
     return (
         <>
@@ -77,27 +68,36 @@ function TopBar(props) {
                     [classes.appBarShift]: open
                 })}>
 
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton, open && classes.hide)}>
-                        <MenuIcon/>
-                    </IconButton>
+                <Toolbar style={{minWidth: drawerWidth}}>
+                    <Grid container={true}>
 
-                    <div className={classes.title}>
-                        <img className={classes.logo} src={logo} alt="Logo"/>
-                    </div>
+                        <Grid item={true} xs={2} sm={2}>
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={() => setOpen(true)}
+                                edge="start"
+                                className={clsx(classes.menuButton, open && classes.hide)}>
+                                    <MenuIcon/>
+                            </IconButton>
+                        </Grid>
 
-                    {/* Ícone e funções do usuário definida na top-bar */}
-                    <ProfileMenu/>
+                        <Grid item={true} className={classes.title} xs={8} sm={8}>
+                            <img className={classes.logo} src={logo} alt="Logo"/>
+                        </Grid>
 
+                        <Grid item={true} hidden={true} xs={2} sm={2}>
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                edge="start">
+                                    <MenuIcon/>
+                            </IconButton>
+                        </Grid>
+
+                    </Grid>
                 </Toolbar>
             </AppBar>
         </>
     );
 }
-
-export default TopBar;

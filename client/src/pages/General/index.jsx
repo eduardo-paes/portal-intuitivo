@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {withRouter} from "react-router-dom";
 
 // -- Componentes/Rotas
@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 
 function HomeScreen(props) {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     return (
         <div className={classes.root}>

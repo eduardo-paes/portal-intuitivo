@@ -2,6 +2,7 @@ import React from "react";
 
 // -- Componentes
 import ItemsDrawer from "./ItemsDrawer"
+import ProfileMenu from "./ProfileMenu"
 
 // -- Material-UI
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -11,7 +12,8 @@ import {
     makeStyles,
     useTheme,
     Drawer,
-    IconButton
+    IconButton,
+    Grid
 } from "@material-ui/core";
 
 const drawerWidth = 240;
@@ -54,15 +56,22 @@ function SideBar(props) {
                 classes={{
                     paper: classes.drawerPaper
                 }}>
-                <div className={classes.drawerHeader}>
-                    <IconButton onClick={handleDrawerClose}>
-                        {
-                            theme.direction === "ltr"
+                {/* Ícone superior da Drawer Lateral */}
+                <Grid container={true} justify="center">
+                    <Grid item={true} xs={6} sm={6}> 
+                        <ProfileMenu/>
+                    </Grid>
+
+                    <Grid item={true} xs={6} sm={6} className={classes.drawerHeader}>
+                        <IconButton onClick={handleDrawerClose}>
+                            { theme.direction === "ltr"
                                 ? (<ChevronLeftIcon/>)
                                 : (<ChevronRightIcon/>)
-                        }
-                    </IconButton>
-                </div>
+                            }
+                        </IconButton>
+                    </Grid>
+                </Grid>
+
                 {/* Itens da Drawer Lateral */}
                 <ItemsDrawer/>
             </Drawer>

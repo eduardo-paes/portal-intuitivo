@@ -70,7 +70,10 @@ export default function UsersUpdate (props) {
                         method: 'POST',
                         body: data
                     })
-                    .then(res => res.json())    
+                    .then(res => {
+                        window.location.reload();
+                        res.json();
+                    })    
                 })
         }
     }

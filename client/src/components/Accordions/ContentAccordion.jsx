@@ -56,7 +56,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 }); 
 
 export default function ContentAccordion(props) {
-
     const classes = useStyles();
     const { id, topico, disciplina } = props;
     const [ progresso, setProgresso ] = React.useState(0);
@@ -114,148 +113,150 @@ export default function ContentAccordion(props) {
     };
 
     return (
-        <Accordion>
-            <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header">
-                <CircularStatic progresso={progresso}/>
-                <Typography className={classes.heading}>{topico}</Typography>
-                <Typography className={classes.secondaryHeading}>{disciplina.nome}</Typography>
-            </AccordionSummary>
+        <Slide direction="up" in={true} mountOnEnter unmountOnExit>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header">
+                    <CircularStatic progresso={progresso}/>
+                    <Typography className={classes.heading}>{topico}</Typography>
+                    <Typography className={classes.secondaryHeading}>{disciplina.nome}</Typography>
+                </AccordionSummary>
 
-            <AccordionDetails>
-                <Grid container={true} spacing={3}>
-                    {/* Material de Estudo */}
-                    <Grid item={true} xs={12} lg={3} sm={12}>
-                        <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
+                <AccordionDetails>
+                    <Grid container={true} spacing={1}>
+                        {/* Material de Estudo */}
+                        <Grid item={true} xs={12} lg={3} sm={12}>
+                            <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
+                            {
+                                check.materialEstudo ?
+                                <GreenButton className={classes.activityButton} id="materialEstudo" variant="contained" color="primary" onClick={handleClickOpen}>Material de Estudo</GreenButton>
+                                : 
+                                <Button className={classes.activityButton} id="materialEstudo" variant="outlined" color="primary" onClick={handleClickOpen}>Material de Estudo</Button>
+                            }
+                            <Dialog fullScreen open={open.materialEstudo} onClose={handleClose} TransitionComponent={Transition}>
+                            <AppBar className={classes.appBar}>
+                                <Toolbar>
+                                <IconButton id="materialEstudo" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
+                                    <CloseIcon />
+                                </IconButton>
+                                <Typography variant="h6" className={classes.title}>
+                                    {topico}
+                                </Typography>
+                                </Toolbar>
+                            </AppBar>
+                            <Grid container={true} spacing={3}>
+                                <Grid className={classes.material} item={true} xs={12} lg={12} sm={12} align='center'>
+                                <PDFViewer source={`http://localhost:5000/uploads/content/${id}.pdf`}/>
+                                </Grid>
+                                <Grid item={true} xs={12} lg={12} sm={12} align='center' >
+                                <Button id="materialEstudo" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
+                                    Finalizado
+                                </Button>
+                                </Grid>
+                            </Grid>
+                            </Dialog>
+                        </Grid>
+                        {/* Exercícios de Fixação */}
+                        <Grid item={true} xs={12} lg={3} sm={12}>
+                            <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.exercicioFixacao}/>
+                            {
+                                check.exercicioFixacao ?
+                                <GreenButton className={classes.activityButton} id="exercicioFixacao" variant="contained" color="primary" onClick={handleClickOpen}>Exercícios de Fixação</GreenButton>
+                                : 
+                                <Button className={classes.activityButton} id="exercicioFixacao" variant="outlined" color="primary" onClick={handleClickOpen}>Exercícios de Fixação</Button>
+                            }
+                            <Dialog fullScreen open={open.exercicioFixacao} onClose={handleClose} TransitionComponent={Transition}>
+                            <AppBar className={classes.appBar}>
+                                <Toolbar>
+                                <IconButton id="exercicioFixacao" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
+                                    <CloseIcon />
+                                </IconButton>
+                                <Typography variant="h6" className={classes.title}>
+                                    Exercícios de Fixação
+                                </Typography>
+                                </Toolbar>
+                            </AppBar>
+                            <Grid container={true} spacing={3}>
+                                <Grid item={true} xs={12} lg={12} sm={12} align='center'>
+                                <Typography>Aqui ficarão os exercícios.</Typography>
+                                </Grid>
+                                <Grid item={true} xs={12} lg={12} sm={12} align='center' >
+                                <Button id="exercicioFixacao" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
+                                    Finalizado
+                                </Button>
+                                </Grid>
+                            </Grid>
+                            </Dialog>
+                        </Grid>
+                        {/* Video-aula */}
+                        <Grid item={true} xs={12} lg={3} sm={12}>
+                            <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.videoaula}/>
+                            {
+                                check.videoaula ?
+                                <GreenButton className={classes.activityButton} id="videoaula" variant="contained" color="primary" onClick={handleClickOpen}>Vídeoaula</GreenButton>
+                                : 
+                                <Button className={classes.activityButton} id="videoaula" variant="outlined" color="primary" onClick={handleClickOpen}>Vídeoaula</Button>
+                            }
+                            <Dialog fullScreen open={open.videoaula} onClose={handleClose} TransitionComponent={Transition}>
+                            <AppBar className={classes.appBar}>
+                                <Toolbar>
+                                <IconButton id="videoaula" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
+                                    <CloseIcon />
+                                </IconButton>
+                                <Typography variant="h6" className={classes.title}>
+                                    Vídeoaula
+                                </Typography>
+                                </Toolbar>
+                            </AppBar>
+                            <Grid container={true} spacing={3}>
+                                <Grid item={true} xs={12} lg={12} sm={12} align='center'>
+                                <Typography>Aqui ficará a vídeoaula.</Typography>
+                                </Grid>
+                                <Grid item={true} xs={12} lg={12} sm={12} align='center' >
+                                <Button id="videoaula" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
+                                    Assistido
+                                </Button>
+                                </Grid>
+                            </Grid>
+                            </Dialog>
+                        </Grid>
+                        {/* Exercícios de Aprofundamento */}
+                        <Grid item={true} xs={12} lg={3} sm={12}>
+                        <Checkbox className={classes.checkbox} disabled={true} checked={check.exercicioAprofundamento}/>
                         {
-                            check.materialEstudo ?
-                            <GreenButton className={classes.activityButton} id="materialEstudo" variant="contained" color="primary" onClick={handleClickOpen}>Material de Estudo</GreenButton>
+                            check.exercicioAprofundamento ?
+                            <GreenButton className={classes.activityButton} id="exercicioAprofundamento" variant="contained" color="primary" onClick={handleClickOpen}>Aprofundamento</GreenButton>
                             : 
-                            <Button className={classes.activityButton} id="materialEstudo" variant="outlined" color="primary" onClick={handleClickOpen}>Material de Estudo</Button>
+                            <Button className={classes.activityButton} id="exercicioAprofundamento" variant="outlined" color="primary" onClick={handleClickOpen}>Aprofundamento</Button>
                         }
-                        <Dialog fullScreen open={open.materialEstudo} onClose={handleClose} TransitionComponent={Transition}>
+                        <Dialog fullScreen open={open.exercicioAprofundamento} onClose={handleClose} TransitionComponent={Transition}>
                         <AppBar className={classes.appBar}>
                             <Toolbar>
-                            <IconButton id="materialEstudo" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
+                            <IconButton id="exercicioAprofundamento" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
                                 <CloseIcon />
                             </IconButton>
                             <Typography variant="h6" className={classes.title}>
-                                {topico}
+                                Exercícios de Aprofundamento
                             </Typography>
                             </Toolbar>
                         </AppBar>
                         <Grid container={true} spacing={3}>
-                            <Grid className={classes.material} item={true} xs={12} lg={12} sm={12} align='center'>
-                            <PDFViewer source={`http://localhost:5000/uploads/content/${id}.pdf`}/>
+                            <Grid item={true} xs={12} lg={12} sm={12} align='center'>
+                            <Typography>Aqui ficarão os exercícios de aprofundamento.</Typography>
                             </Grid>
                             <Grid item={true} xs={12} lg={12} sm={12} align='center' >
-                            <Button id="materialEstudo" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
+                            <Button id="exercicioAprofundamento" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
                                 Finalizado
                             </Button>
                             </Grid>
                         </Grid>
                         </Dialog>
                     </Grid>
-                    {/* Exercícios de Fixação */}
-                    <Grid item={true} xs={12} lg={3} sm={12}>
-                        <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.exercicioFixacao}/>
-                        {
-                            check.exercicioFixacao ?
-                            <GreenButton className={classes.activityButton} id="exercicioFixacao" variant="contained" color="primary" onClick={handleClickOpen}>Exercícios de Fixação</GreenButton>
-                            : 
-                            <Button className={classes.activityButton} id="exercicioFixacao" variant="outlined" color="primary" onClick={handleClickOpen}>Exercícios de Fixação</Button>
-                        }
-                        <Dialog fullScreen open={open.exercicioFixacao} onClose={handleClose} TransitionComponent={Transition}>
-                        <AppBar className={classes.appBar}>
-                            <Toolbar>
-                            <IconButton id="exercicioFixacao" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
-                                <CloseIcon />
-                            </IconButton>
-                            <Typography variant="h6" className={classes.title}>
-                                Exercícios de Fixação
-                            </Typography>
-                            </Toolbar>
-                        </AppBar>
-                        <Grid container={true} spacing={3}>
-                            <Grid item={true} xs={12} lg={12} sm={12} align='center'>
-                            <Typography>Aqui ficarão os exercícios.</Typography>
-                            </Grid>
-                            <Grid item={true} xs={12} lg={12} sm={12} align='center' >
-                            <Button id="exercicioFixacao" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
-                                Finalizado
-                            </Button>
-                            </Grid>
-                        </Grid>
-                        </Dialog>
-                    </Grid>
-                    {/* Video-aula */}
-                    <Grid item={true} xs={12} lg={3} sm={12}>
-                        <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.videoaula}/>
-                        {
-                            check.videoaula ?
-                            <GreenButton className={classes.activityButton} id="videoaula" variant="contained" color="primary" onClick={handleClickOpen}>Vídeoaula</GreenButton>
-                            : 
-                            <Button className={classes.activityButton} id="videoaula" variant="outlined" color="primary" onClick={handleClickOpen}>Vídeoaula</Button>
-                        }
-                        <Dialog fullScreen open={open.videoaula} onClose={handleClose} TransitionComponent={Transition}>
-                        <AppBar className={classes.appBar}>
-                            <Toolbar>
-                            <IconButton id="videoaula" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
-                                <CloseIcon />
-                            </IconButton>
-                            <Typography variant="h6" className={classes.title}>
-                                Vídeoaula
-                            </Typography>
-                            </Toolbar>
-                        </AppBar>
-                        <Grid container={true} spacing={3}>
-                            <Grid item={true} xs={12} lg={12} sm={12} align='center'>
-                            <Typography>Aqui ficará a vídeoaula.</Typography>
-                            </Grid>
-                            <Grid item={true} xs={12} lg={12} sm={12} align='center' >
-                            <Button id="videoaula" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
-                                Assistido
-                            </Button>
-                            </Grid>
-                        </Grid>
-                        </Dialog>
-                    </Grid>
-                    {/* Exercícios de Aprofundamento */}
-                    <Grid item={true} xs={12} lg={3} sm={12}>
-                    <Checkbox className={classes.checkbox} disabled={true} checked={check.exercicioAprofundamento}/>
-                    {
-                        check.exercicioAprofundamento ?
-                        <GreenButton className={classes.activityButton} id="exercicioAprofundamento" variant="contained" color="primary" onClick={handleClickOpen}>Aprofundamento</GreenButton>
-                        : 
-                        <Button className={classes.activityButton} id="exercicioAprofundamento" variant="outlined" color="primary" onClick={handleClickOpen}>Aprofundamento</Button>
-                    }
-                    <Dialog fullScreen open={open.exercicioAprofundamento} onClose={handleClose} TransitionComponent={Transition}>
-                    <AppBar className={classes.appBar}>
-                        <Toolbar>
-                        <IconButton id="exercicioAprofundamento" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
-                            <CloseIcon />
-                        </IconButton>
-                        <Typography variant="h6" className={classes.title}>
-                            Exercícios de Aprofundamento
-                        </Typography>
-                        </Toolbar>
-                    </AppBar>
-                    <Grid container={true} spacing={3}>
-                        <Grid item={true} xs={12} lg={12} sm={12} align='center'>
-                        <Typography>Aqui ficarão os exercícios de aprofundamento.</Typography>
-                        </Grid>
-                        <Grid item={true} xs={12} lg={12} sm={12} align='center' >
-                        <Button id="exercicioAprofundamento" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
-                            Finalizado
-                        </Button>
-                        </Grid>
-                    </Grid>
-                    </Dialog>
                 </Grid>
-            </Grid>
-            </AccordionDetails>
-        </Accordion>
+                </AccordionDetails>
+            </Accordion>
+        </Slide>
     )
 }

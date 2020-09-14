@@ -34,7 +34,7 @@ function ListarItens(props) {
 
     return (
         <> 
-        <Divider /> 
+        {/* <Divider />  */}
         <List>
             {
                 itens.map(item => {
@@ -51,6 +51,7 @@ function ListarItens(props) {
     </>
     );
 }
+
 function ItemsDrawer(props) {
     const {history} = props;
     const classes = useStyles();
