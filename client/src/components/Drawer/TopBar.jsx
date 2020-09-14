@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
             ], {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.leavingScreen
-            })
+            }),
     },
     appBarShift: {
         width: `calc(100% - ${drawerWidth}px)`,
@@ -37,11 +37,14 @@ const useStyles = makeStyles(theme => ({
             ], {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen
-            })
+            }),
+        [theme.breakpoints.down('sm')]: {
+            
+        }
     },
     logo: {
-        width: "150px",
-        minWidth: "150px",
+        width: "10rem",
+        minWidth: "10rem",
         height: "30px",
         minHeight: "30px"
     },
@@ -54,7 +57,7 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         flexGrow: 1,
-        minWidth: drawerWidth,
+        minWidth: '8rem',
         display: "block",
         textAlign: "center",
         paddingTop: "7px",
@@ -70,7 +73,7 @@ function TopBar(props) {
     };
 
     return (
-        <>
+        <view className={classes.topBar}>
             <AppBar
                 position="fixed"
                 className={clsx(classes.appBar, {
@@ -96,7 +99,7 @@ function TopBar(props) {
 
                 </Toolbar>
             </AppBar>
-        </>
+        </view>
     );
 }
 

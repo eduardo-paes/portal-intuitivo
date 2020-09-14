@@ -1,44 +1,31 @@
 import React, { useState } from "react";
 import { MyContainer } from "../../assets/styles/styledComponents";
-import { Grid } from '@material-ui/core';
+import { Grid, makeStyles } from '@material-ui/core';
 import { useEffect } from "react";
 import api from "../../api";
 import ContentAccordion from "../../components/Accordions/ContentAccordion";
 
-// function getTheCurrentDay() {
-//   const today = new Date();
-//   const day = today.getDate();
- 
-//   let week_day = ""; 
-//   switch (today.getDay()) {
-//     case 0:
-//       week_day = "Domingo";
-//       break;
-//     case 1:
-//       week_day = "Segunda-Feira";
-//       break;
-//     case 2:
-//       week_day = "Terça-Feira";
-//       break;
-//     case 3:
-//       week_day = "Quarta-Feira";
-//       break;
-//     case 4:
-//       week_day = "Quinta-Feira";
-//       break;
-//     case 5:
-//       week_day = "Sexta-Feira";
-//       break;    
-//     case 6:
-//       week_day = "Sábado";
-//       break;    
+const useStyles = makeStyles((theme) => ({
+  grid: {
+    width: '100%',
+    padding: 0
+  },
+  heading: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.typography.pxToRem(11)
+    }
+  },
+  secondaryHeading: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.typography.pxToRem(12)
+    }
+  },
+  studyPlan: {
+    width: '100%',
+    padding: 0
+  }
+}));
 
-//     default:
-//       break;
-//   }
-
-//   return day + ", " + week_day + ", " + today.getFullYear();
-// }
 
 function getTheWeek() {
 
@@ -54,6 +41,13 @@ function getTheWeek() {
 }
 
 function StudyPlan (props) {
+  const classes = useStyles();
+  const borderColor = [
+    'rgba(127, 63, 180, 1)',
+    'rgba(63, 191, 63, 1)',
+    'rgba(63, 63, 191, 1)',
+    'rgba(220, 200, 63, 1)',
+  ];
   let topico = [];
   const [ content, setContent ] = useState([]);
   const [ disciplinas, setDisciplinas ] = useState([]);
@@ -65,7 +59,7 @@ function StudyPlan (props) {
   useEffect(() => {
     const abortController = new AbortController();
     async function fetchDisciplinaAPI() {
-      const response = await api.listarDisciplinasPorDiaDaSemana(dia - 1);
+      const response = await api.listarDisciplinasPorDiaDaSemana(2);
       const value = response.data.data;
       setDisciplinas(value);
     }
@@ -94,36 +88,53 @@ function StudyPlan (props) {
     // eslint-disable-next-line
   }, [disciplinas]);
 
+  function returnContent() {
+    if (content.length === 0) {
+      return <p>Não há conteúdo a ser estudado hoje, portanto, aproveite o descanso!</p>
+    } else {
+      return content.map((row, index) => {
+        topico[index] = row[0].topico;
+        return (
+          <Grid 
+            className={classes.grid} 
+            key={index} 
+            item={true} 
+            xs={12} 
+            lg={12} 
+            sm={12}
+          >
+            <ContentAccordion 
+              color={borderColor[index]}
+              id={row[0]._id} 
+              topico={row[0].topico} 
+              disciplina={row[0].disciplina}
+            />
+          </Grid>
+        )
+      })
+    }
+  }
+
   return (
-    <MyContainer>
+    <MyContainer className={classes.studyPlan}>
       
       <header>
-        <Grid container={true} spacing={3}>
-          <Grid item={true} xs={12} sm={12}>
+        <Grid container={true} spacing={1}>
+          <Grid className={classes.heading} item={true} xs={12} sm={12}>
             <h1 className="heading-page">Plano de Estudo</h1>
           </Grid>
         </Grid>
-        <Grid container={true} spacing={6}>
-          <Grid item={true} xs={6} lg={6} sm={6}>
+        <Grid container={true} spacing={1}>
+          <Grid className={classes.secondaryHeading} item={true} xs={6} lg={6} sm={6}>
             <h3 className="heading-page">Estudo do dia</h3>
           </Grid>
-          <Grid item={true} align="right" xs={6} lg={6} sm={6}>
+          <Grid className={classes.secondaryHeading} item={true} align="right" xs={6} lg={6} sm={6}>
             <h3 className="heading-page">{diaDaSemana[dia] + ", Semana " + getTheWeek()}</h3>
           </Grid>
         </Grid>
       </header>
-      <Grid container={true} spacing={6}>
-        {
-          content.map((row, index) => {
-            topico[index] = row[0].topico;
-            return (
-              <Grid key={index} item={true} xs={12} lg={12} sm={12}>
-                <ContentAccordion id={row[0]._id} topico={row[0].topico} disciplina={row[0].disciplina}/>
-              </Grid>
-            )
-          })
-        }
-        
+      <Grid container={true} spacing={2}>
+        {returnContent()}
       </Grid>      
     </MyContainer>
   );

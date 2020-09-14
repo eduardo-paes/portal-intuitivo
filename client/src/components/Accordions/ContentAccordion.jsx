@@ -1,73 +1,38 @@
 import React from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, AppBar, Button, Checkbox, Dialog, Grid, IconButton, makeStyles, Slide, Toolbar, Typography } from '@material-ui/core';
+import { AccordionDetails, AccordionSummary, AppBar, Button, Checkbox, Dialog, Grid, IconButton, Slide, Toolbar, Typography, withStyles } from '@material-ui/core';
+import MuiAccordion from '@material-ui/core/Accordion';
 import PDFViewer from '../PDFViewer/PDFViewer';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CloseIcon from '@material-ui/icons/Close';
 import CircularStatic from '../ProgressBar/CircularStatic';
 import { GreenButton } from '../../assets/styles/styledComponents';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-      width: '100%',
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      flexBasis: '33.33%',
-      flexShrink: 0,
-      marginLeft: '1rem',
-      alignItems: 'center',
-      display: 'flex'
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      textAlign: 'flex-end',
-      display: 'flex'
-    },
-    appBar: {
-      position: 'relative',
-    },
-    activityButton: {
-        width: '17rem'
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    finalizedButton: {
-      display: 'flex',
-      alignContent: 'center',
-      justifyContent: 'center'
-    },
-    material: {
-      marginTop: '2rem',
-      marginRight: '5rem',
-      marginLeft: '5rem'
-    },
-    checkbox: {
-        display: 'none'
-    }
-}));
+import { useStyles } from './classes';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 }); 
 
 export default function ContentAccordion(props) {
+    
+    const { id, topico, disciplina, color } = props;
 
+
+    const AccordionPersonalized = withStyles({
+        root: {
+          borderBottom: `0.20rem solid ${color}`,
+          width: '100%'
+        }
+    })(MuiAccordion);
     const classes = useStyles();
-    const { id, topico, disciplina } = props;
+    
+    // Definição dos estados que serão utilizados
     const [ progresso, setProgresso ] = React.useState(0);
-
     const [open, setOpen] = React.useState({
         materialEstudo: false,
         exercicioFixacao: false,
         videoaula: false,
         exercicioAprofundamento: false
     });
-
     const [check, setCheck] = React.useState({
         materialEstudo: false,
         exercicioFixacao: false,
@@ -75,6 +40,7 @@ export default function ContentAccordion(props) {
         exercicioAprofundamento: false
     });
 
+    // Definição das funções 
     const handleClickOpen = (event) => {
         const name  = event.target.offsetParent.id;
         setOpen(preValue => ({
@@ -114,20 +80,20 @@ export default function ContentAccordion(props) {
     };
 
     return (
-        <Accordion>
+        <AccordionPersonalized>
             <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header">
                 <CircularStatic progresso={progresso}/>
-                <Typography className={classes.heading}>{topico}</Typography>
-                <Typography className={classes.secondaryHeading}>{disciplina.nome}</Typography>
+                <Typography id="heading" className={classes.heading}>{topico}</Typography>
+                <Typography id="secondaryHeading" className={classes.secondaryHeading}>{disciplina.nome}</Typography>
             </AccordionSummary>
 
             <AccordionDetails>
-                <Grid container={true} spacing={3}>
+                <Grid className={classes.accordionDetails} container={true} spacing={3}>
                     {/* Material de Estudo */}
-                    <Grid item={true} xs={12} lg={3} sm={12}>
+                    <Grid align="center" item={true} xs={12} lg={3} sm={12}>
                         <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
                         {
                             check.materialEstudo ?
@@ -159,7 +125,7 @@ export default function ContentAccordion(props) {
                         </Dialog>
                     </Grid>
                     {/* Exercícios de Fixação */}
-                    <Grid item={true} xs={12} lg={3} sm={12}>
+                    <Grid align="center" item={true} xs={12} lg={3} sm={12}>
                         <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.exercicioFixacao}/>
                         {
                             check.exercicioFixacao ?
@@ -191,7 +157,7 @@ export default function ContentAccordion(props) {
                         </Dialog>
                     </Grid>
                     {/* Video-aula */}
-                    <Grid item={true} xs={12} lg={3} sm={12}>
+                    <Grid align="center" item={true} xs={12} lg={3} sm={12}>
                         <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.videoaula}/>
                         {
                             check.videoaula ?
@@ -223,7 +189,7 @@ export default function ContentAccordion(props) {
                         </Dialog>
                     </Grid>
                     {/* Exercícios de Aprofundamento */}
-                    <Grid item={true} xs={12} lg={3} sm={12}>
+                    <Grid align="center" item={true} xs={12} lg={3} sm={12}>
                     <Checkbox className={classes.checkbox} disabled={true} checked={check.exercicioAprofundamento}/>
                     {
                         check.exercicioAprofundamento ?
@@ -256,6 +222,6 @@ export default function ContentAccordion(props) {
                 </Grid>
             </Grid>
             </AccordionDetails>
-        </Accordion>
+        </AccordionPersonalized>
     )
 }
