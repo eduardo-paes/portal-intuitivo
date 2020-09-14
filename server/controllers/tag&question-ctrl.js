@@ -178,40 +178,52 @@ listarTagQuestao = async (req, res) => {
 // FUNÇÕES POR QUESTÃO-ID
 // ======================================
 
-// Função para listar os tagQuestaos contidos no banco
+// Função para listar TQ por QuestaoID
 listarTQPorQuestaoID = async (req, res) => {
-    await TagQuestao.aggregate([
-        {
-            $lookup: {
-                from: "tags",
-                localField: "tagID",
-                foreignField: "_id",
-                as:"tagInfo"
+    await TagQuestao
+        .find({ questaoID: req.params.id }, 
+            (err, tagQuestaoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
             }
-        },
-        {
-            $match : {
-                "tagInfo.questaoID": req.params.questaoID
-            }
-        },
-    ], (err, listaTagQuestao) => {
-        // Verificação de erros
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        // Verifica se há dados na lista
-        if (!listaTagQuestao.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
-        }
 
-        console.log(listaTagQuestao);
-        // Caso não haja erros, retorna lista
-        return res.status(200).json({ success: true, data: listaTagQuestao })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+            if (!tagQuestaoEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "TagQuestao não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: tagQuestaoEncontrada})
+        })
+        .catch(err => console.log(err))
+}
+
+// Função para listar TQ por TagID
+listarTQPorTagID = async (req, res) => {
+    await TagQuestao
+        .find({ tagID: req.params.id }, 
+            (err, tagQuestaoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!tagQuestaoEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "TagQuestao não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: tagQuestaoEncontrada})
+        })
+        .catch(err => console.log(err))
 }
 
 // Exporta os módulos
@@ -221,5 +233,6 @@ module.exports = {
     removerTagQuestao,
     encTagQuestaoPorID,
     listarTagQuestao,
-    listarTQPorQuestaoID
+    listarTQPorQuestaoID,
+    listarTQPorTagID
 }

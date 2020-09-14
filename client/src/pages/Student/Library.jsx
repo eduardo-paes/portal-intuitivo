@@ -40,7 +40,6 @@ function Library (props) {
   const [listaConteudo, setListaConteudo] = useState([]);
   const [numeracao, setNumeracao] = useState([]);
   const [checked, setChecked] = useState(false);
-
   const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   // -- Carrega as Disciplinas existentes no banco
@@ -66,14 +65,13 @@ function Library (props) {
     return abortController.abort();
   }, []);
 
-  // -- Carrega o Conteúdo existente no banco
-  useEffect(() => {
-    const abortController = new AbortController();
-    ListarConteudo();
-    return abortController.abort();
-    // eslint-disable-next-line
-  }, [filter]);
+  // -- Ao clicar em Filtro
+  function onCheck() {
+    setChecked((prev) => !prev); 
+    clearFilter();
+  }
 
+  // -- Ao alterar qualquer valor do filtro
   function onFilterChange (event) {
     const { name, value } = event.target;
     setFilter (preValue => ({
@@ -82,10 +80,12 @@ function Library (props) {
     }))
   }
 
-  function clearFilter () {
+  // -- Limpa o filtro
+  function clearFilter() {
     setFilter({ topico: "", disciplina: "", numeracao: "" });
   }
 
+  // -- Lista os conteúdos
   function ListarConteudo() {
     if (listaConteudo.length > 0) {
       return listaConteudo.map((row, index) => {
@@ -219,7 +219,7 @@ function Library (props) {
                   {...(true ? { timeout: 1000 } : {})}
                 >
                   <Tooltip title="Filtrar">
-                    <Fab color="primary" justify="flex-start" aria-label="filter" onClick={() => setChecked((prev) => !prev)}>
+                    <Fab color="primary" justify="flex-start" aria-label="filter" onClick={() => onCheck()}>
                       <FilterListIcon />
                     </Fab>
                   </Tooltip>

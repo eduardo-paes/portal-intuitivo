@@ -34,7 +34,6 @@ function ListarItens(props) {
 
     return (
         <> 
-        {/* <Divider />  */}
         <List>
             {
                 itens.map(item => {
@@ -48,6 +47,7 @@ function ListarItens(props) {
                 })
             }
         </List>
+        <Divider /> 
     </>
     );
 }
@@ -125,10 +125,10 @@ function ItemsDrawer(props) {
     }, [token]);
     return (
         <div>
+            {/* <Divider/> */}
             {access.aluno && <ListarItens itens={itens.aluno} classes={classes}/>}
             {access.professor && <ListarItens itens={itens.professor} classes={classes}/>}
             {access.admin && <ListarItens itens={itens.admin} classes={classes}/>}
-            <Divider/>
         </div>
     );
 }
