@@ -84,6 +84,7 @@ router.put("/controle-atividade/:id", AtividadeCtrl.atualizarAtividade);
 router.delete("/controle-atividade/:id", AtividadeCtrl.removerAtividade);
 router.get("/controle-atividade/:id", AtividadeCtrl.encAtividadePorID);
 router.get("/controle-atividade", AtividadeCtrl.listarAtividade);
+router.get("/plano-estudo/:id", AtividadeCtrl.listarAtividadesPorTopico);
 
 // REVISAO -- Definição dos métodos para cada rota de atividade
 router.post("/controle-revisao", RevisaoCtrl.inserirRevisao);

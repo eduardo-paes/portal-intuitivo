@@ -12,12 +12,12 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     [theme.breakpoints.down('sm')]: {
-      fontSize: theme.typography.pxToRem(11)
+      fontSize: theme.typography.pxToRem(17)
     }
   },
   secondaryHeading: {
     [theme.breakpoints.down('sm')]: {
-      fontSize: theme.typography.pxToRem(12)
+      fontSize: theme.typography.pxToRem(11)
     }
   },
   studyPlan: {
@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     padding: 0
   }
 }));
-
 
 function getTheWeek() {
 
@@ -121,15 +120,15 @@ function StudyPlan (props) {
       <header>
         <Grid container={true} spacing={3}>
           <Grid item={true} xs={12} sm={12}>
-            <Typography id="studyPlanTitle" variant="h4">Plano de Estudo</Typography>
+            <Typography className={classes.heading} id="studyPlanTitle" variant="h4">Plano de Estudo</Typography>
           </Grid>
         
           <Grid item={true} xs={6} lg={6} sm={6}>
-            <Typography id="studyPlanSubTitle" variant="h6">Estudo do dia</Typography>
+            <Typography className={classes.secondaryHeading} id="studyPlanSubTitle" variant="h6">Estudo do dia</Typography>
           </Grid>
           
           <Grid item={true} align="right" xs={6} lg={6} sm={6}>
-            <Typography id="studyPlanSubTitle" variant="h6">{diaDaSemana[dia] + ", Semana " + getTheWeek()}</Typography>
+            <Typography className={classes.secondaryHeading} id="studyPlanSubTitle" variant="h6">{diaDaSemana[dia] + ", Semana " + getTheWeek()}</Typography>
           </Grid>
         </Grid>
       </header>

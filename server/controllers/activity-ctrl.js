@@ -177,8 +177,10 @@ listarAtividade = async (req, res) => {
 }
 
 // Função para listar os atividades contidos no banco
-listarAtividadePorCondicao = async (req, res) => {
-    await Atividade.find({}, (err, listaAtividade) => {
+listarAtividadesPorTopico = async (req, res) => {
+    await Atividade.find({
+        "topico.id": req.params.id
+    }, (err, listaAtividade) => {
         // Verificação de erros
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -202,5 +204,6 @@ module.exports = {
     atualizarAtividade,
     removerAtividade,
     encAtividadePorID,
-    listarAtividade
+    listarAtividade,
+    listarAtividadesPorTopico
 }

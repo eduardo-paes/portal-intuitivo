@@ -52,6 +52,11 @@ export const useStyles = makeStyles((theme) => ({
       }
 
     },
+    question: {
+      marginTop: '1rem',
+      marginLeft: '5rem',
+      marginRight: '5rem'
+    },
     checkbox: {
         display: 'none'
     }
