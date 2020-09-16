@@ -27,7 +27,6 @@ export default function ContentAccordion(props) {
     const classes = useStyles();
     
     // Definição dos estados que serão utilizados
-    const [ flag, setFlag ] = React.useState(false);
     const [ progresso, setProgresso ] = React.useState(0);
     const [ open, setOpen ] = React.useState({
         materialEstudo: false,
@@ -62,7 +61,7 @@ export default function ContentAccordion(props) {
         const abortController = new AbortController();
         let questoes = [];
         
-        if( flag === true ) {
+        if( activity.length > 0 ) {
             async function fetchQuestaoAPI() {
                 for(let i = 0; i < activity[0].questoes.length; ++i) {
                     const response = await api.encQuestaoPorID(activity[0].questoes[i]);
@@ -73,15 +72,13 @@ export default function ContentAccordion(props) {
             }
             fetchQuestaoAPI();
         }
-        setFlag(false);
         return abortController.abort();
         // eslint-disable-next-line
-    }, [flag]);
+    }, [activity]);
 
     // Definição das funções 
     const handleClickOpen = (event) => {
         const name  = event.target.offsetParent.id;
-        if (name === 'exercicioFixacao' || name === 'exercicioAprofundamento') setFlag(true);
         setOpen(preValue => ({
             ...preValue,
             [name]: true
@@ -190,7 +187,7 @@ export default function ContentAccordion(props) {
                                     (question.length > 0) ? 
                                     question.map((row, index) => {
                                         return (
-                                            <Grid key={index} className={classes.question} item={true} xs={12} lg={12} sm={12}>                                    
+                                            <Grid key={index} className={classes.question} align="center" item={true} xs={12} lg={12} sm={12}>                                    
                                                 <Typography variant="h6" className={classes.title}>{"Questão " + (index+1)}</Typography>
                                                 <QuestionCard 
                                                     enunciado={row.enunciado} 
@@ -204,7 +201,7 @@ export default function ContentAccordion(props) {
                                 }
                                 <Grid item={true} xs={12} lg={12} sm={12} align='center' >
                                     <Button id="exercicioFixacao" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
-                                        Finalizado
+                                        Voltar
                                     </Button>
                                 </Grid>
                             </Grid>

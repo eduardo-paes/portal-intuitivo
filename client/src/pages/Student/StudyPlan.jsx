@@ -72,12 +72,10 @@ function StudyPlan (props) {
     let area = 'area';
     var value = [];
     const abortController = new AbortController();
-    // console.log(disciplinas)
     
     async function fetchConteudoAPI() {
       for (let i = 0; i < disciplinas.length; ++i) {
         const response = await api.listarConteudoPersonalizado(disciplinas[i]._id, area, getTheWeek());
-        // console.log(response);
         if (response.data.data[0]) value[i] = response.data.data;
       }
       setContent(value);

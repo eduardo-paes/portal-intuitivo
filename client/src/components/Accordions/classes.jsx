@@ -55,7 +55,11 @@ export const useStyles = makeStyles((theme) => ({
     question: {
       marginTop: '1rem',
       marginLeft: '5rem',
-      marginRight: '5rem'
+      marginRight: '5rem',
+      [theme.breakpoints.down('sm')]: {
+        marginLeft: '1rem',
+        marginRight: '0.5rem'
+      }
     },
     checkbox: {
         display: 'none'
