@@ -18,14 +18,14 @@ export const useStyles = makeStyles((theme) => ({
     secondaryHeading: {
       fontSize: theme.typography.pxToRem(15),
       color: theme.palette.text.secondary,
-      marginLeft: '50%',
       alignItems: 'center',
-      justifyContent: 'flex-end',
-      textAlign: 'flex-end',
+      marginLeft: '1rem',
       display: 'flex',
       [theme.breakpoints.down('sm')]: {
         fontSize: theme.typography.pxToRem(13),
-        marginLeft: '20%',
+        justifyContent: 'center',
+        textAlign: 'center',
+        marginLeft: '0rem',
       }
     },
     appBar: {
@@ -52,6 +52,14 @@ export const useStyles = makeStyles((theme) => ({
       }
 
     },
+    answer: {
+      alignItems: 'left',
+      display: 'flex',
+      justifyContent: 'left',
+      marginLeft: '-2rem',
+      marginRight: '-2rem',
+      width: '100%'
+    },
     question: {
       marginTop: '1rem',
       marginLeft: '5rem',
@@ -60,6 +68,10 @@ export const useStyles = makeStyles((theme) => ({
         marginLeft: '1rem',
         marginRight: '0.5rem'
       }
+    },
+    questionText: {
+      marginLeft: '1rem',
+      marginRight: '1rem',
     },
     checkbox: {
         display: 'none'

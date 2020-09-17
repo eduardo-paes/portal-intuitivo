@@ -1,13 +1,13 @@
 import React from "react";
-
 import "./QuestionStyles.css"
-// -- Components
 import { MyCardContent } from "../../assets/styles/styledComponents"
 import RadioAnswer from "../Radio/RadioAnswer";
-import { Button, TextareaAutosize } from "@material-ui/core";
+import { Grid, TextareaAutosize } from "@material-ui/core";
+import {useStyles} from '../../assets/styles/classes';
 
 export default function QuestionCard (props) {
 
+    const classes = useStyles();
     const { enunciado, tipoResposta, padraoResposta, resposta } = props;
     const [value, setValue] = React.useState(0);
     const [answered, setAnswered] = React.useState(false);
@@ -30,17 +30,20 @@ export default function QuestionCard (props) {
 
     return (
         <MyCardContent>
-            <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: enunciado}} />
-            { 
-                (tipoResposta === "multiplaEscolha") ? 
-                <RadioAnswer value={value} setValue={setValue} answered={answered} gabarito={gabarito._id} color={color} resposta={resposta}/>
-                : (tipoResposta === "discursiva") ?
-                <TextareaAutosize/>
-                : null
-            }
-            <Button autoFocus variant='contained' color="primary" onClick={handleSubmit}>
-              Responder
-            </Button>
+            <Grid container={true} spacing={0}>
+                <Grid className={classes.questionText} item={true} align="left" xs={12} lg={12} sm={12}>
+                    <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: enunciado}} />
+                </Grid>
+                <Grid className={classes.answer} item={true} align="left" xs={12} lg={12} sm={12}>
+                    { 
+                        (tipoResposta === "multiplaEscolha") ? 
+                        <RadioAnswer value={value} setValue={setValue} answered={answered} gabarito={gabarito._id} color={color} resposta={resposta}/>
+                        : (tipoResposta === "discursiva") ?
+                        <TextareaAutosize/>
+                        : null
+                    }
+                </Grid>
+            </Grid>
         </MyCardContent>
     );
 }

@@ -33,7 +33,7 @@ function getTheWeek() {
   let month = new Date().getMonth();
 
   let today = new Date(year, month, day);
-  let firstday = new Date(2020, 8, 10, 0, 0, 0, 0);
+  let firstday = new Date(2020, 8, 16, 0, 0, 0, 0);
   let week = Math.trunc(((((today.valueOf() - firstday.valueOf())/1000)/3600)/24)/7);
 
   return week+1;
@@ -118,7 +118,7 @@ function StudyPlan (props) {
       <header>
         <Grid container={true} spacing={3}>
           <Grid item={true} xs={12} sm={12}>
-            <Typography className={classes.heading} id="studyPlanTitle" variant="h4">Plano de Estudo</Typography>
+          <Typography id="studyPlanTitle" variant="h4">Plano de Estudo</Typography>
           </Grid>
         
           <Grid item={true} xs={6} lg={6} sm={6}>
