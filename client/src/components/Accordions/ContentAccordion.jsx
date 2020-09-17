@@ -6,9 +6,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CloseIcon from '@material-ui/icons/Close';
 import CircularStatic from '../ProgressBar/CircularStatic';
 import { GreenButton } from '../../assets/styles/styledComponents';
-import { useStyles } from './classes';
-import { QuestionCard } from '..';
+import { useStyles } from '../../assets/styles/classes';
 import api from '../../api';
+import ActivityCard from '../Cards/ActivityCard'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -124,12 +124,14 @@ export default function ContentAccordion(props) {
                 aria-controls="panel1a-content"
                 id="panel1a-header">
                 <CircularStatic progresso={progresso}/>
-                <Typography id="heading" className={classes.heading}>{topico}</Typography>
-                <Typography id="secondaryHeading" className={classes.secondaryHeading}>{disciplina.nome}</Typography>
+                <Typography id="heading" className={classes.heading}>{disciplina.nome}</Typography>
             </AccordionSummary>
 
             <AccordionDetails>
                 <Grid className={classes.accordionDetails} container={true} spacing={3}>
+                    <Grid align="center" item={true} xs={12} lg={12} sm={12}>
+                        <Typography id="secondaryHeading" className={classes.secondaryHeading}>{topico}</Typography>
+                    </Grid>
                     {/* Material de Estudo */}
                     <Grid align="center" item={true} xs={12} lg={3} sm={12}>
                         <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
@@ -171,7 +173,7 @@ export default function ContentAccordion(props) {
                             : 
                             <Button className={classes.activityButton} id="exercicioFixacao" variant="outlined" color="primary" onClick={handleClickOpen}>Exercícios de Fixação</Button>
                         }
-                        <Dialog fullScreen open={open.exercicioFixacao} onClose={handleClose} TransitionComponent={Transition}>
+                        <Dialog fullScreen open={open.exercicioFixacao} onClose={handleClose}>
                             <AppBar className={classes.appBar}>
                                 <Toolbar>
                                     <IconButton id="exercicioFixacao" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
@@ -185,19 +187,8 @@ export default function ContentAccordion(props) {
                             <Grid container={true} spacing={1}>
                                 {
                                     (question.length > 0) ? 
-                                    question.map((row, index) => {
-                                        return (
-                                            <Grid key={index} className={classes.question} align="center" item={true} xs={12} lg={12} sm={12}>                                    
-                                                <Typography variant="h6" className={classes.title}>{"Questão " + (index+1)}</Typography>
-                                                <QuestionCard 
-                                                    enunciado={row.enunciado} 
-                                                    tipoResposta={row.tipoResposta} 
-                                                    padraoResposta={row.padraoResposta} 
-                                                    resposta={row.resposta}
-                                                />
-                                            </Grid>
-                                        )
-                                    }) : null
+                                        <ActivityCard question={question}/>
+                                    : null
                                 }
                                 <Grid item={true} xs={12} lg={12} sm={12} align='center' >
                                     <Button id="exercicioFixacao" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
