@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '../../../node_modules/react-router-dom'
-import { AddButton, DeleteButton, MyAvatar, MyTextField, MyContainer } from "../../assets/styles/styledComponents"
+import { AddButton, DeleteButton, MyAvatar, MyTextField, MyContainer, GeneralTitle } from "../../assets/styles/styledComponents"
 import { MenuItem, Grid } from '@material-ui/core'
 
 // Upload da Imagem do Perfil
@@ -33,7 +33,7 @@ export default function UserForm (props) {
     return (
         <MyContainer>
             <section id="headerUserForm">
-                <h1 className="heading-page">{typeForm} Usuário</h1>
+                <GeneralTitle>{typeForm} Usuário</GeneralTitle>
             </section>
 
             <section id="bodyUserForm">

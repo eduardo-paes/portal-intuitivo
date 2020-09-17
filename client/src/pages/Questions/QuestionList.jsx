@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from '../../api'
 
 // -- Components
-import { MyContainer, CreateButton } from "../../assets/styles/styledComponents"
+import { MyContainer, CreateButton, GeneralTitle } from "../../assets/styles/styledComponents"
 import { QuestionTable, CustomDialog } from "../../components"
 import { Grid } from "@material-ui/core";
 
@@ -60,7 +60,8 @@ function QuestionInsert() {
 
         return (
         <MyContainer>
-            <h1 className="heading-page">Banco de Questões</h1>
+            <GeneralTitle>Banco de Questões</GeneralTitle>
+
             <Grid container={true} className={classes.root} spacing={2} justify="center">
                 <Grid id="cabecalhoListaQuestao" item={true} xs={12} sm={12} lg={12}>
                     <QuestionTable data={questoes} setMount={setMount} setQuestion={setQuestaoSelecionada} setHidden={setHiddenDialog} tableSelection={false}/>

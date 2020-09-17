@@ -7,7 +7,7 @@ import ChipsArray from './Utils/Chips'
 import api from '../../api'
 
 // -- Styles / Imports
-import { MyContainer, MyTextField, MyCard, AddButton, DeleteButton } from "../../assets/styles/styledComponents"
+import { MyContainer, MyTextField, MyCard, AddButton, DeleteButton, GeneralTitle } from "../../assets/styles/styledComponents"
 import { Grid, MenuItem, ButtonGroup, Button, Fab, Checkbox } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
@@ -241,7 +241,7 @@ export default function QuestionForm (props) {
             <section className="cabecalhoQuestao">
                 <Grid container={true} className={classes.root} spacing={2}>
                     <Grid item={true} xs={12}>
-                        <h1 className="heading-page">{title}</h1>
+                        <GeneralTitle>{title}</GeneralTitle>
                     </Grid>
                 </Grid>
 

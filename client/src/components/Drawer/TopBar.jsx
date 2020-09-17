@@ -65,7 +65,7 @@ export default function TopBar(props) {
     const {open, setOpen} = props;
 
     return (
-        <view className={classes.topBar}>
+        <div className={classes.topBar}>
             <AppBar
                 position="fixed"
                 className={clsx(classes.appBar, {
@@ -102,6 +102,6 @@ export default function TopBar(props) {
                     </Grid>
                 </Toolbar>
             </AppBar>
-        </view>
+        </div>
     );
 }

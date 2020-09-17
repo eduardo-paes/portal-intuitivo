@@ -1,10 +1,11 @@
-import React, {useEffect, useContext, useState} from 'react'
-import {withRouter} from "react-router-dom";
-import {StoreContext} from "../../utils"
+import React, { useEffect, useContext, useState } from 'react'
+import { withRouter } from "react-router-dom";
+import { StoreContext } from "../../utils"
+import api from '../../api'
 
 // -- Material UI: Core
-import {List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import { List, ListItem, ListItemIcon, ListItemText, Divider } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 // -- Material UI: Icon
 import Dashboard from '@material-ui/icons/Dashboard';
@@ -39,7 +40,7 @@ function ListarItens(props) {
                 itens.map(item => {
                     const {text, icon, onClick} = item;
                     return (
-                        <ListItem button={true} key={text} onClick={onClick} className={classes.root}>
+                        <ListItem key={text} button={true} onClick={onClick} className={classes.root}>
                             <ListItemIcon className={classes.root}>{icon}</ListItemIcon>
                             <ListItemText className={classes.root} primary={text} disableTypography={true}/>
                         </ListItem>
@@ -55,6 +56,7 @@ function ListarItens(props) {
 function ItemsDrawer(props) {
     const {history} = props;
     const classes = useStyles();
+    const [classLink, setClassLink] = useState('')
     const itens = {
         aluno: [
             {
@@ -73,7 +75,7 @@ function ItemsDrawer(props) {
             },{
                 text: "Classroom",
                 icon: <Classroom/>,
-                onClick: () => history.push("/classroom")
+                onClink: () => {console.log(classLink)};
             }, {
                 text: "Meu desempenho",
                 icon: <Performance/>,
@@ -113,6 +115,15 @@ function ItemsDrawer(props) {
     }
     const [access, setAccess] = useState({aluno: true});
     const {token} = useContext(StoreContext);
+
+    async function fetchClassLinkAPI() {
+        let response = await api.listarClassLink();
+        let value = response.data.data;
+        if (value.length) {
+            setClassLink(value[0].aulaLink);
+        }
+    }
+
     useEffect(() => {
         if (token.accessType === "Professor") {
             setAccess({professor: true});
@@ -122,7 +133,9 @@ function ItemsDrawer(props) {
                 admin: true
             });
         }
+        fetchClassLinkAPI();
     }, [token]);
+
     return (
         <div>
             {/* <Divider/> */}

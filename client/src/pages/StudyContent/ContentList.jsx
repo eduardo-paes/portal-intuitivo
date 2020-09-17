@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import api from '../../api';
 
-import { MyContainer, CreateButton, MyTextField } from "../../assets/styles/styledComponents";
+import { MyContainer, CreateButton, MyTextField, GeneralTitle } from "../../assets/styles/styledComponents";
 import { makeStyles, Grid, MenuItem, Button } from "@material-ui/core";
 import { ContentTable, PDFPreviewDialog } from '../../components';
 
@@ -94,11 +94,10 @@ export default function ContentList () {
 
   return (
     <MyContainer>
-
       <section>
           <Grid container={true} className={classes.root} spacing={3}>
               <Grid item={true} xs={12} sm={12}>
-                  <h1 className="heading-page">Conteúdos Disciplinares</h1>
+                <GeneralTitle>Conteúdos Disciplinares</GeneralTitle>
               </Grid>
           </Grid>
           <Grid container={true} className={classes.root} spacing={6}>
