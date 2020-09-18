@@ -8,12 +8,10 @@ import {useStyles} from '../../assets/styles/classes';
 export default function QuestionCard (props) {
 
     const classes = useStyles();
-    const { enunciado, tipoResposta, padraoResposta, resposta } = props;
+    const { idQuestion, enunciado, tipoResposta, gabarito, padraoResposta, resposta, setRespostaAluno } = props;
     const [value, setValue] = React.useState(0);
     const [answered, setAnswered] = React.useState(false);
     const [color, setColor] = React.useState('default');
-
-    let gabarito = resposta.find(element => element.gabarito === true);
     
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -37,7 +35,7 @@ export default function QuestionCard (props) {
                 <Grid className={classes.answer} item={true} align="left" xs={12} lg={12} sm={12}>
                     { 
                         (tipoResposta === "multiplaEscolha") ? 
-                        <RadioAnswer value={value} setValue={setValue} answered={answered} gabarito={gabarito._id} color={color} resposta={resposta}/>
+                        <RadioAnswer idQuestion={idQuestion} setRespostaAluno={setRespostaAluno} value={value} setValue={setValue} answered={answered} gabarito={gabarito._id} color={color} resposta={resposta}/>
                         : (tipoResposta === "discursiva") ?
                         <TextareaAutosize/>
                         : null
