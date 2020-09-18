@@ -1,32 +1,38 @@
-import 'date-fns';
 import React from 'react';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import MomentUtils from "@date-io/moment";
+import moment from "moment";
+import "moment/locale/pt-br";
 
 export default function MaterialUIPickers(props) {
-    const { selectedDate, setSelectedDate, label, name } = props;
+    const { selectedDate, setSelectedDate, label, name, setMount } = props;
+    const dateFormatter = str => { return str }
 
     const handleDateChange = (date) => {
+        let aux = moment(date._d).format("YYYY/MM/DDT07:00:00.000Z");
+        console.log(aux);
         setSelectedDate(preValue => ({
             ...preValue,
-            [name]: date
+            [name]: new Date(aux)
         }));
+        setMount(preValue => ({...preValue, anoLetivo: true}));
     };
 
+
     return (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <MuiPickersUtilsProvider locale="pt-br" libInstance={moment} utils={MomentUtils}>
             <KeyboardDatePicker
-                disableToolbar
+                autoOk={true}
+                disableToolbar={true}
                 variant="inline"
-                format="dd/MM/yyyy"
+                format="DD/MM/YYYY"
                 margin="normal"
-                id="date-picker"
                 label={label}
+                name={name}
                 value={selectedDate}
+                inputValue={moment(selectedDate).format("DD/MM/YYYY")}
                 onChange={handleDateChange}
+                rifmFormatter={dateFormatter}
                 KeyboardButtonProps={{ 'aria-label': 'change date' }}/>
         </MuiPickersUtilsProvider>
     );

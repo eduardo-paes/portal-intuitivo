@@ -4,15 +4,7 @@ import {Link as RouterLink} from 'react-router-dom';
 // -- Material UI
 import {withStyles, styled} from '@material-ui/core/styles';
 import {red, cyan, green} from '@material-ui/core/colors';
-import {
-    Avatar,
-    Typography,
-    Container,
-    TextField,
-    Button,
-    CardContent,
-    Card
-} from '@material-ui/core';
+import { Avatar, Typography, Container, TextField, Button, CardContent, Card } from '@material-ui/core';
 
 // Ícones: Material-UI
 import AddIcon from '@material-ui/icons/Add';
@@ -64,6 +56,16 @@ const GreenButton = withStyles((theme) => ({
     },
 }))(Button);
 
+const GeneralTitle = withStyles((theme) => ({
+    root: {
+        color: "#606161",
+        fontStyle: 'normal',
+        fontWeight: '500',
+        marginBottom: '1rem',
+        fontSize: "2rem"
+    },
+}))(Typography);
+
 function CreateButton(props) {
     const {title, url} = props;
     return (
@@ -95,11 +97,7 @@ const MyContainer = styled(Container)({
     maxHeight: "none",
 });
 
-const MyTypography = styled(Typography)({
-    marginBottom: "5%", 
-    padding: "1%", 
-    color: "#606161"
-});
+const MyTypography = styled(Typography)({ color: "#606161" });
 
 const LoginCard = styled(CardContent)({
     padding: "0.94rem", 
@@ -137,5 +135,6 @@ export {
     LoginCard,
     MyCard,
     MyCardContent,
-    MyAvatar
+    MyAvatar,
+    GeneralTitle
 }

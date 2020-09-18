@@ -1,8 +1,6 @@
 import axios from "axios";
 
-const api = axios.create({
-    baseURL: "http://localhost:5000/api",
-});
+const api = axios.create({ baseURL: "http://localhost:5000/api" });
 
 // -- Funções relacionadas ao Usuário
 export const inserirUsuario = novoUsuario => api.post("/controle-usuario", novoUsuario);
@@ -81,6 +79,13 @@ export const atualizarRevisao = (id, revisaoAtualizada) => api.put(`/controle-re
 export const removerRevisao = id => api.delete(`/controle-revisao/${id}`);
 export const encRevisaoPorID = id => api.get(`/controle-revisao/${id}`);
 
+// -- Funções relacionadas à ClassLink
+export const inserirClassLink = novoLink => api.post("/aula-link", novoLink);
+export const listarClassLink = () => api.get("/aula-link");
+export const atualizarClassLink = (id, linkAtualizado) => api.put(`/aula-link/${id}`, linkAtualizado);
+export const removerClassLink = id => api.delete(`/aula-link/${id}`);
+export const encClassLinkPorID = id => api.get(`/aula-link/${id}`);
+
 const apis = {
     // Usuário
     inserirUsuario,
@@ -149,6 +154,12 @@ const apis = {
     atualizarRevisao,
     removerRevisao,
     encRevisaoPorID,
+    // ClassLink
+    inserirClassLink,
+    listarClassLink,
+    atualizarClassLink,
+    removerClassLink,
+    encClassLinkPorID,
 }
 
 export default apis;

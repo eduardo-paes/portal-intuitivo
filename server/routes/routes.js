@@ -21,6 +21,7 @@ const AnoLetivoCtrl = require("../controllers/school-year-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
 const AtividadeCtrl = require("../controllers/activity-ctrl");
 const RevisaoCtrl = require("../controllers/revision-ctrl");
+const ClassLinkCtrl = require("../controllers/class-link-ctrl");
 
 // USUÁRIO -- Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
@@ -92,6 +93,13 @@ router.put("/controle-revisao/:id", RevisaoCtrl.atualizarRevisao);
 router.delete("/controle-revisao/:id", RevisaoCtrl.removerRevisao);
 router.get("/controle-revisao/:id", RevisaoCtrl.encRevisaoPorID);
 router.get("/controle-revisao", RevisaoCtrl.listarRevisao);
+
+// CLASSLINK -- Definição dos métodos para cada rota de classLink
+router.post("/aula-link", ClassLinkCtrl.inserirClassLink);
+router.put("/aula-link/:id", ClassLinkCtrl.atualizarClassLink);
+router.delete("/aula-link/:id", ClassLinkCtrl.removerClassLink);
+router.get("/aula-link/:id", ClassLinkCtrl.encClassLinkPorID);
+router.get("/aula-link", ClassLinkCtrl.listarClassLink);  
 
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {

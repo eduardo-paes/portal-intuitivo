@@ -2,8 +2,8 @@ import React, {useState, useEffect} from 'react'
 import api from '../../api'
 
 // Tabela Local: Material UI
-import {UserTable} from "../../components"
-import {CreateButton, MyContainer} from "../../assets/styles/styledComponents"
+import { UserTable } from "../../components"
+import { CreateButton, MyContainer, GeneralTitle } from "../../assets/styles/styledComponents"
 
 function UsersList() {
     const [usuario, setUsuario] = useState([])
@@ -39,7 +39,8 @@ function UsersList() {
     // Retorna a Tabela
     return (
         <MyContainer>
-            <h1 className="heading-page">Controle de Usuário</h1>
+            <GeneralTitle>Controle de Usuário</GeneralTitle>
+
             <UserTable usuarios={usuario} setMount={setMount}/>
             <CreateButton title="Registrar" url="/controle-usuario/create"/>
         </MyContainer>

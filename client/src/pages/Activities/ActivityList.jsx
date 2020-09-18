@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from '../../api'
 
 // -- Estilos
-import { MyContainer, CreateButton } from "../../assets/styles/styledComponents"
+import { MyContainer, CreateButton, GeneralTitle } from "../../assets/styles/styledComponents"
 import { makeStyles } from '@material-ui/core/styles';
 import { ActivityTable } from "../../components";
 import { Grid, Button, ButtonGroup } from '@material-ui/core';
@@ -100,7 +100,7 @@ export default function ActivityList() {
             <section id="cabecalhoListaAtividade">
                 <Grid container={true}>
                     <Grid item={true} xs={12} sm={6} lg={6}>
-                        <h1 className="heading-page">Atividades</h1>
+                        <GeneralTitle>Lista de Atividades</GeneralTitle>
                     </Grid>
                     <Grid item={true} xs={12} sm={6} lg={6} className={classes.activityMode}>
                         <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">

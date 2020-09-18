@@ -1,5 +1,5 @@
 import React from "react";
-import { MyContainer, MyTextField } from "../../assets/styles/styledComponents";
+import { MyContainer, MyTextField, GeneralTitle } from "../../assets/styles/styledComponents";
 import { Grid, MenuItem } from "@material-ui/core";
 import UploadContent from "../Upload/UploadContent";
 
@@ -12,7 +12,8 @@ function ContentForm (props) {
 
     return (
         <MyContainer>
-            <h1 className="heading-page">Criar Conteúdo</h1>
+            <GeneralTitle>Criar Conteúdo</GeneralTitle>
+
             <Grid container spacing={1}>
             <Grid item={true} xs={12} sm={4}>
                 <MyTextField

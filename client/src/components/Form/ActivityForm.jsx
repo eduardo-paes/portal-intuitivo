@@ -6,7 +6,7 @@ import api from '../../api'
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, MenuItem } from '@material-ui/core';
 import { QuestionTable, CustomDialog } from "../../components";
-import { MyContainer, MyTextField, AddButton, DeleteButton } from "../../assets/styles/styledComponents"
+import { MyContainer, MyTextField, AddButton, DeleteButton, GeneralTitle } from "../../assets/styles/styledComponents"
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
@@ -209,7 +209,7 @@ export default function ActivityForm (props) {
     return (
         <MyContainer>
             <section id="cabecalhoAtividade">
-                <h1 className="heading-page">Inserir Atividade</h1>
+                <GeneralTitle>Inserir Atividades</GeneralTitle>
 
                 <Grid container={true} spacing={1}>
                     {/* TipoAtividade */}
