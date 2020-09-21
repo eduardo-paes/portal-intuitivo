@@ -42,7 +42,9 @@ function UsersList() {
             <GeneralTitle>Controle de Usuário</GeneralTitle>
 
             <UserTable usuarios={usuario} setMount={setMount}/>
-            <CreateButton title="Registrar" url="/controle-usuario/create"/>
+            <div className="create-button">
+                <CreateButton title="Registrar" url="/controle-usuario/create"/>
+            </div>
         </MyContainer>
     )
 }

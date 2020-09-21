@@ -34,7 +34,7 @@ export default function ProfileMenu(props) {
         setAnchorEl(event.currentTarget);
     };
 
-    function handlePerfil () {
+    function handleProfile () {
         setAnchorEl(null);
         history.push(`/perfil/${token.userID}`);
     };
@@ -80,7 +80,7 @@ export default function ProfileMenu(props) {
                 }}
                 open={profileOpen}
                 onClose={() => setAnchorEl(null)}>
-                <MenuItem onClick={handlePerfil}>Perfil</MenuItem>
+                <MenuItem onClick={handleProfile}>Perfil</MenuItem>
                 <MenuItem button={true} onClick={handleLogout}>Sair</MenuItem>
             </Menu>
         </Grid>

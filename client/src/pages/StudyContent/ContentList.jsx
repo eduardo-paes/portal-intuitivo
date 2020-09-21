@@ -185,7 +185,9 @@ export default function ContentList () {
               </Grid>
           </Grid>
           <Grid item={true} xs={12} sm={12} align="center">
-            <CreateButton title="Inserir Conteúdo" url="/controle-conteudo/create"/>
+            <div className="create-button">
+              <CreateButton title="Inserir Conteúdo" url="/controle-conteudo/create"/>
+            </div>
           </Grid>
       </section>
 

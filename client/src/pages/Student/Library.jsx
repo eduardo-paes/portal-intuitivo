@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles, useMediaQuery, useTheme, Grid, MenuItem, Tooltip, Fab, Grow, Typography } from "@material-ui/core";
-import { MyContainer, MyTextField } from "../../assets/styles/styledComponents"
+import { makeStyles, useMediaQuery, useTheme, Grid, MenuItem, Tooltip, Fab, Grow } from "@material-ui/core";
+import { GeneralSubtitle, GeneralTitle, MyContainer, MyTextField } from "../../assets/styles/styledComponents"
 import ContentAccordion from "../../components/Accordions/ContentAccordion";
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -111,13 +111,13 @@ function Library (props) {
   return (
     <MyContainer>
       <section id="libraryHeader">
-        <Grid container={true} spacing={3}>
+        <Grid container={true} spacing={2}>
           <Grid item={true} xs={12} sm={12}>
-            <Typography id="libraryTitle" variant="h4">Biblioteca</Typography>
+            <GeneralTitle id="libraryTitle">Biblioteca</GeneralTitle>
           </Grid>
 
           <Grid item={true} xs={12} sm={12}>
-            <Typography id="librarySubTitle" variant="h6">Conteúdo Disponível</Typography>
+            <GeneralSubtitle id="librarySubTitle">Conteúdo Disponível</GeneralSubtitle>
           </Grid>
         </Grid>
       </section>

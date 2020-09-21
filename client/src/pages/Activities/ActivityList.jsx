@@ -115,7 +115,9 @@ export default function ActivityList() {
                 <Grid container={true} spacing={2} justify="center">
                     <Grid  item={true} xs={12} sm={12} lg={12}>
                         <ActivityTable data={revision ? revisoes : atividades} revision={revision} setMount={setMount}/>
-                        <CreateButton title="Inserir Atividade" url="/controle-atividade/create"/>
+                            <div className="create-button">
+                                <CreateButton title="Inserir Atividade" url="/controle-atividade/create"/>
+                            </div>
                     </Grid>
                 </Grid>
             </section>

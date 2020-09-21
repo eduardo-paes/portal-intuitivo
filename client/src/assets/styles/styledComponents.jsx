@@ -1,5 +1,5 @@
 import React from 'react'
-import {Link as RouterLink} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // -- Material UI
 import {withStyles, styled} from '@material-ui/core/styles';
@@ -66,16 +66,24 @@ const GeneralTitle = withStyles((theme) => ({
     },
 }))(Typography);
 
-function CreateButton(props) {
+const GeneralSubtitle = withStyles((theme) => ({
+    root: {
+        color: "#606161",
+        fontStyle: 'normal',
+        fontWeight: '500',
+        marginBottom: '1rem',
+        fontSize: "1.5rem"
+    },
+}))(Typography);
+
+const CreateButton = (props) => {
     const {title, url} = props;
     return (
-        <div className="create-button">
-            <RouterLink to={url} style={{ textDecoration: 'none' }}>
-                <Button variant="outlined" color="primary" startIcon={<AddIcon/>}>
-                    {title}
-                </Button>
-            </RouterLink>
-        </div>
+        <Link to={url} style={{ textDecoration: 'none' }}>
+            <Button variant="outlined" color="primary" startIcon={<AddIcon/>}>
+                {title}
+            </Button>
+        </Link>
     )
 }    
 
@@ -95,6 +103,7 @@ const MyContainer = styled(Container)({
     margin: "0",
     maxWidth: "none",
     maxHeight: "none",
+    minWidth: "18.75rem"
 });
 
 const MyTypography = styled(Typography)({ color: "#606161" });
@@ -136,5 +145,6 @@ export {
     MyCard,
     MyCardContent,
     MyAvatar,
-    GeneralTitle
+    GeneralTitle,
+    GeneralSubtitle
 }

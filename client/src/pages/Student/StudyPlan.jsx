@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { MyContainer } from "../../assets/styles/styledComponents";
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { GeneralTitle, GeneralSubtitle, MyContainer } from "../../assets/styles/styledComponents";
+import { Grid, makeStyles } from '@material-ui/core';
 import { useEffect } from "react";
 import api from "../../api";
 import ContentAccordion from "../../components/Accordions/ContentAccordion";
@@ -10,19 +10,19 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     padding: 0
   },
-  heading: {
-    [theme.breakpoints.down('sm')]: {
-      fontSize: theme.typography.pxToRem(17)
-    }
-  },
+  // heading: {
+  //   [theme.breakpoints.down('sm')]: {
+  //     fontSize: theme.typography.pxToRem(17)
+  //   }
+  // },
   secondaryHeading: {
     [theme.breakpoints.down('sm')]: {
-      fontSize: theme.typography.pxToRem(11)
+      fontSize: theme.typography.pxToRem(16)
     }
   },
   studyPlan: {
     width: '100%',
-    padding: 0
+    // padding: 0
   }
 }));
 
@@ -118,15 +118,15 @@ function StudyPlan (props) {
       <header>
         <Grid container={true} spacing={3}>
           <Grid item={true} xs={12} sm={12}>
-          <Typography id="studyPlanTitle" variant="h4">Plano de Estudo</Typography>
+            <GeneralTitle id="studyPlanTitle">Plano de Estudo</GeneralTitle>
           </Grid>
         
           <Grid item={true} xs={6} lg={6} sm={6}>
-            <Typography className={classes.secondaryHeading} id="studyPlanSubTitle" variant="h6">Estudo do dia</Typography>
+            <GeneralSubtitle className={classes.secondaryHeading} id="studyPlanSubTitle">Estudo do dia</GeneralSubtitle>
           </Grid>
           
           <Grid item={true} align="right" xs={6} lg={6} sm={6}>
-            <Typography className={classes.secondaryHeading} id="studyPlanSubTitle" variant="h6">{diaDaSemana[dia] + ", Semana " + getTheWeek()}</Typography>
+            <GeneralSubtitle className={classes.secondaryHeading} id="studyPlanSubTitle">{diaDaSemana[dia] + ", Semana " + getTheWeek()}</GeneralSubtitle>
           </Grid>
         </Grid>
       </header>

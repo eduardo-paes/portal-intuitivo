@@ -23,6 +23,7 @@ const RoutesPrivate = ({ component: Component, ...rest }) => {
 const ConditionalRoute = ({ component: Component, type, ...rest }) => {
     const {token} = useContext(StoreContext);
     const access = token.accessType;
+
     let validation = true;
     let defaultURL = "/";
 
@@ -36,9 +37,11 @@ const ConditionalRoute = ({ component: Component, type, ...rest }) => {
 
     // Verifica se o usuário que está tentando acessar o perfil é o propietário do mesmo
     if (rest.location.pathname.includes("perfil")) {
+        // Pega o valor ID do parâmetro da rota
         let checkID = rest.location.pathname.split("/").map(item => {
             return item;
         })
+
         if (checkID[2] === token.userID) {
             validation = true;
         } else {
@@ -50,7 +53,7 @@ const ConditionalRoute = ({ component: Component, type, ...rest }) => {
         <Route
             {...rest}
             render={
-                (props) => (access === type && validation)
+                (props) => (access === type || validation)
                     ? <Component {...props}/>
                     : <Redirect to={defaultURL}/>
             }

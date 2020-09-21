@@ -1,6 +1,6 @@
 import React from "react";
 
-import { MyContainer, MyCard, MyCardContent } from "../../assets/styles/styledComponents"
+import { MyContainer, MyCard, MyCardContent, GeneralTitle } from "../../assets/styles/styledComponents"
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from "@material-ui/core";
 
@@ -23,7 +23,7 @@ export default function Dashboard (props) {
     <MyContainer>
 
       <section id="cabecalhoDashboard">
-        <h1 className="heading-page">Dashboard</h1>
+        <GeneralTitle className="heading-page">Dashboard</GeneralTitle>
       </section>
 
       <section id="muralDashboard">
