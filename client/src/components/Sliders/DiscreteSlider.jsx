@@ -12,16 +12,13 @@ const useStyles = makeStyles({
 export default function DiscreteSlider(props) {
 
     const classes = useStyles();
-    const { setDirection, valor, setValor, max } = props;
+    const { valor, setValor, max } = props;
     const [ preValor, setPreValor ] = React.useState(valor);
     
     function valuetext(value) {
       
       setPreValor(valor);  
       setValor(value);
-      
-      if (valor > preValor) setDirection('left');
-      else setDirection('right');  
       
       return(value);
 

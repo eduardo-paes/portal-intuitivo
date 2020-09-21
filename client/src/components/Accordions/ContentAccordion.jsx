@@ -187,14 +187,9 @@ export default function ContentAccordion(props) {
                             <Grid container={true} spacing={1}>
                                 {
                                     (question.length > 0) ? 
-                                        <ActivityCard question={question}/>
+                                        <ActivityCard handleClose={handleClose} handleFinalized={handleFinalized} question={question}/>
                                     : null
                                 }
-                                <Grid item={true} xs={12} lg={12} sm={12} align='center' >
-                                    <Button id="exercicioFixacao" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
-                                        Voltar
-                                    </Button>
-                                </Grid>
                             </Grid>
                         </Dialog>
                     </Grid>

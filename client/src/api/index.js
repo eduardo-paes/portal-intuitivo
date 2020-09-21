@@ -42,6 +42,12 @@ export const removerTagQuestao = id => api.delete(`/tag-questao/${id}`);
 export const encTagQuestaoPorID = id => api.get(`/tag-questao/${id}`);
 export const listarTQPorQuestaoID = questaoID => api.get(`/tag-questao/questao/${questaoID}`);
 
+// -- Funções relacionadas à RespostaQuestao
+export const inserirRespostaQuestao = novaRespostaQuestao => api.post("/resposta-questao", novaRespostaQuestao);
+export const encRespostaQuestaoPorID = id => api.get(`/resposta-questao/${id}`);
+export const listarRQPorQuestaoID = questaoID => api.get(`/resposta-questao/questao/${questaoID}`);
+export const listarRQPorAlunoID = alunoID => api.get(`/resposta-questao/user/${alunoID}`);
+
 // -- Funções relacionadas à AnoLetivo
 export const inserirAnoLetivo = novaAnoLetivo => api.post("/configuracoes/ano-letivo", novaAnoLetivo);
 export const listarAnoLetivo = () => api.get("/configuracoes/ano-letivo");
@@ -116,6 +122,11 @@ const apis = {
     removerTagQuestao,
     encTagQuestaoPorID,
     listarTQPorQuestaoID,
+    //Resposta-Questão
+    inserirRespostaQuestao,
+    encRespostaQuestaoPorID,
+    listarRQPorQuestaoID,
+    listarRQPorAlunoID,
     // Ano Letivo
     inserirAnoLetivo,
     listarAnoLetivo,
