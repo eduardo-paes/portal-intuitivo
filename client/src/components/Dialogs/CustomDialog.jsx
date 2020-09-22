@@ -54,11 +54,6 @@ export default function CustomDialog(props) {
     setOpen(false);
   };
 
-  const check = (value) => {
-    let aux = value.includes("math");
-    console.log(aux)
-  };
-
   return (
     <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
       <DialogTitle id="customized-dialog-title">
@@ -69,7 +64,6 @@ export default function CustomDialog(props) {
         { 
           (tipoResposta === "multiplaEscolha") 
               && resposta.map((item, index) => {
-                check(item.opcao)
                 return (
                   <div key={index} className="optionSection">
                     <Grid key={index} container={true} spacing={2} justify="center">

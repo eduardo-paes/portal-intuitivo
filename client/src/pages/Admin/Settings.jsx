@@ -141,13 +141,10 @@ export default function Settings(props) {
     async function fetchClassLinkAPI() {
         let response = await api.listarClassLink();
         let value = response.data.data;
-        console.log(value);
         if (value.length) {
             setClassLink(value[0]);
         }
     }
-
-    // 5f63b986074f5c6a4c3eba10
 
     // =========================================
     // Funções Auxiliares
@@ -315,7 +312,6 @@ export default function Settings(props) {
 
     // Guarda link da aula no banco
     async function saveClassLinkChange() {
-        console.log(classLink)
         await api
             .inserirClassLink(classLink)
             .then(window.alert("Link da aula inserido com sucesso!"))
@@ -361,7 +357,9 @@ export default function Settings(props) {
     }
 
     // Guarda link da aula atualizado no banco
-    async function editClassLinkChange() {
+    async function editClassLinkChange(event) {
+        event.preventDefault();
+
         await api
             .atualizarClassLink(classLink._id, classLink)
             .then(window.alert("Link da aula atualizado com sucesso!"))

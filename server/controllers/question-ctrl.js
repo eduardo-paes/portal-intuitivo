@@ -56,9 +56,10 @@ inserirQuestao = (req, res) => {
             });
     }
 
+    novaQuestao._id = mongoose.Types.ObjectId();
+    
     // Inserir QuestaoTag
     if (novaQuestao.tags.length > 0) {
-        novaQuestao._id = mongoose.Types.ObjectId();
         let tqID, arrayTags = [];
         // Insere as TQs
         novaQuestao.tags.map(tagID => {
@@ -68,7 +69,7 @@ inserirQuestao = (req, res) => {
         })
         novaQuestao.tags = arrayTags;
     }
-
+    
     // Salva nova questão
     novaQuestao
         .save()
@@ -80,6 +81,7 @@ inserirQuestao = (req, res) => {
             })
         })
         .catch(error => {
+            console.log(error)
             return res.status(400).json({
                 error,
                 message: "Questão não inserida.",

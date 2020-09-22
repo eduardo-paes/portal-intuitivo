@@ -8,6 +8,11 @@ import "./assets/styles/global.css";
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from "./assets/styles/theme"
 
+const script = document.createElement("script");
+  script.src ='https://www.wiris.net/demo/plugins/app/WIRISplugins.js?viewer=image;'
+  script.async = true;
+  document.body.appendChild(script);
+
 ReactDOM.render(
         <BrowserRouter>
             <ThemeProvider theme={theme}>
