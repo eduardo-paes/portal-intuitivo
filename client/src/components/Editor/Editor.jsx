@@ -56,22 +56,20 @@ function TextEditor (props) {
     }
 
     return (
-        <div>
-            <CKEditor
-                    editor={ Editor }
-                    name="ckeditor"
-                    data={ text === '' ? defaultMessage : text }
-                    onInit={ editor => { 
-                        editor.ui.focusTracker.on('change:isFocused', (evt, name, value) => {value && onEditorFocus()});
-                        editor.isReadOnly = readOnly;
-                        uploadAdapterPlugin(editor);
-                    }}
-                    config={ optionType && editorConfig }
-                    onError={ err => console.log(err) }
-                    onChange={ handleEditorChange }
-                />
-        </div>
+        <CKEditor
+                editor={ Editor }
+                name="ckeditor"
+                data={ text === '' ? defaultMessage : text }
+                onInit={ editor => { 
+                    editor.ui.focusTracker.on('change:isFocused', (evt, name, value) => {value && onEditorFocus()});
+                    editor.isReadOnly = readOnly;
+                    uploadAdapterPlugin(editor);
+                }}
+                config={ optionType && editorConfig }
+                onError={ err => console.log(err) }
+                onChange={ handleEditorChange }
+            />
     )
-}
+} 
 
 export default TextEditor;
