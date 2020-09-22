@@ -15,19 +15,19 @@ export default function DiscreteSlider(props) {
     const { valor, setValor, max } = props;
     const [ preValor, setPreValor ] = React.useState(valor);
     
-    function valuetext(value) {
+    // function valuetext(value) {
       
-      setPreValor(valor);  
-      setValor(value);
+    //   setPreValor(valor);  
+    //   setValor(value);
       
-      return(value);
+    //   return(value);
 
-    }
+    // }
   return (
     <div className={classes.root}>
       <Slider
         defaultValue={valor}
-        getAriaValueText={valuetext}
+        // getAriaValueText={valuetext}
         aria-labelledby="discrete-slider-small-steps"
         step={1}
         marks

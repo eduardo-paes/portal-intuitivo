@@ -24,7 +24,7 @@ const RespostaAluno = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Revisao',
     },
-    questaoID: [{
+    respostaQuestaoID: [{
         type: Schema.Types.ObjectId,
         ref: 'Questao',
         required: true,

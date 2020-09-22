@@ -47,13 +47,11 @@ function StudyPlan (props) {
     'rgba(63, 63, 191, 1)',
     'rgba(220, 200, 63, 1)',
   ];
-  let topico = [];
-  const [ content, setContent ] = useState([]);
   const [ disciplinas, setDisciplinas ] = useState([]);
 
   const dia = new Date().getDay();
   const diaDaSemana = [ "Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado" ]
-  
+
   // -- Carrega as Disciplinas do dia correspondente
   useEffect(() => {
     const abortController = new AbortController();
@@ -67,30 +65,12 @@ function StudyPlan (props) {
     // eslint-disable-next-line   
   }, []);
 
-  // -- Carrega os tópicos do dia correspondente
-  useEffect(() => {
-    let area = 'area';
-    var value = [];
-    const abortController = new AbortController();
-    
-    async function fetchConteudoAPI() {
-      for (let i = 0; i < disciplinas.length; ++i) {
-        const response = await api.listarConteudoPersonalizado(disciplinas[i]._id, area, getTheWeek());
-        if (response.data.data[0]) value[i] = response.data.data;
-      }
-      setContent(value);
-    }
-    fetchConteudoAPI();
-    return abortController.abort();
-    // eslint-disable-next-line
-  }, [disciplinas]);
-
   function returnContent() {
-    if (content.length === 0) {
+    if (disciplinas.length === 0) {
       return <p>Não há conteúdo a ser estudado hoje, portanto, aproveite o descanso!</p>
     } else {
-      return content.map((row, index) => {
-        topico[index] = row[0].topico;
+      return disciplinas.map((row, index) => {
+
         return (
           <Grid 
             className={classes.grid} 
@@ -102,9 +82,10 @@ function StudyPlan (props) {
           >
             <ContentAccordion 
               color={borderColor[index]}
-              id={row[0]._id} 
-              topico={row[0].topico} 
-              disciplina={row[0].disciplina}
+              area={row.areaConhecimento}
+              id={row._id} 
+              disciplina={row.nome}
+              week={getTheWeek()}
             />
           </Grid>
         )

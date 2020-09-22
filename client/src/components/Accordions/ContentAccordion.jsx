@@ -3,6 +3,7 @@ import { AccordionDetails, AccordionSummary, AppBar, Button, Checkbox, Dialog, G
 import MuiAccordion from '@material-ui/core/Accordion';
 import PDFViewer from '../PDFViewer/PDFViewer';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SchoolIcon from '@material-ui/icons/School';
 import CloseIcon from '@material-ui/icons/Close';
 import CircularStatic from '../ProgressBar/CircularStatic';
 import { GreenButton } from '../../assets/styles/styledComponents';
@@ -16,7 +17,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function ContentAccordion(props) {
     
-    const { id, topico, disciplina, color } = props;
+    const { id, area, disciplina, color, week } = props;
 
     const AccordionPersonalized = withStyles({
         root: {
@@ -42,29 +43,47 @@ export default function ContentAccordion(props) {
     });
     const [ activity, setActivity ] = React.useState([]);
     const [ question, setQuestion ] = React.useState([]); 
+    const [ content, setContent ] = React.useState([]); 
+
+    // -- Carrega os tópicos do dia correspondente
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        if (id !== '') {
+            async function fetchConteudoAPI() {
+                const response = await api.listarConteudoPersonalizado(id, area, week);
+                setContent(response.data.data[0]);
+            }
+            fetchConteudoAPI();
+        }
+        
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [id]);
 
     // -- Carrega as atividades do tópico correspondente
     useEffect(() => {
         const abortController = new AbortController();
         
-        async function fetchAtividadeAPI() {
-            const response = await api.listarAtividadesPorTopico(id);
-            setActivity(response.data.data);
+        if (content.length !== 0) {
+            async function fetchAtividadeAPI() {
+                const response = await api.listarAtividadesPorTopico(content._id);
+                setActivity(response.data.data);
+            }
+            fetchAtividadeAPI();
         }
-
-        fetchAtividadeAPI();
         return abortController.abort();
-    }, [id] )
+    }, [content] )
     
     // -- Carrega questão dado o id
     useEffect(() => {
         const abortController = new AbortController();
         let questoes = [];
-        
+        let ids = ["5f6a2e1116ae191de16f1a7a", "5f6a360e7fd6d8241dae1bcb", "5f6a367b7fd6d8241dae1bd2"]
         if( activity.length > 0 ) {
             async function fetchQuestaoAPI() {
-                for(let i = 0; i < activity[0].questoes.length; ++i) {
-                    const response = await api.encQuestaoPorID(activity[0].questoes[i]);
+                for(let i = 0; i < 3; ++i) {
+                    const response = await api.encQuestaoPorID(ids[i]);
                     const value = response.data.data;
                     questoes.push(value);
                 }
@@ -115,6 +134,16 @@ export default function ContentAccordion(props) {
         setProgresso(progresso+1);
     };
 
+    const handleClickVideo = (event) => {
+        const name  = event.target.offsetParent.id;
+        setCheck(preValue => ({
+            ...preValue,
+            [name]: true
+        }));
+        setProgresso(progresso+1);
+        window.open("https://www.youtube.com/watch?v=j5YJYJ_qXho&list=PL3qONjKuaO2R7hih4hEPXp4_xgoB6nUQk",'_blank');
+    }
+
     return (
 
     <Slide direction="up" in={true} mountOnEnter unmountOnExit>
@@ -124,13 +153,12 @@ export default function ContentAccordion(props) {
                 aria-controls="panel1a-content"
                 id="panel1a-header">
                 <CircularStatic progresso={progresso}/>
-                <Typography id="heading" className={classes.heading}>{disciplina.nome}</Typography>
+                <Typography id="heading" className={classes.heading}>{disciplina}</Typography>
             </AccordionSummary>
-
             <AccordionDetails>
                 <Grid className={classes.accordionDetails} container={true} spacing={3}>
                     <Grid align="center" item={true} xs={12} lg={12} sm={12}>
-                        <Typography id="secondaryHeading" className={classes.secondaryHeading}>{topico}</Typography>
+                        <Typography id="secondaryHeading" className={classes.secondaryHeading}>{content.topico}</Typography>
                     </Grid>
                     {/* Material de Estudo */}
                     <Grid align="center" item={true} xs={12} lg={3} sm={12}>
@@ -148,13 +176,13 @@ export default function ContentAccordion(props) {
                                         <CloseIcon />
                                     </IconButton>
                                     <Typography variant="h6" className={classes.title}>
-                                        {topico}
+                                        {content.topico}
                                     </Typography>
                                 </Toolbar>
                             </AppBar>
                             <Grid container={true} spacing={3}>
                                 <Grid className={classes.material} item={true} xs={12} lg={12} sm={12} align='center'>
-                                    <PDFViewer source={`http://localhost:5000/uploads/content/${id}.pdf`}/>
+                                    <PDFViewer source={ `http://localhost:5000/uploads/content/${content._id}.pdf`}/>
                                 </Grid>
                                 <Grid item={true} xs={12} lg={12} sm={12} align='center' >
                                     <Button id="materialEstudo" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
@@ -187,7 +215,7 @@ export default function ContentAccordion(props) {
                             <Grid container={true} spacing={1}>
                                 {
                                     (question.length > 0) ? 
-                                        <ActivityCard handleClose={handleClose} handleFinalized={handleFinalized} question={question}/>
+                                        <ActivityCard atividadeID={activity[0]._id} handleClose={handleClose} handleFinalized={handleFinalized} question={question}/>
                                     : null
                                 }
                             </Grid>
@@ -200,9 +228,19 @@ export default function ContentAccordion(props) {
                             check.videoaula ?
                             <GreenButton className={classes.activityButton} id="videoaula" variant="contained" color="primary" onClick={handleClickOpen}>Vídeoaula</GreenButton>
                             : 
-                            <Button className={classes.activityButton} id="videoaula" variant="outlined" color="primary" onClick={handleClickOpen}>Vídeoaula</Button>
+                            <Button 
+                                className={classes.activityButton} 
+                                id="videoaula" 
+                                color="primary" 
+                                variant="outlined" 
+                                startIcon={<SchoolIcon />}
+                                onClick={handleClickVideo} 
+                            >
+                                Participar
+                            </Button>
+                            //<Button className={classes.activityButton} id="videoaula" variant="outlined" color="primary" onClick={handleClickOpen}>Vídeoaula</Button>
                         }
-                        <Dialog fullScreen open={open.videoaula} onClose={handleClose} TransitionComponent={Transition}>
+                        {/* <Dialog fullScreen open={open.videoaula} onClose={handleClose} TransitionComponent={Transition}>
                             <AppBar className={classes.appBar}>
                                 <Toolbar>
                                     <IconButton id="videoaula" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
@@ -215,7 +253,6 @@ export default function ContentAccordion(props) {
                             </AppBar>
                             <Grid container={true} spacing={3}>
                                 <Grid item={true} xs={12} lg={12} sm={12} align='center'>
-                                    <Typography>Aqui ficará a vídeoaula.</Typography>
                                 </Grid>
                                 <Grid item={true} xs={12} lg={12} sm={12} align='center' >
                                     <Button id="videoaula" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
@@ -223,7 +260,7 @@ export default function ContentAccordion(props) {
                                     </Button>
                                 </Grid>
                             </Grid>
-                        </Dialog>
+                        </Dialog> */}
                     </Grid>
                     {/* Exercícios de Aprofundamento */}
                     <Grid align="center" item={true} xs={12} lg={3} sm={12}>
