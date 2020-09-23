@@ -67,12 +67,12 @@ export default function CustomDialog(props) {
                 return (
                   <div key={index} className="optionSection">
                     <Grid key={index} container={true} spacing={2} justify="center">
-                          <Grid item={true} xs={1} sm={1} lg={1}>
-                            <p className="optionsLetter">{optionsLetter[index]}</p>
-                          </Grid>
-                          <Grid item={true} xs={11} sm={11} lg={11}>
-                            <div id="mostrarOpcoesQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: item.opcao }} />
-                          </Grid>
+                      <Grid item={true} xs={1} sm={1} lg={1}>
+                        <p className="optionsLetter">{optionsLetter[index]}</p>
+                      </Grid>
+                      <Grid item={true} xs={11} sm={11} lg={11}>
+                        <div id="mostrarOpcoesQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: item.opcao }} />
+                      </Grid>
                     </Grid>
                   </div>
                   );

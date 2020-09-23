@@ -88,7 +88,7 @@ export default function QuestionForm (props) {
         // eslint-disable-next-line
     }, [questao]);
 
-    // -- Confirma mudanças realizadas em questao
+    // -- Confirma mudanças realizadas em tags
     useEffect(() => {
         handleTag();
         // eslint-disable-next-line
@@ -97,25 +97,23 @@ export default function QuestionForm (props) {
     // -- Carrega os Tópicos, por Disciplina, existentes no banco
     useEffect(() => {
         const abortController = new AbortController();
-        if (questao.disciplina.id !== '') {
+        if (questao.disciplinaID !== '') {
             async function fetchTopicoAPI() {
-                const response = await api.listarConteudoPorDisciplina(questao.disciplina.id);
+                const response = await api.listarConteudoPorDisciplina(questao.disciplinaID);
                 setTopico(response.data.data);
             }
             fetchTopicoAPI()
         }
         return abortController.abort();
         // eslint-disable-next-line
-    }, [questao.disciplina.id]);
+    }, [questao.disciplinaID]);
 
     // -- Salvar dados do formulário inicial
-    function handleChange (nameField, ID, nome) {  
+    function handleChange (event) {  
+        const { name, value } = event.target;
         setQuestao(preValue => ({
             ...preValue,
-            [nameField]: {
-                id: ID,
-                nome: nome
-            }
+            [name]: value,
         }));
     }
 
@@ -252,12 +250,13 @@ export default function QuestionForm (props) {
                             variant="outlined"
                             select={true}
                             label="Disciplina"
-                            name="disciplina"
-                            value={questao.disciplina.nome}
+                            name="disciplinaID"
+                            onChange={handleChange}
+                            value={questao.disciplinaID}
                             error={questao.erros.disciplina ? true : false}>
                             {
                                 listaDisciplinas.map((row, index) => {
-                                    return <MenuItem key={index} value={row.nome} onClick={() => handleChange("disciplina", row._id, row.nome)}>{row.nome}</MenuItem>
+                                    return <MenuItem key={index} value={row._id}>{row.nome}</MenuItem>
                                 })
                             }
                         </MyTextField>
@@ -270,17 +269,18 @@ export default function QuestionForm (props) {
                             variant="outlined"
                             select={true}
                             label="Tópico"
-                            name="topico"
+                            name="topicoID"
+                            onChange={handleChange}
                             disabled={topico.length === 0 ? true : false}
-                            value={(questao.disciplina.nome !== '') ? (topico.length > 0 ? questao.topico.nome : '') : ''}
+                            value={(questao.disciplinaID !== '') ? (topico.length > 0 ? questao.topicoID : '') : ''}
                             error={questao.erros.topico ? true : false}>
 
                             { topico !== undefined &&
                                 topico.length >= 1 
                                 ? topico.map((row, index) => {
-                                    return <MenuItem key={index} value={row.topico} onClick={() => handleChange("topico", row._id, row.topico)}>{row.topico}</MenuItem>
+                                    return <MenuItem key={index} value={row._id}>{row.topico}</MenuItem>
                                 })
-                                : <MenuItem key={topico._id} value={topico.topico} onClick={() => handleChange("topico", topico._id, topico.topico)}>{topico.topico}</MenuItem>
+                                : <MenuItem key={topico._id} value={topico._id}>{topico.topico}</MenuItem>
                             }
 
                         </MyTextField>
@@ -289,7 +289,7 @@ export default function QuestionForm (props) {
                 </Grid>
 
                 <ChipsArray
-                    disciplinaID={questao.disciplina.id}
+                    disciplinaID={questao.disciplinaID}
                     selectedTag={selectedTag}
                     setSelectedTag={setSelectedTag}
                     handleTag={handleTag}

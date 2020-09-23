@@ -7,14 +7,8 @@ import validate from "../../components/Form/Validation/FormValidateQuestion";
 export default function QuestionUpdate(props) {
     // -- Dados iniciais da constante Questão
     const initialQuestionState = {
-        disciplina: {
-            id: "",
-            nome: ""
-        },
-        topico: {
-            id: "",
-            nome: ""
-        },
+        disciplinaID: "",
+        topicoID: "",
         enunciado: "",
         resposta: [],
         tipoResposta: "multiplaEscolha",
@@ -43,6 +37,7 @@ export default function QuestionUpdate(props) {
             const value = response.data.data;
             let tags = [];
             
+            // Puxa as Tags do banco
             if (value.tags.length > 0) {
                 const resTags = await api.listarTQPorQuestaoID(questaoID);
                 const resValue = resTags.data.data;
@@ -54,14 +49,8 @@ export default function QuestionUpdate(props) {
 
             setQuestao(preValue => ({
                 ...preValue,
-                disciplina: {
-                    id: value.disciplina.id,
-                    nome: value.disciplina.nome
-                },
-                topico: {
-                    id: value.topico.id,
-                    nome: value.topico.nome,
-                },
+                disciplinaID: value.disciplinaID,
+                topicoID: value.topicoID,
                 enunciado: value.enunciado,
                 resposta: value.resposta,
                 tipoResposta: value.tipoResposta,
@@ -104,7 +93,7 @@ export default function QuestionUpdate(props) {
         
         // Verifica se há erro
         if (error.validated) {
-            const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, padraoResposta, tags, autor} = questao;
+            const {disciplinaID, topicoID, enunciado, resposta, tipoResposta, dataCriacao, padraoResposta, tags, autor} = questao;
 
             if (tipoResposta === "multiplaEscolha") {
                 var respostaValidada = resposta.filter(item => {
@@ -113,8 +102,8 @@ export default function QuestionUpdate(props) {
             }
 
             const questaoAtualizada = {
-                disciplina,
-                topico,
+                disciplinaID,
+                topicoID,
                 enunciado,
                 resposta: respostaValidada,
                 tipoResposta,

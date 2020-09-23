@@ -1,9 +1,5 @@
 // Define o Schema e o Modelo para os objetos do banco de dados
 const mongoose = require('mongoose');
-const Usuario = require("./users-model")
-const Disciplina = require("./subject-model")
-const Conteudo = require("./content-model")
-const TagQuestao = require("./tag&question-model")
 const Schema = mongoose.Schema;
 
 const Questao = new Schema({
@@ -11,27 +7,15 @@ const Questao = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
     },
-    disciplina: {
-        id: {
-            type: Schema.Types.ObjectId, 
-            ref: 'Disciplina',
-            required: true
-        },
-        nome: {
-            type: String,
-            required: true
-        }
+    disciplinaID: {
+        type: Schema.Types.ObjectId, 
+        ref: 'disciplina',
+        required: true
     },
-    topico: {
-        id: {
-            type: Schema.Types.ObjectId,
-            ref: 'Conteudo',
-            required: true
-        },
-        nome: {
-            type: String,
-            required: true
-        }
+    topicoID: {
+        type: Schema.Types.ObjectId,
+        ref: 'conteudo',
+        required: true
     },
     enunciado: {
         type: String,
@@ -54,7 +38,7 @@ const Questao = new Schema({
     tags: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'TagQuestao',
+            ref: 'tagQuestoe',
             required: true
         }
     ],
@@ -68,7 +52,7 @@ const Questao = new Schema({
     },
     autor: {
         type: Schema.Types.ObjectId,
-        ref: 'Usuario',
+        ref: 'usuario',
         required: true
     }
 });

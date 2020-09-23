@@ -1,7 +1,6 @@
 // Define o Schema e o Modelo para os objetos do banco de dados
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Disciplina = require("./subject-model.js");
 
 const Tag = new Schema({
     nome: {
@@ -10,7 +9,7 @@ const Tag = new Schema({
     },
     disciplinaID: {
         type: Schema.Types.ObjectId, 
-        ref: 'Disciplina'
+        ref: 'disciplina'
     }
 });
 

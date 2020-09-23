@@ -84,11 +84,11 @@ export default function DisTable(props) {
                 <TableBody>
                     {
                         data.map((row, index) => {
-                            const {nome, disciplina} = row;
+                            const {nome, disciplinaID} = row;
                             return (
                                 <TableRow key={index}>
                                     <TableCell className={classes.row} component="th" scope="row">{nome}</TableCell>
-                                    <TableCell className={classes.row} component="th" scope="row">{disciplina[0].nome}</TableCell>
+                                    <TableCell className={classes.row} component="th" scope="row">{disciplinaID.nome}</TableCell>
                                     <TableCell className={classes.row} component="th" scope="row">
                                         <UpdateSubject tag={row} setTag={pushTag} setMount={setMount} setEditTag={setTagID}/>
                                         <DeleteSubject id={row._id} nome={row.nome} setMount={setMount}/>

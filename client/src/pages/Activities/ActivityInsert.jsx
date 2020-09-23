@@ -9,16 +9,10 @@ import { ActivityForm } from "../../components/";
 // -- Dados iniciais da constante Atividade
 const initialState = {
     tipoAtividade: "",
-    disciplina: {
-        id: "",
-        nome: ""
-    },
+    disciplinaID: "",
     areaConhecimento: "",
     numeracao: "",
-    topico: {
-        id: "",
-        nome: ""
-    },
+    topicoID: "",
     questoes: [],
     dataCriacao: new Date(),
     dataModificacao: new Date(),
@@ -42,13 +36,18 @@ export default function ActivityInsert() {
 
         // Verifica se há erro
         if (error.validated) {
-            const { disciplina, topico, tipoAtividade, questoes, areaConhecimento, dataCriacao } = atividade;
+            const { disciplinaID, topicoID, tipoAtividade, questoes, areaConhecimento, dataCriacao } = atividade;
+
+            // Caso haja espaço vazio
+            let questoesRevisadas = questoes.filter(questao => {
+                return questao !== '';
+            })
             
             const novaAtividade = {
-                disciplina,
-                topico,
+                disciplinaID,
+                topicoID,
                 tipoAtividade,
-                questoes,
+                questoesRevisadas,
                 areaConhecimento,
                 dataCriacao,
                 dataModificacao: new Date(),

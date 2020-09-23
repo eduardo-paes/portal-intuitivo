@@ -1,7 +1,5 @@
 // Define o Schema e o Modelo para os objetos do banco de dados
 const mongoose = require('mongoose');
-const Usuario = require("./users-model");
-const Questao = require("./question-model");
 const Schema = mongoose.Schema;
 
 const RespostaQuestao = new Schema({
@@ -11,12 +9,12 @@ const RespostaQuestao = new Schema({
     },
     alunoID: {
         type: Schema.Types.ObjectId,
-        ref: 'Usuario',
+        ref: 'usuario',
         required: true
     },
     questaoID: {
         type: Schema.Types.ObjectId,
-        ref: 'Questao',
+        ref: 'questoe',
         required: true,
     },
     resposta: {

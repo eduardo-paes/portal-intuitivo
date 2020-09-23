@@ -46,28 +46,27 @@ export default function ActivityForm (props) {
     // -- CARREGA DISCIPLINAS
     async function fetchDisciplinaAPI() {
         const response = await api.listarDisciplinas();
-        const value = response.data.data;
-        setListaDisciplinas(value);
+        if (response.data.success) {
+            setListaDisciplinas(response.data.data);
+        }
     }
 
     // -- CARREGA TÓPICOS
     async function fetchTopicoAPI() {
-        if (atividade.disciplina.id !== '') {
-            const response = await api.listarConteudoPorDisciplina(atividade.disciplina.id);
-            setTopicos(response.data.data);
-            // setAtividade(preValue => ({ 
-            //     ...preValue, 
-            //     topico: { id: "", nome: "" }
-            // }));
+        if (atividade.disciplinaID !== '') {
+            const response = await api.listarConteudoPorDisciplina(atividade.disciplinaID);
+            if (response.data.success) {
+                setTopicos(response.data.data);
+            }
         }
     }
 
     // -- CARREGA QUESTÕES POR TÓPICO
     async function fetchQuestoesPorTopicoAPI() {
-        if (atividade.topico.id !== '') {
+        if (atividade.topicoID !== '') {
             setQuestoes([]);
-            const response = await api.listarQuestaoPorTopico(atividade.topico.id);
-            if (response.status === 200) {
+            const response = await api.listarQuestaoPorTopico(atividade.topicoID);
+            if (response.data.success) {
                 setQuestoes(response.data.data);
             }
         }
@@ -78,7 +77,7 @@ export default function ActivityForm (props) {
         if (atividade.areaConhecimento !== '') {
             setQuestoes([]);
             const response = await api.listarQuestaoPorArea(atividade.areaConhecimento);
-            if (response.status === 200) {
+            if (response.data.success) {
                 setQuestoes(response.data.data);
             }
         }
@@ -96,23 +95,17 @@ export default function ActivityForm (props) {
     }
 
     // -- Salva Disciplina/Tópico e Área do Conhecimento juntos
-    async function handleSubjectChange (field, id, nome, area) {
-        if (field === "disciplina") {
+    async function handleSubjectChange (nome, id, area) {
+        if (nome === "disciplinaID") {
             setAtividade(preValue => ({
                 ...preValue,
-                [field]: {
-                    id: id,
-                    nome: nome
-                },
+                [nome]: id,
                 areaConhecimento: area
             }));
         } else {
             setAtividade(preValue => ({
                 ...preValue,
-                [field]: {
-                    id: id,
-                    nome: nome
-                }
+                [nome]: id
             }));
         }
     }
@@ -173,7 +166,7 @@ export default function ActivityForm (props) {
         !revisao && fetchTopicoAPI();
         return abortController.abort();
         // eslint-disable-next-line
-    }, [atividade.disciplina.id]);
+    }, [atividade.disciplinaID]);
 
     // -- Carrega as Questões, por Tópico, existentes no banco
     useEffect(() => {
@@ -181,7 +174,7 @@ export default function ActivityForm (props) {
         !revisao && fetchQuestoesPorTopicoAPI();
         return abortController.abort();
         // eslint-disable-next-line
-    }, [atividade.topico.id]);
+    }, [atividade.topicoID]);
 
     // -- Carrega as Questões, por Área do conhecimento, existentes no banco
     useEffect(() => {
@@ -239,13 +232,13 @@ export default function ActivityForm (props) {
                             variant="outlined"
                             select={true}
                             label="Disciplina"
-                            name="disciplina"
+                            name="disciplinaID"
                             disabled={revisao}
-                            value={atividade.disciplina.nome}
+                            value={atividade.disciplinaID}
                             error={atividade.erros.disciplina ? true : false}>
                                 {
                                     listaDisciplinas.map((row, index) => {
-                                        return <MenuItem key={index} value={row.nome} onClick={() => handleSubjectChange("disciplina", row._id, row.nome, row.areaConhecimento)}>{row.nome}</MenuItem>
+                                        return <MenuItem key={index} value={row._id} onClick={() => handleSubjectChange("disciplinaID", row._id, row.areaConhecimento)}>{row.nome}</MenuItem>
                                     })
                                 }
                         </MyTextField>
@@ -261,16 +254,16 @@ export default function ActivityForm (props) {
                             variant="outlined"
                             select={true}
                             label="Tópico"
-                            name="topico"
+                            name="topicoID"
                             disabled={(topicos.length === 0 ? true : false) || (revisao)}
-                            value={(atividade.disciplina.nome !== '') ? (topicos.length > 0 ? atividade.topico.nome : '') : ''}
+                            value={(atividade.disciplinaID !== '') ? (topicos.length > 0 ? atividade.topicoID : '') : ''}
                             error={atividade.erros.topico ? true : false}>
                                 { topicos !== undefined &&
                                     topicos.length >= 1 
                                     ? topicos.map((row, index) => {
-                                        return <MenuItem key={index} value={row.topico} onClick={() => handleSubjectChange("topico", row._id, row.topico)}>{row.topico}</MenuItem>
+                                        return <MenuItem key={index} value={row._id} onClick={() => handleSubjectChange("topicoID", row._id)}>{row.topico}</MenuItem>
                                     })
-                                    : <MenuItem key={topicos._id} value={topicos.topico} onClick={() => handleSubjectChange("topico", topicos._id, topicos.topico)}>{topicos.topico}</MenuItem>
+                                    : <MenuItem key={topicos._id} value={topicos._id} onClick={() => handleSubjectChange("topicoID", topicos._id)}>{topicos.topico}</MenuItem>
                                 }
                         </MyTextField>
                         {atividade.erros.topico && <p className={classes.errorMessage}>{atividade.erros.topico}</p>}

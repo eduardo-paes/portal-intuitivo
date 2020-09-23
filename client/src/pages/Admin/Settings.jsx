@@ -85,6 +85,7 @@ export default function Settings(props) {
     // --> Listas
     const [listaDisciplina, setListaDisciplina] = useState([]);             // Disciplinas do Banco
     const [listaTag, setListaTag] = useState([]);                           // Tags do Banco
+    // eslint-disable-next-line
     const [listaAnoLetivo, setListaAnoLetivo] = useState([]);               // AnoLetivo do Banco
 
     // --> Conteúdo

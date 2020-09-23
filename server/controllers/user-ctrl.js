@@ -4,7 +4,6 @@ const Usuario = require('../models/users-model');
 inserirUsuario = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
-    console.log(req.body);
 
     if (!body) {
         return res.status(400).json({
@@ -149,6 +148,31 @@ encUsuarioPorID = async (req, res) => {
         .catch(err => console.log(err))
 }
 
+encUsuarioPorEmail = async (req, res) => {
+    // Encontra usuário pelo email fornecido na rota
+    await Usuario
+        .findOne({
+            email: req.params.email
+        }, (err, usuarioEncontrado) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!usuarioEncontrado) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Usuário não encontrado."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: usuarioEncontrado})
+        })
+        .catch(err => console.log(err))
+}
+
 // Função para listar os usuários contidos no banco
 listarUsuarios = async (req, res) => {
     await Usuario.find({}, (err, listaUsuarios) => {
@@ -175,5 +199,6 @@ module.exports = {
     atualizarUsuario,
     removerUsuario,
     encUsuarioPorID,
+    encUsuarioPorEmail,
     listarUsuarios
 }

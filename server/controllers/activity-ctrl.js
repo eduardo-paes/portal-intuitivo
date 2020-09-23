@@ -35,6 +35,7 @@ inserirAtividade = (req, res) => {
             })
         })
         .catch(error => {
+            console.log(error);
             return res.status(404).json({
                 error,
                 message: "Atividade não inserida.",
@@ -78,7 +79,8 @@ atualizarAtividade = async (req, res) => {
 
         // Atualiza dados da atividade encontrada
         atividadeEncontrada.tipoAtividade = atividadeAtualizada.tipoAtividade
-        atividadeEncontrada.disciplina = atividadeAtualizada.disciplina
+        atividadeEncontrada.disciplinaID = atividadeAtualizada.disciplinaID
+        atividadeEncontrada.topicoID = atividadeAtualizada.topicoID
         atividadeEncontrada.areaConhecimento = atividadeAtualizada.areaConhecimento
         atividadeEncontrada.numeracao = atividadeAtualizada.numeracao
         atividadeEncontrada.questoes = atividadeAtualizada.questoes
@@ -158,7 +160,10 @@ encAtividadePorID = async (req, res) => {
 
 // Função para listar os atividades contidos no banco
 listarAtividade = async (req, res) => {
-    await Atividade.find({}, (err, listaAtividade) => {
+    await Atividade.find({})
+    .populate('disciplinaID', 'nome')
+    .populate('topicoID', 'topico')
+    .exec((err, listaAtividade) => {
         // Verificação de erros
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -172,15 +177,14 @@ listarAtividade = async (req, res) => {
         // Caso não haja erros, retorna lista de atividades
         return res.status(200).json({ success: true, data: listaAtividade })
     })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
 }
 
 // Função para listar os atividades contidos no banco
 listarAtividadesPorTopico = async (req, res) => {
-    await Atividade.find({
-        "topico.id": req.params.id
-    }, (err, listaAtividade) => {
+    await Atividade.find({ "topicoID": req.params.id })
+    .populate('disciplinaID', 'nome')
+    .populate('topicoID', 'topico')
+    .exec((err, listaAtividade) => {
         // Verificação de erros
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -194,8 +198,6 @@ listarAtividadesPorTopico = async (req, res) => {
         // Caso não haja erros, retorna lista de atividades
         return res.status(200).json({ success: true, data: listaAtividade })
     })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
 }
 
 // Exporta os módulos

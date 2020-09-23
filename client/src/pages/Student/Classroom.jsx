@@ -8,11 +8,15 @@ export default function Classroom (props) {
   const [classLink, setClassLink] = useState('')
 
   async function fetchClassLinkAPI() {
-      let response = await api.listarClassLink();
-      let value = response.data.data;
-      if (value.length) {
+    let response = await api.listarClassLink();
+    let value = response.data.data;
+    if (value.length) {
+      if (value[0].aulaLink.includes("https://")) {
         setClassLink(value[0].aulaLink);
+      } else {
+        setClassLink("https://" + value[0].aulaLink);
       }
+    }
   }
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export default function Classroom (props) {
             <p id="generalClassParagraph">Para acessar ao link da aula ao vivo, click no botão ao lado e você será redirecionado para a sala de aula.</p>
           </Grid>
           <Grid item={true} xs={12} sm={3} style={{ textAlign: "center"}}>
-            <Button color="primary" variant="outlined" onClick={() => { window.open("https://" + classLink,'_blank') }} startIcon={<SchoolIcon />}>Participar</Button>
+            <Button color="primary" variant="outlined" onClick={() => { window.open(classLink,'_blank') }} startIcon={<SchoolIcon />}>Participar</Button>
           </Grid>
         </Grid>
       </section>

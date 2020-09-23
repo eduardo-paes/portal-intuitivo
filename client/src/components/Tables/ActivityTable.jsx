@@ -118,13 +118,35 @@ function DeleteQuestion(props) {
 
 // -- Funções auxiliares para Ordenação
 function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
+    if (orderBy === 'topicoID.topico') {
+        if (b.topicoID.topico < a.topicoID.topico) {
+            return -1;
+        }
+        if (b.topicoID.topico > a.topicoID.topico) {
+            return 1;
+        }
+        return 0;
+    } 
+    
+    else if (orderBy === 'disciplinaID.nome') {
+        if (b.disciplinaID.nome < a.disciplinaID.nome) {
+            return -1;
+        }
+        if (b.disciplinaID.nome > a.disciplinaID.nome) {
+            return 1;
+        }
+        return 0;
     }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
+    
+    else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }  
 }
 
 function getComparator(order, orderBy) {
@@ -150,10 +172,10 @@ const headActivityCells = [
         id: 'tipoAtividade',
         label: 'Tipo'
     }, {
-        id: 'disciplina',
+        id: 'disciplinaID.nome',
         label: 'Disciplina'
     }, {
-        id: 'topico',
+        id: 'topicoID.topico',
         label: 'Tópico'
     }, {
         id: 'areaConhecimento',
@@ -368,13 +390,13 @@ export default function ActivityTable(props) {
                                         page * rowsPerPage + rowsPerPage
                                     )
                                     .map(row=> {
-                                        const {tipoAtividade, disciplina, topico, areaConhecimento, numeracao, questoes} = row;
+                                        const {tipoAtividade, disciplinaID, topicoID, areaConhecimento, numeracao, questoes} = row;
 
                                         return (
                                             <TableRow hover={true} tabIndex={-1} key={row._id}>
                                                 <TableCell className={classes.row} align="left">{tipoAtividade}</TableCell>
-                                                {!smScreen && !revision && <TableCell className={classes.row} align="left">{disciplina.nome}</TableCell>}
-                                                {!smScreen && !revision && <TableCell className={classes.row} align="left">{topico.nome}</TableCell>}
+                                                {!smScreen && !revision && <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>}
+                                                {!smScreen && !revision && <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>}
                                                 {!smScreen && revision && <TableCell className={classes.row} align="left">{numeracao}</TableCell>}
                                                 <TableCell className={classes.row} align="left">{areaConhecimento}</TableCell>
                                                 <TableCell className={classes.row} align="left">{questoes.length}</TableCell>
