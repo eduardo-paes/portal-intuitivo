@@ -14,6 +14,20 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
 
+  arrow: { 
+    height: '50px',
+    width: '30px'
+  },
+
+  backArrow: {
+    marginTop: '50%',
+    marginLeft: '3rem',
+    top: '50%',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    }
+  },
+
   buttons: {
     marginLeft: '0.5rem',
     marginRight: '0.5rem',
@@ -29,6 +43,16 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignContent: 'center',
     justifyContent: 'center'
+  },
+
+  forwardArrow: {
+    marginTop: '50%',
+    top: '50%',
+    height: '30px',
+    width: '30px',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    }
   },
   
   heading: {
