@@ -1,9 +1,6 @@
-const TagQuestaoCtrl = require("../controllers/tag&question-ctrl");
 const Questao = require('../models/question-model');
-const mongoose = require('mongoose');
-
 const TagQuestao = require('../models/tag&question-model');
-const Disciplina = require("../models/subject-model.js");
+const mongoose = require('mongoose');
 
 // ======================================
 // FUNÇÕES DE TAG-QUESTÃO
@@ -158,7 +155,6 @@ atualizarQuestao = async (req, res) => {
 
             // Atualiza TQs
             questaoEncontrada.tags = arrayTags;
-
         }
 
         // Salva alterações
@@ -280,38 +276,36 @@ listarQuestao = async (req, res) => {
 // Função para listar os questaos contidos no banco
 listarQuestaoPorTopico = async (req, res) => {
     await Questao.find({ 'topicoID': req.params.id })
-    .populate('disciplinaID', 'nome')
-    .populate('topicoID', 'topico')
-    .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' } })
-    .exec((err, listaQuestao) => {
-        // Verificação de erros
-        if (err) {
-            return res.status(400).json({ 
-                success: false, 
-                error: err 
-            })
-        }
-
-        // Verifica se há dados na lista
-        if (!listaQuestao.length) {
-            return res
-                .status(404)
-                .json({ 
+        .populate('disciplinaID', 'nome')
+        .populate('topicoID', 'topico')
+        .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' } })
+        .exec((err, listaQuestao) => {
+            // Verificação de erros
+            if (err) {
+                return res.status(400).json({ 
                     success: false, 
-                    error: "Dados não encontrados." 
+                    error: err 
                 })
-        }
+            }
 
-        // Caso não haja erros, retorna lista de questaos
-        return res
-            .status(200)
-            .json({ 
-                success: true, 
-                data: listaQuestao 
-            })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+            // Verifica se há dados na lista
+            if (!listaQuestao.length) {
+                return res
+                    .status(404)
+                    .json({ 
+                        success: false, 
+                        error: "Dados não encontrados." 
+                    })
+            }
+
+            // Caso não haja erros, retorna lista de questaos
+            return res
+                .status(200)
+                .json({ 
+                    success: true, 
+                    data: listaQuestao 
+                })
+        })
 }
 
 // Função para listar os questaos contidos no banco

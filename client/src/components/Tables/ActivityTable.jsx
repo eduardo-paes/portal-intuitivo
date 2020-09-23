@@ -394,6 +394,7 @@ export default function ActivityTable(props) {
 
                                         return (
                                             <TableRow hover={true} tabIndex={-1} key={row._id}>
+                                                
                                                 <TableCell className={classes.row} align="left">{tipoAtividade}</TableCell>
                                                 {!smScreen && !revision && <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>}
                                                 {!smScreen && !revision && <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>}

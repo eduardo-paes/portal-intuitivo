@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import api from '../../api';
 
-import { MyContainer, CreateButton, MyTextField, GeneralTitle } from "../../assets/styles/styledComponents";
-import { makeStyles, Grid, MenuItem, Button } from "@material-ui/core";
+import { MyContainer, CreateButton, GeneralTitle } from "../../assets/styles/styledComponents";
 import { ContentTable, PDFPreviewDialog } from '../../components';
 
 export default function ContentList () {

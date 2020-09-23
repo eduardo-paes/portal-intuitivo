@@ -37,17 +37,12 @@ export default function ActivityInsert() {
         // Verifica se há erro
         if (error.validated) {
             const { disciplinaID, topicoID, tipoAtividade, questoes, areaConhecimento, dataCriacao } = atividade;
-
-            // Caso haja espaço vazio
-            let questoesRevisadas = questoes.filter(questao => {
-                return questao !== '';
-            })
             
             const novaAtividade = {
                 disciplinaID,
                 topicoID,
                 tipoAtividade,
-                questoesRevisadas,
+                questoes,
                 areaConhecimento,
                 dataCriacao,
                 dataModificacao: new Date(),

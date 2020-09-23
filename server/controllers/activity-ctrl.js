@@ -1,4 +1,33 @@
 const Atividade = require('../models/activity-model');
+const AtividadeQuestao = require('../models/activity&question-model');
+const mongoose = require('mongoose');
+
+// ======================================
+// FUNÇÕES DE QUESTÃO-ATIVIDADE
+// ======================================
+
+// Função para inserir tagQuestao no banco
+inserirAtividadeQuestao = async (questaoID, atividadeID, qaID) => {
+    const body = { _id: qaID, questaoID: questaoID, atividadeID: atividadeID };
+    const novaQuestaoAtividade = new AtividadeQuestao(body);
+    await novaQuestaoAtividade.save();
+}
+
+// Função para remover tagQuestao no banco
+removerAtividadeQuestao = (qaID) => {
+    AtividadeQuestao.findOneAndDelete({ _id: qaID}, err => {
+        if (err) {
+            console.log(err);
+            return false;
+        }
+        return true;
+    })
+    .catch(err => console.log(err))
+}
+
+// ======================================
+// FUNÇÕES DE ATIVIDADE
+// ======================================
 
 // Função para inserir atividade no banco
 inserirAtividade = (req, res) => {
@@ -22,6 +51,20 @@ inserirAtividade = (req, res) => {
                 success: false, 
                 error: err
             });
+    }
+
+    novaAtividade._id = mongoose.Types.ObjectId();
+
+    // Inserir QuestaoAtividade
+    if (novaAtividade.questoes.length > 0) {
+        let qaID, arrayQuestoes = [];
+        // Insere as QAs
+        novaAtividade.questoes.map(questaoID => {
+            qaID = mongoose.Types.ObjectId();
+            arrayQuestoes.push(qaID);
+            inserirAtividadeQuestao(questaoID, novaAtividade._id, qaID);
+        })
+        novaAtividade.questoes = arrayQuestoes;
     }
 
     // Salva nova atividade
@@ -68,6 +111,34 @@ atualizarAtividade = async (req, res) => {
     Atividade.findOne({
         _id: req.params.id
     }, (err, atividadeEncontrada) => {
+
+        // Verificação de Questões
+        let questoesAntigas = atividadeEncontrada.questoes;
+        let questoesAtualizadas = atividadeAtualizada.questoes;
+
+        // Caso ambas as versões possuam questoes
+        if (questoesAtualizadas.length > 0) {
+            // Remove todas as QuestoesAtividade antigas
+            if (questoesAntigas.length > 0) {
+                questoesAntigas.forEach(oldQaID => {
+                    removerAtividadeQuestao(oldQaID);
+                })
+            }
+
+            // Insere todas as QuestoesAtividade novas
+            let atividadeID = atividadeEncontrada._id;
+            let qaID, arrayQuestoes = [];
+            
+            questoesAtualizadas.forEach(tagID => {
+                qaID = mongoose.Types.ObjectId();
+                arrayQuestoes.push(qaID);
+                inserirAtividadeQuestao(questaoID, atividadeID, qaID);
+            })
+
+            // Atualiza QAs
+            atividadeEncontrada.questoes = arrayQuestoes;
+        }
+
         if (err) {
             return res
                 .status(404)
@@ -134,11 +205,11 @@ removerAtividade = async (req, res) => {
 
 // Função para buscar atividade por ID
 encAtividadePorID = async (req, res) => {
+
     // Encontra atividade por ID fornecido na rota
-    await Atividade
-        .findOne({
-            _id: req.params.id
-        }, (err, atividadeEncontrada) => {
+    await Atividade.findOne({ _id: req.params.id })
+        .populate('questoes')
+        .exec((err, atividadeEncontrada) => {
             if (err) {
                 return res
                     .status(400)
@@ -154,29 +225,28 @@ encAtividadePorID = async (req, res) => {
             return res
                 .status(200)
                 .json({success: true, data: atividadeEncontrada})
-        })
-        .catch(err => console.log(err))
+        });
 }
 
 // Função para listar os atividades contidos no banco
 listarAtividade = async (req, res) => {
     await Atividade.find({})
-    .populate('disciplinaID', 'nome')
-    .populate('topicoID', 'topico')
-    .exec((err, listaAtividade) => {
-        // Verificação de erros
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        // Verifica se há dados na lista
-        if (!listaAtividade.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
-        }
-        // Caso não haja erros, retorna lista de atividades
-        return res.status(200).json({ success: true, data: listaAtividade })
-    })
+        .populate('disciplinaID', 'nome')
+        .populate('topicoID', 'topico')
+        .exec((err, listaAtividade) => {
+            // Verificação de erros
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            // Verifica se há dados na lista
+            if (!listaAtividade.length) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: "Dados não encontrados." })
+            }
+            // Caso não haja erros, retorna lista de atividades
+            return res.status(200).json({ success: true, data: listaAtividade })
+        })
 }
 
 // Função para listar os atividades contidos no banco

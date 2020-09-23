@@ -1,10 +1,14 @@
 const Disciplina = require('../models/subject-model');
 
+const Atividade = require('../models/activity-model')
+const Conteudo = require('../models/content-model');
+const Questao = require('../models/question-model')
+const Tag = require('../models/tag-model')
+
 // Função para inserir disciplina no banco
 inserirDisciplina = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
-    console.log(req.body);
 
     if (!body) {
         return res.status(400).json({
@@ -113,6 +117,12 @@ removerDisciplina = async (req, res) => {
                     .status(404)
                     .json({success: false, error: "Disciplina não encontrado."})
             }
+
+            Atividade.remove({disciplinaID: req.params.id}).exec();
+            Conteudo.remove({disciplinaID: req.params.id}).exec();
+            Questao.remove({disciplinaID: req.params.id}).exec();
+            Tag.remove({disciplinaID: req.params.id}).exec();
+
             // Caso não haja erros, conclui operação.
             return res
                 .status(200)

@@ -186,6 +186,7 @@ export default function ActivityForm (props) {
 
     // -- Observa mudanças em questão selecionada
     useEffect(() => { 
+        console.log(questaoSelecionada);
         setQuestaoSelecionada(questaoSelecionada) 
     }, [questaoSelecionada]);
 

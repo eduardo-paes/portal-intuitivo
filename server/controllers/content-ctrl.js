@@ -1,4 +1,6 @@
 const Conteudo = require('../models/content-model');
+const Atividade = require('../models/activity-model')
+const Questao = require('../models/question-model')
 
 // Função para inserir conteúdo no banco
 inserirConteudo = (req, res) => {
@@ -114,6 +116,10 @@ removerConteudo = async (req, res) => {
                     .status(404)
                     .json({success: false, error: "Conteúdo não encontrado."})
             }
+
+            Atividade.remove({topicoID: req.params.id}).exec();
+            Questao.remove({topicoID: req.params.id}).exec();
+
             // Caso não haja erros, conclui operação.
             return res
                 .status(200)
