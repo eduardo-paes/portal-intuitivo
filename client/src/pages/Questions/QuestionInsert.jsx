@@ -8,14 +8,8 @@ import validate from "../../components/Form/Validation/FormValidateQuestion";
 export default function QuestionInsert() {
     // -- Dados iniciais da constante Questão
     const initialQuestionState = {
-        disciplina: {
-            id: "",
-            nome: ""
-        },
-        topico: {
-            id: "",
-            nome: ""
-        },
+        disciplinaID: "",
+        topicoID: "",
         enunciado: "",
         resposta: [],
         tipoResposta: "multiplaEscolha",
@@ -61,7 +55,7 @@ export default function QuestionInsert() {
         
         // Verifica se há erro
         if (error.validated) {
-            const {disciplina, topico, enunciado, resposta, tipoResposta, dataCriacao, dataEdicao, padraoResposta, tags} = questao;
+            const {disciplinaID, topicoID, enunciado, resposta, tipoResposta, dataCriacao, dataEdicao, padraoResposta, tags} = questao;
 
             if (tipoResposta === "multiplaEscolha") {
                 var respostaValidada = resposta.filter(item => {
@@ -70,8 +64,8 @@ export default function QuestionInsert() {
             }
 
             const novaQuestao = {
-                disciplina,
-                topico,
+                disciplinaID,
+                topicoID,
                 enunciado,
                 resposta: respostaValidada,
                 tipoResposta,

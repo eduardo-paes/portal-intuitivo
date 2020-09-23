@@ -5,7 +5,7 @@ import api from '../../api'
 import { UserTable } from "../../components"
 import { CreateButton, MyContainer, GeneralTitle } from "../../assets/styles/styledComponents"
 
-function UsersList() {
+export default function UsersList() {
     const [usuario, setUsuario] = useState([])
     const [mount, setMount] = useState({
         isMounted: true,
@@ -48,5 +48,3 @@ function UsersList() {
         </MyContainer>
     )
 }
-
-export default UsersList;

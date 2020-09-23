@@ -1,4 +1,6 @@
 const Conteudo = require('../models/content-model');
+const Atividade = require('../models/activity-model')
+const Questao = require('../models/question-model')
 
 // Função para inserir conteúdo no banco
 inserirConteudo = (req, res) => {
@@ -73,8 +75,7 @@ atualizarConteudo = async (req, res) => {
         
         // Atualiza dados do conteúdo encontrado
         conteudoEncontrado.topico = conteudo.topico
-        conteudoEncontrado.area = conteudo.area
-        conteudoEncontrado.disciplina = conteudo.disciplina
+        conteudoEncontrado.disciplinaID = conteudo.disciplinaID
         conteudoEncontrado.numeracao = conteudo.numeracao
         conteudoEncontrado.autor = conteudo.autor
 
@@ -115,6 +116,10 @@ removerConteudo = async (req, res) => {
                     .status(404)
                     .json({success: false, error: "Conteúdo não encontrado."})
             }
+
+            Atividade.remove({topicoID: req.params.id}).exec();
+            Questao.remove({topicoID: req.params.id}).exec();
+
             // Caso não haja erros, conclui operação.
             return res
                 .status(200)
@@ -126,7 +131,6 @@ removerConteudo = async (req, res) => {
 // Função para buscar conteúdo por ID
 encConteudoPorID = async (req, res) => {
     // Encontra conteúdo por ID fornecido na rota
-
     await Conteudo
         .findOne({
             _id: req.params.id
@@ -155,7 +159,7 @@ listarConteudoPorDisciplina = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
     await Conteudo
         .find({
-            'disciplina.id': req.params.id,
+            'disciplinaID': req.params.id,
         }, (err, conteudoEncontrado) => {
 
             if (err) {
@@ -181,8 +185,8 @@ listarConteudoPorDisciplina = async (req, res) => {
 listarConteudoPersonalizado = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
     let flag = 0;
-
     let paramsNumeracao = [];
+
     if (req.params.numeracao) {
         paramsNumeracao[0] = req.params.numeracao;
     } else {
@@ -223,7 +227,9 @@ listarConteudoPersonalizado = async (req, res) => {
             .json({success: true, data: conteudoEncontrado})
             })
             .catch(err => console.log(err))
-    } else if (flag === 2) {
+    } 
+    
+    else if (flag === 2) {
         await Conteudo
         .find({ 
             'disciplina.id': { $gte: req.params.id },
@@ -248,7 +254,9 @@ listarConteudoPersonalizado = async (req, res) => {
             .json({success: true, data: conteudoEncontrado})
             })
             .catch(err => console.log(err))
-    } else if (flag === 3) {
+    } 
+    
+    else if (flag === 3) {
         await Conteudo
         .find({ 
             'disciplina.id': { $eq: req.params.id },
@@ -273,7 +281,9 @@ listarConteudoPersonalizado = async (req, res) => {
             .json({success: true, data: conteudoEncontrado})
             })
             .catch(err => console.log(err))
-    } else if (flag === 4) {
+    } 
+    
+    else if (flag === 4) {
         await Conteudo
         .find({ 
             'disciplina.id': { $eq: req.params.id },
@@ -304,25 +314,22 @@ listarConteudoPersonalizado = async (req, res) => {
 
 // Função para listar os conteúdos contidos no banco
 listarConteudos = async (req, res) => {
-    await Conteudo
-        .find({})
-        .sort({topico: 1})
-        .then((listaConteudos, err) => {
-            // Verifica se os dados foram encontrados
-            if (err) {
-                return res.status(400).json({ success: false, error: err })
-            }
-            // Verifica se há dados na lista
-            if (!listaConteudos.length) {
-                return res
-                    .status(404)
-                    .json({ success: false, error: "Dados não encontrados." })
-            }
-            // Caso não haja erros, retorna lista de conteúdos
-            return res.status(200).json({ success: true, data: listaConteudos })
-        })
-        // Havendo erro, retorna o erro
-        .catch(err => console.log(err))
+    await Conteudo.find({})
+    .populate('disciplinaID')
+    .exec((err, listaConteudos) => {
+        // Verifica se os dados foram encontrados
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        // Verifica se há dados na lista
+        if (!listaConteudos.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: "Dados não encontrados." })
+        }
+        // Caso não haja erros, retorna lista de conteúdos
+        return res.status(200).json({ success: true, data: listaConteudos })
+    })
 }
 
 // Exporta os módulos

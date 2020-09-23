@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
+import { DialogForm } from "../"
+
 // -- Material UI - Table
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { lighten, makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
@@ -15,17 +18,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 // -- Material UI - Icons
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-
-/*
-Funcionalidade pendente:
-    -> Um card de Filtragem;
-*/
+import FilterListIcon from '@material-ui/icons/FilterList';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
 
 // Botão para visualização do conteúdo
 function ContentVisualization (props) {
@@ -62,6 +65,7 @@ function DeleteContent(props) {
     function removing() {
         if (window.confirm(`Quer remover o conteúdo ${props.nome} permanentemente?`)) {
             api.removerConteudo(props.id)
+            props.setMount(preValue => ({...preValue, wasChanged: true}));
         }
     }
 
@@ -80,11 +84,11 @@ function DeleteContent(props) {
 
 // -- Funções auxiliares para Ordenação
 function descendingComparator(a, b, orderBy) {
-    if (orderBy === 'disciplina.nome') {
-        if (b.disciplina.nome < a.disciplina.nome) {
+    if (orderBy === 'disciplinaID.nome') {
+        if (b.disciplinaID.nome < a.disciplinaID.nome) {
             return -1;
         }
-        if (b.disciplina.nome > a.disciplina.nome) {
+        if (b.disciplinaID.nome > a.disciplinaID.nome) {
             return 1;
         }
         return 0;
@@ -122,7 +126,7 @@ const headCells = [
         id: 'area',
         label: 'Área'
     }, {
-        id: 'disciplina.nome',
+        id: 'disciplinaID.nome',
         label: 'Disciplina'
     }, {
         id: 'topico',
@@ -210,6 +214,70 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired
 };
 
+// -- Toolbar Styles
+const useToolbarStyles = makeStyles((theme) => ({
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    title: {
+      flex: '1 1 100%',
+      color: "#606161",
+    },
+  }));
+
+  // -- Toolbar
+const EnhancedTableToolbar = (props) => {
+    const { filter, setFilter, filterDialog, setFilterDialog } = props;
+    const classes = useToolbarStyles();
+
+    // -- Limpa o filtro
+    function clearFilter() {
+        setFilter({ 
+            area: "",
+            disciplinaID: "",
+            numeracao: ""
+        });
+    }
+
+    return (
+    <Toolbar className={clsx(classes.root)}>
+        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+            Lista de Tópicos
+        </Typography>
+
+        <Tooltip title="Limpar filtro">
+            <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
+                <ClearAllIcon />
+            </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Filtrar lista">
+            <IconButton aria-label="filter list" onClick={() => setFilterDialog(true)}>
+                <FilterListIcon />
+            </IconButton>
+        </Tooltip>
+
+        <DialogForm 
+            filter={filter}
+            setFilter={setFilter}
+            open={filterDialog}
+            setOpen={setFilterDialog}
+        />
+    </Toolbar>
+    );
+};
+
 // -- Styles: Tabela-Body
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -241,12 +309,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EnhancedTable(props) {
-    const conteudos = props.data;
+    const { data, filterDialog, setFilterDialog, setMount } = props;
     const classes = useStyles();
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('nome');
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('nome');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [filter, setFilter] = useState({
+        area: "",
+        disciplinaID: "",
+        numeracao: ""
+    });
     
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -275,13 +348,14 @@ export default function EnhancedTable(props) {
     // -- Rows vazias para complementação
     const emptyRows = rowsPerPage - Math.min(
         rowsPerPage,
-        conteudos.length - page * rowsPerPage
+        data.length - page * rowsPerPage
     );
 
     // -- Tabela: Body
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
+                <EnhancedTableToolbar filter={filter} setFilter={setFilter} filterDialog={filterDialog} setFilterDialog={setFilterDialog}/>
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -296,35 +370,44 @@ export default function EnhancedTable(props) {
                             width={smScreen}/>
                         <TableBody>
                             {
-                                stableSort(conteudos, getComparator(order, orderBy))
+                                stableSort(data, getComparator(order, orderBy))
                                     .slice(
                                         page * rowsPerPage,
                                         page * rowsPerPage + rowsPerPage
                                     )
                                     .map((conteudo, index) => {
+                                        const {disciplinaID, numeracao} = conteudo;
+
+                                        let auxArea = (disciplinaID.areaConhecimento === filter.area || filter.area === '') ? true : false;
+                                        let auxSubject = (disciplinaID === filter.disciplinaID || filter.disciplinaID === '') ? true : false;
+                                        let auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
                                         
-                                        return (
-                                            <TableRow hover={true} tabIndex={-1} key={conteudo._id}>
-                                                <TableCell className={classes.row} align="left">{conteudo.area}</TableCell>
+                                        if (auxArea && auxSubject && auxWeek) {
+                                            return (
+                                                <TableRow hover={true} tabIndex={-1} key={conteudo._id}>
+                                                    <TableCell className={classes.row} align="left">{conteudo.disciplinaID.areaConhecimento}</TableCell>
 
-                                                {!smScreen && <TableCell className={classes.row} align="left">{conteudo.disciplina.nome}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{conteudo.topico}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{conteudo.disciplinaID.nome}</TableCell>}
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{conteudo.topico}</TableCell>}
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
 
-                                                <TableCell align="left">
-                                                    <ContentVisualization 
-                                                        ID={conteudo._id} 
-                                                        nome={conteudo.topico} 
-                                                        open={props.open} 
-                                                        setOpen={props.setOpen}
-                                                        setTitulo={props.setTitulo}
-                                                        setId={props.setId}
-                                                    />    
-                                                    <UpdateContent id={conteudo._id}/>
-                                                    <DeleteContent id={conteudo._id} nome={conteudo.topico}/>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
+                                                    <TableCell align="left">
+                                                        <ContentVisualization 
+                                                            ID={conteudo._id} 
+                                                            nome={conteudo.topico} 
+                                                            open={props.open} 
+                                                            setOpen={props.setOpen}
+                                                            setTitulo={props.setTitulo}
+                                                            setId={props.setId}
+                                                        />    
+                                                        <UpdateContent id={conteudo._id}/>
+                                                        <DeleteContent id={conteudo._id} nome={conteudo.topico} setMount={setMount}/>
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        }
+                                        // eslint-disable-next-line
+                                        return;
                                     })
                             }
                             {
@@ -346,7 +429,7 @@ export default function EnhancedTable(props) {
                     className={classes.row}
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={conteudos.length}
+                    count={data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}

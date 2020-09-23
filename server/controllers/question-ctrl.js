@@ -1,8 +1,6 @@
-const TagQuestaoCtrl = require("../controllers/tag&question-ctrl");
 const Questao = require('../models/question-model');
-const mongoose = require('mongoose');
-
 const TagQuestao = require('../models/tag&question-model');
+const mongoose = require('mongoose');
 
 // ======================================
 // FUNÇÕES DE TAG-QUESTÃO
@@ -124,8 +122,8 @@ atualizarQuestao = async (req, res) => {
         }
 
         // Atualiza dados da questão encontrada
-        questaoEncontrada.disciplina = questaoAtualizada.disciplina
-        questaoEncontrada.topico = questaoAtualizada.topico
+        questaoEncontrada.disciplinaID = questaoAtualizada.disciplinaID
+        questaoEncontrada.topicoID = questaoAtualizada.topicoID
         questaoEncontrada.enunciado = questaoAtualizada.enunciado
         questaoEncontrada.tipoResposta = questaoAtualizada.tipoResposta
         questaoEncontrada.resposta = questaoAtualizada.resposta
@@ -157,7 +155,6 @@ atualizarQuestao = async (req, res) => {
 
             // Atualiza TQs
             questaoEncontrada.tags = arrayTags;
-
         }
 
         // Salva alterações
@@ -255,7 +252,12 @@ encQuestaoPorID = async (req, res) => {
 
 // Função para listar os questaos contidos no banco
 listarQuestao = async (req, res) => {
-    await Questao.find({}, (err, listaQuestao) => {
+    await Questao.find()
+    .populate('disciplinaID', 'nome')
+    .populate('topicoID', 'topico')
+    .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' } })
+    .sort({ 'disciplinaID.nome': 1 })
+    .exec(function (err, listaQuestao) {
         // Verificação de erros
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -268,63 +270,54 @@ listarQuestao = async (req, res) => {
         }
         // Caso não haja erros, retorna lista de questaos
         return res.status(200).json({ success: true, data: listaQuestao })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+    });
 }
 
 // Função para listar os questaos contidos no banco
 listarQuestaoPorTopico = async (req, res) => {
-    await Questao.find({
-        'topico.id': req.params.id,
-    }, (err, listaQuestao) => {
-        // Verificação de erros
-        if (err) {
-            return res.status(400).json({ 
-                success: false, 
-                error: err 
-            })
-        }
-
-        // Verifica se há dados na lista
-        if (!listaQuestao.length) {
-            return res
-                .status(404)
-                .json({ 
+    await Questao.find({ 'topicoID': req.params.id })
+        .populate('disciplinaID', 'nome')
+        .populate('topicoID', 'topico')
+        .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' } })
+        .exec((err, listaQuestao) => {
+            // Verificação de erros
+            if (err) {
+                return res.status(400).json({ 
                     success: false, 
-                    error: "Dados não encontrados." 
+                    error: err 
                 })
-        }
+            }
 
-        // Caso não haja erros, retorna lista de questaos
-        return res
-            .status(200)
-            .json({ 
-                success: true, 
-                data: listaQuestao 
-            })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+            // Verifica se há dados na lista
+            if (!listaQuestao.length) {
+                return res
+                    .status(404)
+                    .json({ 
+                        success: false, 
+                        error: "Dados não encontrados." 
+                    })
+            }
+
+            // Caso não haja erros, retorna lista de questaos
+            return res
+                .status(200)
+                .json({ 
+                    success: true, 
+                    data: listaQuestao 
+                })
+        })
 }
 
 // Função para listar os questaos contidos no banco
 listarQuestaoPorArea = async (req, res) => {
-    await Questao.aggregate([
-        {
-            $lookup: {
-                from: "disciplinas",
-                localField: "disciplina.id",
-                foreignField: "_id",
-                as:"disciplinaInfo"
-            }
-        },
-        {
-            $match : {
-                "disciplinaInfo.areaConhecimento": req.params.area
-            }
-        },
-    ], (err, listaQuestao) => {
+    await Questao.find()
+    .populate('topicoID', 'topico')
+    .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' } })
+    .populate({
+      path: 'disciplinaID',
+      match: { 'areaConhecimento': req.params.area },
+    })
+    .exec((err, listaQuestao) => {
         // Verificação de erros
         if (err) {
             return res.status(400).json({ 
@@ -341,11 +334,15 @@ listarQuestaoPorArea = async (req, res) => {
                     error: "Dados não encontrados." 
                 })
         }
+
+        // Retorna somente as questões pertencentes à área do conhecimento escolhida
+        listaQuestao = listaQuestao.filter(function(questao) {
+            return questao.disciplinaID;
+        });
+
         // Caso não haja erros, retorna lista de questaos
         return res.status(200).json({ success: true, data: listaQuestao })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+    });
 }
 
 // Exporta os módulos

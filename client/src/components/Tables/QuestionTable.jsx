@@ -73,21 +73,21 @@ function DeleteQuestion(props) {
 // -- Funções auxiliares para Ordenação
 function descendingComparator(a, b, orderBy) {
 
-    if (orderBy === 'topico.nome') {
-        if (b.topico.nome < a.topico.nome) {
+    if (orderBy === 'topicoID.topico') {
+        if (b.topicoID.topico < a.topicoID.topico) {
             return -1;
         }
-        if (b.topico.nome > a.topico.nome) {
+        if (b.topicoID.topico > a.topicoID.topico) {
             return 1;
         }
         return 0;
     } 
     
-    else if (orderBy === 'disciplina.nome') {
-        if (b.disciplina.nome < a.disciplina.nome) {
+    else if (orderBy === 'disciplinaID.nome') {
+        if (b.disciplinaID.nome < a.disciplinaID.nome) {
             return -1;
         }
-        if (b.disciplina.nome > a.disciplina.nome) {
+        if (b.disciplinaID.nome > a.disciplinaID.nome) {
             return 1;
         }
         return 0;
@@ -124,17 +124,17 @@ function stableSort(array, comparator) {
 // -- Componentes das Células de Cabeçalho
 const headCells = [
     {
-        id: 'disciplina.nome',
+        id: 'disciplinaID.nome',
         label: 'Disciplina'
     }, {
-        id: 'topico.nome',
+        id: 'topicoID.topico',
         label: 'Topico'
     }, {
         id: 'tipoResposta',
         label: 'Tipo'
     }, {
-        id: 'dataCriacao',
-        label: 'Data de Criação'
+        id: 'tags',
+        label: 'Tags'
     }, {
         id: 'funcoes',
         label: ''
@@ -143,7 +143,7 @@ const headCells = [
 
 const phoneHeadCells = [
     {
-        id: 'topico.nome',
+        id: 'topicoID.topico',
         label: 'Topico'
     }, {
         id: 'funcoes',
@@ -267,7 +267,7 @@ export default function QuestionTable(props) {
     const [selected, setSelected] = useState([]);
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const {data, setQuestion, setHidden, tableSelection, setData, selectedQuestions, setMount} = props;
+    const {data, setData, setQuestion, setHidden, tableSelection, selectedQuestions, setMount} = props;
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -290,7 +290,7 @@ export default function QuestionTable(props) {
         setPage(0);
     };
 
-    // -- Funções de Seleção
+    // -- Funções de Seleção - Questões
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
         const newSelecteds = data.map((n) => n._id);
@@ -320,6 +320,18 @@ export default function QuestionTable(props) {
         setSelected(newSelected);
     };
 
+    // -- Funções de Seleção - Tags
+    const handleTags = (tags) => {
+        let tamTags = tags.length;
+        return tags.map((tag, index) => {
+            if (index+1 === tamTags) {
+                return tag.tagID.nome;
+            }
+            return tag.tagID.nome + ", ";
+        })
+    }
+
+    // -- Vigilantes
     useEffect(() => {
         tableSelection && setData(preValue => ({
             ...preValue,
@@ -332,7 +344,7 @@ export default function QuestionTable(props) {
         if (tableSelection) {
             setSelected(selectedQuestions);
         }
-        // eslint-disable-next-line
+    // eslint-disable-next-line
     }, [data])
 
     // -- Rows vazias para complementação
@@ -368,8 +380,9 @@ export default function QuestionTable(props) {
                                         page * rowsPerPage + rowsPerPage
                                     )
                                     .map((row, index) => {
-                                        const { disciplina, topico, tipoResposta, dataCriacao} = row;
+                                        const { disciplinaID, topicoID, tipoResposta, tags} = row;
                                         const resposta = tipoResposta === "discursiva" ? "Discursiva" : "Múltipla escolha";
+                                        let tagNames = handleTags(tags);
 
                                         const isItemSelected = isSelected(row._id);
                                         const labelId = `enhanced-table-checkbox-${row._id}`;
@@ -395,11 +408,11 @@ export default function QuestionTable(props) {
                                                         </TableCell>
                                                 }
 
-                                                <TableCell className={classes.row} align="left">{disciplina.nome}</TableCell>
+                                                <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>
 
-                                                {!smScreen && <TableCell className={classes.row} align="left">{topico.nome}</TableCell>}
+                                                {!smScreen && <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>}
                                                 {!smScreen && <TableCell className={classes.row} align="left">{resposta}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{dataCriacao}</TableCell>}
+                                                {!smScreen && <TableCell className={classes.row} align="left">{tagNames}</TableCell>}
 
                                                 <TableCell align="left">
                                                     <ShowQuestion id={row._id} question={row} setQuestion={setQuestion} setHidden={setHidden}/>

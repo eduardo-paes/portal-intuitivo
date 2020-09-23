@@ -1,23 +1,12 @@
 // Define o Schema e o Modelo para os objetos do banco de dados
 const mongoose = require('mongoose');
-const Usuario = require("./users-model")
 const Schema = mongoose.Schema;
 
 const Conteudo = new Schema({
-    area: {
-        type: String,
-        // required: true
-    },
-    disciplina: {
-        id: {
-            type: Schema.Types.ObjectId, 
-            ref: 'Disciplina',
-            required: true
-        },
-        nome: {
-            type: String,
-            required: true
-        }
+    disciplinaID: {
+        type: Schema.Types.ObjectId, 
+        ref: 'disciplina',
+        required: true
     },
     topico: {
         type: String,
@@ -29,7 +18,7 @@ const Conteudo = new Schema({
     },
     autor: {
         type: Schema.Types.ObjectId,
-        ref: 'Usuario'
+        ref: 'usuario'
     }
 });
 

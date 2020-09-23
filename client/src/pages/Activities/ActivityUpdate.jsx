@@ -11,14 +11,8 @@ const initialState = {
     tipoAtividade: "",
     areaConhecimento: "",
     numeracao: "",
-    disciplina: {
-        id: "",
-        nome: ""
-    },
-    topico: {
-        id: "",
-        nome: ""
-    },
+    disciplinaID: "",
+    topicoID: "",
     questoes: [],
     dataCriacao: new Date(),
     dataModificacao: new Date(),
@@ -39,14 +33,8 @@ export default function ActivityUpdate(props) {
             ...preValue,
             tipoAtividade: value.tipoAtividade,
             areaConhecimento: value.areaConhecimento,
-            disciplina: {
-                id: value.disciplina.id,
-                nome: value.disciplina.nome
-            },
-            topico: {
-                id: value.topico.id,
-                nome: value.topico.nome,
-            },
+            disciplinaID: value.disciplinaID,
+            topicoID: value.topicoID,
             questoes: value.questoes,
             dataCriacao: value.dataCriacao,
             dataModificacao: value.dataModificacao,
@@ -95,11 +83,11 @@ export default function ActivityUpdate(props) {
 
         // Verifica se há erro
         if (error.validated) {
-            const { disciplina, topico, tipoAtividade, questoes, areaConhecimento, dataCriacao } = atividade;
+            const { disciplinaID, topicoID, tipoAtividade, questoes, areaConhecimento, dataCriacao } = atividade;
             
             const atividadeAtualizada = {
-                disciplina,
-                topico,
+                disciplinaID,
+                topicoID,
                 tipoAtividade,
                 questoes,
                 areaConhecimento,

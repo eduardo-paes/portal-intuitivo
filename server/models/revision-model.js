@@ -2,9 +2,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Questao = require("./question-model.js");
-const Usuario = require("./users-model.js");
-
 const Revisao = new Schema({
     tipoAtividade: {
         type: String,
@@ -21,7 +18,7 @@ const Revisao = new Schema({
     questoes: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Questao',
+            ref: 'questoe',
             required: true
         }
     ],
@@ -35,7 +32,7 @@ const Revisao = new Schema({
     },
     autor: {
         type: Schema.Types.ObjectId,
-        ref: 'Usuario',
+        ref: 'usuario',
         required: true
     }
 });

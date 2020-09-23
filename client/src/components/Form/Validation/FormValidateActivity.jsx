@@ -1,16 +1,16 @@
 export default function validate (props) {
-    const {disciplina, topico, numeracao, areaConhecimento, tipoAtividade, questoes} = props;
+    const {disciplinaID, topicoID, numeracao, areaConhecimento, tipoAtividade, questoes} = props;
     let revisao = tipoAtividade !== "Avaliação Diagnóstica" ? true : false;
     let erros = {};
 
     // Validar disciplina
-    if (disciplina.nome === '' && revisao) {
+    if (disciplinaID === '' && revisao) {
         erros.disciplina = "É preciso escolher uma disciplina."
         erros.validated = false;
     }
 
     // Validar topico
-    if (topico.nome === '' && revisao) {
+    if (topicoID === '' && revisao) {
         erros.topico = "É preciso escolher um tópico."
         erros.validated = false;
     }

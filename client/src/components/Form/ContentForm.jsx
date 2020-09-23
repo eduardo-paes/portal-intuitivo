@@ -1,11 +1,50 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import api from '../../api';
 import { MyContainer, MyTextField, GeneralTitle } from "../../assets/styles/styledComponents";
 import { Grid, MenuItem } from "@material-ui/core";
 import UploadContent from "../Upload/UploadContent";
 
-function ContentForm (props) {
-    const { data, onMaterialChange, conteudo, listaDisciplina, handleUpload, onSubmit, onDisciplineChange } = props;
-    const { area, disciplina, numeracao, topico } = data;
+export default function ContentForm (props) {
+    const { material, setMaterial, conteudo, setConteudo, onSubmit } = props;
+    const [listaDisciplina, setListaDisciplina] = useState([]);                      // Disciplinas do Banco de Dados
+
+    // -- Carrega as Disciplinas existentes no banco
+    useEffect(() => {
+        const abortController = new AbortController();
+        async function fetchDisciplinaAPI() {
+            const response = await api.listarDisciplinas();
+            const value = response.data.data;
+            setListaDisciplina(value);
+        }
+        fetchDisciplinaAPI()
+        return abortController.abort();
+    }, []);
+
+    // -- Definição das Funções
+    const handleChange = (event) => {
+        const {name, value} = event.target;
+        setMaterial(preValue => ({
+            ...preValue,
+            [name]: value
+        }));
+    }
+        
+    const handleUpload = async event => {
+        const file = event.target.files[0];
+        setMaterial(preValue => ({
+        ...preValue,
+        conteudo: file
+        }));
+        setConteudo(URL.createObjectURL(file));
+    }
+
+    const handleSubject = (disciplina, area) => {
+        setMaterial(preValue => ({
+            ...preValue,
+            disciplinaID: disciplina,
+            area: area
+        }));
+    }
 
     const array = [];
     for (let i = 1; i < 33; ++i) array[i-1] = i;
@@ -15,69 +54,62 @@ function ContentForm (props) {
             <GeneralTitle>Criar Conteúdo</GeneralTitle>
 
             <Grid container spacing={1}>
-            <Grid item={true} xs={12} sm={4}>
-                <MyTextField
-                id="campoArea"
-                variant="outlined"
-                disabled={false}
-                select={true}
-                label="Área do Conhecimento"
-                name="area"
-                value={area ? area : ""}
-                onChange={onMaterialChange}>
-                    <MenuItem value="Ciências Humanas">Ciências Humanas</MenuItem>
-                    <MenuItem value="Ciências da Natureza">Ciências da Natureza</MenuItem>
-                    <MenuItem value="Linguagens">Linguagens</MenuItem>
-                    <MenuItem value="Matemática">Matemática</MenuItem>
-                </MyTextField>
-            </Grid>
-            <Grid item={true} xs={12} sm={4}>
-                <MyTextField
-                    id="campoDisciplina"
-                    variant="outlined"
-                    select={true}
-                    label="Disciplina"
-                    name="disciplinaID"
-                    autoFocus={true}
-                    value={disciplina.nome}>
-                    {
-                        listaDisciplina.map((row, index) => {
-                            return <MenuItem key={index} value={row.nome} onClick={() => onDisciplineChange("disciplina", row._id, row.nome)}>{row.nome}</MenuItem>
-                        })
-                    }
-                </MyTextField>
-            </Grid>
-            <Grid item={true} xs={12} sm={4}>
-                <MyTextField
-                    id="campoNumeracao"
-                    label="Numeração"
-                    variant="outlined"
-                    name="numeracao"
-                    type="text"
-                    select={true}
-                    value={numeracao}
-                    onChange={onMaterialChange}>
+                <Grid item={true} xs={12} sm={4}>
+                    <MyTextField
+                        id="campoArea"
+                        variant="outlined"
+                        disabled={true}
+                        label="Área do Conhecimento"
+                        name="area"
+                        value={material.area ? material.area : ""} />
+                </Grid>
+                <Grid item={true} xs={12} sm={4}>
+                    <MyTextField
+                        id="campoDisciplina"
+                        variant="outlined"
+                        select={true}
+                        label="Disciplina"
+                        name="disciplinaID"
+                        value={material.disciplinaID ? material.disciplinaID : ""}>
                         {
-                            array.map((row, index) => {
-                                return <MenuItem key={index} value={row}>{row}</MenuItem>
+                            listaDisciplina.map((row, index) => {
+                                return <MenuItem key={index} value={row._id} onClick={() => handleSubject(row._id, row.areaConhecimento)}>{row.nome}</MenuItem>
                             })
                         }
-                </MyTextField>
+                    </MyTextField>
+                </Grid>
+                <Grid item={true} xs={12} sm={4}>
+                    <MyTextField
+                        id="campoNumeracao"
+                        label="Numeração"
+                        variant="outlined"
+                        name="numeracao"
+                        type="text"
+                        select={true}
+                        value={material.numeracao}
+                        onChange={handleChange}>
+                            {
+                                array.map((row, index) => {
+                                    return <MenuItem key={index} value={row}>{row}</MenuItem>
+                                })
+                            }
+                    </MyTextField>
+                </Grid>
+                <Grid item={true} xs={12}>
+                    <MyTextField
+                        id="campoTopico"
+                        label="Tópico"
+                        variant="outlined"
+                        name="topico"
+                        type="text"
+                        value={material.topico}
+                        onChange={handleChange}/>
+                </Grid>
             </Grid>
-            <Grid item={true} xs={12}>
-                <MyTextField
-                    id="campoTopico"
-                    label="Tópico"
-                    variant="outlined"
-                    name="topico"
-                    type="text"
-                    value={topico}
-                    onChange={onMaterialChange}/>
-            </Grid>
-            </Grid>
+            
             <UploadContent 
                 onChange={handleUpload}
-                topico={topico} 
+                topico={material.topico} 
                 conteudo={conteudo} 
                 backTo="/controle-conteudo" 
                 onSubmit={onSubmit}
@@ -85,5 +117,3 @@ function ContentForm (props) {
         </MyContainer>
     );
 }
-
-export default ContentForm;

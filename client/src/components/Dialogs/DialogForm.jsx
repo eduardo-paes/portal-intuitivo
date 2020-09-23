@@ -1,102 +1,118 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Button,  Dialog , Grid, DialogActions, DialogContent, DialogTitle, MenuItem } from '@material-ui/core';
+import { MyTextField } from "../../assets/styles/styledComponents";
+import api from '../../api';
 
-import {
-  Button,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  Switch
-} from '@material-ui/core/';
+export default function FormDialog(props) {
+  const { filter, setFilter, open, setOpen } = props;
+  const [listaDisciplina, setListaDisciplina] = useState([]);
+  const [tempFilter, setTempFilter] = useState({
+    area: "",
+    disciplinaID: "",
+    numeracao: ""
+  });
 
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+  // -- Carrega as Disciplinas existentes no banco
+  useEffect(() => {
+    const abortController = new AbortController();
 
-function FormDialog(props) {
-    const {open, handleDialog, date, setDate, addEvent} = props;
-    const {title, start, allDay} = date;
-
-    function handleChange (event) {
-      const {name, value} = event.target;
-      setDate(preValue => ({
-        ...preValue,
-        [name]: value
-      }));
+    if (filter.area !== '' || filter.disciplinaID !== '' || filter.numeracao !== '') {
+      setTempFilter(filter);
     }
 
-    function checking (event) {
-      const {name, checked} = event.target;
-      setDate(preValue => ({
-        ...preValue,
-        [name]: checked
-      }));
+    async function fetchDisciplinaAPI() {
+      const response = await api.listarDisciplinas();
+      const value = response.data.data;
+      setListaDisciplina(value);
     }
 
-    return (
-      <Dialog 
-        open={open} 
-        onClose={handleDialog} 
-        aria-labelledby="form-dialog-title">
-          <DialogTitle 
-            id="form-dialog-title">Definir Evento
-          </DialogTitle>
+    fetchDisciplinaAPI()
+    return abortController.abort();
+  }, []);
 
-          <DialogContent>
-            <TextField
-              autoFocus={true}
-              margin="dense"
-              name="title"
-              label="Título"
-              type="title"
-              value={title}
+  const onFilterChange = (event) => {
+    const { name, value } = event.target;
+    setTempFilter(preValue => ({
+      ...preValue,
+      [name]: value
+    }))
+  }
+
+  const onSubmit = () => {
+    setFilter(tempFilter);
+    setOpen(false);
+  };
+
+  const array = [];
+  for (let i = 1; i < 33; ++i) array[i-1] = i;
+
+  return (
+    <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">
+      <DialogTitle id="form-dialog-title">Filtro</DialogTitle>
+
+      <DialogContent>
+        <Grid container={true} spacing={2}>
+          <Grid item={true} xs={12}>
+            <MyTextField
+              id="campoArea"
               variant="outlined"
-              onChange={handleChange}
-              fullWidth={true}/>
-              
-             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <KeyboardDatePicker
-                  disableToolbar={true}
-                  variant="inline"
-                  format="MM/dd/yyyy"
-                  margin="normal"
-                  id="date-picker-inline"
-                  label="Date picker inline"
-                  value={start}
-                  onChange={handleChange}
-                  // fullWidth={true}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                />
-             </MuiPickersUtilsProvider>
+              disabled={false}
+              select={true}
+              label="Área do Conhecimento"
+              name="area"
+              value={tempFilter.area ? tempFilter.area : ""}
+              onChange={onFilterChange}>
+                <MenuItem value="Ciências Humanas">Ciências Humanas</MenuItem>
+                <MenuItem value="Ciências da Natureza">Ciências da Natureza</MenuItem>
+                <MenuItem value="Linguagens">Linguagens</MenuItem>
+                <MenuItem value="Matemática">Matemática</MenuItem>
+            </MyTextField>
+          </Grid>
 
-            <FormControlLabel 
-              control={
-                <Switch
-                  autoFocus={true}
-                  checked={allDay}
-                  onChange={checking}
-                  name="allDay"
-                  color="primary"/>} 
-              label="Dia inteiro" />
+          <Grid item={true} xs={12}>
+            <MyTextField
+              id="campoDisciplina"
+              variant="outlined"
+              select={true}
+              label="Disciplina"
+              name="disciplinaID"
+              value={tempFilter.disciplinaID ? tempFilter.disciplinaID : ""}
+              onChange={onFilterChange}>
+              {
+                listaDisciplina.map((row, index) => {
+                  return <MenuItem key={index} value={row._id}>{row.nome}</MenuItem>
+                })
+              }
+            </MyTextField>
+          </Grid>
 
-          {/* {console.log(date)} */}
-          </DialogContent>
-          <DialogActions>
-              <Button onClick={handleDialog} color="primary">
-                  Cancelar
-              </Button>
-              <Button onClick={addEvent} color="primary">
-                  Adicionar
-              </Button>
-          </DialogActions>
-      </Dialog>
-    );
+          <Grid item={true} xs={12}>
+            <MyTextField
+              id="filtroNumeracao"
+              select={true}
+              label="Numeração"
+              variant="outlined"
+              name="numeracao"
+              value={tempFilter.numeracao ? tempFilter.numeracao : ""}
+              onChange={onFilterChange}>
+                {
+                  array.map((row, index) => {
+                    return <MenuItem key={index} value={row}>{row}</MenuItem>
+                  })
+                }
+            </MyTextField>
+          </Grid>
+        </Grid>
+      </DialogContent>
+      
+      <DialogActions>
+        <Button onClick={() => setOpen(false)} color="primary">
+          Voltar
+        </Button>
+        <Button onClick={onSubmit} color="primary">
+          Filtrar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
-
-export default FormDialog;

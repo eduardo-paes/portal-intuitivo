@@ -35,14 +35,15 @@ export default function ActivityList() {
 
     async function fetchAtividadesAPI() {
         const response = await api.listarAtividades();
-        if (response.status === 200) {
+        if (response.data.success) {
             setAtividades(response.data.data);
+            console.log(response.data.data)
         }
     }
 
     async function fetchRevisoesAPI() {
         const response = await api.listarRevisao();
-        if (response.status === 200) {
+        if (response.data.success) {
             setRevisoes(response.data.data);
         }
     }
@@ -54,7 +55,7 @@ export default function ActivityList() {
         return abortController.abort();
     }, []);
 
-    // -- Atualização apartir de montagem
+    // -- Atualização a partir de montagem
     useEffect(() => {
         const abortController = new AbortController();
         if (mount.revision.wasChanged) {
@@ -115,9 +116,10 @@ export default function ActivityList() {
                 <Grid container={true} spacing={2} justify="center">
                     <Grid  item={true} xs={12} sm={12} lg={12}>
                         <ActivityTable data={revision ? revisoes : atividades} revision={revision} setMount={setMount}/>
-                            <div className="create-button">
-                                <CreateButton title="Inserir Atividade" url="/controle-atividade/create"/>
-                            </div>
+
+                        <div className="create-button">
+                            <CreateButton title="Inserir Atividade" url="/controle-atividade/create"/>
+                        </div>
                     </Grid>
                 </Grid>
             </section>

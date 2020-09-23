@@ -1,4 +1,8 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 const Tag = require('../models/tag-model');
+const Disciplina = require("../models/subject-model.js");
 
 // Função para inserir tag no banco
 inserirTag = (req, res) => {
@@ -147,29 +151,23 @@ encTagPorID = async (req, res) => {
 
 // Função para listar os tags contidos no banco
 listarTags = async (req, res) => {
-    await Tag.aggregate([{
-        $lookup: {
-            from: "disciplinas",
-            localField: "disciplinaID",
-            foreignField: "_id",
-            as:"disciplina"
-        }
-    }], (err, listaTags) => {
-        // Verificação de erros
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        // Verifica se há dados na lista
-        if (!listaTags.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
-        }
-        // Caso não haja erros, retorna lista de tags
-        return res.status(200).json({ success: true, data: listaTags })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+    await Tag.find()
+        .populate('disciplinaID', 'nome')
+        .exec(function (err, listaTags) {
+
+            // Verificação de erros
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            // Verifica se há dados na lista
+            if (!listaTags.length) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: "Dados não encontrados." })
+            }
+            // Caso não haja erros, retorna lista de tags
+            return res.status(200).json({ success: true, data: listaTags })
+        }) 
 }
 
 // Função para listar os tags, ordenadamente, contidos no banco

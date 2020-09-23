@@ -2,18 +2,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Questao = require("./question-model.js");
-const Atividade = require("./activity-model.js");
-
 const AtividadeQuestao = new Schema({
     questaoID: {
         type: Schema.Types.ObjectId,
-        ref: 'Questao',
+        ref: 'questoe',
         required: true
     },
     atividadeID: {
         type: Schema.Types.ObjectId,
-        ref: 'Atividade',
+        ref: 'atividade',
         required: true
     }
 });

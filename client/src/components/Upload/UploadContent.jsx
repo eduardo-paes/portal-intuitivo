@@ -10,7 +10,6 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import PDFPreviewDialog from '../Dialogs/PDFPreviewDialog';
 import { useState } from 'react';
 
-
 const useStyles = makeStyles((theme) => ({
   buttonsContainer: {
     width: '100%',
@@ -49,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
           onChange={onChange}
         />
         <label htmlFor="contained-button-file">
+
         <Button
           variant="contained"
           color="primary"
@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
         </Button>
         </label>
       </Grid>
+
       <Grid item={true} xs={6} sm={3}>
         <Button 
           variant="contained"
@@ -70,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
           onClick={() => {setOpen(!open)}}
         >Visualizar
         </Button>
+
         <PDFPreviewDialog 
           topico={topico} 
           conteudo={conteudo}
@@ -77,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
           setOpen={setOpen}
         />
       </Grid>
+
       <Grid item={true} xs={6} sm={3}>
         <Button 
           variant="contained"
@@ -87,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
           Salvar
         </Button>
       </Grid>
+      
       <Grid item={true} xs={6} sm={3}>
         <Link to={backTo} style={{ textDecoration: 'none' }} >
           <Button 
