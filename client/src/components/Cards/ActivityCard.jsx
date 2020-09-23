@@ -16,7 +16,10 @@ export default function ActivityCard(props) {
     const classes = useStyles();
     const { handleClose, handleFinalized, question, atividadeID } = props;
     const [ value, setValue ] = React.useState(1);
-    const [ respostaAluno, setRespostaAluno ] = React.useState([]);
+    const [ respostaAluno, setRespostaAluno ] = React.useState([{
+        questao: '',
+        resposta: ''
+    }]);
     let gabarito = [];
     
     question.map((row, index) => {
@@ -24,7 +27,7 @@ export default function ActivityCard(props) {
     })
 
     const handleSubmit = (event) => {
-            
+        console.log(respostaAluno)
     };
 
     

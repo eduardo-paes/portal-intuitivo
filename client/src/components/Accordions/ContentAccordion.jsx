@@ -51,7 +51,7 @@ export default function ContentAccordion(props) {
 
         if (id !== '') {
             async function fetchConteudoAPI() {
-                const response = await api.listarConteudoPersonalizado(id, area, week);
+                const response = await api.listarConteudoPersonalizado(id, area, 1);
                 setContent(response.data.data[0]);
             }
             fetchConteudoAPI();
@@ -64,10 +64,11 @@ export default function ContentAccordion(props) {
     // -- Carrega as atividades do tópico correspondente
     useEffect(() => {
         const abortController = new AbortController();
-        
+
         if (content.length !== 0) {
             async function fetchAtividadeAPI() {
                 const response = await api.listarAtividadesPorTopico(content._id);
+                console.log(response);
                 setActivity(response.data.data);
             }
             fetchAtividadeAPI();
@@ -79,8 +80,9 @@ export default function ContentAccordion(props) {
     useEffect(() => {
         const abortController = new AbortController();
         let questoes = [];
+        console.log(activity)
         let ids = ["5f6a2e1116ae191de16f1a7a", "5f6a360e7fd6d8241dae1bcb", "5f6a367b7fd6d8241dae1bd2"]
-        if( activity.length > 0 ) {
+        if( activity.length !== 0 ) {
             async function fetchQuestaoAPI() {
                 for(let i = 0; i < 3; ++i) {
                     const response = await api.encQuestaoPorID(ids[i]);
@@ -212,6 +214,7 @@ export default function ContentAccordion(props) {
                                     </Typography>
                                 </Toolbar>
                             </AppBar>
+                            {console.log(question)}
                             <Grid container={true} spacing={1}>
                                 {
                                     (question.length > 0) ? 

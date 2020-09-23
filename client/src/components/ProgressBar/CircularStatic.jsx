@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import clsx from 'clsx';
+import { makeStyles } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
+import Fab from '@material-ui/core/Fab';
+import CheckIcon from '@material-ui/icons/Check';
+import SaveIcon from '@material-ui/icons/Save';
 
 function CircularProgressWithLabel(props) {
   return (
@@ -34,7 +40,41 @@ CircularProgressWithLabel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  success: {
+    backgroundColor: green[500],
+    color: '#fafafa',
+    '&:hover': {
+      backgroundColor: green[700],
+    },
+  },
+}));
+
+function CircularIntegration() {
+  const classes = useStyles();
+  
+
+  return (
+    <div className={classes.root}>
+      <div className={classes.wrapper}>
+        <Fab size="small" component='div' className={classes.success}>
+          <CheckIcon />
+        </Fab>
+      </div>
+    </div>
+  );
+}
+
 export default function CircularStatic(props) {
+  const classes = useStyles();
   const [progress, setProgress] = React.useState(0);
   const { progresso } = props;
 
@@ -42,5 +82,9 @@ export default function CircularStatic(props) {
     setProgress(progresso*25);
   }, [progresso]);
 
-  return <CircularProgressWithLabel value={progress} />;
+  if ( progresso < 4 ) {
+    return <CircularProgressWithLabel value={progress} />;
+  } else {
+    return <CircularIntegration/>
+  }
 }

@@ -1,15 +1,41 @@
 import React from "react";
 
-import { MyContainer, MyCard, MyCardContent, GeneralTitle } from "../../assets/styles/styledComponents"
+import { MyContainer, MyCard, MyCardContent, GeneralTitle, GeneralSubtitle } from "../../assets/styles/styledComponents"
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from "@material-ui/core";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
+import CircularStatic from "../../components/ProgressBar/CircularStatic";
+import QuestionCircularStatic from "../../components/ProgressBar/QuestionProgress";
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
+  content: {
+    fontStyle: 'normal',
+    fontWeight: `300`,
+    fontSize: '1rem',
+    marginTop: '1rem',
+    color: '#606161',
+  },
+  questionProgress: {
+    marginLeft: '2rem',
+  },
   subTitle: {
     fontStyle: 'normal',
     fontWeight: `500`,
-    // color: #606161,
+    fontSize: '1.25rem',
+    marginTop: '1rem',
+    color: '#606161',
+  },
+  title: {
+    fontStyle: 'normal',
+    fontWeight: `300`,
+    fontSize: '1.25rem',
+    marginTop: '1rem',
+    color: '#606161',
   },
   exampleCard: {
     minHeight: "12.5rem"
@@ -29,20 +55,47 @@ export default function Dashboard (props) {
       <section id="muralDashboard">
         <Grid container={true} spacing={2}>
 
+          <Grid item={true} xs={12} sm={12}>
+            <WeeklyProgress />
+          </Grid>
+
           <Grid item={true} xs={12} sm={9}>
-            <h2 className="subtitle-student">Mural</h2>
+            <GeneralSubtitle className={classes.title} id="tarefas">Tarefas</GeneralSubtitle>
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
-                Conteúdo do Mural
+                <List className={classes.root}>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <CircularStatic progresso={4}/>
+                    </ListItemAvatar>
+                    <ListItemText primary="Introdução à História" secondary="História" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <CircularStatic progresso={2}/>
+                    </ListItemAvatar>
+                    <ListItemText primary="Introdução à Física" secondary="Física" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <CircularStatic progresso={0}/>
+                    </ListItemAvatar>
+                    <ListItemText primary="Redação" secondary="Semana 17" />
+                  </ListItem>
+                </List>
               </MyCardContent>
             </MyCard>
           </Grid>
 
           <Grid item={true} xs={12} sm={3}>
-            <h2 className="subtitle-student">Eventos</h2>
+            <GeneralSubtitle className={classes.title} id="questoes">Questões</GeneralSubtitle>
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
-                Próximos eventos
+                <Grid item={true} align="center">
+                  <GeneralSubtitle className={classes.content}>Questões realizadas: 682</GeneralSubtitle>
+                  <h3 className={classes.content}>Média de Acertos</h3>
+                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={2.72}/>
+                </Grid>
               </MyCardContent>
             </MyCard>
           </Grid>
@@ -51,22 +104,31 @@ export default function Dashboard (props) {
       </section>
 
       <section id="topicosDoDiaDashboard">
-        <h2 className="subtitle-student">Tópicos do Dia</h2>
 
         <Grid container={true} spacing={2}>
           
           <Grid item={true} xs={12} sm={4}>
+            <h2 className={classes.title} id="disciplinas">Química</h2>
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
-                Tópico 1
+                <Grid item={true} align="center">
+                  <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
+                  <GeneralSubtitle className={classes.subTitle}>111 / 119</GeneralSubtitle>
+                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={3.731092437}/>
+                </Grid>
               </MyCardContent>
             </MyCard>
           </Grid>
 
           <Grid item={true} xs={12} sm={4}>
+            <h2 className={classes.title} id="disciplinas">Sociologia</h2>
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
-                Tópico 2
+                <Grid item={true} align="center">
+                  <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
+                  <GeneralSubtitle className={classes.subTitle}>67 / 107</GeneralSubtitle>
+                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={2.504672897}/>
+                </Grid>
               </MyCardContent>
             </MyCard>
           </Grid>
@@ -75,30 +137,6 @@ export default function Dashboard (props) {
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
                 Tópico 3
-              </MyCardContent>
-            </MyCard>
-          </Grid>
-
-        </Grid>
-      </section>
-
-      <section id="conteudoExtraDashboard">
-        <h2 className="subtitle-student">Dicas do Especialista</h2>
-
-        <Grid container={true} spacing={2}>
-          
-          <Grid item={true} xs={12} sm={6}>
-            <MyCard>
-              <MyCardContent className={classes.exampleCard}>
-                Dica 1
-              </MyCardContent>
-            </MyCard>
-          </Grid>
-
-          <Grid item={true} xs={12} sm={6}>
-            <MyCard>
-              <MyCardContent className={classes.exampleCard}>
-                Dica 2
               </MyCardContent>
             </MyCard>
           </Grid>

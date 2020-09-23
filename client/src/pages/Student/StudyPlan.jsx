@@ -4,17 +4,13 @@ import { Grid, makeStyles } from '@material-ui/core';
 import { useEffect } from "react";
 import api from "../../api";
 import ContentAccordion from "../../components/Accordions/ContentAccordion";
+import {getTheWeek, diaDaSemana} from '../../utils/auxFunctions';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
     width: '100%',
     padding: 0
   },
-  // heading: {
-  //   [theme.breakpoints.down('sm')]: {
-  //     fontSize: theme.typography.pxToRem(17)
-  //   }
-  // },
   secondaryHeading: {
     [theme.breakpoints.down('sm')]: {
       fontSize: theme.typography.pxToRem(16)
@@ -25,19 +21,6 @@ const useStyles = makeStyles((theme) => ({
     // padding: 0
   }
 }));
-
-function getTheWeek() {
-
-  let day = new Date().getDate();
-  let year = new Date().getFullYear();
-  let month = new Date().getMonth();
-
-  let today = new Date(year, month, day);
-  let firstday = new Date(2020, 8, 16, 0, 0, 0, 0);
-  let week = Math.trunc(((((today.valueOf() - firstday.valueOf())/1000)/3600)/24)/7);
-
-  return week+1;
-}
 
 function StudyPlan (props) {
   const classes = useStyles();
@@ -50,7 +33,6 @@ function StudyPlan (props) {
   const [ disciplinas, setDisciplinas ] = useState([]);
 
   const dia = new Date().getDay();
-  const diaDaSemana = [ "Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado" ]
 
   // -- Carrega as Disciplinas do dia correspondente
   useEffect(() => {

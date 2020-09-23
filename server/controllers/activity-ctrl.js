@@ -182,6 +182,7 @@ listarAtividadesPorTopico = async (req, res) => {
         "topico.id": req.params.id
     }, (err, listaAtividade) => {
         // Verificação de erros
+        console.log(listaAtividade)
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }

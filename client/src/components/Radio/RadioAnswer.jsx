@@ -12,7 +12,8 @@ export default function RadioAnswer(props) {
     setValue(event.target.value);
     setRespostaAluno((preValue) => ({
       ...preValue,
-      [idQuestion]: event.target.value
+      questao: idQuestion,
+      resposta: event.target.value
     }));
   };
 
