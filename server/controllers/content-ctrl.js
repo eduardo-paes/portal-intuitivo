@@ -213,21 +213,21 @@ encConteudoPersonalizado = async (req, res) => {
 // Função para listar os conteúdos contidos no banco
 listarConteudos = async (req, res) => {
     await Conteudo.find({})
-    .populate('disciplinaID')
-    .exec((err, listaConteudos) => {
-        // Verifica se os dados foram encontrados
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        // Verifica se há dados na lista
-        if (!listaConteudos.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
-        }
-        // Caso não haja erros, retorna lista de conteúdos
-        return res.status(200).json({ success: true, data: listaConteudos })
-    })
+        .populate('disciplinaID')
+        .exec((err, listaConteudos) => {
+            // Verifica se os dados foram encontrados
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            // Verifica se há dados na lista
+            if (!listaConteudos.length) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: "Dados não encontrados." })
+            }
+            // Caso não haja erros, retorna lista de conteúdos
+            return res.status(200).json({ success: true, data: listaConteudos })
+        })
 }
 
 // Exporta os módulos

@@ -2,8 +2,11 @@ import React, {useState, useEffect} from "react";
 import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
+import { ActivityDialogFilter } from "../"
+
 // -- Material UI - Table
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { lighten, makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
@@ -15,12 +18,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 // -- Material UI - Icons
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
 
 // Botão de Atualização
 function UpdateQuestion(props) {
@@ -44,32 +52,14 @@ function UpdateQuestion(props) {
 // Botão de Atualização
 function ShowQuestion(props) {
     const {id, setAtividade, setHidden} = props;
-    const [clicked, setClicked] = useState(false);
-    let question;
 
-    // -- Carrega questão selecionada pelo usuário
-    useEffect(() => {
-        const abortController = new AbortController();
-        if (clicked) {
-            async function fetchAPI() {
-                const response = await api.encQuestaoPorID(id);
-                const value = response.data.data;
-                // eslint-disable-next-line
-                question = {
-                    enunciado: value.enunciado,
-                    resposta: value.resposta,
-                    tipoResposta: value.tipoResposta,
-                }
-                setAtividade(question);
-                setHidden(true);
-            }
-            fetchAPI();
-        }
-        return abortController.abort();
-    }, [clicked]);
+    const savingActivity = () => {
+        setAtividade(id);
+        setHidden(true);
+    }
 
     return (
-        <IconButton aria-label="update" color="primary" size="small" onClick={() => setClicked(!clicked)}>
+        <IconButton aria-label="update" color="primary" size="small" onClick={savingActivity}>
             <VisibilityIcon/>
         </IconButton>
     )
@@ -299,6 +289,73 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired
 };
 
+// -- Toolbar Styles
+const useToolbarStyles = makeStyles((theme) => ({
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    title: {
+      flex: '1 1 100%',
+      color: "#606161",
+    },
+  }));
+
+// -- Toolbar
+const EnhancedTableToolbar = (props) => {
+    const { filter, setFilter, filterDialog, setFilterDialog, revision } = props;
+    const classes = useToolbarStyles();
+
+    // -- Limpa o filtro
+    function clearFilter() {
+        setFilter({ 
+            tipo: "",
+            disciplinaID: "",
+            topico: "",
+            numeracao: "",
+            area: ""
+        });
+    }
+
+    return (
+    <Toolbar className={clsx(classes.root)}>
+        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+            {revision ? "Lista de Avaliações Diagnósticas" : "Lista de Atividades"}
+        </Typography>
+
+        <Tooltip title="Limpar filtro">
+            <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
+                <ClearAllIcon />
+            </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Filtrar lista">
+            <IconButton aria-label="filter list" onClick={() => setFilterDialog(true)}>
+                <FilterListIcon />
+            </IconButton>
+        </Tooltip>
+
+        <ActivityDialogFilter 
+            filter={filter}
+            setFilter={setFilter}
+            open={filterDialog}
+            setOpen={setFilterDialog}
+            revision={revision}
+        />
+    </Toolbar>
+    );
+};
+
 // -- Styles: Tabela-Body
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -330,16 +387,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ActivityTable(props) {
+    const {data, setActivity, filterDialog, setFilterDialog, setHidden, revision, setMount} = props;
+    
     const classes = useStyles();
+    const theme = useTheme();
+    const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('nome');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-
-    const theme = useTheme();
-    const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-    const {data, setQuestion, setHidden, revision, setMount} = props;
+    const [filter, setFilter] = useState({
+        tipo: "",
+        disciplinaID: "",
+        topico: "",
+        numeracao: "",
+        area: ""
+    });
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -369,6 +433,12 @@ export default function ActivityTable(props) {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
+                <EnhancedTableToolbar 
+                    filter={filter} 
+                    setFilter={setFilter} 
+                    filterDialog={filterDialog} 
+                    setFilterDialog={setFilterDialog} 
+                    revision={revision}/>
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -389,26 +459,48 @@ export default function ActivityTable(props) {
                                         page * rowsPerPage,
                                         page * rowsPerPage + rowsPerPage
                                     )
-                                    .map(row=> {
+                                    .map(row => {
                                         const {tipoAtividade, disciplinaID, topicoID, areaConhecimento, numeracao, questoes} = row;
 
-                                        return (
-                                            <TableRow hover={true} tabIndex={-1} key={row._id}>
-                                                
-                                                <TableCell className={classes.row} align="left">{tipoAtividade}</TableCell>
-                                                {!smScreen && !revision && <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>}
-                                                {!smScreen && !revision && <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>}
-                                                {!smScreen && revision && <TableCell className={classes.row} align="left">{numeracao}</TableCell>}
-                                                <TableCell className={classes.row} align="left">{areaConhecimento}</TableCell>
-                                                <TableCell className={classes.row} align="left">{questoes.length}</TableCell>
+                                        let auxArea = (areaConhecimento === filter.area || filter.area === '') ? true : false;
+                                        let auxType = (tipoAtividade === filter.tipo || filter.tipo === '') ? true : false;
 
-                                                <TableCell align="left">
-                                                    <ShowQuestion id={row._id} setQuestion={setQuestion} setHidden={setHidden}/>
-                                                    <UpdateQuestion id={row._id} revision={revision}/>
-                                                    <DeleteQuestion id={row._id} revision={revision} setMount={setMount}/>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
+                                        let auxSubject = true;
+                                        let auxTopic = true;
+                                        let auxWeek = true;
+
+                                        if (revision) {
+                                            auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
+                                            auxSubject = true;
+                                            auxTopic = true;
+                                        } else {
+                                            auxSubject = (disciplinaID._id === filter.disciplinaID || filter.disciplinaID === '') ? true : false;
+                                            auxTopic = (topicoID.topico.includes(filter.topico) || filter.topico === '') ? true : false;
+                                            auxWeek = true;
+                                        }                                        
+                                        
+                                        if (auxArea && auxType && auxSubject && auxTopic && auxWeek) {
+                                            return (
+                                                <TableRow hover={true} tabIndex={-1} key={row._id}>
+                                                    
+                                                    <TableCell className={classes.row} align="left">{tipoAtividade}</TableCell>
+                                                    {!smScreen && !revision && <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>}
+                                                    {!smScreen && !revision && <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>}
+                                                    {!smScreen && revision && <TableCell className={classes.row} align="left">{numeracao}</TableCell>}
+                                                    <TableCell className={classes.row} align="left">{areaConhecimento}</TableCell>
+                                                    <TableCell className={classes.row} align="left">{questoes.length}</TableCell>
+
+                                                    <TableCell align="left">
+                                                        <ShowQuestion id={row._id} setAtividade={setActivity} setHidden={setHidden}/>
+                                                        <UpdateQuestion id={row._id} revision={revision}/>
+                                                        <DeleteQuestion id={row._id} revision={revision} setMount={setMount}/>
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        }
+
+                                        // eslint-disable-next-line
+                                        return;
                                     })
                             }
                             {

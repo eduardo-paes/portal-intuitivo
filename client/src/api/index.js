@@ -71,6 +71,7 @@ export const listarAtividades = () => api.get("/controle-atividade");
 export const atualizarAtividade = (id, atividadeAtualizada) => api.put(`/controle-atividade/${id}`, atividadeAtualizada);
 export const removerAtividade = id => api.delete(`/controle-atividade/${id}`);
 export const encAtividadePorID = id => api.get(`/controle-atividade/${id}`);
+export const encQuestoesDaAtividadeID = id => api.get(`/controle-atividade/questoes/${id}`);
 export const listarAtividadesPorTopico = (id) => api.get(`/plano-estudo/${id}`);
 
 // -- Funções relacionadas à Revisao
@@ -149,6 +150,7 @@ const apis = {
     atualizarAtividade,
     removerAtividade,
     encAtividadePorID,
+    encQuestoesDaAtividadeID,
     listarAtividadesPorTopico,
     // Revisão
     inserirRevisao,

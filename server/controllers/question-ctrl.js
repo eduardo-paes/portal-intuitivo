@@ -135,12 +135,10 @@ atualizarQuestao = async (req, res) => {
         let tagsAtualizadas = questaoAtualizada.tags;
 
         // Caso ambas as versões possuam tags
-        if (tagsAtualizadas.length > 0) {
+        if (tagsAtualizadas.length) {
             // Remove todas as TagQuestao antigas
-            if (tagsAntigas.length > 0) {
-                tagsAntigas.forEach(oldQtID => {
-                    removerTagQuestao(oldQtID);
-                })
+            if (tagsAntigas.length) {
+                TagQuestao.deleteMany({ questaoID: req.params.id })
             }
 
             // Insere todas as TagQuestao novas
@@ -155,6 +153,13 @@ atualizarQuestao = async (req, res) => {
 
             // Atualiza TQs
             questaoEncontrada.tags = arrayTags;
+        } 
+        
+        // Caso a selecão atualizada de tags seja vazia
+        else {
+            // Apaga todas as TagQuestoes antes de atualizar valor
+            TagQuestao.deleteMany({ questaoID: req.params.id })
+            questaoEncontrada.tags = questaoAtualizada.tags
         }
 
         // Salva alterações
@@ -206,12 +211,7 @@ removerQuestao = async (req, res) => {
             }
 
             // Remove QuestaoTag antes de remover a questão
-            let tagsAntigas = questaoEncontrada.tags;
-            if (tagsAntigas.length > 0) {
-                tagsAntigas.map(oldQtID => {
-                    removerTagQuestao(oldQtID);
-                })
-            }
+            TagQuestao.deleteMany({ questaoID: req.params.id })
 
             // Caso não haja erros, conclui operação.
             return res
@@ -312,11 +312,8 @@ listarQuestaoPorTopico = async (req, res) => {
 listarQuestaoPorArea = async (req, res) => {
     await Questao.find()
     .populate('topicoID', 'topico')
-    .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' } })
-    .populate({
-      path: 'disciplinaID',
-      match: { 'areaConhecimento': req.params.area },
-    })
+    .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' }})
+    .populate({ path: 'disciplinaID', match: { 'areaConhecimento': req.params.area }})
     .exec((err, listaQuestao) => {
         // Verificação de erros
         if (err) {

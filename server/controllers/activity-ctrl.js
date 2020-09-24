@@ -7,22 +7,10 @@ const mongoose = require('mongoose');
 // ======================================
 
 // Função para inserir tagQuestao no banco
-inserirAtividadeQuestao = async (questaoID, atividadeID, qaID) => {
+inserirAtividadeQuestao = async (qaID, questaoID, atividadeID) => {
     const body = { _id: qaID, questaoID: questaoID, atividadeID: atividadeID };
     const novaQuestaoAtividade = new AtividadeQuestao(body);
     await novaQuestaoAtividade.save();
-}
-
-// Função para remover tagQuestao no banco
-removerAtividadeQuestao = (qaID) => {
-    AtividadeQuestao.findOneAndDelete({ _id: qaID}, err => {
-        if (err) {
-            console.log(err);
-            return false;
-        }
-        return true;
-    })
-    .catch(err => console.log(err))
 }
 
 // ======================================
@@ -53,17 +41,23 @@ inserirAtividade = (req, res) => {
             });
     }
 
+    // Cria id para atividade
     novaAtividade._id = mongoose.Types.ObjectId();
 
     // Inserir QuestaoAtividade
     if (novaAtividade.questoes.length > 0) {
         let qaID, arrayQuestoes = [];
+        let atividadeID = novaAtividade._id;
         // Insere as QAs
         novaAtividade.questoes.map(questaoID => {
+            // Cria id para questaoAtividade
             qaID = mongoose.Types.ObjectId();
+            // Salva esse id num array
             arrayQuestoes.push(qaID);
-            inserirAtividadeQuestao(questaoID, novaAtividade._id, qaID);
+            // Insere atividadeQuestao
+            inserirAtividadeQuestao(qaID, questaoID, atividadeID);
         })
+        // Salva array com os ids de atividadeQuestao na nova atividade
         novaAtividade.questoes = arrayQuestoes;
     }
 
@@ -112,31 +106,47 @@ atualizarAtividade = async (req, res) => {
         _id: req.params.id
     }, (err, atividadeEncontrada) => {
 
+        // Atualiza dados da atividade encontrada
+        atividadeEncontrada.tipoAtividade = atividadeAtualizada.tipoAtividade
+        atividadeEncontrada.disciplinaID = atividadeAtualizada.disciplinaID
+        atividadeEncontrada.topicoID = atividadeAtualizada.topicoID
+        atividadeEncontrada.areaConhecimento = atividadeAtualizada.areaConhecimento
+        atividadeEncontrada.numeracao = atividadeAtualizada.numeracao
+        atividadeEncontrada.dataCriacao = atividadeAtualizada.dataCriacao
+        atividadeEncontrada.dataModificacao = atividadeAtualizada.dataModificacao
+
         // Verificação de Questões
         let questoesAntigas = atividadeEncontrada.questoes;
         let questoesAtualizadas = atividadeAtualizada.questoes;
 
         // Caso ambas as versões possuam questoes
-        if (questoesAtualizadas.length > 0) {
+        if (questoesAtualizadas.length) {
+
             // Remove todas as QuestoesAtividade antigas
-            if (questoesAntigas.length > 0) {
-                questoesAntigas.forEach(oldQaID => {
-                    removerAtividadeQuestao(oldQaID);
-                })
+            if (questoesAntigas.length) {
+                let atividadeID = atividadeAtualizada._id;
+                AtividadeQuestao.deleteMany({ atividadeID: atividadeID });
             }
 
             // Insere todas as QuestoesAtividade novas
             let atividadeID = atividadeEncontrada._id;
             let qaID, arrayQuestoes = [];
             
-            questoesAtualizadas.forEach(tagID => {
+            questoesAtualizadas.forEach(questaoID => {
                 qaID = mongoose.Types.ObjectId();
                 arrayQuestoes.push(qaID);
-                inserirAtividadeQuestao(questaoID, atividadeID, qaID);
+                inserirAtividadeQuestao(qaID, questaoID, atividadeID);
             })
 
             // Atualiza QAs
             atividadeEncontrada.questoes = arrayQuestoes;
+        }
+
+        // Caso a selecão atualizada de questões seja vazia
+        else {
+            // Remove todas as AtividadeQuestoes antes de atualizar
+            AtividadeQuestao.deleteMany({ atividadeID: req.params.id });
+            atividadeEncontrada.questoes = atividadeAtualizada.questoes
         }
 
         if (err) {
@@ -147,16 +157,6 @@ atualizarAtividade = async (req, res) => {
                     message: "Atividade não encontrada."
                 })
         }
-
-        // Atualiza dados da atividade encontrada
-        atividadeEncontrada.tipoAtividade = atividadeAtualizada.tipoAtividade
-        atividadeEncontrada.disciplinaID = atividadeAtualizada.disciplinaID
-        atividadeEncontrada.topicoID = atividadeAtualizada.topicoID
-        atividadeEncontrada.areaConhecimento = atividadeAtualizada.areaConhecimento
-        atividadeEncontrada.numeracao = atividadeAtualizada.numeracao
-        atividadeEncontrada.questoes = atividadeAtualizada.questoes
-        atividadeEncontrada.dataCriacao = atividadeAtualizada.dataCriacao
-        atividadeEncontrada.dataModificacao = atividadeAtualizada.dataModificacao
 
         // Salva alterações
         atividadeEncontrada
@@ -195,6 +195,10 @@ removerAtividade = async (req, res) => {
                     .status(404)
                     .json({success: false, error: "Atividade não encontrado."})
             }
+
+            // Remove antes todas as AtividadeQuestoes
+            AtividadeQuestao.deleteMany({ atividadeID: req.params.id });
+
             // Caso não haja erros, conclui operação.
             return res
                 .status(200)
@@ -205,10 +209,10 @@ removerAtividade = async (req, res) => {
 
 // Função para buscar atividade por ID
 encAtividadePorID = async (req, res) => {
-
     // Encontra atividade por ID fornecido na rota
-    await Atividade.findOne({ _id: req.params.id })
-        .populate('questoes')
+    await Atividade
+        .findOne({ _id: req.params.id })
+        .populate({ path: 'questoes', select: 'questaoID'})
         .exec((err, atividadeEncontrada) => {
             if (err) {
                 return res
@@ -225,6 +229,30 @@ encAtividadePorID = async (req, res) => {
             return res
                 .status(200)
                 .json({success: true, data: atividadeEncontrada})
+        });
+}
+
+encQuestoesDaAtividadeID = async (req, res) => {
+    // Encontra questões por AtividadeID fornecido na rota
+    await AtividadeQuestao
+        .find({ atividadeID: req.params.id })
+        .populate("questaoID")
+        .exec((err, questoesEncontradas) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!questoesEncontradas) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Atividade não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: questoesEncontradas})
         });
 }
 
@@ -276,6 +304,7 @@ module.exports = {
     atualizarAtividade,
     removerAtividade,
     encAtividadePorID,
+    encQuestoesDaAtividadeID,
     listarAtividade,
     listarAtividadesPorTopico
 }

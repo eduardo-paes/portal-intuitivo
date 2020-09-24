@@ -3,33 +3,56 @@ import { Button,  Dialog , Grid, DialogActions, DialogContent, DialogTitle, Menu
 import { MyTextField } from "../../assets/styles/styledComponents";
 import api from '../../api';
 
-export default function FormDialog(props) {
-  const { filter, setFilter, open, setOpen } = props;
-  const [listaDisciplina, setListaDisciplina] = useState([]);
-  const [tempFilter, setTempFilter] = useState({
-    area: "",
-    disciplinaID: "",
-    numeracao: ""
-  });
+const initialFilter = {
+  tipo: "",
+  disciplinaID: "",
+  topico: "",
+  numeracao: "",
+  area: ""
+}
 
-  // -- Carrega as Disciplinas existentes no banco
+export default function ActivityDialogFilter(props) {
+  const { filter, setFilter, open, setOpen, revision } = props;
+  const [listaDisciplina, setListaDisciplina] = useState([]);
+  const [semanasAno, setSemanasAno] = useState(32);
+  const [mount, setMount] = useState(true);
+  const [tempFilter, setTempFilter] = useState(initialFilter);
+
+  // Carregamentos iniciais
   useEffect(() => {
     const abortController = new AbortController();
 
-    if (filter.area !== '' || filter.disciplinaID !== '' || filter.numeracao !== '') {
+    // Verifica se filtro já está preenchido
+    if (filter !== initialFilter) {
       setTempFilter(filter);
+    } else if (tempFilter !== initialFilter) {
+      setTempFilter(initialFilter);
     }
 
-    async function fetchDisciplinaAPI() {
-      const response = await api.listarDisciplinas();
-      const value = response.data.data;
-      setListaDisciplina(value);
+    // Monta disciplinas e ano letivo
+    if (mount) {
+      async function fetchDisciplinaAPI() {
+        const response = await api.listarDisciplinas();
+        const value = response.data.data;
+        setListaDisciplina(value);
+      }
+  
+      async function fetchAnoLetivoAPI() {
+        const response = await api.listarAnoLetivo();
+        const value = response.data.data;
+        setSemanasAno(value[0].contagem);
+      }
+  
+      // Faz o fetch e desmonta
+      fetchDisciplinaAPI();
+      fetchAnoLetivoAPI();
+      setMount(false);
     }
 
-    fetchDisciplinaAPI()
     return abortController.abort();
-  }, []);
+  }, [filter]);
 
+  // Salva modificações do filtro temporariamente
   const onFilterChange = (event) => {
     const { name, value } = event.target;
     setTempFilter(preValue => ({
@@ -38,20 +61,23 @@ export default function FormDialog(props) {
     }))
   }
 
+  // Salva modificações no filtro permanentemente
   const onSubmit = () => {
     setFilter(tempFilter);
     setOpen(false);
   };
 
+  // Array com o número de semanas
   const array = [];
-  for (let i = 1; i < 33; ++i) array[i-1] = i;
+  for (let i = 1; i <= semanasAno; ++i) array[i-1] = i;
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">
+    <Dialog open={open} fullWidth={true} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Filtro</DialogTitle>
 
       <DialogContent>
         <Grid container={true} spacing={2}>
+
           <Grid item={true} xs={12}>
             <MyTextField
               id="campoArea"
@@ -69,7 +95,24 @@ export default function FormDialog(props) {
             </MyTextField>
           </Grid>
 
-          <Grid item={true} xs={12}>
+          <Grid item={true} hidden={revision} xs={12}>
+            <MyTextField
+              id="campoTipo"
+              variant="outlined"
+              select={true}
+              label="Tipo de Atividade"
+              name="tipo"
+              value={tempFilter.tipo ? tempFilter.tipo : ""}
+              onChange={onFilterChange}>
+                <MenuItem value="Nenhum">Nenhum</MenuItem>
+                <MenuItem value="Fixação">Fixação</MenuItem>
+                <MenuItem value="Retomada">Retomada</MenuItem>
+                <MenuItem value="Aprofundamento">Aprofundamento</MenuItem>
+                <MenuItem value="Avaliação Diagnóstica">Avaliação Diagnóstica</MenuItem>
+            </MyTextField>
+          </Grid>
+
+          <Grid item={true} hidden={revision} xs={12}>
             <MyTextField
               id="campoDisciplina"
               variant="outlined"
@@ -86,7 +129,17 @@ export default function FormDialog(props) {
             </MyTextField>
           </Grid>
 
-          <Grid item={true} xs={12}>
+          <Grid item={true} hidden={revision} xs={12}>
+            <MyTextField
+              id="campoDisciplina"
+              variant="outlined"
+              label="Tópico"
+              name="topico"
+              value={tempFilter.topico ? tempFilter.topico : ""}
+              onChange={onFilterChange}/>
+          </Grid>
+
+          <Grid item={true} hidden={!revision} xs={12}>
             <MyTextField
               id="filtroNumeracao"
               select={true}
@@ -102,6 +155,7 @@ export default function FormDialog(props) {
                 }
             </MyTextField>
           </Grid>
+
         </Grid>
       </DialogContent>
       

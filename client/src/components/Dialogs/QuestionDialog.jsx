@@ -46,7 +46,7 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-export default function CustomDialog(props) {
+export default function QuestionDialog(props) {
   const {enunciado, tipoResposta, resposta, open, setOpen} = props;
   const optionsLetter = ["A)", "B)", "C)", "D)", "E)", "F)", "G)"]
 

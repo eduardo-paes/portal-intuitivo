@@ -3,21 +3,12 @@ import api from '../../api'
 
 // -- Components
 import { MyContainer, CreateButton, GeneralTitle } from "../../assets/styles/styledComponents"
-import { QuestionTable, CustomDialog } from "../../components"
-import { Grid } from "@material-ui/core";
+import { QuestionTable, QuestionDialog } from "../../components"
 
 // -- Styles
-import { makeStyles } from '@material-ui/core/styles';
 import "./ListStyles.css"
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-      flexGrow: 1,
-    }
-}));
-
 function QuestionInsert() {
-    const classes = useStyles();
     const [questoes, setQuestoes] = useState([]);
     const [questaoSelecionada, setQuestaoSelecionada] = useState('');
     const [hiddenDialog, setHiddenDialog] = useState(false);
@@ -60,25 +51,32 @@ function QuestionInsert() {
 
         return (
         <MyContainer>
-            <GeneralTitle>Banco de Questões</GeneralTitle>
+            <section id="cabecalhoQuestao">
+                <GeneralTitle>Banco de Questões</GeneralTitle>
+            </section>
 
-            <Grid container={true} className={classes.root} spacing={2} justify="center">
-                <Grid id="cabecalhoListaQuestao" item={true} xs={12} sm={12} lg={12}>
-                    <QuestionTable data={questoes} setMount={setMount} setQuestion={setQuestaoSelecionada} setHidden={setHiddenDialog} tableSelection={false}/>
-                    <div className="create-button">
-                        <CreateButton title="Inserir Questão" url="/controle-questoes/create"/>
-                    </div>
-                </Grid>
-            </Grid>
+            <section id="tabelaQuestao">
+                <QuestionTable 
+                    data={questoes} 
+                    setMount={setMount} 
+                    setQuestion={setQuestaoSelecionada} 
+                    setHidden={setHiddenDialog} 
+                    tableSelection={false}/>
 
-            <CustomDialog 
-                enunciado={questaoSelecionada.enunciado}
-                tipoResposta={questaoSelecionada.tipoResposta}
-                resposta={questaoSelecionada.resposta}
-                open={hiddenDialog}
-                setOpen={setHiddenDialog}
-            />
+                <QuestionDialog 
+                    enunciado={questaoSelecionada.enunciado}
+                    tipoResposta={questaoSelecionada.tipoResposta}
+                    resposta={questaoSelecionada.resposta}
+                    open={hiddenDialog}
+                    setOpen={setHiddenDialog}
+                />
+            </section>
 
+            <section id="rodapeQuestao">
+                <div className="create-button">
+                    <CreateButton title="Inserir Questão" url="/controle-questoes/create"/>
+                </div>
+            </section>
         </MyContainer>
     );
 };
