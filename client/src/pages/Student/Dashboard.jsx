@@ -13,6 +13,11 @@ import QuestionCircularStatic from "../../components/ProgressBar/QuestionProgres
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
+  
+  exampleCard: {
+    minHeight: "15rem"
+  },
+  
   content: {
     fontStyle: 'normal',
     fontWeight: `300`,
@@ -20,9 +25,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '1rem',
     color: '#606161',
   },
+  
+  phrase: {
+    fontSize: '1rem'
+  },
+  
   questionProgress: {
     marginLeft: '2rem',
   },
+  
   subTitle: {
     fontStyle: 'normal',
     fontWeight: `500`,
@@ -30,15 +41,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '1rem',
     color: '#606161',
   },
+
   title: {
     fontStyle: 'normal',
     fontWeight: `300`,
     fontSize: '1.25rem',
     marginTop: '1rem',
     color: '#606161',
-  },
-  exampleCard: {
-    minHeight: "12.5rem"
   }
 }));
 
@@ -59,8 +68,8 @@ export default function Dashboard (props) {
             <WeeklyProgress />
           </Grid>
 
-          <Grid item={true} xs={12} sm={9}>
-            <GeneralSubtitle className={classes.title} id="tarefas">Tarefas</GeneralSubtitle>
+          <Grid item={true} xs={12} sm={3}>
+            <GeneralSubtitle className={classes.title} id="tarefas">Tarefas do Dia</GeneralSubtitle>
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
                 <List className={classes.root}>
@@ -88,27 +97,7 @@ export default function Dashboard (props) {
           </Grid>
 
           <Grid item={true} xs={12} sm={3}>
-            <GeneralSubtitle className={classes.title} id="questoes">Questões</GeneralSubtitle>
-            <MyCard>
-              <MyCardContent className={classes.exampleCard}>
-                <Grid item={true} align="center">
-                  <GeneralSubtitle className={classes.content}>Questões realizadas: 682</GeneralSubtitle>
-                  <h3 className={classes.content}>Média de Acertos</h3>
-                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={2.72}/>
-                </Grid>
-              </MyCardContent>
-            </MyCard>
-          </Grid>
-
-        </Grid>
-      </section>
-
-      <section id="topicosDoDiaDashboard">
-
-        <Grid container={true} spacing={2}>
-          
-          <Grid item={true} xs={12} sm={4}>
-            <h2 className={classes.title} id="disciplinas">Química</h2>
+            <h2 className={classes.title} id="melhorDesempenho">Química</h2>
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
                 <Grid item={true} align="center">
@@ -120,8 +109,8 @@ export default function Dashboard (props) {
             </MyCard>
           </Grid>
 
-          <Grid item={true} xs={12} sm={4}>
-            <h2 className={classes.title} id="disciplinas">Sociologia</h2>
+          <Grid item={true} xs={12} sm={3}>
+            <h2 className={classes.title} id="piorDesempenho">Sociologia</h2>
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
                 <Grid item={true} align="center">
@@ -133,10 +122,15 @@ export default function Dashboard (props) {
             </MyCard>
           </Grid>
 
-          <Grid item={true} xs={12} sm={4}>
+          <Grid item={true} xs={12} sm={3}>
+            <GeneralSubtitle className={classes.title} id="questoes">Questões</GeneralSubtitle>
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
-                Tópico 3
+                <Grid item={true} align="center">
+                  <GeneralSubtitle className={classes.content}>Questões realizadas: 682</GeneralSubtitle>
+                  <h3 className={classes.content}>Média de Acertos</h3>
+                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={2.72}/>
+                </Grid>
               </MyCardContent>
             </MyCard>
           </Grid>

@@ -286,7 +286,7 @@ listarConteudoPersonalizado = async (req, res) => {
     else if (flag === 4) {
         await Conteudo
         .find({ 
-            'disciplina.id': { $eq: req.params.id },
+            disciplinaID: { $eq: req.params.id },
             area: { $eq: req.params.area },
             numeracao: { $in: paramsNumeracao }
         

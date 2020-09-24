@@ -46,15 +46,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   wrapper: {
-    margin: theme.spacing(1),
     position: 'relative',
   },
   success: {
     backgroundColor: green[500],
     color: '#fafafa',
-    '&:hover': {
-      backgroundColor: green[700],
-    },
+    borderRadius: '50%'
   },
 }));
 
@@ -65,9 +62,7 @@ function CircularIntegration() {
   return (
     <div className={classes.root}>
       <div className={classes.wrapper}>
-        <Fab size="small" component='div' className={classes.success}>
-          <CheckIcon />
-        </Fab>
+        <CheckIcon className={classes.success} fontSize='large'/>
       </div>
     </div>
   );

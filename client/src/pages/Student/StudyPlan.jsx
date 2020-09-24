@@ -31,6 +31,7 @@ function StudyPlan (props) {
     'rgba(220, 200, 63, 1)',
   ];
   const [ disciplinas, setDisciplinas ] = useState([]);
+  const [ content, setContent ] = React.useState([]); 
 
   const dia = new Date().getDay();
 
@@ -38,7 +39,7 @@ function StudyPlan (props) {
   useEffect(() => {
     const abortController = new AbortController();
     async function fetchDisciplinaAPI() {
-      const response = await api.listarDisciplinasPorDiaDaSemana(2);
+      const response = await api.listarDisciplinasPorDiaDaSemana(dia-1);
       const value = response.data.data;
       setDisciplinas(value);
     }
@@ -47,11 +48,33 @@ function StudyPlan (props) {
     // eslint-disable-next-line   
   }, []);
 
+  // -- Carrega os tópicos do dia correspondente
+  useEffect(() => {
+    const abortController = new AbortController();
+    let topicos = [];
+    console.log(disciplinas);
+
+    if (disciplinas.length > 0) {
+        async function fetchConteudoAPI() {
+            for (let i = 0; i < disciplinas.length; ++i) {
+              const response = await api.listarConteudoPersonalizado(disciplinas[i]._id, disciplinas[i].areaConhecimento, 1);
+              console.log(response);
+              topicos.push(response.data.data);
+            }
+            setContent(topicos);
+        }
+        fetchConteudoAPI();
+    }
+    
+    return abortController.abort();
+    // eslint-disable-next-line
+}, [disciplinas]);
+
   function returnContent() {
-    if (disciplinas.length === 0) {
+    if (content.length === 0) {
       return <p>Não há conteúdo a ser estudado hoje, portanto, aproveite o descanso!</p>
     } else {
-      return disciplinas.map((row, index) => {
+      return content.map((row, index) => {
 
         return (
           <Grid 
@@ -65,8 +88,8 @@ function StudyPlan (props) {
             <ContentAccordion 
               color={borderColor[index]}
               area={row.areaConhecimento}
-              id={row._id} 
-              disciplina={row.nome}
+              topicoID={row._id} 
+              nome={row.topico}
               week={getTheWeek()}
             />
           </Grid>

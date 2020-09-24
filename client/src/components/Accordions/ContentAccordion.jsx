@@ -17,7 +17,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function ContentAccordion(props) {
     
-    const { id, area, disciplina, color, week } = props;
+    const { topicoID, area, nome, color, week } = props;
 
     const AccordionPersonalized = withStyles({
         root: {
@@ -43,38 +43,21 @@ export default function ContentAccordion(props) {
     });
     const [ activity, setActivity ] = React.useState([]);
     const [ question, setQuestion ] = React.useState([]); 
-    const [ content, setContent ] = React.useState([]); 
-
-    // -- Carrega os tópicos do dia correspondente
-    useEffect(() => {
-        const abortController = new AbortController();
-
-        if (id !== '') {
-            async function fetchConteudoAPI() {
-                const response = await api.listarConteudoPersonalizado(id, area, 1);
-                setContent(response.data.data[0]);
-            }
-            fetchConteudoAPI();
-        }
-        
-        return abortController.abort();
-        // eslint-disable-next-line
-    }, [id]);
 
     // -- Carrega as atividades do tópico correspondente
     useEffect(() => {
         const abortController = new AbortController();
 
-        if (content.length !== 0) {
+        if (topicoID !== '') {
             async function fetchAtividadeAPI() {
-                const response = await api.listarAtividadesPorTopico(content._id);
+                const response = await api.listarAtividadesPorTopico(topicoID);
                 console.log(response);
                 setActivity(response.data.data);
             }
             fetchAtividadeAPI();
         }
         return abortController.abort();
-    }, [content] )
+    }, [topicoID] )
     
     // -- Carrega questão dado o id
     useEffect(() => {
@@ -155,12 +138,12 @@ export default function ContentAccordion(props) {
                 aria-controls="panel1a-content"
                 id="panel1a-header">
                 <CircularStatic progresso={progresso}/>
-                <Typography id="heading" className={classes.heading}>{disciplina}</Typography>
+                <Typography id="heading" className={classes.heading}>{nome}</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <Grid className={classes.accordionDetails} container={true} spacing={3}>
                     <Grid align="center" item={true} xs={12} lg={12} sm={12}>
-                        <Typography id="secondaryHeading" className={classes.secondaryHeading}>{content.topico}</Typography>
+                        <Typography id="secondaryHeading" className={classes.secondaryHeading}>{nome}</Typography>
                     </Grid>
                     {/* Material de Estudo */}
                     <Grid align="center" item={true} xs={12} lg={3} sm={12}>
@@ -178,13 +161,13 @@ export default function ContentAccordion(props) {
                                         <CloseIcon />
                                     </IconButton>
                                     <Typography variant="h6" className={classes.title}>
-                                        {content.topico}
+                                        {nome}
                                     </Typography>
                                 </Toolbar>
                             </AppBar>
                             <Grid container={true} spacing={3}>
                                 <Grid className={classes.material} item={true} xs={12} lg={12} sm={12} align='center'>
-                                    <PDFViewer source={ `http://localhost:5000/uploads/content/${content._id}.pdf`}/>
+                                    <PDFViewer source={ `http://localhost:5000/uploads/content/${topicoID}.pdf`}/>
                                 </Grid>
                                 <Grid item={true} xs={12} lg={12} sm={12} align='center' >
                                     <Button id="materialEstudo" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
@@ -214,7 +197,6 @@ export default function ContentAccordion(props) {
                                     </Typography>
                                 </Toolbar>
                             </AppBar>
-                            {console.log(question)}
                             <Grid container={true} spacing={1}>
                                 {
                                     (question.length > 0) ? 
