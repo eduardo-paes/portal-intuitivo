@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
-import { DialogForm } from "../"
+import { ContentDialogForm } from "../"
 
 // -- Material UI - Table
 import clsx from 'clsx';
@@ -236,7 +236,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     },
   }));
 
-  // -- Toolbar
+// -- Toolbar
 const EnhancedTableToolbar = (props) => {
     const { filter, setFilter, filterDialog, setFilterDialog } = props;
     const classes = useToolbarStyles();
@@ -268,7 +268,7 @@ const EnhancedTableToolbar = (props) => {
             </IconButton>
         </Tooltip>
 
-        <DialogForm 
+        <ContentDialogForm 
             filter={filter}
             setFilter={setFilter}
             open={filterDialog}

@@ -114,8 +114,6 @@ export default function QuestionUpdate(props) {
                 autor
             }
 
-            console.log(questaoAtualizada)
-
             // Inserção pela API
             await api
                 .atualizarQuestao(props.match.params.id, questaoAtualizada)

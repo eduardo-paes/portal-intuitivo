@@ -5,7 +5,7 @@ import api from '../../api'
 // -- Estilos e Componentes
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, MenuItem } from '@material-ui/core';
-import { QuestionTable, CustomDialog } from "../../components";
+import { QuestionTable, QuestionDialog } from "../../components";
 import { MyContainer, MyTextField, AddButton, DeleteButton, GeneralTitle } from "../../assets/styles/styledComponents"
 
 // -- Estilos locais
@@ -121,7 +121,7 @@ export default function ActivityForm (props) {
     }, []);
 
     // -- Carregamentos iniciais
-    const [aux, setAux] = useState(10);
+    const [aux, setAux] = useState(15);
     useEffect(() => {
         const abortController = new AbortController();
         if (aux) {
@@ -186,7 +186,6 @@ export default function ActivityForm (props) {
 
     // -- Observa mudanças em questão selecionada
     useEffect(() => { 
-        console.log(questaoSelecionada);
         setQuestaoSelecionada(questaoSelecionada) 
     }, [questaoSelecionada]);
 
@@ -235,7 +234,7 @@ export default function ActivityForm (props) {
                             label="Disciplina"
                             name="disciplinaID"
                             disabled={revisao}
-                            value={atividade.disciplinaID}
+                            value={atividade.disciplinaID ? (listaDisciplinas.length > 0 ? atividade.disciplinaID : '') : ''}
                             error={atividade.erros.disciplina ? true : false}>
                                 {
                                     listaDisciplinas.map((row, index) => {
@@ -322,7 +321,7 @@ export default function ActivityForm (props) {
                 />
                 { atividade.erros.questoes && <p className={classes.errorMessage}>{atividade.erros.questoes}</p> }
 
-                <CustomDialog 
+                <QuestionDialog 
                     enunciado={questaoSelecionada.enunciado}
                     tipoResposta={questaoSelecionada.tipoResposta}
                     resposta={questaoSelecionada.resposta}

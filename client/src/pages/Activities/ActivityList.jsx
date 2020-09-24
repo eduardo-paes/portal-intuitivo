@@ -4,15 +4,21 @@ import api from '../../api'
 // -- Estilos
 import { MyContainer, CreateButton, GeneralTitle } from "../../assets/styles/styledComponents"
 import { makeStyles } from '@material-ui/core/styles';
-import { ActivityTable } from "../../components";
-import { Grid, Button, ButtonGroup } from '@material-ui/core';
+import { ActivityTable, ActivityDialog } from "../../components";
+import { Grid, Button, ButtonGroup, Tooltip } from '@material-ui/core';
 
 // -- Local Styles
 const useStyles = makeStyles((theme) => ({
     activityMode: {
         display: 'flex',
-        justifyContent: 'flex-end',
         alignItems: 'center',
+        marginBottom: '1rem',
+        [theme.breakpoints.down('sm')]: {
+            justifyContent: 'center',
+        },
+        [theme.breakpoints.up('sm')]: {
+            justifyContent: 'flex-end',
+        }
     }
 }));
 
@@ -20,7 +26,9 @@ export default function ActivityList() {
     const classes = useStyles();
     const [atividades, setAtividades] = useState([]);
     const [revisoes, setRevisoes] = useState([]);
-    const [revision, setRevision] = useState(false);
+
+    const [isRevision, setIsRevision] = useState(false);
+    const [filterDialog, setFilterDialog] = useState(false);
 
     const [mount, setMount] = useState({
         activity: {
@@ -33,11 +41,13 @@ export default function ActivityList() {
         }
     })
 
+    const [atividadeSelecionda, setAtividadeSelecionda] = useState('');
+    const [hiddenDialog, setHiddenDialog] = useState(false);
+
     async function fetchAtividadesAPI() {
         const response = await api.listarAtividades();
         if (response.data.success) {
             setAtividades(response.data.data);
-            console.log(response.data.data)
         }
     }
 
@@ -83,7 +93,7 @@ export default function ActivityList() {
 
     // -- Lista as revisões do banco
     const initialRevisionLoad = () => {
-        setRevision(true);
+        setIsRevision(true);
         if (mount.revision.isMounted) {
             fetchRevisoesAPI()
             setMount(preValue => ({
@@ -98,32 +108,48 @@ export default function ActivityList() {
 
     return (
         <MyContainer>
-            <section id="cabecalhoListaAtividade">
+            <section id="cabecalhoAtividade">
                 <Grid container={true}>
                     <Grid item={true} xs={12} sm={6} lg={6}>
-                        <GeneralTitle>Lista de Atividades</GeneralTitle>
+                        <GeneralTitle>Atividades</GeneralTitle>
                     </Grid>
                     <Grid item={true} xs={12} sm={6} lg={6} className={classes.activityMode}>
                         <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-                            <Button onClick={() => initialRevisionLoad()}>ADs</Button>
-                            <Button onClick={() => setRevision(false)}>Atividades</Button>
+                            <Tooltip title="Atividades Gerais">
+                                <Button onClick={() => setIsRevision(false)}>Atividades</Button>
+                            </Tooltip>
+
+                            <Tooltip title="Avaliações Diagnósticas">
+                                <Button onClick={() => initialRevisionLoad()}>ADs</Button>
+                            </Tooltip>
                         </ButtonGroup>
                     </Grid>
                 </Grid>
             </section>
 
-            <section id="dadosListaAtividades">
-                <Grid container={true} spacing={2} justify="center">
-                    <Grid  item={true} xs={12} sm={12} lg={12}>
-                        <ActivityTable data={revision ? revisoes : atividades} revision={revision} setMount={setMount}/>
+            <section id="tabelaAtividades">
+                <ActivityTable 
+                    data={isRevision ? revisoes : atividades} 
+                    revision={isRevision} 
+                    filterDialog={filterDialog}
+                    setFilterDialog={setFilterDialog}
+                    setActivity={setAtividadeSelecionda} 
+                    setHidden={setHiddenDialog} 
+                    setMount={setMount}
+                />
 
-                        <div className="create-button">
-                            <CreateButton title="Inserir Atividade" url="/controle-atividade/create"/>
-                        </div>
-                    </Grid>
-                </Grid>
+                <ActivityDialog 
+                    atividadeID={atividadeSelecionda}
+                    open={hiddenDialog}
+                    setOpen={setHiddenDialog}
+                />
             </section>
 
+            <section id="rodapeAtividades">
+                <div className="create-button">
+                    <CreateButton title="Inserir Atividade" url="/controle-atividade/create"/>
+                </div>
+            </section>
         </MyContainer>
     );
 };

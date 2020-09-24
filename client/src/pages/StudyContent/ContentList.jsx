@@ -11,9 +11,9 @@ export default function ContentList () {
     wasChanged: false
   })
   const [open, setOpen] = useState(false);
-  const [filterDialog, setFilterDialog] = useState(false);
   const [titulo, setTitulo] = useState('');
   const [id, setId] = useState('');
+  const [filterDialog, setFilterDialog] = useState(false);
 
   async function fetchConteudoAPI() {
     const response = await api.listarConteudos();

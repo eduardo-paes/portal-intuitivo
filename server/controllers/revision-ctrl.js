@@ -1,4 +1,21 @@
 const Revisao = require('../models/revision-model');
+const AtividadeQuestao = require('../models/activity&question-model');
+const mongoose = require('mongoose');
+
+// ======================================
+// FUNÇÕES DE QUESTÃO-ATIVIDADE
+// ======================================
+
+// Função para inserir tagQuestao no banco
+inserirAtividadeQuestao = async (qaID, questaoID, atividadeID) => {
+    const body = { _id: qaID, questaoID: questaoID, atividadeID: atividadeID };
+    const novaQuestaoAtividade = new AtividadeQuestao(body);
+    await novaQuestaoAtividade.save();
+}
+
+// ======================================
+// FUNÇÕES DE REVISÃO
+// ======================================
 
 // Função para inserir revisao no banco
 inserirRevisao = (req, res) => {
@@ -24,7 +41,25 @@ inserirRevisao = (req, res) => {
             });
     }
 
-    console.log(novaRevisao)
+    // Cria id para revisão
+    novaRevisao._id = mongoose.Types.ObjectId();
+
+    // Inserir QuestaoAtividade
+    if (novaRevisao.questoes.length > 0) {
+        let qaID, arrayQuestoes = [];
+        let atividadeID = novaRevisao._id;
+        // Insere as QAs
+        novaRevisao.questoes.map(questaoID => {
+            // Cria id para questaoAtividade
+            qaID = mongoose.Types.ObjectId();
+            // Salva esse id num array
+            arrayQuestoes.push(qaID);
+            // Insere atividadeQuestao
+            inserirAtividadeQuestao(qaID, questaoID, atividadeID);
+        })
+        // Salva array com os ids de atividadeQuestao na nova revisão
+        novaRevisao.questoes = arrayQuestoes;
+    }
 
     // Salva nova revisao
     novaRevisao
@@ -83,9 +118,42 @@ atualizarRevisao = async (req, res) => {
         revisaoEncontrada.tipoAtividade = revisaoAtualizada.tipoAtividade
         revisaoEncontrada.areaConhecimento = revisaoAtualizada.areaConhecimento
         revisaoEncontrada.numeracao = revisaoAtualizada.numeracao
-        revisaoEncontrada.questoes = revisaoAtualizada.questoes
         revisaoEncontrada.dataCriacao = revisaoAtualizada.dataCriacao
         revisaoEncontrada.dataModificacao = revisaoAtualizada.dataModificacao
+
+        // Verificação de Questões
+        let questoesAntigas = revisaoEncontrada.questoes;
+        let questoesAtualizadas = revisaoAtualizada.questoes;
+
+        // Caso ambas as versões possuam questoes
+        if (questoesAtualizadas.length) {
+
+            // Remove todas as QuestoesAtividade antigas
+            if (questoesAntigas.length) {
+                let atividadeID = revisaoAtualizada._id;
+                AtividadeQuestao.deleteMany({ atividadeID: atividadeID });
+            }
+
+            // Insere todas as QuestoesAtividade novas
+            let atividadeID = revisaoEncontrada._id;
+            let qaID, arrayQuestoes = [];
+            
+            questoesAtualizadas.forEach(questaoID => {
+                qaID = mongoose.Types.ObjectId();
+                arrayQuestoes.push(qaID);
+                inserirAtividadeQuestao(qaID, questaoID, atividadeID);
+            })
+
+            // Atualiza QAs
+            revisaoEncontrada.questoes = arrayQuestoes;
+        }
+
+        // Caso a selecão atualizada de questões seja vazia
+        else {
+            // Remove todas as AtividadeQuestoes antes de atualizar
+            AtividadeQuestao.deleteMany({ atividadeID: req.params.id });
+            revisaoEncontrada.questoes = revisaoAtualizada.questoes
+        }
 
         // Salva alterações
         revisaoEncontrada
@@ -124,6 +192,10 @@ removerRevisao = async (req, res) => {
                     .status(404)
                     .json({success: false, error: "Revisao não encontrado."})
             }
+
+            // Remove antes todas as AtividadeQuestoes
+            AtividadeQuestao.deleteMany({ atividadeID: req.params.id });
+
             // Caso não haja erros, conclui operação.
             return res
                 .status(200)
@@ -136,9 +208,9 @@ removerRevisao = async (req, res) => {
 encRevisaoPorID = async (req, res) => {
     // Encontra revisao por ID fornecido na rota
     await Revisao
-        .findOne({
-            _id: req.params.id
-        }, (err, revisaoEncontrada) => {
+        .findOne({ _id: req.params.id })
+        .populate({ path: 'questoes', select: 'questaoID'})
+        .exec((err, revisaoEncontrada) => {
             if (err) {
                 return res
                     .status(400)
@@ -155,7 +227,6 @@ encRevisaoPorID = async (req, res) => {
                 .status(200)
                 .json({success: true, data: revisaoEncontrada})
         })
-        .catch(err => console.log(err))
 }
 
 // Função para listar os revisaos contidos no banco

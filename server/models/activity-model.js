@@ -22,7 +22,7 @@ const Atividade = new Schema({
     questoes: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'questoe',
+            ref: 'atividadeQuestoe',
             required: true
         }
     ],

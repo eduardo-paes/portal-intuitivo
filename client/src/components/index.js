@@ -25,9 +25,11 @@ import SideBar from "./Drawer/SideBar"
 import TopBar from "./Drawer/TopBar"
 
 // -- Dialogs
-import DialogForm from "./Dialogs/DialogForm"
+import ActivityDialog from "./Dialogs/ActivityDialog"
+import ActivityDialogFilter from "./Dialogs/ActivityDialogFilter"
+import ContentDialogForm from "./Dialogs/ContentDialogForm"
+import QuestionDialog from "./Dialogs/QuestionDialog"
 import PDFPreviewDialog from "./Dialogs/PDFPreviewDialog"
-import CustomDialog from "./Dialogs/CustomDialog"
 import SlideDialog from "./Dialogs/SlideDialog"
 
 // -- Editor
@@ -65,9 +67,11 @@ export {
     SideBar, 
     TopBar,
     
+    ActivityDialog,
+    ActivityDialogFilter,
+    ContentDialogForm,
+    QuestionDialog,
     PDFPreviewDialog,
-    DialogForm,
-    CustomDialog,
     SlideDialog,
 
     TextEditor,

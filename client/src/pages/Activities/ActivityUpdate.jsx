@@ -29,13 +29,22 @@ export default function ActivityUpdate(props) {
     async function fetchAtividadeAPI() {
         const response = await api.encAtividadePorID(props.match.params.id);
         const value = response.data.data;
+        
+        // Separa somente ID das questões num array
+        let questionArray = value.questoes;
+        if (questionArray.length) {
+            questionArray = value.questoes.map(item => {
+                return item.questaoID;
+            })
+        }
+
         setAtividade(preValue => ({
             ...preValue,
             tipoAtividade: value.tipoAtividade,
             areaConhecimento: value.areaConhecimento,
             disciplinaID: value.disciplinaID,
             topicoID: value.topicoID,
-            questoes: value.questoes,
+            questoes: questionArray,
             dataCriacao: value.dataCriacao,
             dataModificacao: value.dataModificacao,
             autor: value.autor,
@@ -47,12 +56,21 @@ export default function ActivityUpdate(props) {
     async function fetchRevisaoAPI() {
         const response = await api.encRevisaoPorID(props.match.params.id);
         const value = response.data.data;
+
+        // Separa somente ID das questões num array
+        let questionArray = value.questoes;
+        if (questionArray.length) {
+            questionArray = value.questoes.map(item => {
+                return item.questaoID;
+            })
+        }
+
         setAtividade(preValue => ({
             ...preValue,
             tipoAtividade: value.tipoAtividade,
             areaConhecimento: value.areaConhecimento,
             numeracao: value.numeracao,
-            questoes: value.questoes,
+            questoes: questionArray,
             dataCriacao: value.dataCriacao,
             dataModificacao: value.dataModificacao,
             autor: value.autor,

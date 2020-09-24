@@ -76,6 +76,16 @@ const GeneralSubtitle = withStyles((theme) => ({
     },
 }))(Typography);
 
+const QuestionNumeration = withStyles((theme) => ({
+    root: {
+        color: "#606161",
+        fontStyle: 'normal',
+        fontWeight: '700',
+        marginTop: '1rem',
+        fontSize: "1rem"
+    },
+}))(Typography);
+
 const CreateButton = (props) => {
     const {title, url} = props;
     return (
@@ -146,5 +156,6 @@ export {
     MyCardContent,
     MyAvatar,
     GeneralTitle,
-    GeneralSubtitle
+    GeneralSubtitle,
+    QuestionNumeration
 }
