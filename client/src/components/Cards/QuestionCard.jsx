@@ -2,7 +2,7 @@ import React from "react";
 import "./QuestionStyles.css"
 import { MyCardContent } from "../../assets/styles/styledComponents"
 import RadioAnswer from "../Radio/RadioAnswer";
-import { Grid, TextareaAutosize } from "@material-ui/core";
+import { Grid, TextField } from "@material-ui/core";
 import {useStyles} from '../../assets/styles/classes';
 
 export default function QuestionCard (props) {
@@ -32,12 +32,22 @@ export default function QuestionCard (props) {
                 <Grid className={classes.questionText} item={true} align="left" xs={12} lg={12} sm={12}>
                     <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: enunciado}} />
                 </Grid>
-                <Grid className={classes.answer} item={true} align="left" xs={12} lg={12} sm={12}>
+                <Grid className={classes.answer} container={true} spacing={2}>
                     { 
                         (tipoResposta === "multiplaEscolha") ? 
-                        <RadioAnswer idQuestion={idQuestion} setRespostaAluno={setRespostaAluno} value={value} setValue={setValue} answered={answered} gabarito={gabarito._id} color={color} resposta={resposta}/>
+                        <Grid className={classes.questionText} item={true} align="left" xs={12} lg={12} sm={12}>
+                            <RadioAnswer idQuestion={idQuestion} setRespostaAluno={setRespostaAluno} value={value} setValue={setValue} answered={answered} gabarito={gabarito._id} color={color} resposta={resposta}/>
+                        </Grid>
                         : (tipoResposta === "discursiva") ?
-                        <TextareaAutosize/>
+                        <Grid className={classes.questionText} item={true} align="center" xs={12} lg={12} sm={12}>
+                            <TextField
+                                className={classes.answerField}
+                                id="standard-textarea"
+                                label="Resposta"
+                                placeholder=""
+                                multiline
+                            />
+                        </Grid>
                         : null
                     }
                 </Grid>

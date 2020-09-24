@@ -64,8 +64,8 @@ export default function ContentAccordion(props) {
         const abortController = new AbortController();
         let questoes = [];
         console.log(activity)
-        let ids = ["5f6a2e1116ae191de16f1a7a", "5f6a360e7fd6d8241dae1bcb", "5f6a367b7fd6d8241dae1bd2"]
-        if( activity.length !== 0 ) {
+        let ids = ["5f6ce34bd9aa9c282987d4f2", "5f6ce3dbd9aa9c282987d4f8", "5f6cad86684a00105e4a5939"]
+        if( open.exercicioFixacao || open.exercicioAprofundamento ) {
             async function fetchQuestaoAPI() {
                 for(let i = 0; i < 3; ++i) {
                     const response = await api.encQuestaoPorID(ids[i]);
@@ -78,7 +78,7 @@ export default function ContentAccordion(props) {
         }
         return abortController.abort();
         // eslint-disable-next-line
-    }, [activity]);
+    }, [open]);
 
     // Definição das funções 
     const handleClickOpen = (event) => {
@@ -90,14 +90,6 @@ export default function ContentAccordion(props) {
     };
 
     const handleClose = (event) => {
-        const name  = event.target.offsetParent.id;
-        setOpen(preValue => ({
-            ...preValue,
-            [name]: false
-        }));
-    };
-
-    const handleCloseIconButton = (event) => {
         setOpen({
             materialEstudo: false,
             exercicioFixacao: false,
@@ -157,7 +149,7 @@ export default function ContentAccordion(props) {
                         <Dialog fullScreen open={open.materialEstudo} onClose={handleClose} TransitionComponent={Transition}>
                             <AppBar className={classes.appBar}>
                                 <Toolbar>
-                                    <IconButton id="materialEstudo" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
+                                    <IconButton id="materialEstudo" edge="start" color="inherit" onClick={handleClose} aria-label="close">
                                         <CloseIcon />
                                     </IconButton>
                                     <Typography variant="h6" className={classes.title}>
@@ -189,7 +181,7 @@ export default function ContentAccordion(props) {
                         <Dialog fullScreen open={open.exercicioFixacao} onClose={handleClose}>
                             <AppBar className={classes.appBar}>
                                 <Toolbar>
-                                    <IconButton id="exercicioFixacao" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
+                                    <IconButton id="exercicioFixacao" edge="start" color="inherit" onClick={handleClose} aria-label="close">
                                         <CloseIcon />
                                     </IconButton>
                                     <Typography variant="h6" className={classes.title}>
@@ -259,7 +251,7 @@ export default function ContentAccordion(props) {
                         <Dialog fullScreen open={open.exercicioAprofundamento} onClose={handleClose} TransitionComponent={Transition}>
                         <AppBar className={classes.appBar}>
                             <Toolbar>
-                            <IconButton id="exercicioAprofundamento" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
+                            <IconButton id="exercicioAprofundamento" edge="start" color="inherit" onClick={handleClose} aria-label="close">
                                 <CloseIcon />
                             </IconButton>
                             <Typography variant="h6" className={classes.title}>

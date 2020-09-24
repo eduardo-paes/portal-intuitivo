@@ -9,6 +9,12 @@ export const useStyles = makeStyles((theme) => ({
   answer: {
     marginLeft: '-1.5rem'
   },
+
+  answerField: {
+    width: '100%',
+    marginTop: '1rem',
+    marginLeft: '1rem'
+  },
   
   appBar: {
     position: 'relative',

@@ -39,7 +39,7 @@ function StudyPlan (props) {
   useEffect(() => {
     const abortController = new AbortController();
     async function fetchDisciplinaAPI() {
-      const response = await api.listarDisciplinasPorDiaDaSemana(dia-1);
+      const response = await api.listarDisciplinasPorDiaDaSemana(dia+1);
       const value = response.data.data;
       setDisciplinas(value);
     }
@@ -57,9 +57,9 @@ function StudyPlan (props) {
     if (disciplinas.length > 0) {
         async function fetchConteudoAPI() {
             for (let i = 0; i < disciplinas.length; ++i) {
-              const response = await api.listarConteudoPersonalizado(disciplinas[i]._id, disciplinas[i].areaConhecimento, 1);
-              console.log(response);
-              topicos.push(response.data.data);
+              const response = await api.encConteudoPersonalizado(disciplinas[i]._id, getTheWeek());
+              if (response.data.data[0]) topicos.push(response.data.data[0]);
+              console.log(topicos);
             }
             setContent(topicos);
         }
@@ -75,6 +75,8 @@ function StudyPlan (props) {
       return <p>Não há conteúdo a ser estudado hoje, portanto, aproveite o descanso!</p>
     } else {
       return content.map((row, index) => {
+
+        console.log(row);
 
         return (
           <Grid 

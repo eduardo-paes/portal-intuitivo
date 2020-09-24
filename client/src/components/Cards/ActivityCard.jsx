@@ -27,10 +27,9 @@ export default function ActivityCard(props) {
     })
 
     const handleSubmit = (event) => {
-        console.log(respostaAluno)
+        console.log(respostaAluno);
+        handleFinalized(event);
     };
-
-    
 
     function decrementValue () {
         console.log(value);
