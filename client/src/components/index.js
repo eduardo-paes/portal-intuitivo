@@ -29,6 +29,7 @@ import ActivityDialog from "./Dialogs/ActivityDialog"
 import ActivityDialogFilter from "./Dialogs/ActivityDialogFilter"
 import ContentDialogForm from "./Dialogs/ContentDialogForm"
 import QuestionDialog from "./Dialogs/QuestionDialog"
+import QuestionDialogFilter from "./Dialogs/QuestionDialogFilter"
 import PDFPreviewDialog from "./Dialogs/PDFPreviewDialog"
 import SlideDialog from "./Dialogs/SlideDialog"
 
@@ -71,6 +72,7 @@ export {
     ActivityDialogFilter,
     ContentDialogForm,
     QuestionDialog,
+    QuestionDialogFilter,
     PDFPreviewDialog,
     SlideDialog,
 

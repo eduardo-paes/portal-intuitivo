@@ -40,7 +40,7 @@ export default function ActivityDialogFilter(props) {
       async function fetchAnoLetivoAPI() {
         const response = await api.listarAnoLetivo();
         const value = response.data.data;
-        setSemanasAno(value[0].contagem);
+        setSemanasAno(value[0].numSemanas);
       }
   
       // Faz o fetch e desmonta
@@ -50,6 +50,7 @@ export default function ActivityDialogFilter(props) {
     }
 
     return abortController.abort();
+    // eslint-disable-next-line
   }, [filter]);
 
   // Salva modificações do filtro temporariamente

@@ -37,6 +37,7 @@ export default function ActivityForm (props) {
     const [questoes, setQuestoes] = useState([]);                               // Questões do Banco de Dados
     const [revisao, setRevisao] = useState(isRevision);                         // Flag para verificar se é revisão
     const [questaoSelecionada, setQuestaoSelecionada] = useState('');           // Questões selecionadas da tabela
+    const [filterDialog, setFilterDialog] = useState(false);
     const [hiddenDialog, setHiddenDialog] = useState(false);
     const indexNumeracao = [1, 2, 3, 4]
     const [count, setCount] = useState(6);
@@ -150,8 +151,8 @@ export default function ActivityForm (props) {
             // Limpa campos Disciplina, Tópico e Questões
             setAtividade(preValue => ({ 
                 ...preValue, 
-                topico: { id: "", nome: "" }, 
-                disciplina: { id: "", nome: "" }
+                topicoID: "", 
+                disciplinaID: ""
             }));
             setRevisao(true);
         } else {
@@ -311,13 +312,17 @@ export default function ActivityForm (props) {
 
             <section id="escolherQuestoes">
                 <h2 className="heading-page">Escolha as Questões</h2>
+
                 <QuestionTable 
                     data={questoes} 
                     setData={setAtividade} 
                     setQuestion={setQuestaoSelecionada} 
+                    filterDialog={filterDialog}
+                    setFilterDialog={setFilterDialog}
                     setHidden={setHiddenDialog} 
                     tableSelection={true}
                     selectedQuestions={questaoSelecionada}
+                    activity={atividade}
                 />
                 { atividade.erros.questoes && <p className={classes.errorMessage}>{atividade.erros.questoes}</p> }
 
