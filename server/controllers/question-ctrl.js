@@ -228,10 +228,10 @@ removerQuestao = async (req, res) => {
 encQuestaoPorID = async (req, res) => {
     // Encontra questao por ID fornecido na rota
     await Questao
-        .findOne({
-            _id: req.params.id
-        }, (err, questaoEncontrada) => {
-            if (err) {
+    .findOne({
+        _id: req.params.id
+    }, (err, questaoEncontrada) => {
+        if (err) {
                 return res
                     .status(400)
                     .json({success: false, error: err})

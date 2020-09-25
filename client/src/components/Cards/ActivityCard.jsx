@@ -16,18 +16,29 @@ export default function ActivityCard(props) {
     const classes = useStyles();
     const { handleClose, handleFinalized, question, atividadeID } = props;
     const [ value, setValue ] = React.useState(1);
-    const [ respostaAluno, setRespostaAluno ] = React.useState([{
-        questao: '',
-        resposta: ''
-    }]);
+    const [ respostaAluno, setRespostaAluno ] = React.useState([]);
+    const [ respostaFinal, setRespostaFinal ] = React.useState([]);
     let gabarito = [];
     
     question.map((row, index) => {
         gabarito[index] = row.resposta.find(element => element.gabarito === true);
-    })
+    });
+
+    useEffect(() => {
+        console.log(respostaFinal)
+    }, [respostaFinal])
 
     const handleSubmit = (event) => {
-        console.log(respostaAluno);
+
+        Object.entries(respostaAluno).map((row, index) => {
+            setRespostaFinal((prevValue) => ([
+                ...prevValue,
+                {
+                    question: row[0],
+                    resposta: row[1]
+                }
+            ]))
+        });
         handleFinalized(event);
     };
 
@@ -59,6 +70,7 @@ export default function ActivityCard(props) {
                     gabarito={gabarito[value-1]}
                     TransitionComponent={Transition}
                     setRespostaAluno={setRespostaAluno}
+                    respostaAluno={respostaAluno}
                     atividadeID={atividadeID}
                 />
             </Grid>

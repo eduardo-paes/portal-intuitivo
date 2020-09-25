@@ -42,8 +42,12 @@ export default function ContentAccordion(props) {
         exercicioAprofundamento: false
     });
     const [ activity, setActivity ] = React.useState([]);
-    const [ question, setQuestion ] = React.useState([]); 
+    const [ questoesFixacao, setQuestoesFixacao ] = React.useState([]); 
+    const [ questoesAprofundamento, setQuestoesAprofundamento ] = React.useState([]); 
 
+    const [ fixacaoCarregada, setFixacaoCarregada ] = React.useState(false); 
+    const [ aprofundamentoCarregada, setAprofundamentoCarregada ] = React.useState(false);
+    
     // -- Carrega as atividades do tópico correspondente
     useEffect(() => {
         const abortController = new AbortController();
@@ -62,19 +66,42 @@ export default function ContentAccordion(props) {
     // -- Carrega questão dado o id
     useEffect(() => {
         const abortController = new AbortController();
+        
         let questoes = [];
-        console.log(activity)
         let ids = ["5f6ce34bd9aa9c282987d4f2", "5f6ce3dbd9aa9c282987d4f8", "5f6cad86684a00105e4a5939"]
-        if( open.exercicioFixacao || open.exercicioAprofundamento ) {
-            async function fetchQuestaoAPI() {
-                for(let i = 0; i < 3; ++i) {
+        
+        if( open.exercicioFixacao && !fixacaoCarregada) {
+
+            const atividadeFixacao = activity.find((element) => element.tipoAtividade === "Fixação");
+            
+            async function fetchQuestoesAPI() {
+                for(let i = 0; i < atividadeFixacao.questoes.length; ++i) {
                     const response = await api.encQuestaoPorID(ids[i]);
                     const value = response.data.data;
                     questoes.push(value);
                 }
-                setQuestion(questoes);
+                setQuestoesFixacao(questoes);
             }
-            fetchQuestaoAPI();
+            
+            fetchQuestoesAPI();
+            setFixacaoCarregada(true);
+        
+        } else if ( open.exercicioAprofundamento && !aprofundamentoCarregada ) {
+            
+            const atividadeAprofundamento = activity.find((element) => element.tipoAtividade === "Aprofundamento");
+            
+            async function fetchQuestoesAPI() {
+                for(let i = 0; i < atividadeAprofundamento.questoes.length; ++i) {
+                    const response = await api.encQuestaoPorID(ids[i]);
+                    const value = response.data.data;
+                    questoes.push(value);
+                }
+                setQuestoesAprofundamento(questoes);
+            }
+            
+            fetchQuestoesAPI();
+            setAprofundamentoCarregada(true);
+
         }
         return abortController.abort();
         // eslint-disable-next-line
@@ -100,10 +127,6 @@ export default function ContentAccordion(props) {
 
     const handleFinalized = (event) => {
         const name  = event.target.offsetParent.id;
-        setOpen(preValue => ({
-            ...preValue,
-            [name]: false
-        }));
         setCheck(preValue => ({
             ...preValue,
             [name]: true
@@ -191,8 +214,8 @@ export default function ContentAccordion(props) {
                             </AppBar>
                             <Grid container={true} spacing={1}>
                                 {
-                                    (question.length > 0) ? 
-                                        <ActivityCard atividadeID={activity[0]._id} handleClose={handleClose} handleFinalized={handleFinalized} question={question}/>
+                                    (questoesFixacao.length > 0) ? 
+                                        <ActivityCard atividadeID={activity[0]._id} handleClose={handleClose} handleFinalized={handleFinalized} question={questoesFixacao}/>
                                     : null
                                 }
                             </Grid>
@@ -215,29 +238,7 @@ export default function ContentAccordion(props) {
                             >
                                 Participar
                             </Button>
-                            //<Button className={classes.activityButton} id="videoaula" variant="outlined" color="primary" onClick={handleClickOpen}>Vídeoaula</Button>
                         }
-                        {/* <Dialog fullScreen open={open.videoaula} onClose={handleClose} TransitionComponent={Transition}>
-                            <AppBar className={classes.appBar}>
-                                <Toolbar>
-                                    <IconButton id="videoaula" edge="start" color="inherit" onClick={handleCloseIconButton} aria-label="close">
-                                        <CloseIcon />
-                                    </IconButton>
-                                    <Typography variant="h6" className={classes.title}>
-                                        Vídeoaula
-                                    </Typography>
-                                </Toolbar>
-                            </AppBar>
-                            <Grid container={true} spacing={3}>
-                                <Grid item={true} xs={12} lg={12} sm={12} align='center'>
-                                </Grid>
-                                <Grid item={true} xs={12} lg={12} sm={12} align='center' >
-                                    <Button id="videoaula" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
-                                        Assistido
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </Dialog> */}
                     </Grid>
                     {/* Exercícios de Aprofundamento */}
                     <Grid align="center" item={true} xs={12} lg={3} sm={12}>
@@ -249,26 +250,25 @@ export default function ContentAccordion(props) {
                             <Button className={classes.activityButton} id="exercicioAprofundamento" variant="outlined" color="primary" onClick={handleClickOpen}>Aprofundamento</Button>
                         }
                         <Dialog fullScreen open={open.exercicioAprofundamento} onClose={handleClose} TransitionComponent={Transition}>
-                        <AppBar className={classes.appBar}>
-                            <Toolbar>
-                            <IconButton id="exercicioAprofundamento" edge="start" color="inherit" onClick={handleClose} aria-label="close">
-                                <CloseIcon />
-                            </IconButton>
-                            <Typography variant="h6" className={classes.title}>
-                                Exercícios de Aprofundamento
-                            </Typography>
-                            </Toolbar>
-                        </AppBar>
-                        <Grid container={true} spacing={3}>
-                            <Grid item={true} xs={12} lg={12} sm={12} align='center'>
-                            <Typography>Aqui ficarão os exercícios de aprofundamento.</Typography>
+                            <AppBar className={classes.appBar}>
+                                <Toolbar>
+                                <IconButton id="exercicioAprofundamento" edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                                    <CloseIcon />
+                                </IconButton>
+                                <Typography variant="h6" className={classes.title}>
+                                    Exercícios de Aprofundamento
+                                </Typography>
+                                </Toolbar>
+                            </AppBar>
+                            <Grid container={true} spacing={3}>
+                                <Grid item={true} xs={12} lg={12} sm={12} align='center'>
+                                    {
+                                        (questoesAprofundamento.length > 0) ? 
+                                            <ActivityCard atividadeID={activity[0]._id} handleClose={handleClose} handleFinalized={handleFinalized} question={questoesAprofundamento}/>
+                                        : null
+                                    }
+                                </Grid>
                             </Grid>
-                            <Grid item={true} xs={12} lg={12} sm={12} align='center' >
-                            <Button id="exercicioAprofundamento" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
-                                Finalizado
-                            </Button>
-                            </Grid>
-                        </Grid>
                         </Dialog>
                     </Grid>
                 </Grid>

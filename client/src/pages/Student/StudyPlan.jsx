@@ -39,7 +39,7 @@ function StudyPlan (props) {
   useEffect(() => {
     const abortController = new AbortController();
     async function fetchDisciplinaAPI() {
-      const response = await api.listarDisciplinasPorDiaDaSemana(dia+1);
+      const response = await api.listarDisciplinasPorDiaDaSemana(dia);
       const value = response.data.data;
       setDisciplinas(value);
     }
