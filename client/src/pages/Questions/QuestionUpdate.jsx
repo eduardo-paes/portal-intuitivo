@@ -43,7 +43,7 @@ export default function QuestionUpdate(props) {
                 const resValue = resTags.data.data;
                 
                 resValue.map(tagFound => {
-                    tags.push(tagFound.tagID)
+                    return tags.push(tagFound.tagID)
                 })
             }
 

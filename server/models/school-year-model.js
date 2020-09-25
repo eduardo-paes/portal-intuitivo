@@ -14,6 +14,10 @@ const AnoLetivo = new Schema({
     contagem: {
         type: Number,
         required: true
+    },
+    numSemanas: {
+        type: Number,
+        required: true
     }
 });
 

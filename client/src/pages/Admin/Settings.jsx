@@ -53,8 +53,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // Constantes Auxiliares
-const thisYear = new Date();
-
 const dateFormatter = str => { return str };
 
 const initialSubjectState = {
@@ -69,8 +67,10 @@ const initialTagState = {
 }
 
 const initialYearState = {
-    dataInicio: new Date(thisYear.getFullYear() + '/01/01T07:00:00'),
-    dataFim: new Date(thisYear.getFullYear() + '/12/31T07:00:00'),
+    // dataInicio: new Date(thisYear.getFullYear() + '/01/01T07:00:00'),
+    // dataFim: new Date(thisYear.getFullYear() + '/12/31T07:00:00'),
+    dataInicio: new Date(),
+    dataFim: new Date(),
     contagem: 52
 }
 
@@ -79,14 +79,12 @@ const initialClassLinkState = {
 }
 
 // Main Function
-export default function Settings(props) {
+export default function Settings() {
     const classes = useStyles();
 
     // --> Listas
     const [listaDisciplina, setListaDisciplina] = useState([]);             // Disciplinas do Banco
     const [listaTag, setListaTag] = useState([]);                           // Tags do Banco
-    // eslint-disable-next-line
-    const [listaAnoLetivo, setListaAnoLetivo] = useState([]);               // AnoLetivo do Banco
 
     // --> Conteúdo
     const [disciplina, setDisciplina] = useState(initialSubjectState);      // Constante para armazenamento da DISCIPLINA
@@ -131,7 +129,6 @@ export default function Settings(props) {
         let response = await api.listarAnoLetivo();
         let value = response.data.data;
         if (value.length) {
-            setListaAnoLetivo(value);
             value[0].dataInicio = new Date(moment(value[0].dataInicio).format("YYYY-MM-DDT07:00:00.000Z"))
             value[0].dataFim = new Date(moment(value[0].dataFim).format("YYYY-MM-DDT07:00:00.000Z"))
             setAnoLetivo(value[0]);
@@ -186,11 +183,14 @@ export default function Settings(props) {
     }, [mount])
 
     // Calcula o número de semanas
-    function getTheWeek() {
+    const getTheWeek = () => {
+        let count = Math.trunc(anoLetivo.dataInicio.valueOf());
         let week = Math.trunc(((((anoLetivo.dataFim.valueOf() - anoLetivo.dataInicio.valueOf())/1000)/3600)/24)/7);
+
         setAnoLetivo(preValue => ({
             ...preValue,
-            contagem: week
+            numSemanas: week,
+            contagem: count
         }));
     }
 
@@ -255,10 +255,9 @@ export default function Settings(props) {
 
     // Função para pegar os valores do formulário - ANO LETIVO
     const handleDateChange = (date, name) => {
-        let aux = moment(date._d).format("YYYY/MM/DDT07:00:00.000Z");
         setAnoLetivo(preValue => ({
             ...preValue,
-            [name]: new Date(aux)
+            [name]: date._d
         }));
         setMount(preValue => ({...preValue, anoLetivo: true}));
     };
@@ -308,7 +307,6 @@ export default function Settings(props) {
         await api
             .inserirAnoLetivo(anoLetivo)
             .then(window.alert("Ano letivo inserido com sucesso!"))
-
     }
 
     // Guarda link da aula no banco
@@ -596,7 +594,7 @@ export default function Settings(props) {
 
                                 <Grid className={classes.dateGrid} item={true} xs={12} sm={4}>
                                     <MyTypography id="yearTitle" variant="h6">Número de Semanas</MyTypography>
-                                    <MyTypography id="weekTitle" variant="h4">{anoLetivo.contagem}</MyTypography>
+                                    <MyTypography id="weekTitle" variant="h4">{anoLetivo.numSemanas}</MyTypography>
                                 </Grid>
                             </Grid>
                         </AccordionDetails>

@@ -72,6 +72,7 @@ export default function ActivityDialog(props) {
       fetchQuestoesAPI()
     }
     return abortController.abort();
+    // eslint-disable-next-line
   }, [atividadeID])
 
   const handleClose = () => {

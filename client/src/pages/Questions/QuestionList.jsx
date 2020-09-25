@@ -11,6 +11,7 @@ import "./ListStyles.css"
 function QuestionInsert() {
     const [questoes, setQuestoes] = useState([]);
     const [questaoSelecionada, setQuestaoSelecionada] = useState('');
+    const [filterDialog, setFilterDialog] = useState(false);
     const [hiddenDialog, setHiddenDialog] = useState(false);
     const [mount, setMount] = useState({
         isMounted: true,
@@ -60,7 +61,10 @@ function QuestionInsert() {
                     data={questoes} 
                     setMount={setMount} 
                     setQuestion={setQuestaoSelecionada} 
+                    filterDialog={filterDialog}
+                    setFilterDialog={setFilterDialog}
                     setHidden={setHiddenDialog} 
+                    activity={false}
                     tableSelection={false}/>
 
                 <QuestionDialog 

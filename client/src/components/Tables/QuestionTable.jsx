@@ -2,11 +2,15 @@ import React, {useState, useEffect} from "react";
 import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
+import { QuestionDialogFilter } from "../"
+
 // -- Material UI - Table
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import clsx from 'clsx';
+import { lighten, makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -15,13 +19,17 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 // -- Material UI - Icons
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
 
 // Botão de Atualização
 function UpdateQuestion(props) {
@@ -228,6 +236,72 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
+// -- Toolbar Styles
+const useToolbarStyles = makeStyles((theme) => ({
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    title: {
+      flex: '1 1 100%',
+      color: "#606161",
+    },
+  }));
+
+// -- Toolbar
+const EnhancedTableToolbar = (props) => {
+    const { filter, setFilter, filterDialog, setFilterDialog, activity } = props;
+    const classes = useToolbarStyles();
+
+    // -- Limpa o filtro
+    function clearFilter() {
+        setFilter({ 
+            disciplinaID: "",
+            topicoID: "",
+            tipo: "",
+            tags: "",
+        });
+    }
+
+    return (
+    <Toolbar className={clsx(classes.root)}>
+        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+            Lista de Questões
+        </Typography>
+
+        <Tooltip title="Limpar filtro">
+            <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
+                <ClearAllIcon />
+            </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Filtrar lista">
+            <IconButton aria-label="filter list" onClick={() => setFilterDialog(true)}>
+                <FilterListIcon />
+            </IconButton>
+        </Tooltip>
+
+        <QuestionDialogFilter 
+            activity={activity}
+            filter={filter}
+            setFilter={setFilter}
+            open={filterDialog}
+            setOpen={setFilterDialog}
+        />
+    </Toolbar>
+    );
+};
+
 // -- Styles: Tabela-Body
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -259,6 +333,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function QuestionTable(props) {
+    const {data, setData, setQuestion, setHidden, tableSelection, filterDialog, setFilterDialog, selectedQuestions, setMount, activity} = props;
+
     const classes = useStyles();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('nome');
@@ -267,7 +343,13 @@ export default function QuestionTable(props) {
     const [selected, setSelected] = useState([]);
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const {data, setData, setQuestion, setHidden, tableSelection, selectedQuestions, setMount} = props;
+    
+    const [filter, setFilter] = useState({
+        disciplinaID: "",
+        topicoID: "",
+        tipo: "",
+        tags: "",
+    });
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -321,14 +403,28 @@ export default function QuestionTable(props) {
     };
 
     // -- Funções de Seleção - Tags
-    const handleTags = (tags) => {
-        let tamTags = tags.length;
-        return tags.map((tag, index) => {
-            if (index+1 === tamTags) {
+    const handleTags = (tags, filter) => {
+        // Variável auxiliar do filtro
+        let aux = {
+            tags: [],
+            flag: filter === '' ? true : false
+        }
+
+        // Ajustes para mostrar tags na tabela
+        aux.tags = tags.map((tag, index) => {
+            // Já realiza aqui o filtro
+            if (tag.tagID.nome === filter) {
+                aux.flag = true;
+            }
+
+            if (index+1 === tags.length) {
                 return tag.tagID.nome;
             }
             return tag.tagID.nome + ", ";
         })
+
+        //Retorna objeto preenchido
+        return aux;
     }
 
     // -- Vigilantes
@@ -356,6 +452,12 @@ export default function QuestionTable(props) {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
+                <EnhancedTableToolbar 
+                    activity={activity}
+                    filter={filter} 
+                    setFilter={setFilter} 
+                    filterDialog={filterDialog} 
+                    setFilterDialog={setFilterDialog}/>
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -382,45 +484,56 @@ export default function QuestionTable(props) {
                                     .map((row, index) => {
                                         const { disciplinaID, topicoID, tipoResposta, tags} = row;
                                         const resposta = tipoResposta === "discursiva" ? "Discursiva" : "Múltipla escolha";
-                                        let tagNames = handleTags(tags);
-
+                                        
                                         const isItemSelected = isSelected(row._id);
                                         const labelId = `enhanced-table-checkbox-${row._id}`;
+                                        
+                                        let tagNames = handleTags(tags, filter.tags);
+                                        let auxTags = tagNames.flag ? true : false;
+                                        
+                                        let auxType = (tipoResposta === filter.tipo || filter.tipo === '') ? true : false;
+                                        let auxTopic = (topicoID._id === filter.topicoID || filter.topicoID === '') ? true : false;
+                                        let auxSubject = (disciplinaID._id === filter.disciplinaID || filter.disciplinaID === '') ? true : false;
+                                        
+                                        if ( auxTags && auxType && auxSubject && auxTopic ) {
+                                            return (
+                                                <TableRow
+                                                    hover={true}
+                                                    onClick={event => { tableSelection && handleClick(event, row._id) }}
+                                                    role="checkbox"
+                                                    aria-checked={tableSelection && isItemSelected}
+                                                    tabIndex={-1}
+                                                    key={row._id}
+                                                    selected={tableSelection && isItemSelected}
+                                                >
 
-                                        return (
-                                            <TableRow
-                                                hover={true}
-                                                onClick={event => { tableSelection && handleClick(event, row._id) }}
-                                                role="checkbox"
-                                                aria-checked={tableSelection && isItemSelected}
-                                                tabIndex={-1}
-                                                key={row._id}
-                                                selected={tableSelection && isItemSelected}
-                                            >
+                                                    {
+                                                        tableSelection && 
+                                                            <TableCell padding="checkbox">
+                                                                <Checkbox
+                                                                    checked={isItemSelected}
+                                                                    inputProps={{ 'aria-labelledby': labelId }}
+                                                                />
+                                                            </TableCell>
+                                                    }
 
-                                                {
-                                                    tableSelection && 
-                                                        <TableCell padding="checkbox">
-                                                            <Checkbox
-                                                                checked={isItemSelected}
-                                                                inputProps={{ 'aria-labelledby': labelId }}
-                                                            />
-                                                        </TableCell>
-                                                }
+                                                    <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>
 
-                                                <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>}
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{resposta}</TableCell>}
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{tagNames.tags}</TableCell>}
 
-                                                {!smScreen && <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{resposta}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{tagNames}</TableCell>}
+                                                    <TableCell align="left">
+                                                        <ShowQuestion id={row._id} question={row} setQuestion={setQuestion} setHidden={setHidden}/>
+                                                        {!tableSelection && <UpdateQuestion id={row._id}/>}
+                                                        {!tableSelection && <DeleteQuestion id={row._id} setMount={setMount}/>}
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        }
 
-                                                <TableCell align="left">
-                                                    <ShowQuestion id={row._id} question={row} setQuestion={setQuestion} setHidden={setHidden}/>
-                                                    {!tableSelection && <UpdateQuestion id={row._id}/>}
-                                                    {!tableSelection && <DeleteQuestion id={row._id} setMount={setMount}/>}
-                                                </TableCell>
-                                            </TableRow>
-                                        );
+                                        // eslint-disable-next-line
+                                        return;
                                     })
                             }
                             {

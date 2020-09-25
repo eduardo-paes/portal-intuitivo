@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
-
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
@@ -9,6 +8,8 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import Typography from '@material-ui/core/Typography';
+
+import { MathComponent } from 'mathjax-react'
 
 const styles = (theme) => ({
   root: {
@@ -49,10 +50,53 @@ const DialogActions = withStyles((theme) => ({
 export default function QuestionDialog(props) {
   const {enunciado, tipoResposta, resposta, open, setOpen} = props;
   const optionsLetter = ["A)", "B)", "C)", "D)", "E)", "F)", "G)"]
+  const [mout, setMount] = useState(true);
+
+  const [mathText, setMathText] = useState('');
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handlingWithMath = (text) => {
+    if (text !== undefined && text.includes('<math')) {
+      
+      var value = text.split('<math').map(item => {
+        if (item.includes('</math>')) {
+          return '<math' + item;
+        }
+        return item;
+      })
+
+      let final = [];
+      value = value.map(item => {
+        return item.split('</math>').map(aux => {
+          if (aux.includes('<math')) {
+            final.push(aux + '</math>');
+            return aux + '</math>';
+          }
+          final.push(aux);
+          return aux;
+        })
+      })
+
+      setMathText(final);
+    }
+  }
+
+  const renderMath = () => {
+    if (mout && mathText !== '') {
+      mathText.map(item => {
+        if (item.includes('<math')) {
+          console.log(item)
+          return (<MathComponent mathml={item} />);
+        }
+        console.log(item)
+        return (<div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: item}} />);
+      })
+      setMount(false);
+    }
+  }
 
   return (
     <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
@@ -61,7 +105,7 @@ export default function QuestionDialog(props) {
       </DialogTitle>
       <DialogContent dividers>
         <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: enunciado}} />
-        { 
+        {
           (tipoResposta === "multiplaEscolha") 
               && resposta.map((item, index) => {
                 return (

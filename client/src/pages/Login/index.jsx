@@ -70,8 +70,6 @@ function Login() {
     function validateLogin(usuario, data) {
         // Verifica se a senha está correta
         if (data.senha === usuario.senha) {
-            console.log(data)
-            console.log(usuario)
             return {
                 token: {
                     userID: data._id,

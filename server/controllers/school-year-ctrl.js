@@ -74,6 +74,7 @@ atualizarAnoLetivo = async (req, res) => {
         anoLetivoEncontrada.dataInicio = anoLetivo.dataInicio
         anoLetivoEncontrada.dataFim = anoLetivo.dataFim
         anoLetivoEncontrada.contagem = anoLetivo.contagem
+        anoLetivoEncontrada.numSemanas = anoLetivo.numSemanas
 
         // Salva alterações
         anoLetivoEncontrada
@@ -148,7 +149,10 @@ encAnoLetivoPorID = async (req, res) => {
 
 // Função para listar os anoLetivos contidos no banco
 listarAnoLetivo = async (req, res) => {
-    await AnoLetivo.find({}, (err, listaAnoLetivo) => {
+    await AnoLetivo
+        .find()
+        .limit(1)
+        .exec(function (err, listaAnoLetivo) {
         // Verificação de erros
         if (err) {
             return res.status(400).json({ success: false, error: err })
