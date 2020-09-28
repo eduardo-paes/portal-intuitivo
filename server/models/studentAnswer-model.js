@@ -3,10 +3,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const RespostaAluno = new Schema({
-    _id: {
-        type: Schema.Types.ObjectId,
-        required: true,
-    },
     alunoID: {
         type: Schema.Types.ObjectId,
         ref: 'usuario',
@@ -22,9 +18,9 @@ const RespostaAluno = new Schema({
     },
     respostaQuestaoID: [{
         type: Schema.Types.ObjectId,
-        ref: 'questoe',
+        ref: 'respostaQuestoe',
         required: true,
     }]
 });
 
-module.exports = mongoose.model("respostaaluno", RespostaAluno);
+module.exports = mongoose.model("respostaAluno", RespostaAluno);

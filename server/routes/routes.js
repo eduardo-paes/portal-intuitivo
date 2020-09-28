@@ -18,6 +18,8 @@ const DisciplinaCtrl = require("../controllers/subject-ctrl");
 const TagCtrl = require("../controllers/tag-ctrl");
 const AnoLetivoCtrl = require("../controllers/school-year-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
+const RespostaQuestaoCtrl = require("../controllers/answerQuestion-ctrl");
+const RespostaAlunoCtrl = require("../controllers/studentAnswer-ctrl");
 const AtividadeCtrl = require("../controllers/activity-ctrl");
 const RevisaoCtrl = require("../controllers/revision-ctrl");
 const ClassLinkCtrl = require("../controllers/class-link-ctrl");
@@ -70,6 +72,22 @@ router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 router.get("/controle-questao/topico/:id", QuestaoCtrl.listarQuestaoPorTopico);
 router.get("/controle-questao/area/:area", QuestaoCtrl.listarQuestaoPorArea);
+
+// RESPOSTA-QUESTÃO -- Definição dos métodos para cada rota de respostaQuestão
+router.post("/resposta-questao", RespostaQuestaoCtrl.inserirRespostaQuestao);
+router.delete("/resposta-questao/:id", RespostaQuestaoCtrl.removerRespostaQuestao);
+router.get("/resposta-questao/:id", RespostaQuestaoCtrl.encRespostaQuestaoPorID);
+router.get("/resposta-questao", RespostaQuestaoCtrl.listarRespostaQuestao);
+router.get("/resposta-questao/questao/:id", RespostaQuestaoCtrl.listarRQPorQuestaoID);
+router.get("/resposta-questao/user/:id", RespostaQuestaoCtrl.listarRQPorAlunoID);
+
+// RESPOSTA-ALUNO -- Definição dos métodos para cada rota de respostaAluno
+router.post("/resposta-aluno", RespostaAlunoCtrl.inserirRespostaAluno);
+router.delete("/resposta-aluno/:id", RespostaAlunoCtrl.removerRespostaAluno);
+router.get("/resposta-aluno/:id", RespostaAlunoCtrl.encRespostaAlunoPorID);
+router.get("/resposta-aluno", RespostaAlunoCtrl.listarRespostaAluno);
+router.get("/resposta-aluno/respostaquestao/:id", RespostaAlunoCtrl.listarRAPorRespostaQuestaoID);
+router.get("/resposta-aluno/user/:id", RespostaAlunoCtrl.listarRAPorAlunoID);
 
 // ATIVIDADE -- Definição dos métodos para cada rota de atividade
 router.post("/controle-atividade", AtividadeCtrl.inserirAtividade);

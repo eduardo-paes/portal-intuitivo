@@ -2,53 +2,104 @@ import { Button, Grid, IconButton, Slide, Typography } from '@material-ui/core';
 import React from 'react';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import DiscreteSlider from '../Sliders/DiscreteSlider';
+//import DiscreteSlider from '../Sliders/DiscreteSlider';
 import QuestionCard from './QuestionCard';
 import {useStyles} from '../../assets/styles/classes';
 import { useEffect } from 'react';
+import { useContext } from 'react';
+import { StoreContext } from '../../utils';
+import api from '../../api';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction='left' ref={ref} timeout={10000} mountOnEnter unmountOnExit/>;
 }); 
 
 export default function ActivityCard(props) {
+
+    const token = useContext(StoreContext);
     
     const classes = useStyles();
-    const { handleClose, handleFinalized, question, atividadeID } = props;
+    const { handleClose, handleFinalized, question, atividadeID, revisaoID } = props;
     const [ value, setValue ] = React.useState(1);
     const [ respostaAluno, setRespostaAluno ] = React.useState([]);
-    const [ respostaFinal, setRespostaFinal ] = React.useState([]);
-    let gabarito = [];
+    const [ respostaQuestaoID, setRespostaQrespostaQuestaoID ] = React.useState([]);
+    let gabarito = [{}];
     
     question.map((row, index) => {
-        gabarito[index] = row.resposta.find(element => element.gabarito === true);
+        let gab = row.resposta.find(element => element.gabarito === true);
+        let quest = row._id;
+        gabarito[index] = { 
+            gab,
+            quest
+        }    
     });
 
-    useEffect(() => {
-        console.log(respostaFinal)
-    }, [respostaFinal])
+    function removendo() {
+        // console.log("entrou aqui")
+        // api.removerRespostaQuestao("5f722b68d0199d24fdbf4209");
+        // api.removerRespostaQuestao("5f722bb71075ce256a377303");
+        // api.removerRespostaQuestao("5f722bb71075ce256a377302");
+        // api.removerRespostaQuestao("5f722bb71075ce256a377301");
+        // api.removerRespostaAluno("5f72293f85e3d422c03fcd88");
+        // api.removerRespostaAluno("5f7229c37482d6240a8ad9da");
+        // api.removerRespostaAluno("5f722bb71075ce256a377304");
+    }
 
-    const handleSubmit = (event) => {
+    removendo()
 
-        Object.entries(respostaAluno).map((row, index) => {
-            setRespostaFinal((prevValue) => ([
-                ...prevValue,
-                {
-                    question: row[0],
-                    resposta: row[1]
-                }
-            ]))
-        });
+    const handleSubmit = async event => {
+        
+        const alunoID = token.token.userID;
+        let RespostaQuestaoID = [];
+        let novaRespostaQuestao = [];
+        
         handleFinalized(event);
+
+        Object.entries(respostaAluno).map(async (row, index) => {
+            
+            let nota = 0;
+            let gab = gabarito.find(element => element.quest === row[0]);
+
+            if (gab.gab) {
+                if( gab.gab._id === row[1] ) nota = 1;
+            }    
+
+            console.log(gab.gab);
+
+            novaRespostaQuestao[index] = {
+                alunoID,
+                questaoID: row[0],
+                resposta: row[1],
+                nota
+            }   
+        });
+
+        console.log(novaRespostaQuestao);
+        
+        const novaRespostaAluno = {
+            alunoID,
+            atividadeID,
+            revisaoID,
+            respostaQuestaoID: novaRespostaQuestao
+        }
+        
+        console.log(novaRespostaAluno)
+
+        // await api
+        //     .inserirRespostaAluno(novaRespostaAluno)
+        //     .then(res => {
+        //         console.log(res.data);
+        //     })
+
     };
 
     function decrementValue () {
-        console.log(value);
+        //console.log(respostaFinal);
         setValue(value-1);
     }
 
     function incrementValue () {
-        console.log(value);
+        //console.log(gabarito);
         setValue(value+1);
     }
 

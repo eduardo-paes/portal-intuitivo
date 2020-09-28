@@ -39,7 +39,7 @@ function StudyPlan (props) {
   useEffect(() => {
     const abortController = new AbortController();
     async function fetchDisciplinaAPI() {
-      const response = await api.listarDisciplinasPorDiaDaSemana(dia);
+      const response = await api.listarDisciplinasPorDiaDaSemana(5);
       const value = response.data.data;
       setDisciplinas(value);
     }
@@ -52,12 +52,13 @@ function StudyPlan (props) {
   useEffect(() => {
     const abortController = new AbortController();
     let topicos = [];
+    
     console.log(disciplinas);
 
     if (disciplinas.length > 0) {
         async function fetchConteudoAPI() {
             for (let i = 0; i < disciplinas.length; ++i) {
-              const response = await api.encConteudoPersonalizado(disciplinas[i]._id, getTheWeek());
+              const response = await api.encConteudoPersonalizado(disciplinas[i]._id, 2);
               if (response.data.data[0]) topicos.push(response.data.data[0]);
               console.log(topicos);
             }
@@ -76,7 +77,7 @@ function StudyPlan (props) {
     } else {
       return content.map((row, index) => {
 
-        console.log(row);
+        let disciplinaNome = disciplinas.find( element => element._id === row.disciplinaID )
 
         return (
           <Grid 
@@ -90,6 +91,7 @@ function StudyPlan (props) {
             <ContentAccordion 
               color={borderColor[index]}
               area={row.areaConhecimento}
+              disciplina={disciplinaNome.nome}
               topicoID={row._id} 
               nome={row.topico}
               week={getTheWeek()}

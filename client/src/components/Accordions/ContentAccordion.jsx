@@ -17,7 +17,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function ContentAccordion(props) {
     
-    const { topicoID, area, nome, color, week } = props;
+    const { topicoID, area, nome, color, week, disciplina } = props;
 
     const AccordionPersonalized = withStyles({
         root: {
@@ -47,7 +47,7 @@ export default function ContentAccordion(props) {
 
     const [ fixacaoCarregada, setFixacaoCarregada ] = React.useState(false); 
     const [ aprofundamentoCarregada, setAprofundamentoCarregada ] = React.useState(false);
-    
+
     // -- Carrega as atividades do tópico correspondente
     useEffect(() => {
         const abortController = new AbortController();
@@ -153,7 +153,7 @@ export default function ContentAccordion(props) {
                 aria-controls="panel1a-content"
                 id="panel1a-header">
                 <CircularStatic progresso={progresso}/>
-                <Typography id="heading" className={classes.heading}>{nome}</Typography>
+                <Typography id="heading" className={classes.heading}>{disciplina}</Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <Grid className={classes.accordionDetails} container={true} spacing={3}>

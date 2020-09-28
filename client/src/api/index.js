@@ -45,9 +45,19 @@ export const listarTQPorQuestaoID = questaoID => api.get(`/tag-questao/questao/$
 
 // -- Funções relacionadas à RespostaQuestao
 export const inserirRespostaQuestao = novaRespostaQuestao => api.post("/resposta-questao", novaRespostaQuestao);
+export const removerRespostaQuestao = id => api.delete(`/resposta-questao/${id}`);
 export const encRespostaQuestaoPorID = id => api.get(`/resposta-questao/${id}`);
+export const listarRespostaQuestao = () => api.get(`/resposta-questao`);
 export const listarRQPorQuestaoID = questaoID => api.get(`/resposta-questao/questao/${questaoID}`);
 export const listarRQPorAlunoID = alunoID => api.get(`/resposta-questao/user/${alunoID}`);
+
+// -- Funções relacionadas à RespostaAluno
+export const inserirRespostaAluno = novaRespostaAluno => api.post("/resposta-aluno", novaRespostaAluno);
+export const removerRespostaAluno = id => api.delete(`/resposta-aluno/${id}`);
+export const encRespostaAlunoPorID = id => api.get(`/resposta-aluno/${id}`);
+export const listarRespostaAluno = () => api.get(`/resposta-aluno`);
+export const listarRAPorRespostaQuestaoID = respostaQuestaoID => api.get(`/resposta-aluno/respostaquestao/${respostaQuestaoID}`);
+export const listarRAPorAlunoID = alunoID => api.get(`/resposta-aluno/user/${alunoID}`);
 
 // -- Funções relacionadas à AnoLetivo
 export const inserirAnoLetivo = novaAnoLetivo => api.post("/configuracoes/ano-letivo", novaAnoLetivo);
@@ -127,9 +137,18 @@ const apis = {
     listarTQPorQuestaoID,
     //Resposta-Questão
     inserirRespostaQuestao,
+    removerRespostaQuestao,
     encRespostaQuestaoPorID,
+    listarRespostaQuestao,
     listarRQPorQuestaoID,
     listarRQPorAlunoID,
+    //Resposta-Aluno
+    inserirRespostaAluno,
+    removerRespostaAluno,
+    encRespostaAlunoPorID,
+    listarRespostaAluno,
+    listarRAPorRespostaQuestaoID,
+    listarRAPorAlunoID,
     // Ano Letivo
     inserirAnoLetivo,
     listarAnoLetivo,
