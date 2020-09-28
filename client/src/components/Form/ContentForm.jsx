@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
 import api from '../../api';
 import { MyContainer, MyTextField, GeneralTitle } from "../../assets/styles/styledComponents";
-import { Grid, MenuItem } from "@material-ui/core";
+import { makeStyles, Grid, MenuItem } from "@material-ui/core";
 import UploadContent from "../Upload/UploadContent";
+
+// -- Local Styles
+const useStyles = makeStyles((theme) => ({
+    errorMessage: {
+        fontSize: "0.75rem",
+        paddingLeft: "1rem",
+        color: "#f44336"
+    }
+}));
 
 export default function ContentForm (props) {
     const { material, setMaterial, conteudo, setConteudo, onSubmit } = props;
     const [listaDisciplina, setListaDisciplina] = useState([]);                      // Disciplinas do Banco de Dados
+    const classes = useStyles();
 
     // -- Carrega as Disciplinas existentes no banco
     useEffect(() => {
@@ -61,8 +71,11 @@ export default function ContentForm (props) {
                         disabled={true}
                         label="Área do Conhecimento"
                         name="area"
-                        value={material.area ? material.area : ""} />
+                        value={material.area ? material.area : ""}
+                        error={material.erros.area ? true : false}/>
+                        {material.erros.area && <p className={classes.errorMessage}>{material.erros.area}</p>}
                 </Grid>
+
                 <Grid item={true} xs={12} sm={4}>
                     <MyTextField
                         id="campoDisciplina"
@@ -70,14 +83,17 @@ export default function ContentForm (props) {
                         select={true}
                         label="Disciplina"
                         name="disciplinaID"
-                        value={material.disciplinaID ? material.disciplinaID : ""}>
+                        value={material.disciplinaID ? material.disciplinaID : ""}
+                        error={material.erros.disciplina ? true : false}>
                         {
                             listaDisciplina.map((row, index) => {
                                 return <MenuItem key={index} value={row._id} onClick={() => handleSubject(row._id, row.areaConhecimento)}>{row.nome}</MenuItem>
                             })
                         }
                     </MyTextField>
+                    {material.erros.disciplina && <p className={classes.errorMessage}>{material.erros.disciplina}</p>}
                 </Grid>
+
                 <Grid item={true} xs={12} sm={4}>
                     <MyTextField
                         id="campoNumeracao"
@@ -87,14 +103,30 @@ export default function ContentForm (props) {
                         type="text"
                         select={true}
                         value={material.numeracao}
-                        onChange={handleChange}>
+                        onChange={handleChange}
+                        error={material.erros.numeracao ? true : false}>
                             {
                                 array.map((row, index) => {
                                     return <MenuItem key={index} value={row}>{row}</MenuItem>
                                 })
                             }
                     </MyTextField>
+                    {material.erros.numeracao && <p className={classes.errorMessage}>{material.erros.numeracao}</p>}
                 </Grid>
+
+                <Grid item={true} xs={12}>
+                    <MyTextField
+                        id="campoTopico"
+                        label="Link da Videoaula"
+                        variant="outlined"
+                        name="videoAulaURL"
+                        type="text"
+                        value={material.videoAulaURL ? material.videoAulaURL : ""}
+                        onChange={handleChange}
+                        error={material.erros.videoAulaURL ? true : false}/>
+                        {material.erros.videoAulaURL && <p className={classes.errorMessage}>{material.erros.videoAulaURL}</p>}
+                </Grid>
+
                 <Grid item={true} xs={12}>
                     <MyTextField
                         id="campoTopico"
@@ -103,7 +135,9 @@ export default function ContentForm (props) {
                         name="topico"
                         type="text"
                         value={material.topico}
-                        onChange={handleChange}/>
+                        onChange={handleChange}
+                        error={material.erros.topico ? true : false}/>
+                        {material.erros.topico && <p className={classes.errorMessage}>{material.erros.topico}</p>}
                 </Grid>
             </Grid>
             

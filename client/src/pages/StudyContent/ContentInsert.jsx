@@ -6,11 +6,12 @@ import ContentForm from "../../components/Form/ContentForm";
 import validate from "../../components/Form/Validation/FormValidateContent";
 
 const initialState = {
-  disciplina: "", 
+  disciplinaID: "", 
   area: "",     // Campo temporário   
   topico: "",
   numeracao: '',
   autor: "",
+  videoAulaURL: '',
   conteudo: {},
   erros: []
 }
@@ -23,7 +24,7 @@ export default function ContentInsert(props) {
   const [conteudo, setConteudo] = useState("");
 
   const onSubmit = async event => {
-    const { disciplinaID, topico, numeracao } = material;
+    const { disciplinaID, topico, numeracao, videoAulaURL } = material;
     const error = validate(material);
 
     setMaterial(preValue => ({
@@ -36,7 +37,8 @@ export default function ContentInsert(props) {
         autor: token.userID,
         disciplinaID,
         topico, 
-        numeracao
+        numeracao,
+        videoAulaURL
       };
   
       // Guarda novo usuário no banco

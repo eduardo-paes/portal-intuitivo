@@ -84,7 +84,16 @@ function DeleteContent(props) {
 
 // -- Funções auxiliares para Ordenação
 function descendingComparator(a, b, orderBy) {
-    if (orderBy === 'disciplinaID.nome') {
+    if (orderBy === 'disciplinaID.areaConhecimento') {
+        if (b.disciplinaID.areaConhecimento < a.disciplinaID.areaConhecimento) {
+            return -1;
+        }
+        if (b.disciplinaID.areaConhecimento > a.disciplinaID.areaConhecimento) {
+            return 1;
+        }
+        return 0;
+    }
+    else if (orderBy === 'disciplinaID.nome') {
         if (b.disciplinaID.nome < a.disciplinaID.nome) {
             return -1;
         }
@@ -123,30 +132,33 @@ function stableSort(array, comparator) {
 // -- Componentes das Células de Cabeçalho
 const headCells = [
     {
-        id: 'area',
+        id: 'disciplinaID.areaConhecimento',
         label: 'Área'
     }, {
         id: 'disciplinaID.nome',
         label: 'Disciplina'
     }, {
+        id: 'numeracao',
+        label: 'Semana'
+    }, {
         id: 'topico',
         label: 'Tópico'
     }, {
-        id: 'numeracao',
-        label: 'Numeração'
-    }, {
-        id: 'conteudo',
-        label: 'Conteúdo'
+        id: 'funcoes',
+        label: ''
     }
 ];
 
 const phoneHeadCells = [
     {
-        id: 'disciplina',
-        label: 'Disciplina'
+        id: 'numeracao',
+            label: 'Sem.'
     }, {
-        id: 'conteudo',
-        label: 'Conteúdo'
+        id: 'topico',
+        label: 'Tópico'
+    }, {
+        id: 'funcoes',
+        label: ''
     }
 ]
 
@@ -170,7 +182,7 @@ function EnhancedTableHead(props) {
                             padding={'default'}
                             sortDirection={order}>
                             {
-                                (headCell.id !== "conteudo")
+                                (headCell.id !== "funcoes")
 
                                     ? <TableSortLabel
                                         active={orderBy === headCell.id}
@@ -385,13 +397,13 @@ export default function EnhancedTable(props) {
                                         if (auxArea && auxSubject && auxWeek) {
                                             return (
                                                 <TableRow hover={true} tabIndex={-1} key={conteudo._id}>
-                                                    <TableCell className={classes.row} align="left">{conteudo.disciplinaID.areaConhecimento}</TableCell>
-
+                                                    
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{conteudo.disciplinaID.areaConhecimento}</TableCell>}
                                                     {!smScreen && <TableCell className={classes.row} align="left">{conteudo.disciplinaID.nome}</TableCell>}
-                                                    {!smScreen && <TableCell className={classes.row} align="left">{conteudo.topico}</TableCell>}
-                                                    {!smScreen && <TableCell className={classes.row} align="left">{conteudo.numeracao}</TableCell>}
+                                                    <TableCell size="small" className={classes.row} align="left">{conteudo.numeracao}</TableCell>
+                                                    <TableCell className={classes.row} align="left">{conteudo.topico}</TableCell>
 
-                                                    <TableCell align="left">
+                                                    <TableCell align={smScreen ? "right" : "left"}>
                                                         <ContentVisualization 
                                                             ID={conteudo._id} 
                                                             nome={conteudo.topico} 

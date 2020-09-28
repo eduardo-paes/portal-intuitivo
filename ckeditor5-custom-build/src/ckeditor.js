@@ -137,5 +137,22 @@ Editor.defaultConfig = {
 			'tableCellProperties'
 		]
 	},
-	licenseKey: ''
+	licenseKey: '',
+	// mathTypeParameters : {
+	// 	serviceProviderProperties : {
+	// 		URI : '/pluginwiris_engine/app/configurationjs',
+	// 		server : 'java'
+	// 	}
+	// }
 };
+
+// Editor.plugins.addExternal('ckeditor_wiris', '../node_modules/@wiris/mathtype-ckeditor5/', 'plugin.js');
+
+// Editor.editorConfig = function (config) {
+//     extraPlugins = 'ckeditor_wiris';
+//     // Allow MathML content.
+// 	allowedContent = true;
+// 	config.toolbar = [
+// 		{ name: 'wirisplugins', items: ['ckeditor_wiris_formulaEditor', 'ckeditor_wiris_formulaEditorChemistry'] }
+// 	];
+// };

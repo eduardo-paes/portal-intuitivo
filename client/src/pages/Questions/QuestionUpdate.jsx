@@ -41,11 +41,12 @@ export default function QuestionUpdate(props) {
             if (value.tags.length > 0) {
                 const resTags = await api.listarTQPorQuestaoID(questaoID);
                 const resValue = resTags.data.data;
-                
                 resValue.map(tagFound => {
                     return tags.push(tagFound.tagID)
                 })
             }
+
+            console.log(tags);
 
             setQuestao(preValue => ({
                 ...preValue,

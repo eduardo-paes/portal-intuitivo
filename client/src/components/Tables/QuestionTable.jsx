@@ -517,13 +517,12 @@ export default function QuestionTable(props) {
                                                             </TableCell>
                                                     }
 
-                                                    <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>
-
-                                                    {!smScreen && <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>}
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>}
+                                                    <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>
                                                     {!smScreen && <TableCell className={classes.row} align="left">{resposta}</TableCell>}
                                                     {!smScreen && <TableCell className={classes.row} align="left">{tagNames.tags}</TableCell>}
 
-                                                    <TableCell align="left">
+                                                    <TableCell align={smScreen ? "right" : "left"}>
                                                         <ShowQuestion id={row._id} question={row} setQuestion={setQuestion} setHidden={setHidden}/>
                                                         {!tableSelection && <UpdateQuestion id={row._id}/>}
                                                         {!tableSelection && <DeleteQuestion id={row._id} setMount={setMount}/>}

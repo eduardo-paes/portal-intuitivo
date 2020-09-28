@@ -16,10 +16,14 @@ const Conteudo = new Schema({
         type: Number,
         required: true
     },
+    videoAulaURL: {
+        type: String,
+        required: true
+    },
     autor: {
         type: Schema.Types.ObjectId,
         ref: 'usuario'
-    }
+    },
 });
 
 module.exports = mongoose.model("conteudo", Conteudo);

@@ -72,6 +72,7 @@ router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 router.get("/controle-questao/topico/:id", QuestaoCtrl.listarQuestaoPorTopico);
 router.get("/controle-questao/area/:area", QuestaoCtrl.listarQuestaoPorArea);
+router.get("/controle-questao/tags/:id", QuestaoCtrl.listarTQPorQuestaoID);
 
 // RESPOSTA-QUESTÃO -- Definição dos métodos para cada rota de respostaQuestão
 router.post("/resposta-questao", RespostaQuestaoCtrl.inserirRespostaQuestao);
