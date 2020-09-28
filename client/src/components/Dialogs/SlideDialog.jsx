@@ -66,7 +66,7 @@ function SlideDialog(props) {
                         Por onde gostaria de começar hoje?
                     </DialogContentText>
 
-                    <Grid className={classes.buttonGroup} container={true} justify="center" justifyContent="center">
+                    <Grid className={classes.buttonGroup} container={true} justify="center">
                         <div className={classes.buttonLeft}>
                             <Button variant="contained" onClick={() => history.push("/plano-estudo")} size="small" color="primary" startIcon={<StudyPlan />}>
                                 Estudar

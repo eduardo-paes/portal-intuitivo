@@ -342,6 +342,66 @@ listarQuestaoPorArea = async (req, res) => {
     });
 }
 
+// Função para listar os questaos contidos no banco
+listarQuestaoPorTopico = async (req, res) => {
+    await Questao.find({ 'topicoID': req.params.id })
+        .populate('disciplinaID', 'nome')
+        .populate('topicoID', 'topico')
+        .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' } })
+        .exec((err, listaQuestao) => {
+            // Verificação de erros
+            if (err) {
+                return res.status(400).json({ 
+                    success: false, 
+                    error: err 
+                })
+            }
+
+            // Verifica se há dados na lista
+            if (!listaQuestao.length) {
+                return res
+                    .status(404)
+                    .json({ 
+                        success: false, 
+                        error: "Dados não encontrados." 
+                    })
+            }
+
+            // Caso não haja erros, retorna lista de questaos
+            return res
+                .status(200)
+                .json({ 
+                    success: true, 
+                    data: listaQuestao 
+                })
+        })
+}
+
+// Função para listar TQ por QuestaoID
+listarTQPorQuestaoID = async (req, res) => {
+    await TagQuestao
+        .find({ questaoID: req.params.id }, 
+            (err, tagQuestaoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!tagQuestaoEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "TagQuestao não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: tagQuestaoEncontrada})
+        })
+        .catch(err => console.log(err))
+}
+
+
 // Exporta os módulos
 module.exports = {
     inserirQuestao,
@@ -350,5 +410,6 @@ module.exports = {
     encQuestaoPorID,
     listarQuestao,
     listarQuestaoPorTopico,
-    listarQuestaoPorArea
+    listarQuestaoPorArea,
+    listarTQPorQuestaoID
 }

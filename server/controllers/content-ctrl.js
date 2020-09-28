@@ -77,6 +77,7 @@ atualizarConteudo = async (req, res) => {
         conteudoEncontrado.topico = conteudo.topico
         conteudoEncontrado.disciplinaID = conteudo.disciplinaID
         conteudoEncontrado.numeracao = conteudo.numeracao
+        conteudoEncontrado.videoAulaURL = conteudo.videoAulaURL
         conteudoEncontrado.autor = conteudo.autor
 
         // Salva alterações
@@ -132,9 +133,11 @@ removerConteudo = async (req, res) => {
 encConteudoPorID = async (req, res) => {
     // Encontra conteúdo por ID fornecido na rota
     await Conteudo
-        .findOne({
-            _id: req.params.id
-        }, (err, conteudoEncontrado) => {
+    .findOne({
+        _id: req.params.id
+    })
+    .populate('disciplinaID')
+    .exec((err, conteudoEncontrado) => {
             if (err) {
                 return res
                     .status(400)
@@ -151,7 +154,6 @@ encConteudoPorID = async (req, res) => {
                 .status(200)
                 .json({success: true, data: conteudoEncontrado})
         })
-        .catch(err => console.log(err))
 }
 
 // Função para buscar conteúdo por ID da Disciplina
@@ -183,8 +185,7 @@ listarConteudoPorDisciplina = async (req, res) => {
 
 // Função para listar conteúdo utilizando filtro
 encConteudoPersonalizado = async (req, res) => {
-    // Encontra conteúdo pela ID da Disciplina fornecido pela rota
-    
+    // Encontra conteúdo pela ID da Disciplina fornecido pela rota 
     await Conteudo
     .find({ 
         disciplinaID: { $eq: req.params.id }, 

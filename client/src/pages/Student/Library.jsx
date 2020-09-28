@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, useMediaQuery, useTheme, Grid, MenuItem, Tooltip, Fab, Grow } from "@material-ui/core";
 import { GeneralSubtitle, GeneralTitle, MyContainer, MyTextField } from "../../assets/styles/styledComponents"
-import ContentAccordion from "../../components/Accordions/ContentAccordion";
+import { LibraryAccordion } from "../../components";
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import api from '../../api';
@@ -51,14 +51,14 @@ function Library (props) {
     // Lista Disciplina
     async function fetchDisciplinaAPI() {
       const response = await api.listarDisciplinas();
-      const value = response.data.data;
-      setListaDisciplina(value);
+      setListaDisciplina(response.data.data);
     }
     fetchDisciplinaAPI();
 
     // Lista Conteúdo
     async function fetchConteudoAPI() {
       const response = await api.listarConteudos();
+      console.log(response.data.data)
       setListaConteudo(response.data.data);
     }
     fetchConteudoAPI();
@@ -89,16 +89,16 @@ function Library (props) {
   function ListarConteudo() {
     if (listaConteudo.length > 0) {
       return listaConteudo.map((row, index) => {
-        const { _id, topico, disciplina, numeracao } = row;
+        const { _id, topico, disciplinaID, numeracao } = row;
 
         let auxTopic = (topico.includes(filter.topico) || filter.topico === '') ? true : false;
-        let auxSubject = (disciplina.id === filter.disciplina || filter.disciplina === '') ? true : false;
+        let auxSubject = (disciplinaID === filter.disciplina || filter.disciplina === '') ? true : false;
         let auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
 
         if (auxTopic && auxSubject && auxWeek) {
           return (
             <Grid key={index} item={true} xs={12} lg={12} sm={12}>
-              <ContentAccordion id={_id} topico={topico} disciplina={disciplina}/>
+              <LibraryAccordion topicoID={_id} disciplinaNome={disciplinaID.nome} titulo={topico} semana={numeracao} />
             </Grid>
           )
         }

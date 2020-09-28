@@ -490,7 +490,7 @@ export default function ActivityTable(props) {
                                                     <TableCell className={classes.row} align="left">{areaConhecimento}</TableCell>
                                                     <TableCell className={classes.row} align="left">{questoes.length}</TableCell>
 
-                                                    <TableCell align="left">
+                                                    <TableCell align={smScreen ? "right" : "left"}>
                                                         <ShowQuestion id={row._id} setAtividade={setActivity} setHidden={setHidden}/>
                                                         <UpdateQuestion id={row._id} revision={revision}/>
                                                         <DeleteQuestion id={row._id} revision={revision} setMount={setMount}/>

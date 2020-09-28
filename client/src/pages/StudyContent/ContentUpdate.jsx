@@ -7,10 +7,11 @@ import validate from "../../components/Form/Validation/FormValidateContent";
 function initialState(props) {
   return {
     id: props.match.params.id,
-    disciplina: "", 
+    disciplinaID: "", 
     area: "",     // Campo temporário   
     topico: "",
-    numeracao: '',
+    numeracao: "",
+    videoAulaURL:  "",
     autor: "",
     conteudo: {},
     erros: []
@@ -28,11 +29,13 @@ export default function ContentUpdate(props) {
     async function fetchConteudoAPI() {
       const response = await api.encConteudoPorID(material.id);
       const value = response.data.data;
+
       setMaterial(preValue => ({ 
         ...preValue,
-        area: value.area, 
-        disciplinaID: value.disciplinaID,
+        area: value.disciplinaID.areaConhecimento,
+        disciplinaID: value.disciplinaID._id,
         numeracao: value.numeracao, 
+        videoAulaURL: value.videoAulaURL, 
         topico: value.topico,
         autor: value.autor
       }));
@@ -44,7 +47,7 @@ export default function ContentUpdate(props) {
   }, []);
 
   const onSubmit = async event => {
-    const { autor, disciplinaID, topico, numeracao } = material;
+    const { autor, disciplinaID, topico, numeracao, videoAulaURL } = material;
     const error = validate(material);
 
     setMaterial(preValue => ({
@@ -57,7 +60,8 @@ export default function ContentUpdate(props) {
         autor,
         disciplinaID, 
         topico, 
-        numeracao
+        numeracao,
+        videoAulaURL
       };  
   
       // Guarda novo usuário no banco

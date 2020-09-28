@@ -34,14 +34,16 @@ function TextEditor (props) {
     const [defaultMessage, setDefaultMessage] = useState(initialMessage);
 
     useEffect(() => {
+        const abortController = new AbortController();
         if (!readOnly) {
             optionType ? setText(position, text) : setText(text);
         }
+        return abortController.abort();
     // eslint-disable-next-line    
     }, [text])
    
     // -- Função acionada quando editor entra em foco
-    const onEditorFocus = (isFocused) => {
+    const onEditorFocus = () => {
         // Mensagem do editor se adapta caso haja valores em text
         setDefaultMessage(text);
     }
@@ -57,18 +59,19 @@ function TextEditor (props) {
 
     return (
         <CKEditor
-                editor={ Editor }
-                name="ckeditor"
-                data={ text === '' ? defaultMessage : text }
-                onInit={ editor => { 
-                    editor.ui.focusTracker.on('change:isFocused', (evt, name, value) => {value && onEditorFocus()});
-                    editor.isReadOnly = readOnly;
-                    uploadAdapterPlugin(editor);
-                }}
-                config={ optionType && editorConfig }
-                onError={ err => console.log(err) }
-                onChange={ handleEditorChange }
-            />
+            editor={ Editor }
+            name="ckeditor"
+            data={ text === '' ? defaultMessage : text }
+            onInit={ editor => { 
+                editor.ui.focusTracker.on('change:isFocused', (evt, name, value) => {value && onEditorFocus()});
+                editor.isReadOnly = readOnly;
+                uploadAdapterPlugin(editor);
+            }}
+            
+            config={ optionType && editorConfig }
+            onError={ err => console.log(err) }
+            onChange={ handleEditorChange }
+        />
     )
 } 
 

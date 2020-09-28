@@ -32,6 +32,7 @@ import QuestionDialog from "./Dialogs/QuestionDialog"
 import QuestionDialogFilter from "./Dialogs/QuestionDialogFilter"
 import PDFPreviewDialog from "./Dialogs/PDFPreviewDialog"
 import SlideDialog from "./Dialogs/SlideDialog"
+import ExerciseDialog from "./Dialogs/StudentDialogs/ExerciseDialog"
 
 // -- Editor
 import TextEditor from "./Editor/Editor"
@@ -43,7 +44,15 @@ import DatePicker from "./Calendar/DatePicker"
 import UploadContent from './Upload/UploadContent'
 
 // -- Cards
+import ActivityCard from './Cards/ActivityCard'
 import QuestionCard from './Cards/QuestionCard'
+
+// -- Accorddions
+import ContentAccordion from './Accordions/ContentAccordion'
+import LibraryAccordion from './Accordions/LibraryAccordion'
+
+// -- Viewrs
+import PDFViewer from './PDFViewer/PDFViewer'
 
 export { 
     UserTable,
@@ -75,9 +84,17 @@ export {
     QuestionDialogFilter,
     PDFPreviewDialog,
     SlideDialog,
+    ExerciseDialog,
 
     TextEditor,
     DatePicker,
     UploadContent,
-    QuestionCard
+
+    ActivityCard,
+    QuestionCard,
+
+    ContentAccordion,
+    LibraryAccordion,
+
+    PDFViewer,
 }

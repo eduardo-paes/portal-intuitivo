@@ -104,14 +104,20 @@ export const useStyles = makeStyles((theme) => ({
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
-    alignItems: 'center',
-    marginLeft: '1rem',
-    display: 'flex',
+    textAlign: 'left',
     [theme.breakpoints.down('sm')]: {
       fontSize: theme.typography.pxToRem(13),
-      justifyContent: 'center',
       textAlign: 'center',
-      marginLeft: '0rem',
+    }
+  },
+
+  subtitleLibrary: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+    textAlign: 'right',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.typography.pxToRem(13),
+      textAlign: 'center',
     }
   },
   

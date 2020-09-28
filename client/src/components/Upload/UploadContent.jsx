@@ -11,33 +11,19 @@ import PDFPreviewDialog from '../Dialogs/PDFPreviewDialog';
 import { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
-  buttonsContainer: {
-    width: '100%',
-    display: "flex",
-    flexDirection: "row",
-    marginLeft: "auto",
-    marginRight: "auto",
-    alignItems: "center"
-  },
   input: {
     display: 'none',
-  },
-  button: {
-    width: '190px',
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
   }
 }));
 
- function UploadContent(props) {
+export default function UploadContent(props) {
   const {onChange, onSubmit, backTo, conteudo, topico } = props;
   const [open, setOpen] = useState(false);
   const classes = useStyles();
 
   return (
-    <Grid container spacing={10} className={classes.buttonsContainer}>
-      <Grid item={true} xs={6} sm={3}>
+    <Grid container={true} spacing={2}>
+      <Grid item={true} xs={12} sm={3}>
         <input
           accept="file_extension/*"
           className={classes.input}
@@ -48,29 +34,26 @@ const useStyles = makeStyles((theme) => ({
           onChange={onChange}
         />
         <label htmlFor="contained-button-file">
-
-        <Button
-          variant="contained"
-          color="primary"
-          component="span"
-          className={classes.button}
-          startIcon={<DescriptionIcon />}
-        >
-          Subir Conteúdo
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            component="span"
+            fullWidth={true}
+            startIcon={<DescriptionIcon />}
+          > Subir Conteúdo </Button>
         </label>
       </Grid>
 
-      <Grid item={true} xs={6} sm={3}>
+      <Grid item={true} xs={12} sm={3}>
         <Button 
           variant="contained"
           color="primary"
           component="span"
+          fullWidth={true}
           disabled={conteudo === "" ? true : false}
           startIcon={<VisibilityIcon />} 
           onClick={() => {setOpen(!open)}}
-        >Visualizar
-        </Button>
+        > Visualizar </Button>
 
         <PDFPreviewDialog 
           topico={topico} 
@@ -85,10 +68,8 @@ const useStyles = makeStyles((theme) => ({
           variant="contained"
           color="primary"
           onClick={onSubmit} 
-          className={classes.button}
-        >
-          Salvar
-        </Button>
+          fullWidth={true}
+        > Salvar </Button>
       </Grid>
       
       <Grid item={true} xs={6} sm={3}>
@@ -96,14 +77,10 @@ const useStyles = makeStyles((theme) => ({
           <Button 
             variant="contained"
             color="secondary"
-            className={classes.button}
-          >
-            Voltar  
-          </Button>
+            fullWidth={true}
+          > Voltar </Button>
         </Link>
       </Grid>
     </Grid>
   );
 }
-
-export default UploadContent;

@@ -35,14 +35,6 @@ export const removerTag = id => api.delete(`/configuracoes/tag/${id}`);
 export const encTagPorID = id => api.get(`/configuracoes/tag/${id}`);
 export const listarTagsPorDisciplina = id => api.get(`/configuracoes/tags/${id}`);
 
-// -- Funções relacionadas à TagQuestao
-export const inserirTagQuestao = novaTagQuestao => api.post("/tag-questao", novaTagQuestao);
-export const listarTagQuestao = () => api.get("/tag-questao");
-export const atualizarTagQuestao = (id, tagQuestaoAtualizada) => api.put(`/tag-questao/${id}`, tagQuestaoAtualizada);
-export const removerTagQuestao = id => api.delete(`/tag-questao/${id}`);
-export const encTagQuestaoPorID = id => api.get(`/tag-questao/${id}`);
-export const listarTQPorQuestaoID = questaoID => api.get(`/tag-questao/questao/${questaoID}`);
-
 // -- Funções relacionadas à RespostaQuestao
 export const inserirRespostaQuestao = novaRespostaQuestao => api.post("/resposta-questao", novaRespostaQuestao);
 export const encRespostaQuestaoPorID = id => api.get(`/resposta-questao/${id}`);
@@ -64,6 +56,7 @@ export const removerQuestao = id => api.delete(`/controle-questao/${id}`);
 export const encQuestaoPorID = id => api.get(`/controle-questao/${id}`);
 export const listarQuestaoPorTopico = id => api.get(`/controle-questao/topico/${id}`);
 export const listarQuestaoPorArea = area => api.get(`/controle-questao/area/${area}`);
+export const listarTQPorQuestaoID = questaoID => api.get(`/controle-questao/tags/${questaoID}`);
 
 // -- Funções relacionadas à Atividade
 export const inserirAtividade = novaAtividade => api.post("/controle-atividade", novaAtividade);
@@ -118,13 +111,6 @@ const apis = {
     removerTag,
     encTagPorID,
     listarTagsPorDisciplina,
-    // Tag-Questão
-    inserirTagQuestao,
-    listarTagQuestao,
-    atualizarTagQuestao,
-    removerTagQuestao,
-    encTagQuestaoPorID,
-    listarTQPorQuestaoID,
     //Resposta-Questão
     inserirRespostaQuestao,
     encRespostaQuestaoPorID,
@@ -144,6 +130,7 @@ const apis = {
     encQuestaoPorID,
     listarQuestaoPorTopico,
     listarQuestaoPorArea,
+    listarTQPorQuestaoID,
     // Atividade
     inserirAtividade,
     listarAtividades,

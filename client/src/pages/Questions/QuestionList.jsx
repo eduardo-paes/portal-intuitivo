@@ -70,6 +70,7 @@ function QuestionInsert() {
                 <QuestionDialog 
                     enunciado={questaoSelecionada.enunciado}
                     tipoResposta={questaoSelecionada.tipoResposta}
+                    padraoResposta={questaoSelecionada.padraoResposta}
                     resposta={questaoSelecionada.resposta}
                     open={hiddenDialog}
                     setOpen={setHiddenDialog}
