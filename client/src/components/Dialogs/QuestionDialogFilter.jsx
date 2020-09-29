@@ -46,11 +46,13 @@ export default function ActivityDialogFilter(props) {
     }
   }
 
+  // Fetchs
   useEffect(() => {
     const abortController = new AbortController();
     fetchTopicoAPI();
     fetchTagAPI();
     return abortController.abort();
+    // eslint-disable-next-line
   }, [tempFilter.disciplinaID])
 
   // Carregamentos iniciais

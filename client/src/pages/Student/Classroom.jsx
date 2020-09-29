@@ -39,7 +39,7 @@ export default function Classroom (props) {
       <section id="classroomMain">
         <Grid container={true} justify="center" spacing={1}>
           <Grid item={true} xs={12} sm={9}>
-            <p id="generalClassParagraph">Para acessar ao link da aula ao vivo, click no botão ao lado e você será redirecionado para a sala de aula.</p>
+            <p id="generalClassParagraph">Para acessar ao link da aula ao vivo, é só clicar no botão ao lado e você será redirecionado para a sala de aula.</p>
           </Grid>
           <Grid item={true} xs={12} sm={3} style={{ textAlign: "center"}}>
             <Button color="primary" variant="outlined" onClick={() => { window.open(classLink,'_blank') }} startIcon={<SchoolIcon />}>Participar</Button>
