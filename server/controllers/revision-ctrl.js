@@ -229,6 +229,30 @@ encRevisaoPorID = async (req, res) => {
         })
 }
 
+encRevisaoPelaNumeracaoEArea = async (req, res) => {
+    // Encontra revisao por ID fornecido na rota
+    await Revisao
+    .findOne({ numeracao: req.params.numeracao, areaConhecimento: req.params.area })
+    .populate({ path: 'questoes', select: 'questaoID'})
+    .exec((err, revisaoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!revisaoEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Revisão não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: revisaoEncontrada})
+        })
+}
+
 // Função para listar os revisaos contidos no banco
 listarRevisao = async (req, res) => {
     await Revisao.find({}, (err, listaRevisao) => {
@@ -265,5 +289,6 @@ module.exports = {
     atualizarRevisao,
     removerRevisao,
     encRevisaoPorID,
+    encRevisaoPelaNumeracaoEArea,
     listarRevisao
 }

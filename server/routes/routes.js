@@ -104,6 +104,7 @@ router.post("/controle-revisao", RevisaoCtrl.inserirRevisao);
 router.put("/controle-revisao/:id", RevisaoCtrl.atualizarRevisao);
 router.delete("/controle-revisao/:id", RevisaoCtrl.removerRevisao);
 router.get("/controle-revisao/:id", RevisaoCtrl.encRevisaoPorID);
+router.get("/controle-revisao/:numeracao/:area", RevisaoCtrl.encRevisaoPelaNumeracaoEArea);
 router.get("/controle-revisao", RevisaoCtrl.listarRevisao);
 
 // CLASSLINK -- Definição dos métodos para cada rota de classLink

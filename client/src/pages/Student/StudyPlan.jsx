@@ -32,8 +32,9 @@ function StudyPlan (props) {
   ];
   const [ disciplinas, setDisciplinas ] = useState([]);
   const [ content, setContent ] = React.useState([]); 
+  const [ revision, setRevision ] = React.useState([]); 
 
-  const dia = new Date().getDay();
+  const dia = 5;
 
   // -- Carrega as Disciplinas do dia correspondente
   useEffect(() => {
@@ -52,15 +53,12 @@ function StudyPlan (props) {
   useEffect(() => {
     const abortController = new AbortController();
     let topicos = [];
-    
-    console.log(disciplinas);
 
     if (disciplinas.length > 0) {
         async function fetchConteudoAPI() {
             for (let i = 0; i < disciplinas.length; ++i) {
               const response = await api.encConteudoPersonalizado(disciplinas[i]._id, 2);
               if (response.data.data[0]) topicos.push(response.data.data[0]);
-              console.log(topicos);
             }
             setContent(topicos);
         }
@@ -70,6 +68,21 @@ function StudyPlan (props) {
     return abortController.abort();
     // eslint-disable-next-line
 }, [disciplinas]);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    if (dia >= 5 || dia === 0) {
+        async function fetchRevisaoAPI() {
+          const response = await api.encRevisaoPelaNumeracaoEArea(1, 'Ciências da Natureza');
+          setRevision(response.data.data);
+        }
+        fetchRevisaoAPI();
+    }
+    
+    return abortController.abort();
+    // eslint-disable-next-line
+  }, [dia])
 
   function returnContent() {
     if (content.length === 0) {
@@ -122,6 +135,43 @@ function StudyPlan (props) {
       </header>
       <Grid container={true} spacing={2}>
         {returnContent()}
+        <Grid 
+            className={classes.grid} 
+            item={true} 
+            xs={12} 
+            lg={12} 
+            sm={12}
+          >
+          <ContentAccordion 
+            color={borderColor[borderColor.length-2]}
+            area={"Linguagens"}
+            disciplina={"Redação"}
+            topicoID={""} 
+            nome={"Semana 2"}
+            week={getTheWeek()}
+          />
+        </Grid>
+        {
+          revision ?
+          <Grid 
+            className={classes.grid} 
+            item={true} 
+            xs={12} 
+            lg={12} 
+            sm={12}
+          >
+            <ContentAccordion 
+              color={borderColor[borderColor.length-1]}
+              area={revision.areaConhecimento}
+              disciplina={"Avaliação Diagnóstica"}
+              revisaoID={revision._id} 
+              nome={"Semana 2"}
+              questoesAvDiag={revision.questoes}
+              week={getTheWeek()}
+            />
+          </Grid>
+          : null
+        }
       </Grid>      
     </MyContainer>
   );

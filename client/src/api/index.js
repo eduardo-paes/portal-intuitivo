@@ -83,6 +83,7 @@ export const listarRevisao = () => api.get("/controle-revisao");
 export const atualizarRevisao = (id, revisaoAtualizada) => api.put(`/controle-revisao/${id}`, revisaoAtualizada);
 export const removerRevisao = id => api.delete(`/controle-revisao/${id}`);
 export const encRevisaoPorID = id => api.get(`/controle-revisao/${id}`);
+export const encRevisaoPelaNumeracaoEArea = ( numeracao, area ) => api.get(`/controle-revisao/${numeracao}/${area}`);
 
 // -- Funções relacionadas à ClassLink
 export const inserirClassLink = novoLink => api.post("/aula-link", novoLink);
@@ -164,6 +165,7 @@ const apis = {
     atualizarRevisao,
     removerRevisao,
     encRevisaoPorID,
+    encRevisaoPelaNumeracaoEArea,
     // ClassLink
     inserirClassLink,
     listarClassLink,
