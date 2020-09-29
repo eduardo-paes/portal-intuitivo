@@ -279,23 +279,25 @@ listarAtividade = async (req, res) => {
 
 // Função para listar os atividades contidos no banco
 listarAtividadesPorTopico = async (req, res) => {
-    await Atividade.find({ "topicoID": req.params.id })
-    .populate('disciplinaID', 'nome')
-    .populate('topicoID', 'topico')
-    .exec((err, listaAtividade) => {
-        // Verificação de erros
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        // Verifica se há dados na lista
-        if (!listaAtividade.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
-        }
-        // Caso não haja erros, retorna lista de atividades
-        return res.status(200).json({ success: true, data: listaAtividade })
-    })
+    await Atividade
+        .find({ "topicoID": req.params.id })
+        .populate('disciplinaID', 'nome')
+        .populate('topicoID', 'topico')
+        .populate('questoes')
+        .exec((err, listaAtividade) => {
+            // Verificação de erros
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            // Verifica se há dados na lista
+            if (!listaAtividade.length) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: "Dados não encontrados." })
+            }
+            // Caso não haja erros, retorna lista de atividades
+            return res.status(200).json({ success: true, data: listaAtividade })
+        })
 }
 
 // Exporta os módulos

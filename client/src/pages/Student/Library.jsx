@@ -53,15 +53,17 @@ function Library (props) {
       const response = await api.listarDisciplinas();
       setListaDisciplina(response.data.data);
     }
-    fetchDisciplinaAPI();
 
     // Lista Conteúdo
     async function fetchConteudoAPI() {
       const response = await api.listarConteudos();
-      console.log(response.data.data)
       setListaConteudo(response.data.data);
     }
+
+    // Fetchs
+    fetchDisciplinaAPI();
     fetchConteudoAPI();
+
     return abortController.abort();
   }, []);
 
@@ -89,7 +91,7 @@ function Library (props) {
   function ListarConteudo() {
     if (listaConteudo.length > 0) {
       return listaConteudo.map((row, index) => {
-        const { _id, topico, disciplinaID, numeracao } = row;
+        const { _id, topico, disciplinaID, numeracao, videoAulaURL } = row;
 
         let auxTopic = (topico.includes(filter.topico) || filter.topico === '') ? true : false;
         let auxSubject = (disciplinaID === filter.disciplina || filter.disciplina === '') ? true : false;
@@ -98,7 +100,7 @@ function Library (props) {
         if (auxTopic && auxSubject && auxWeek) {
           return (
             <Grid key={index} item={true} xs={12} lg={12} sm={12}>
-              <LibraryAccordion topicoID={_id} disciplinaNome={disciplinaID.nome} titulo={topico} semana={numeracao} />
+              <LibraryAccordion topicoID={_id} disciplinaNome={disciplinaID.nome} titulo={topico} semana={numeracao} linkAula={videoAulaURL}/>
             </Grid>
           )
         }

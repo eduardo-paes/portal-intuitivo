@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
+import api from '../../api';
 
 // -- Material UI Components
-import { AccordionDetails, AccordionSummary, AppBar, Button, Checkbox, Dialog, Grid, IconButton, Slide, Toolbar, Typography, withStyles } from '@material-ui/core';
+import { AccordionDetails, AccordionSummary, Button, Checkbox, Grid, Slide, Typography, withStyles } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
 import CircularStatic from '../ProgressBar/CircularStatic';
 
 // -- Components
 import { GreenButton } from '../../assets/styles/styledComponents';
-import { useStyles } from '../../assets/styles/classes';
-import { ExerciseDialog, PDFViewer } from '../'
+import { useStyles } from './styles';
+import { ExerciseDialog, StudyContentDialog } from '../'
 
 // -- Icons
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SchoolIcon from '@material-ui/icons/School';
-import CloseIcon from '@material-ui/icons/Close';
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-}); 
+import { useEffect } from 'react';
 
 const AccordionPersonalized = withStyles({
     root: {
@@ -27,8 +24,8 @@ const AccordionPersonalized = withStyles({
 })(MuiAccordion);
 
 export default function ContentAccordion(props) {
-    const { topicoID, disciplinaNome, titulo, semana } = props;
-
+    const { topicoID, disciplinaNome, titulo, semana, linkAula } = props;
+    
     // Definição dos estados que serão utilizados
     const [ progresso, setProgresso ] = useState(0);
     const [ open, setOpen ] = useState({
@@ -55,24 +52,6 @@ export default function ContentAccordion(props) {
         }));
     };
 
-    const handleClose = (event) => {
-        setOpen({
-            materialEstudo: false,
-            exercicioFixacao: false,
-            videoaula: false,
-            exercicioAprofundamento: false
-        });
-    };
-
-    const handleFinalized = (event) => {
-        const name = event.target.offsetParent.id;
-        setCheck(preValue => ({
-            ...preValue,
-            [name]: true
-        }));
-        setProgresso(progresso+1);
-    };
-
     const handleClickVideo = (event) => {
         const name  = event.target.offsetParent.id;
         setCheck(preValue => ({
@@ -80,8 +59,22 @@ export default function ContentAccordion(props) {
             [name]: true
         }));
         setProgresso(progresso+1);
-        window.open("https://www.youtube.com/watch?v=j5YJYJ_qXho&list=PL3qONjKuaO2R7hih4hEPXp4_xgoB6nUQk",'_blank');
+
+        window.open(linkAula,'_blank');
     }
+
+    useEffect(() => {
+        async function fetchAtividadeAPI() {
+            const response = await api.listarAtividadesPorTopico(topicoID);
+            if (response.data.success) {
+                const value = response.data.data;
+                console.log(value);
+            }
+        }
+
+        fetchAtividadeAPI();
+        // eslint-disable-next-line
+    }, [])
 
     return (
         <Slide direction="up" in={true} mountOnEnter unmountOnExit>
@@ -109,39 +102,24 @@ export default function ContentAccordion(props) {
                             </Grid>
                         </Grid>
 
+                        {/* ---=== Conteúdo ===--- */}
                         {/* Material de Estudo */}
                         <Grid align="center" item={true} xs={12} lg={3} sm={12}>
                             <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
                             {
-                                check.materialEstudo ?
-                                <GreenButton className={classes.activityButton} id="materialEstudo" variant="contained" color="primary" onClick={handleClickOpen}>Material de Estudo</GreenButton>
-                                : 
-                                <Button className={classes.activityButton} id="materialEstudo" variant="outlined" color="primary" onClick={handleClickOpen}>Material de Estudo</Button>
+                                check.materialEstudo 
+                                    ? <GreenButton className={classes.activityButton} id="materialEstudo" variant="contained" color="primary" onClick={handleClickOpen}>Material de Estudo</GreenButton>
+                                    : <Button className={classes.activityButton} id="materialEstudo" variant="outlined" color="primary" onClick={handleClickOpen}>Material de Estudo</Button>
                             }
-
-                            <Dialog fullScreen open={open.materialEstudo} onClose={handleClose} TransitionComponent={Transition}>
-                                <AppBar className={classes.appBar}>
-                                    <Toolbar>
-                                        <IconButton id="materialEstudo" edge="start" color="inherit" onClick={handleClose} aria-label="close">
-                                            <CloseIcon />
-                                        </IconButton>
-                                        <Typography variant="h6" className={classes.title}>
-                                            {titulo}
-                                        </Typography>
-                                    </Toolbar>
-                                </AppBar>
-                                <Grid container={true} spacing={3}>
-                                    <Grid className={classes.material} item={true} xs={12} lg={12} sm={12} align='center'>
-                                        <PDFViewer source={ `http://localhost:5000/uploads/content/${topicoID}.pdf`}/>
-                                    </Grid>
-                                    <Grid item={true} xs={12} lg={12} sm={12} align='center' >
-                                        <Button id="materialEstudo" autoFocus variant='contained' color="primary" onClick={handleFinalized}>
-                                            Finalizado
-                                        </Button>
-                                    </Grid>
-                                </Grid>    
-                            </Dialog>
-
+                            <StudyContentDialog 
+                                topicoID={topicoID}
+                                titulo={titulo}
+                                progresso={progresso}
+                                setProgresso={setProgresso}
+                                open={open}
+                                setOpen={setOpen}
+                                setCheck={setCheck}
+                            />
                         </Grid>
                         
                         {/* Exercícios de Fixação */}
@@ -171,19 +149,16 @@ export default function ContentAccordion(props) {
                         <Grid align="center" item={true} xs={12} lg={3} sm={12}>
                             <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.videoaula}/>
                             {
-                                check.videoaula ?
-                                <GreenButton className={classes.activityButton} id="videoaula" variant="contained" color="primary" onClick={handleClickOpen}>Vídeoaula</GreenButton>
-                                : 
-                                <Button 
+                                check.videoaula 
+                                ? <GreenButton className={classes.activityButton} id="videoaula" variant="contained" color="primary" onClick={handleClickOpen}>Vídeoaula</GreenButton>
+                                : <Button 
                                     className={classes.activityButton} 
                                     id="videoaula" 
                                     color="primary" 
                                     variant="outlined" 
                                     startIcon={<SchoolIcon />}
                                     onClick={handleClickVideo} 
-                                >
-                                    Participar
-                                </Button>
+                                > Participar </Button>
                             }
                         </Grid>
                         

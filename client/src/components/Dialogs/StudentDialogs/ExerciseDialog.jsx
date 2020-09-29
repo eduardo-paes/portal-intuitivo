@@ -22,24 +22,32 @@ export default function ExerciseDialog(props) {
     const [activity, setActivity] = useState([]);
     const [question, setQuestion] = useState([]); 
 
+    async function fetchAtividadeAPI() {
+        const resAtividade = await api.listarAtividadesPorTopico(topicoID);
+        const valAtividade = resAtividade.data.data;
+        let atividade = valAtividade.filter(item => item.tipoAtividade === activityType);
+        setActivity(atividade);
+        fetchQuestaoAPI(atividade[0]._id);
+    }
+
+    async function fetchQuestaoAPI(atividadeID) {
+        const resQuestao = await api.encQuestoesDaAtividadeID(atividadeID);
+        const valQuestao = resQuestao.data.data;
+        let questao = valQuestao.map(item => { return item.questaoID });
+        setQuestion(questao);
+        console.log(questao);
+    }
+
+
     // -- Carrega as atividades do tópico correspondente
     useEffect(() => {
         const abortController = new AbortController();
         if (open && topicoID !== '') {
-            async function fetchAtividadeAPI() {
-                console.log("here")
-                const response = await api.listarAtividadesPorTopico(topicoID);
-                const value = response.data.data;
-                let aux = value.filter(item => {
-                    return item.tipoAtividade === activityType;
-                })
-                setActivity(aux);
-                setQuestion(aux.questoes);
-            }
             fetchAtividadeAPI();
         }
         return abortController.abort();
-    }, [topicoID] )
+        // eslint-disable-next-line
+    }, [topicoID, open] )
 
     const handleClose = (event) => {
         setOpen(preValue => ({
@@ -72,9 +80,11 @@ export default function ExerciseDialog(props) {
 
             <Grid container={true} spacing={3}>
                 <Grid item={true} xs={12} lg={12} sm={12} align='center'>
-                    {
-                        // (question.length > 0) && <ActivityCard atividadeID={activity[0]._id} handleClose={handleClose} handleFinalized={handleFinalized} question={question}/>
-                    }
+                {
+                    (question.length > 0) ? 
+                        <ActivityCard atividadeID={activity._id} handleClose={handleClose} handleFinalized={handleFinalized} question={question}/>
+                    : null
+                }
                 </Grid>
             </Grid>
         </Dialog>

@@ -33,6 +33,7 @@ import QuestionDialogFilter from "./Dialogs/QuestionDialogFilter"
 import PDFPreviewDialog from "./Dialogs/PDFPreviewDialog"
 import SlideDialog from "./Dialogs/SlideDialog"
 import ExerciseDialog from "./Dialogs/StudentDialogs/ExerciseDialog"
+import StudyContentDialog from "./Dialogs/StudentDialogs/StudyContentDialog"
 
 // -- Editor
 import TextEditor from "./Editor/Editor"
@@ -85,6 +86,7 @@ export {
     PDFPreviewDialog,
     SlideDialog,
     ExerciseDialog,
+    StudyContentDialog,
 
     TextEditor,
     DatePicker,

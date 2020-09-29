@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GeneralTitle, GeneralSubtitle, MyContainer } from "../../assets/styles/styledComponents";
+import { getTheWeek, diaDaSemana } from '../../utils/auxFunctions';
 import { Grid, makeStyles } from '@material-ui/core';
-import { useEffect } from "react";
+import { ContentAccordion } from "../../components";
 import api from "../../api";
-import ContentAccordion from "../../components/Accordions/ContentAccordion";
-import {getTheWeek, diaDaSemana} from '../../utils/auxFunctions';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -22,16 +21,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function StudyPlan (props) {
+export default function StudyPlan () {
   const classes = useStyles();
   const borderColor = [
-    'rgba(127, 63, 180, 1)',
-    'rgba(63, 191, 63, 1)',
-    'rgba(63, 63, 191, 1)',
-    'rgba(220, 200, 63, 1)',
+    '#eb7120',
+    '#94c93d',
+    '#a283bc',
+    '#fdc504',
+    '#39b2d2',
   ];
   const [ disciplinas, setDisciplinas ] = useState([]);
-  const [ content, setContent ] = React.useState([]); 
+  const [ content, setContent ] = useState([]); 
 
   const dia = new Date().getDay();
 
@@ -53,14 +53,11 @@ function StudyPlan (props) {
     const abortController = new AbortController();
     let topicos = [];
     
-    console.log(disciplinas);
-
     if (disciplinas.length > 0) {
         async function fetchConteudoAPI() {
             for (let i = 0; i < disciplinas.length; ++i) {
               const response = await api.encConteudoPersonalizado(disciplinas[i]._id, 2);
               if (response.data.data[0]) topicos.push(response.data.data[0]);
-              console.log(topicos);
             }
             setContent(topicos);
         }
@@ -71,23 +68,15 @@ function StudyPlan (props) {
     // eslint-disable-next-line
 }, [disciplinas]);
 
-  function returnContent() {
+  const returnContent = () => {
     if (content.length === 0) {
       return <p>Não há conteúdo a ser estudado hoje, portanto, aproveite o descanso!</p>
     } else {
       return content.map((row, index) => {
-
         let disciplinaNome = disciplinas.find( element => element._id === row.disciplinaID )
-
+        
         return (
-          <Grid 
-            className={classes.grid} 
-            key={index} 
-            item={true} 
-            xs={12} 
-            lg={12} 
-            sm={12}
-          >
+          <Grid className={classes.grid} key={index} item={true} xs={12} lg={12} sm={12}>
             <ContentAccordion 
               color={borderColor[index]}
               area={row.areaConhecimento}
@@ -95,6 +84,7 @@ function StudyPlan (props) {
               topicoID={row._id} 
               nome={row.topico}
               week={getTheWeek()}
+              linkAula={row.videoAulaURL}
             />
           </Grid>
         )
@@ -104,8 +94,7 @@ function StudyPlan (props) {
 
   return (
     <MyContainer className={classes.studyPlan}>
-      
-      <header>
+      <section id="studyPlanHeader">
         <Grid container={true} spacing={3}>
           <Grid item={true} xs={12} sm={12}>
             <GeneralTitle id="studyPlanTitle">Plano de Estudo</GeneralTitle>
@@ -119,12 +108,13 @@ function StudyPlan (props) {
             <GeneralSubtitle className={classes.secondaryHeading} id="studyPlanSubTitle">{diaDaSemana[dia] + ", Semana " + getTheWeek()}</GeneralSubtitle>
           </Grid>
         </Grid>
-      </header>
-      <Grid container={true} spacing={2}>
-        {returnContent()}
-      </Grid>      
+      </section>
+      
+      <section id="studyPlanMain">
+        <Grid container={true} spacing={2}>
+          {returnContent()}
+        </Grid>      
+      </section>
     </MyContainer>
   );
 };
-
-export default StudyPlan;
