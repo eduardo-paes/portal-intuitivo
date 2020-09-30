@@ -29,6 +29,8 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: '50%',
     marginLeft: '3rem',
     top: '50%',
+    height: '30px',
+    width: '30px',
     [theme.breakpoints.down('sm')]: {
       display: 'none'
     }
@@ -78,7 +80,7 @@ export const useStyles = makeStyles((theme) => ({
     marginRight: '5rem',
     marginLeft: '5rem',
     [theme.breakpoints.down('sm')]: {
-      margin: 0,
+      margin: '0rem',
     }
   },
 

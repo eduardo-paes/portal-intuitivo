@@ -9,7 +9,7 @@ import { useEffect } from "react";
 export default function QuestionCard (props) {
 
     const classes = useStyles();
-    const { idQuestion, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaAluno, setRespostaAluno } = props;
+    const { idQuestion, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao } = props;
     const [value, setValue] = React.useState(0);
     const [answered, setAnswered] = React.useState(false);
     const [color, setColor] = React.useState('default');
@@ -30,7 +30,7 @@ export default function QuestionCard (props) {
     function pegarRespostaDiscursiva(event) {
         const { value } = event.target;  
         const id = idQuestion;
-        setRespostaAluno((preValue) => ({
+        setRespostaQuestao((preValue) => ({
             ...preValue,
               [id]: value
         }));
@@ -48,8 +48,8 @@ export default function QuestionCard (props) {
                         <Grid className={classes.questionText} item={true} align="left" xs={12} lg={12} sm={12}>
                             <RadioAnswer 
                                 idQuestion={idQuestion} 
-                                respostaAluno={respostaAluno}
-                                setRespostaAluno={setRespostaAluno} 
+                                respostaQuestao={respostaQuestao}
+                                setRespostaQuestao={setRespostaQuestao} 
                                 value={value} 
                                 setValue={setValue} 
                                 answered={answered} 
@@ -62,11 +62,11 @@ export default function QuestionCard (props) {
                         <Grid className={classes.questionText} item={true} align="center" xs={12} lg={12} sm={12}>
                             <TextField
                                 className={classes.answerField}
-                                id={respostaAluno.questao}
+                                id={respostaQuestao.questao}
                                 label="Resposta"
                                 placeholder=""
                                 multiline
-                                value={respostaAluno.resposta}
+                                value={respostaQuestao.resposta}
                                 onChange={pegarRespostaDiscursiva}
                             />
                         </Grid>

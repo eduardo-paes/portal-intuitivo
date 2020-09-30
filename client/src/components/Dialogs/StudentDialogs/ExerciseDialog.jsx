@@ -11,6 +11,15 @@ import { ActivityCard } from '../../'
 // -- Icons
 import CloseIcon from '@material-ui/icons/Close';
 
+
+// -- Dados iniciais da constante Atividade
+const initialState = {
+    alunoID: "",
+    atividadeID: "",
+    revisaoID: "",
+    respostaQuestaoID: []
+}
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 }); 
@@ -21,6 +30,7 @@ export default function ExerciseDialog(props) {
 
     const [activity, setActivity] = useState([]);
     const [question, setQuestion] = useState([]); 
+    const [ respostaAluno, setRespostaAluno ] = useState(initialState);
 
     async function fetchAtividadeAPI() {
         const resAtividade = await api.listarAtividadesPorTopico(topicoID);
@@ -47,6 +57,16 @@ export default function ExerciseDialog(props) {
         // eslint-disable-next-line
     }, [topicoID, open] )
 
+    useEffect(() => {
+        const abortController = new AbortController();
+        
+        setRespostaAluno(respostaAluno);
+        console.log(respostaAluno)
+
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [respostaAluno])
+
     const handleClose = (event) => {
         setOpen(preValue => ({
             ...preValue,
@@ -54,14 +74,19 @@ export default function ExerciseDialog(props) {
         }))
     };
 
-    const handleFinalized = (event) => {
-        const name = event.target.offsetParent.id;
+    const handleFinalized = (name) => {
         setCheck(preValue => ({
             ...preValue,
             [name]: true
         }));
-        console.log(name);
+        
         setProgresso(progresso+1);
+
+        // api
+        //     .inserirRespostaAluno(respostaAluno)
+        //     .then(res => {
+        //         console.log(res.data);
+        //     })
     };
 
     return (
@@ -81,7 +106,14 @@ export default function ExerciseDialog(props) {
                 <Grid item={true} xs={12} lg={12} sm={12} align='center'>
                 {
                     (question.length > 0) ? 
-                        <ActivityCard atividadeID={activity._id} handleClose={handleClose} handleFinalized={handleFinalized} question={question}/>
+                        <ActivityCard 
+                            atividadeID={activity._id} 
+                            handleClose={handleClose} 
+                            handleFinalized={handleFinalized} 
+                            question={question}
+                            setRespostaAluno={setRespostaAluno}
+                            respostaAluno={respostaAluno}
+                        />
                     : null
                 }
                 </Grid>

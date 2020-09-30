@@ -74,39 +74,39 @@ export default function ContentAccordion(props) {
         let questoes = [];
         let ids = ["5f6ce34bd9aa9c282987d4f2", "5f6ce3dbd9aa9c282987d4f8", "5f6cad86684a00105e4a5939"]
         
-        if( open.exercicioFixacao && !fixacaoCarregada) {
+        // if( open.exercicioFixacao && !fixacaoCarregada) {
 
-            const atividadeFixacao = activity.find((element) => element.tipoAtividade === "Fixação");
+        //     const atividadeFixacao = activity.find((element) => element.tipoAtividade === "Fixação");
             
-            async function fetchQuestoesAPI() {
-                for(let i = 0; i < atividadeFixacao.questoes.length; ++i) {
-                    const response = await api.encQuestaoPorID(ids[i]);
-                    const value = response.data.data;
-                    questoes.push(value);
-                }
-                setQuestoesFixacao(questoes);
-            }
+        //     async function fetchQuestoesAPI() {
+        //         for(let i = 0; i < atividadeFixacao.questoes.length; ++i) {
+        //             const response = await api.encQuestaoPorID(ids[i]);
+        //             const value = response.data.data;
+        //             questoes.push(value);
+        //         }
+        //         setQuestoesFixacao(questoes);
+        //     }
             
-            fetchQuestoesAPI();
-            setFixacaoCarregada(true);
+        //     fetchQuestoesAPI();
+        //     setFixacaoCarregada(true);
         
-        } else if ( open.exercicioAprofundamento && !aprofundamentoCarregada ) {
+        // } else if ( open.exercicioAprofundamento && !aprofundamentoCarregada ) {
             
-            const atividadeAprofundamento = activity.find((element) => element.tipoAtividade === "Aprofundamento");
+        //     const atividadeAprofundamento = activity.find((element) => element.tipoAtividade === "Aprofundamento");
             
-            async function fetchQuestoesAPI() {
-                for(let i = 0; i < atividadeAprofundamento.questoes.length; ++i) {
-                    const response = await api.encQuestaoPorID(ids[i]);
-                    const value = response.data.data;
-                    questoes.push(value);
-                }
-                setQuestoesAprofundamento(questoes);
-            }
+        //     async function fetchQuestoesAPI() {
+        //         for(let i = 0; i < atividadeAprofundamento.questoes.length; ++i) {
+        //             const response = await api.encQuestaoPorID(ids[i]);
+        //             const value = response.data.data;
+        //             questoes.push(value);
+        //         }
+        //         setQuestoesAprofundamento(questoes);
+        //     }
             
-            fetchQuestoesAPI();
-            setAprofundamentoCarregada(true);
+        //     fetchQuestoesAPI();
+        //     setAprofundamentoCarregada(true);
 
-        } else if ( open.avaliacaoDiagnostica && !ADCarregada ) {
+        if ( open.avaliacaoDiagnostica && !ADCarregada ) {
 
             console.log(questoesAvDiag);
             
