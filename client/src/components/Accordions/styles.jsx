@@ -2,8 +2,15 @@ const { makeStyles } = require("@material-ui/core");
 
 export const useStyles = makeStyles((theme) => ({
     
+  accordionDetails: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: 0,
+    padding: 0,
+  },
+
   activityButton: {
-      width: '17rem'
+    // minWidth: '17rem'
   },
   
   answer: {
@@ -62,12 +69,13 @@ export const useStyles = makeStyles((theme) => ({
   },
   
   heading: {
-    fontSize: theme.typography.pxToRem(15),
+    alignItems: 'center',
+    color: '#606161',
+    display: 'flex',
     flexBasis: '33.33%',
     flexShrink: 0,
+    fontSize: theme.typography.pxToRem(15),
     marginLeft: '1rem',
-    alignItems: 'center',
-    display: 'flex',
     [theme.breakpoints.down('sm')]: {
       fontSize: theme.typography.pxToRem(14)
     }

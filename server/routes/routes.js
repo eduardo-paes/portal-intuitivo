@@ -23,6 +23,7 @@ const RespostaAlunoCtrl = require("../controllers/studentAnswer-ctrl");
 const AtividadeCtrl = require("../controllers/activity-ctrl");
 const RevisaoCtrl = require("../controllers/revision-ctrl");
 const ClassLinkCtrl = require("../controllers/class-link-ctrl");
+const ProgressoTopicoCtrl = require("../controllers/progressTopic-ctrl");
 
 // USUÁRIO -- Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
@@ -113,6 +114,14 @@ router.put("/aula-link/:id", ClassLinkCtrl.atualizarClassLink);
 router.delete("/aula-link/:id", ClassLinkCtrl.removerClassLink);
 router.get("/aula-link/:id", ClassLinkCtrl.encClassLinkPorID);
 router.get("/aula-link", ClassLinkCtrl.listarClassLink);  
+
+// PROGRESSO -- Definição dos métodos para cada rota de progressoTopico
+router.post("/progresso-conteudo", ProgressoTopicoCtrl.inserirProgresso);
+router.put("/progresso-conteudo/:id", ProgressoTopicoCtrl.atualizarProgresso);
+router.delete("/progresso-conteudo/:id", ProgressoTopicoCtrl.removerProgresso);
+router.get("/progresso-conteudo/:id", ProgressoTopicoCtrl.encProgressoPorID);
+router.get("/progresso-conteudo/topico/:id", ProgressoTopicoCtrl.encProgressoPorTopico);
+router.get("/progresso-conteudo/aluno/:id", ProgressoTopicoCtrl.listarProgressoPorAluno);
 
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {

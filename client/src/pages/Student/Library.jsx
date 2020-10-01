@@ -94,7 +94,7 @@ function Library (props) {
         const { _id, topico, disciplinaID, numeracao, videoAulaURL } = row;
 
         let auxTopic = (topico.includes(filter.topico) || filter.topico === '') ? true : false;
-        let auxSubject = (disciplinaID === filter.disciplina || filter.disciplina === '') ? true : false;
+        let auxSubject = (disciplinaID._id === filter.disciplina || filter.disciplina === '') ? true : false;
         let auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
 
         if (auxTopic && auxSubject && auxWeek) {

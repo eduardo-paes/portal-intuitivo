@@ -55,12 +55,10 @@ export default function ExerciseDialog(props) {
     };
 
     const handleFinalized = (event) => {
-        const name = event.target.offsetParent.id;
         setCheck(preValue => ({
             ...preValue,
             [name]: true
         }));
-        console.log(name);
         setProgresso(progresso+1);
     };
 
@@ -80,9 +78,9 @@ export default function ExerciseDialog(props) {
             <Grid container={true} spacing={3}>
                 <Grid item={true} xs={12} lg={12} sm={12} align='center'>
                 {
-                    (question.length > 0) ? 
-                        <ActivityCard atividadeID={activity._id} handleClose={handleClose} handleFinalized={handleFinalized} question={question}/>
-                    : null
+                    (question.length > 0) 
+                        ? <ActivityCard atividadeID={activity._id} handleClose={handleClose} handleFinalized={handleFinalized} question={question}/>
+                        : null
                 }
                 </Grid>
             </Grid>

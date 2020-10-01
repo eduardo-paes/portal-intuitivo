@@ -92,6 +92,14 @@ export const atualizarClassLink = (id, linkAtualizado) => api.put(`/aula-link/${
 export const removerClassLink = id => api.delete(`/aula-link/${id}`);
 export const encClassLinkPorID = id => api.get(`/aula-link/${id}`);
 
+// -- Funções relacionadas à Progresso do Tópico
+export const inserirProgresso = novoProgresso => api.post("/progresso-conteudo", novoProgresso);
+export const atualizarProgresso = (id, progressoAtualizado) => api.put(`/progresso-conteudo/${id}`, progressoAtualizado);
+export const removerProgresso = id => api.delete(`/progresso-conteudo/${id}`);
+export const encProgressoPorID = id => api.get(`/progresso-conteudo/${id}`);
+export const encProgressoPorTopico = id => api.get(`/progresso-conteudo/topico/${id}`);
+export const listarProgressoPorAluno = id => api.get(`/progresso-conteudo/aluno/${id}`);
+
 const apis = {
     // Usuário
     inserirUsuario,
@@ -172,6 +180,13 @@ const apis = {
     atualizarClassLink,
     removerClassLink,
     encClassLinkPorID,
+    // ProgressoTopico
+    inserirProgresso,
+    atualizarProgresso,
+    removerProgresso,
+    encProgressoPorID,
+    encProgressoPorTopico,
+    listarProgressoPorAluno,
 }
 
 export default apis;

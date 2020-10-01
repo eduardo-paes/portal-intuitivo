@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 // -- Material UI Components/Icons
 import { AccordionDetails, AccordionSummary, Button, Checkbox, Grid, Slide, Typography, withStyles } from '@material-ui/core';
@@ -11,14 +11,14 @@ import CircularStatic from '../ProgressBar/CircularStatic';
 import { GreenButton } from '../../assets/styles/styledComponents';
 import { ExerciseDialog, StudyContentDialog } from '../'
 import { useStyles } from './styles';
-import api from '../../api';
 
 export default function ContentAccordion(props) {
     
-    const { questoesAvDiag, revisaoID, topicoID, area, nome, color, week, disciplina, linkAula } = props;
+    const { revisaoID, topicoID, nome, color, disciplina, linkAula } = props;
 
     // Definição dos estados que serão utilizados
     const [ progresso, setProgresso ] = useState(0);
+
     const [ open, setOpen ] = useState({
         materialEstudo: false,
         exercicioFixacao: false,
@@ -35,14 +35,7 @@ export default function ContentAccordion(props) {
         avaliacaoDiagnostica: false
     });
 
-    const [ activity, setActivity ] = useState([]);
-    const [ questoesFixacao, setQuestoesFixacao ] = useState([]); 
-    const [ questoesAprofundamento, setQuestoesAprofundamento ] = useState([]); 
     const [ questoesAD, setQuestoesAD ] = useState([]); 
-
-    const [ fixacaoCarregada, setFixacaoCarregada ] = useState(false); 
-    const [ aprofundamentoCarregada, setAprofundamentoCarregada ] = useState(false);
-    const [ ADCarregada, setADCarregada ] = useState(false);
     
     const AccordionPersonalized = withStyles({
         root: {
@@ -51,82 +44,6 @@ export default function ContentAccordion(props) {
         }
     })(MuiAccordion);
     const classes = useStyles();
-    
-    // -- Carrega as atividades do tópico correspondente
-    useEffect(() => {
-        const abortController = new AbortController();
-        if (topicoID && disciplina !== "Redação" && revisaoID === undefined) {
-            async function fetchAtividadeAPI() {
-                console.log(revisaoID)
-                const response = await api.listarAtividadesPorTopico(topicoID);
-                setActivity(response.data.data);
-            }
-            fetchAtividadeAPI();
-        }
-        
-        return abortController.abort();
-    }, [topicoID] )
-    
-    // -- Carrega questão dado o id
-    useEffect(() => {
-        const abortController = new AbortController();
-        
-        let questoes = [];
-        let ids = ["5f6ce34bd9aa9c282987d4f2", "5f6ce3dbd9aa9c282987d4f8", "5f6cad86684a00105e4a5939"]
-        
-        if( open.exercicioFixacao && !fixacaoCarregada) {
-
-            const atividadeFixacao = activity.find((element) => element.tipoAtividade === "Fixação");
-            
-            async function fetchQuestoesAPI() {
-                for(let i = 0; i < atividadeFixacao.questoes.length; ++i) {
-                    const response = await api.encQuestaoPorID(ids[i]);
-                    const value = response.data.data;
-                    questoes.push(value);
-                }
-                setQuestoesFixacao(questoes);
-            }
-            
-            fetchQuestoesAPI();
-            setFixacaoCarregada(true);
-        
-        } else if ( open.exercicioAprofundamento && !aprofundamentoCarregada ) {
-            
-            const atividadeAprofundamento = activity.find((element) => element.tipoAtividade === "Aprofundamento");
-            
-            async function fetchQuestoesAPI() {
-                for(let i = 0; i < atividadeAprofundamento.questoes.length; ++i) {
-                    const response = await api.encQuestaoPorID(ids[i]);
-                    const value = response.data.data;
-                    questoes.push(value);
-                }
-                setQuestoesAprofundamento(questoes);
-            }
-            
-            fetchQuestoesAPI();
-            setAprofundamentoCarregada(true);
-
-        } else if ( open.avaliacaoDiagnostica && !ADCarregada ) {
-
-            console.log(questoesAvDiag);
-            
-            async function fetchQuestoesAPI() {
-                for(let i = 0; i < questoesAvDiag.length; ++i) {
-                    const response = await api.encQuestaoPorID(questoesAvDiag[i].questaoID);
-                    const value = response.data.data;
-                    questoes.push(value);
-                }
-                setQuestoesAD(questoes);
-            }
-            
-            fetchQuestoesAPI();
-
-            setADCarregada(true);
-
-        }
-        return abortController.abort();
-        // eslint-disable-next-line
-    }, [open]);
 
     // Definição das funções 
     const handleClickOpen = (event) => {
@@ -144,7 +61,6 @@ export default function ContentAccordion(props) {
             [name]: true
         }));
         setProgresso(progresso+1);
-
         window.open(linkAula,'_blank');
     }
 
@@ -177,7 +93,6 @@ export default function ContentAccordion(props) {
     }
 
     function returnAD() {
-
         return (
             <>
                 <Grid align="center" item={true} xs={12} lg={6} sm={6}>
@@ -283,10 +198,9 @@ export default function ContentAccordion(props) {
                 <Grid align="center" item={true} xs={12} lg={3} sm={12}>
                     <Checkbox className={classes.checkbox} disabled={true} checked={check.exercicioAprofundamento}/>
                     {
-                        check.exercicioAprofundamento ?
-                        <GreenButton className={classes.activityButton} id="exercicioAprofundamento" variant="contained" color="primary" onClick={handleClickOpen}>Aprofundamento</GreenButton>
-                        : 
-                        <Button className={classes.activityButton} id="exercicioAprofundamento" variant="outlined" color="primary" onClick={handleClickOpen}>Aprofundamento</Button>
+                        check.exercicioAprofundamento 
+                            ? <GreenButton className={classes.activityButton} id="exercicioAprofundamento" variant="contained" color="primary" onClick={handleClickOpen}>Aprofundamento</GreenButton>
+                            : <Button className={classes.activityButton} id="exercicioAprofundamento" variant="outlined" color="primary" onClick={handleClickOpen}>Aprofundamento</Button>
                     }
 
                     <ExerciseDialog 
@@ -320,11 +234,11 @@ export default function ContentAccordion(props) {
                     <Grid className={classes.accordionDetails} container={true} spacing={3}>
 
                         {
-                            revisaoID !== undefined ?
-                            returnAD() :
-                            disciplina === 'Redação' ?
-                            returnRedacao() :
-                            returnTopico()
+                            (revisaoID !== undefined )
+                                ? returnAD() 
+                                : (disciplina === 'Redação') 
+                                    ? returnRedacao() 
+                                    : returnTopico()
                         }
                                             
                     </Grid>
