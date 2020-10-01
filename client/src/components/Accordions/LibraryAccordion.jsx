@@ -61,8 +61,8 @@ export default function ContentAccordion(props) {
     });
 
     // Definição das funções 
-    const handleClickOpen = (event) => {
-        const name  = event.target.offsetParent.id;
+    async function handleClickOpen(event) {
+        const name = await event.target.offsetParent.id;
         setOpen(preValue => ({
             ...preValue,
             [name]: true
@@ -211,6 +211,197 @@ export default function ContentAccordion(props) {
     // eslint-disable-next-line
     }, [activity])
 
+    const returnTopico = () => {
+        return (
+            <>
+                {/* Subtitulo do Accordion */}
+                <Grid item={true} xs={12} sm={12}>
+                    <Grid container={true} style={{padding: "0 1rem 0"}}>
+                        <Grid item={true} xs={6} sm={6}>
+                            <Typography className={classes.secondaryHeading}>{disciplinaNome}</Typography>
+                        </Grid>
+                        <Grid item={true} xs={6} sm={6}>
+                            <Typography className={classes.subtitleLibrary}>Semana {semana}</Typography>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                {/* ---=== Conteúdo ===--- */}
+                {/* Material de Estudo */}
+                <Grid item={true} xs={12} sm={gridSize.cont}>
+                    <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
+                    {
+                        check.materialEstudo 
+                            ? <GreenButton 
+                                className={classes.activityButton} 
+                                id="materialEstudo"
+                                variant="contained"
+                                color="primary"
+                                fullWidth={true}
+                                startIcon={<SchoolIcon />}
+                                onClick={handleClickOpen}>Conteúdo</GreenButton>
+                            : <Button 
+                                className={classes.activityButton} 
+                                id="materialEstudo" 
+                                variant="outlined" 
+                                color="primary" 
+                                fullWidth={true}
+                                startIcon={<SchoolIcon />}
+                                onClick={handleClickOpen}>Conteúdo</Button>
+                    }
+                    <StudyContentDialog 
+                        topicoID={topicoID}
+                        titulo={titulo}
+                        progresso={progresso}
+                        setProgresso={setProgresso}
+                        open={open}
+                        setOpen={setOpen}
+                        setCheck={setCheck}
+                    />
+                </Grid>
+                
+                {/* Video-aula */}
+                <Grid item={true} xs={12} sm={gridSize.cont}>
+                    <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.videoaula}/>
+                    {
+                        check.videoaula 
+                        ? <GreenButton 
+                            className={classes.activityButton} 
+                            id="videoaula" 
+                            color="primary" 
+                            variant="contained" 
+                            fullWidth={true} 
+                            startIcon={<AulaIcon />}
+                            onClick={handleClickVideo}>Videoaula</GreenButton>
+                        : <Button 
+                            className={classes.activityButton} 
+                            id="videoaula" 
+                            color="primary" 
+                            variant="outlined" 
+                            fullWidth={true} 
+                            startIcon={<AulaIcon />}
+                            onClick={handleClickVideo} 
+                        > Videoaula </Button>
+                    }
+                </Grid>
+
+                {/* Exercícios de Fixação */}
+                { activity.fixacao.length !== 0 &&
+                    <Grid item={true} xs={12} sm={gridSize.exe}>
+                        <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.exercicioFixacao}/>
+                        {
+                            check.exercicioFixacao 
+                                ? <GreenButton 
+                                    className={classes.activityButton} 
+                                    id="exercicioFixacao" 
+                                    fullWidth={true} 
+                                    variant="contained" 
+                                    color="primary" 
+                                    startIcon={<FixacaoIcon />}
+                                    onClick={handleClickOpen}>Fixação</GreenButton>
+                                : <Button 
+                                    className={classes.activityButton} 
+                                    id="exercicioFixacao" 
+                                    fullWidth={true} 
+                                    variant="outlined" 
+                                    color="primary" 
+                                    startIcon={<FixacaoIcon />}
+                                    onClick={handleClickOpen}>Fixação</Button>
+                        }
+
+                        <ExerciseDialog 
+                            activity={activity.fixacao}
+                            open={open.exercicioFixacao}
+                            setOpen={setOpen}
+                            setCheck={setCheck}
+                            title="Exercício de Fixação"
+                            name="exercicioFixacao"
+                            progresso={progresso}
+                            setProgresso={setProgresso}
+                        />
+                    </Grid>
+                }
+
+                {/* Exercícios de Retomada */}
+                { activity.retomada.length !== 0 &&
+                    <Grid item={true} xs={12} sm={gridSize.exe}>
+                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioRetomada}/>
+                        {
+                            check.exercicioRetomada 
+                                ? <GreenButton 
+                                    className={classes.activityButton} 
+                                    id="exercicioRetomada" 
+                                    fullWidth={true} 
+                                    variant="contained" 
+                                    color="primary" 
+                                    startIcon={<RetomadaIcon />}
+                                    onClick={handleClickOpen}>Retomada</GreenButton>
+                                : <Button 
+                                    className={classes.activityButton} 
+                                    id="exercicioRetomada" 
+                                    fullWidth={true} 
+                                    variant="outlined" 
+                                    color="primary" 
+                                    value="exercicioRetomada"
+                                    startIcon={<RetomadaIcon />}
+                                    onClick={handleClickOpen}>Retomada</Button>
+                        }
+
+                        <ExerciseDialog 
+                            activity={activity.retomada}
+                            open={open.exercicioRetomada}
+                            setOpen={setOpen}
+                            setCheck={setCheck}
+                            title="Retomada"
+                            name="exercicioRetomada"
+                            activityType="Retomada"
+                            progresso={progresso}
+                            setProgresso={setProgresso}
+                        />
+                    </Grid>
+                }
+
+                {/* Exercícios de Aprofundamento */}
+                { activity.aprofundamento.length !== 0 &&
+                    <Grid item={true} xs={12} sm={gridSize.exe}>
+                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioAprofundamento}/>
+                        {
+                            check.exercicioAprofundamento 
+                                ? <GreenButton 
+                                    className={classes.activityButton} 
+                                    id="exercicioAprofundamento" 
+                                    variant="contained" 
+                                    color="primary" 
+                                    fullWidth={true} 
+                                    startIcon={<AprofundamentoIcon />}
+                                    onClick={handleClickOpen}>Aprofundamento</GreenButton>
+                                : <Button 
+                                    className={classes.activityButton} 
+                                    id="exercicioAprofundamento" 
+                                    variant="outlined" 
+                                    color="primary" 
+                                    fullWidth={true} 
+                                    startIcon={<AprofundamentoIcon />}
+                                    onClick={handleClickOpen}>Aprofundamento</Button>
+                        }
+
+                        <ExerciseDialog 
+                            activity={activity.aprofundamento}
+                            open={open.exercicioAprofundamento}
+                            setOpen={setOpen}
+                            setCheck={setCheck}
+                            title="Aprofundamento"
+                            name="exercicioAprofundamento"
+                            activityType="Aprofundamento"
+                            progresso={progresso}
+                            setProgresso={setProgresso}
+                        />
+                    </Grid>
+                }
+            </>
+        )
+    }
+
     return (
         <Slide direction="up" in={true} mountOnEnter unmountOnExit>
             <AccordionPersonalized>
@@ -225,191 +416,7 @@ export default function ContentAccordion(props) {
 
                 <AccordionDetails>
                     <Grid container={true} className={classes.accordionDetails} spacing={3}>
-
-                        {/* Subtitulo do Accordion */}
-                        <Grid item={true} xs={12} sm={12}>
-                            <Grid container={true} style={{padding: "0 1rem 0"}}>
-                                <Grid item={true} xs={6} sm={6}>
-                                    <Typography className={classes.secondaryHeading}>{disciplinaNome}</Typography>
-                                </Grid>
-                                <Grid item={true} xs={6} sm={6}>
-                                    <Typography className={classes.subtitleLibrary}>Semana {semana}</Typography>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        {/* ---=== Conteúdo ===--- */}
-                        {/* Material de Estudo */}
-                        <Grid item={true} xs={12} sm={gridSize.cont}>
-                            <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
-                            {
-                                check.materialEstudo 
-                                    ? <GreenButton 
-                                        className={classes.activityButton} 
-                                        id="materialEstudo"
-                                        variant="contained"
-                                        color="primary"
-                                        fullWidth={true}
-                                        startIcon={<SchoolIcon />}
-                                        onClick={handleClickOpen}>Conteúdo</GreenButton>
-                                    : <Button 
-                                        className={classes.activityButton} 
-                                        id="materialEstudo" 
-                                        variant="outlined" 
-                                        color="primary" 
-                                        fullWidth={true}
-                                        startIcon={<SchoolIcon />}
-                                        onClick={handleClickOpen}>Conteúdo</Button>
-                            }
-                            <StudyContentDialog 
-                                topicoID={topicoID}
-                                titulo={titulo}
-                                progresso={progresso}
-                                setProgresso={setProgresso}
-                                open={open}
-                                setOpen={setOpen}
-                                setCheck={setCheck}
-                            />
-                        </Grid>
-                        
-                        {/* Video-aula */}
-                        <Grid item={true} xs={12} sm={gridSize.cont}>
-                            <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.videoaula}/>
-                            {
-                                check.videoaula 
-                                ? <GreenButton 
-                                    className={classes.activityButton} 
-                                    id="videoaula" 
-                                    color="primary" 
-                                    variant="contained" 
-                                    fullWidth={true} 
-                                    startIcon={<AulaIcon />}
-                                    onClick={handleClickVideo}>Videoaula</GreenButton>
-                                : <Button 
-                                    className={classes.activityButton} 
-                                    id="videoaula" 
-                                    color="primary" 
-                                    variant="outlined" 
-                                    fullWidth={true} 
-                                    startIcon={<AulaIcon />}
-                                    onClick={handleClickVideo} 
-                                > Videoaula </Button>
-                            }
-                        </Grid>
-
-                        {/* Exercícios de Fixação */}
-                        { activity.fixacao.length !== 0 &&
-                            <Grid item={true} xs={12} sm={gridSize.exe}>
-                                <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.exercicioFixacao}/>
-                                {
-                                    check.exercicioFixacao 
-                                        ? <GreenButton 
-                                            className={classes.activityButton} 
-                                            id="exercicioFixacao" 
-                                            fullWidth={true} 
-                                            variant="contained" 
-                                            color="primary" 
-                                            startIcon={<FixacaoIcon />}
-                                            onClick={handleClickOpen}>Fixação</GreenButton>
-                                        : <Button 
-                                            className={classes.activityButton} 
-                                            id="exercicioFixacao" 
-                                            fullWidth={true} 
-                                            variant="outlined" 
-                                            color="primary" 
-                                            startIcon={<FixacaoIcon />}
-                                            onClick={handleClickOpen}>Fixação</Button>
-                                }
-
-                                <ExerciseDialog 
-                                    topicoID={topicoID}
-                                    open={open.exercicioFixacao}
-                                    setOpen={setOpen}
-                                    setCheck={setCheck}
-                                    title="Exercício de Fixação"
-                                    name="exercicioFixacao"
-                                    activityType="Fixação"
-                                    progresso={progresso}
-                                    setProgresso={setProgresso}
-                                />
-                            </Grid>
-                        }
-
-                        {/* Exercícios de Retomada */}
-                        { activity.retomada.length !== 0 &&
-                            <Grid item={true} xs={12} sm={gridSize.exe}>
-                                <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioRetomada}/>
-                                {
-                                    check.exercicioRetomada 
-                                        ? <GreenButton 
-                                            className={classes.activityButton} 
-                                            id="exercicioRetomada" 
-                                            fullWidth={true} 
-                                            variant="contained" 
-                                            color="primary" 
-                                            startIcon={<RetomadaIcon />}
-                                            onClick={handleClickOpen}>Retomada</GreenButton>
-                                        : <Button 
-                                            className={classes.activityButton} 
-                                            id="exercicioRetomada" 
-                                            fullWidth={true} 
-                                            variant="outlined" 
-                                            color="primary" 
-                                            startIcon={<RetomadaIcon />}
-                                            onClick={handleClickOpen}>Retomada</Button>
-                                }
-
-                                <ExerciseDialog 
-                                    topicoID={topicoID}
-                                    open={open.exercicioRetomada}
-                                    setOpen={setOpen}
-                                    setCheck={setCheck}
-                                    title="Retomada"
-                                    name="exercicioRetomada"
-                                    activityType="Retomada"
-                                    progresso={progresso}
-                                    setProgresso={setProgresso}
-                                />
-                            </Grid>
-                        }
-
-                        {/* Exercícios de Aprofundamento */}
-                        { activity.aprofundamento.length !== 0 &&
-                            <Grid item={true} xs={12} sm={gridSize.exe}>
-                                <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioAprofundamento}/>
-                                {
-                                    check.exercicioAprofundamento 
-                                        ? <GreenButton 
-                                            className={classes.activityButton} 
-                                            id="exercicioAprofundamento" 
-                                            variant="contained" 
-                                            color="primary" 
-                                            fullWidth={true} 
-                                            startIcon={<AprofundamentoIcon />}
-                                            onClick={handleClickOpen}>Aprofundamento</GreenButton>
-                                        : <Button 
-                                            className={classes.activityButton} 
-                                            id="exercicioAprofundamento" 
-                                            variant="outlined" 
-                                            color="primary" 
-                                            fullWidth={true} 
-                                            startIcon={<AprofundamentoIcon />}
-                                            onClick={handleClickOpen}>Aprofundamento</Button>
-                                }
-
-                                <ExerciseDialog 
-                                    topicoID={topicoID}
-                                    open={open.exercicioAprofundamento}
-                                    setOpen={setOpen}
-                                    setCheck={setCheck}
-                                    title="Aprofundamento"
-                                    name="exercicioAprofundamento"
-                                    activityType="Aprofundamento"
-                                    progresso={progresso}
-                                    setProgresso={setProgresso}
-                                />
-                            </Grid>
-                        }
+                    { returnTopico() }
                     </Grid>
                 </AccordionDetails>
             </AccordionPersonalized>
