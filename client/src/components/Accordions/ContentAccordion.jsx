@@ -44,6 +44,82 @@ export default function ContentAccordion(props) {
         }
     })(MuiAccordion);
     const classes = useStyles();
+    
+    // -- Carrega as atividades do tópico correspondente
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (topicoID && disciplina !== "Redação" && revisaoID === undefined) {
+            async function fetchAtividadeAPI() {
+                console.log(revisaoID)
+                const response = await api.listarAtividadesPorTopico(topicoID);
+                setActivity(response.data.data);
+            }
+            fetchAtividadeAPI();
+        }
+        
+        return abortController.abort();
+    }, [topicoID] )
+    
+    // -- Carrega questão dado o id
+    useEffect(() => {
+        const abortController = new AbortController();
+        
+        let questoes = [];
+        let ids = ["5f6ce34bd9aa9c282987d4f2", "5f6ce3dbd9aa9c282987d4f8", "5f6cad86684a00105e4a5939"]
+        
+        // if( open.exercicioFixacao && !fixacaoCarregada) {
+
+        //     const atividadeFixacao = activity.find((element) => element.tipoAtividade === "Fixação");
+            
+        //     async function fetchQuestoesAPI() {
+        //         for(let i = 0; i < atividadeFixacao.questoes.length; ++i) {
+        //             const response = await api.encQuestaoPorID(ids[i]);
+        //             const value = response.data.data;
+        //             questoes.push(value);
+        //         }
+        //         setQuestoesFixacao(questoes);
+        //     }
+            
+        //     fetchQuestoesAPI();
+        //     setFixacaoCarregada(true);
+        
+        // } else if ( open.exercicioAprofundamento && !aprofundamentoCarregada ) {
+            
+        //     const atividadeAprofundamento = activity.find((element) => element.tipoAtividade === "Aprofundamento");
+            
+        //     async function fetchQuestoesAPI() {
+        //         for(let i = 0; i < atividadeAprofundamento.questoes.length; ++i) {
+        //             const response = await api.encQuestaoPorID(ids[i]);
+        //             const value = response.data.data;
+        //             questoes.push(value);
+        //         }
+        //         setQuestoesAprofundamento(questoes);
+        //     }
+            
+        //     fetchQuestoesAPI();
+        //     setAprofundamentoCarregada(true);
+
+        if ( open.avaliacaoDiagnostica && !ADCarregada ) {
+
+            console.log(questoesAvDiag);
+            
+            async function fetchQuestoesAPI() {
+                for(let i = 0; i < questoesAvDiag.length; ++i) {
+                    const response = await api.encQuestaoPorID(questoesAvDiag[i].questaoID);
+                    const value = response.data.data;
+                    questoes.push(value);
+                }
+                setQuestoesAD(questoes);
+            }
+            
+            fetchQuestoesAPI();
+
+            setADCarregada(true);
+
+        }
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [open]);
 
     // Definição das funções 
     const handleClickOpen = (event) => {
