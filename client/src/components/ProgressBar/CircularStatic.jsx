@@ -50,7 +50,6 @@ CircularProgressWithLabel.propTypes = {
 
 function CircularIntegration() {
   const classes = useStyles();
-
   return (
     <div className={classes.root}>
       <div className={classes.wrapper}>
@@ -61,16 +60,23 @@ function CircularIntegration() {
 }
 
 export default function CircularStatic(props) {
-  const { progresso, value } = props;
+  const { progresso, numTasks } = props;
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    setProgress(progresso*25);
-  }, [progresso]);
+    const abortController = new AbortController();
+      setProgress(progresso * (100/numTasks));
+    return abortController.abort();
+    // eslint-disable-next-line
+  }, [progresso, numTasks]);
 
-  if (progresso < 4) {
-    return <CircularProgressWithLabel value={progress} />;
-  } else {
-    return <CircularIntegration/>
+  const returnCircle = () => {
+    if (progresso < numTasks) {
+      return <CircularProgressWithLabel value={progress} />;
+    } else {
+      return <CircularIntegration/>
+    }
   }
+
+  return ( <> { returnCircle() } </> );
 }

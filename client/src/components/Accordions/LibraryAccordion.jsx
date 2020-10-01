@@ -33,36 +33,38 @@ export default function ContentAccordion(props) {
     const classes = useStyles();
     
     // Definição dos estados que serão utilizados
-    const [ progresso, setProgresso ] = useState(0);
-    const [ activity, setActivity ] = useState({
+    const [progresso, setProgresso] = useState(0);
+    const [activity, setActivity] = useState({
         retomada: [],
         fixacao: [],
         aprofundamento: []
     })
-    const [ open, setOpen ] = useState({
+    const [open, setOpen] = useState({
         materialEstudo: false,
         videoaula: false,
         exercicioFixacao: false,
         exercicioRetomada: false,
         exercicioAprofundamento: false
     });
-    const [ check, setCheck ] = useState({
+    const [check, setCheck] = useState({
         materialEstudo: false,
         videoaula: false,
     });
-    const [ gridSize, setGridSize ] = useState({
-        exe: 3,
-        cont: 3
+    const [gridSize, setGridSize] = useState({
+        exe: 0,
+        cont: 6
     });
-    const [ topicProgress, setTopicProgress ] = useState({
+    const [topicProgress, setTopicProgress] = useState({
         topicoID: topicoID,
         alunoID: token.userID,
         progresso: {}
     });
+    const [numTasks, setNumTasks] = useState(2);                              // Número de tarefas do tópico
+    const [wasChecked, setWasChecked] = useState(false)
 
     // Definição das funções 
-    async function handleClickOpen(event) {
-        const name = await event.target.offsetParent.id;
+    const handleClickOpen = (event) => {
+        const name = event.target.offsetParent.id;
         setOpen(preValue => ({
             ...preValue,
             [name]: true
@@ -74,7 +76,8 @@ export default function ContentAccordion(props) {
             ...preValue,
             videoaula: true
         }));
-        setProgresso(progresso+1);
+        setProgresso(progresso + 1);
+        setWasChecked(true);
         window.open(linkAula,'_blank');
     }
 
@@ -82,25 +85,55 @@ export default function ContentAccordion(props) {
         async function fetchAtividadeAPI() {
             const response = await api.listarAtividadesPorTopico(topicoID);
             if (response.data.success) {
-                const value = response.data.data;
+                let value = response.data.data;
+                let count = 0;
+                
+                // Salva as respectivas atividades em seus campos
                 value.forEach(item => {
                     if (item.tipoAtividade === 'Retomada') {
+                        count++;
                         return setActivity(preValue => ({
                             ...preValue,
                             retomada: item
                         }))
                     } else if (item.tipoAtividade === 'Fixação') {
+                        count++;
                         return setActivity(preValue => ({
                             ...preValue,
                             fixacao: item
                         }))
                     } else if (item.tipoAtividade === 'Aprofundamento') {
+                        count++;
                         return setActivity(preValue => ({
                             ...preValue,
                             aprofundamento: item
                         }))
                     }
                 })
+                
+                // Número de botões no acordeão
+                count === 0 && setNumTasks(2);
+                count === 1 && setNumTasks(3);
+                count === 2 && setNumTasks(4);
+                count === 3 && setNumTasks(5);
+
+                // Grid com divisão dinâmica
+                if (count) {
+                    count === 1 && setGridSize({
+                        exe: 4,
+                        cont: 4
+                    });
+
+                    count === 2 && setGridSize({
+                        exe: 3,
+                        cont: 3
+                    });
+
+                    count === 3 && setGridSize({
+                        exe: 2,
+                        cont: 3
+                    });
+                }
             }
         }
         fetchAtividadeAPI();
@@ -113,7 +146,7 @@ export default function ContentAccordion(props) {
             progresso: check,
         }
 
-        if (topicProgress._id === undefined) {
+        if (!topicProgress._id) {
             await api
                 .inserirProgresso(novoProgresso)
                 .then(res => {
@@ -121,9 +154,7 @@ export default function ContentAccordion(props) {
                         ...preValue,
                         _id: res.data.id
                     }))
-                    console.log(res.data.message);
                 })
-                
         } else {
             await api
                 .atualizarProgresso(topicProgress._id, novoProgresso)
@@ -133,14 +164,17 @@ export default function ContentAccordion(props) {
         }
     }
 
+    // -- Salva o progresso após cada alteração em Check
     useEffect(() => {
         const abortController = new AbortController();
         setTopicProgress(preValue => ({
             ...preValue,
             progresso: check
         }));
-        // console.log(topicProgress)
-        // saveProgress();
+        if (wasChecked) {
+            saveProgress();
+            setWasChecked(false);
+        }
         return abortController.abort();
         // eslint-disable-next-line
     }, [check])
@@ -153,7 +187,19 @@ export default function ContentAccordion(props) {
             const value = response.data;
             if (value.success) {
                 setTopicProgress(value.data);
-                console.log(value.data);
+                if (value.data.progresso) {
+                    let auxProgress = value.data.progresso;
+                    let count = 0;
+                    setCheck(auxProgress);
+
+                    auxProgress.videoaula && count++;
+                    auxProgress.materialEstudo && count++;
+                    auxProgress.exercicioAprofundamento && count++;
+                    auxProgress.exercicioFixacao && count++;
+                    auxProgress.exercicioRetomada && count++;
+
+                    setProgresso(count);
+                }
             }
         }
         fetchProgressAPI();
@@ -166,14 +212,12 @@ export default function ContentAccordion(props) {
         let fixTam = activity.fixacao.length;
         let retTam = activity.retomada.length;
         let aprTam = activity.aprofundamento.length;
-        let count = 0;
 
         if (fixTam && check.exercicioFixacao === undefined) {
             setCheck(preValue => ({
                 ...preValue,
                 exercicioFixacao: topicProgress.progresso.fixacao,
             }))
-            count++;
         }
 
         if (retTam && check.exercicioRetomada === undefined) {
@@ -181,7 +225,6 @@ export default function ContentAccordion(props) {
                 ...preValue,
                 exercicioRetomada: topicProgress.progresso.retomada,
             }))
-            count++;
         }
 
         if (aprTam && check.exercicioAprofundamento === undefined) {
@@ -189,24 +232,6 @@ export default function ContentAccordion(props) {
                 ...preValue,
                 exercicioAprofundamento: topicProgress.progresso.aprofundamento
             }))
-            count++;
-        }
-
-        if (count) {
-            count === 1 && setGridSize({
-                exe: 4,
-                cont: 4
-            });
-
-            count === 2 && setGridSize({
-                exe: 3,
-                cont: 3
-            });
-
-            count === 3 && setGridSize({
-                exe: 3,
-                cont: 2
-            });
         }
     // eslint-disable-next-line
     }, [activity])
@@ -226,7 +251,6 @@ export default function ContentAccordion(props) {
                     </Grid>
                 </Grid>
 
-                {/* ---=== Conteúdo ===--- */}
                 {/* Material de Estudo */}
                 <Grid item={true} xs={12} sm={gridSize.cont}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
@@ -257,6 +281,7 @@ export default function ContentAccordion(props) {
                         open={open}
                         setOpen={setOpen}
                         setCheck={setCheck}
+                        setWasChecked={setWasChecked}
                     />
                 </Grid>
                 
@@ -308,7 +333,6 @@ export default function ContentAccordion(props) {
                                     startIcon={<FixacaoIcon />}
                                     onClick={handleClickOpen}>Fixação</Button>
                         }
-
                         <ExerciseDialog 
                             activity={activity.fixacao}
                             open={open.exercicioFixacao}
@@ -318,6 +342,7 @@ export default function ContentAccordion(props) {
                             name="exercicioFixacao"
                             progresso={progresso}
                             setProgresso={setProgresso}
+                            setWasChecked={setWasChecked}
                         />
                     </Grid>
                 }
@@ -354,9 +379,9 @@ export default function ContentAccordion(props) {
                             setCheck={setCheck}
                             title="Retomada"
                             name="exercicioRetomada"
-                            activityType="Retomada"
                             progresso={progresso}
                             setProgresso={setProgresso}
+                            setWasChecked={setWasChecked}
                         />
                     </Grid>
                 }
@@ -392,9 +417,9 @@ export default function ContentAccordion(props) {
                             setCheck={setCheck}
                             title="Aprofundamento"
                             name="exercicioAprofundamento"
-                            activityType="Aprofundamento"
                             progresso={progresso}
                             setProgresso={setProgresso}
+                            setWasChecked={setWasChecked}
                         />
                     </Grid>
                 }
@@ -410,13 +435,13 @@ export default function ContentAccordion(props) {
                     onClick={() => initialLoading()}
                     aria-controls="panel1a-content"
                     id="cabecalhoAccordionLibrary">
-                    <CircularStatic progresso={progresso}/>
+                    <CircularStatic progresso={progresso} numTasks={numTasks}/>
                     <Typography id="heading" className={classes.heading}>{titulo}</Typography>
                 </AccordionSummary>
 
                 <AccordionDetails>
-                    <Grid container={true} className={classes.accordionDetails} spacing={3}>
-                    { returnTopico() }
+                    <Grid container={true} className={classes.accordionDetails} spacing={2}>
+                        { returnTopico() }
                     </Grid>
                 </AccordionDetails>
             </AccordionPersonalized>

@@ -30,9 +30,9 @@ export default function StudyPlan () {
     '#fdc504',
     '#39b2d2',
   ];
-  const [ disciplinas, setDisciplinas ] = useState([]);
-  const [ content, setContent ] = React.useState([]); 
-  const [ revision, setRevision ] = React.useState([]); 
+  const [disciplinas, setDisciplinas] = useState([]);
+  const [content, setContent] = useState([]); 
+  const [revision, setRevision] = useState([]); 
 
   const dia = 5;
 
@@ -63,14 +63,13 @@ export default function StudyPlan () {
         }
         fetchConteudoAPI();
     }
-    
     return abortController.abort();
     // eslint-disable-next-line
-}, [disciplinas]);
+  }, [disciplinas]);
 
+  // -- Carrega revisão por numeração e área
   useEffect(() => {
     const abortController = new AbortController();
-
     if (dia >= 5 || dia === 0) {
         async function fetchRevisaoAPI() {
           const response = await api.encRevisaoPelaNumeracaoEArea(1, 'Ciências da Natureza');
@@ -78,23 +77,21 @@ export default function StudyPlan () {
         }
         fetchRevisaoAPI();
     }
-    
     return abortController.abort();
     // eslint-disable-next-line
   }, [dia])
 
+  // -- Retorna acordeões dos tópicos
   function returnContent() {
     if (content.length === 0) {
       return <p>Não há conteúdo a ser estudado hoje, portanto, aproveite o descanso!</p>
     } else {
       return content.map((row, index) => {
         let disciplinaNome = disciplinas.find( element => element._id === row.disciplinaID )
-        
         return (
           <Grid className={classes.grid} key={index} item={true} xs={12} lg={12} sm={12}>
             <ContentAccordion 
               color={borderColor[index]}
-              area={row.areaConhecimento}
               disciplina={disciplinaNome.nome}
               topicoID={row._id} 
               nome={row.topico}
@@ -105,6 +102,39 @@ export default function StudyPlan () {
         )
       })
     }
+  }
+
+  // -- Retorna acordeões dos ADs
+  function returnRevision() {
+    return (
+      <Grid className={classes.grid} item={true} xs={12} lg={12} sm={12}>
+        <ContentAccordion 
+          color={borderColor[borderColor.length-1]}
+          area={revision.areaConhecimento}
+          disciplina={"Avaliação Diagnóstica"}
+          revisaoID={revision._id} 
+          nome={"Semana 2"}
+          questoesAvDiag={revision.questoes}
+          week={getTheWeek()}
+        />
+      </Grid>
+    )
+  }
+
+  // -- Retorna acordeão de redação
+  function returnEssay() {
+    return (
+      <Grid className={classes.grid} item={true} xs={12} lg={12} sm={12}>
+        <ContentAccordion 
+          color={borderColor[borderColor.length-2]}
+          area={"Linguagens"}
+          disciplina={"Redação"}
+          topicoID={""} 
+          nome={"Semana 2"}
+          week={getTheWeek()}
+        />
+      </Grid>
+    )
   }
 
   return (
@@ -124,34 +154,14 @@ export default function StudyPlan () {
           </Grid>
         </Grid>
       </section>
-      <Grid container={true} spacing={2}>
-        {returnContent()}
-        <Grid className={classes.grid} item={true} xs={12} lg={12} sm={12}>
-          <ContentAccordion 
-            color={borderColor[borderColor.length-2]}
-            area={"Linguagens"}
-            disciplina={"Redação"}
-            topicoID={""} 
-            nome={"Semana 2"}
-            week={getTheWeek()}
-          />
+      
+      <section id="studyPlanMain">
+        <Grid container={true} spacing={2}>
+          { returnContent() }
+          { returnEssay() }
+          { revision && returnRevision() }
         </Grid>
-        {
-          revision ?
-          <Grid className={classes.grid} item={true} xs={12} lg={12} sm={12}>
-            <ContentAccordion 
-              color={borderColor[borderColor.length-1]}
-              area={revision.areaConhecimento}
-              disciplina={"Avaliação Diagnóstica"}
-              revisaoID={revision._id} 
-              nome={"Semana 2"}
-              questoesAvDiag={revision.questoes}
-              week={getTheWeek()}
-            />
-          </Grid>
-          : null
-        }
-      </Grid>      
+      </section>
     </MyContainer>
   );
 };

@@ -94,6 +94,12 @@ export const useStyles = makeStyles((theme) => ({
     // }
   },
 
+  questionCardDiv: {
+    margin: 0,
+    padding: 0,
+    border: 0,
+  },
+
   questionText: {
     marginLeft: '1rem',
     marginRight: '2rem',
@@ -121,6 +127,12 @@ export const useStyles = makeStyles((theme) => ({
       fontSize: theme.typography.pxToRem(13),
       textAlign: 'center',
     }
+  },
+
+  swipeableViews: {
+    margin: 0,
+    padding: 0,
+    border: 0
   },
   
   title: {
