@@ -42,7 +42,7 @@ function Library (props) {
   const [checked, setChecked] = useState(false);
   const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // -- Carrega as Disciplinas existentes no banco
+  // -- Carrega Disciplinas/Conteúdos
   useEffect(() => {
     const abortController = new AbortController();
     // Preenche constante de numeração

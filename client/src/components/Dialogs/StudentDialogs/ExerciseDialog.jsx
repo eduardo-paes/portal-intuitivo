@@ -24,12 +24,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 }); 
 
 export default function ExerciseDialog(props) {
-    const { activity, open, setOpen, setCheck, title, name, progresso, setProgresso } = props;
+    const { activity, open, setOpen, setCheck, title, name, progresso, setProgresso, setWasChecked } = props;
     const classes = useStyles();
-
     const [question, setQuestion] = useState([]); 
     const [respostaAluno, setRespostaAluno] = useState(initialState);
 
+    // -- Fetch das questões
     async function fetchQuestaoAPI(atividadeID) {
         const resQuestao = await api.encQuestoesDaAtividadeID(atividadeID);
         const valQuestao = resQuestao.data.data;
@@ -37,10 +37,9 @@ export default function ExerciseDialog(props) {
         setQuestion(questao);
     }
 
-    // -- Carrega as atividades do tópico correspondente
+    // -- Carrega as questões
     useEffect(() => {
         const abortController = new AbortController();
-        console.log(activity)
         if (open && activity) {
             fetchQuestaoAPI(activity._id);
         }
@@ -48,6 +47,7 @@ export default function ExerciseDialog(props) {
         // eslint-disable-next-line
     }, [activity, open] )
 
+    // -- Resposta do aluno
     useEffect(() => {
         const abortController = new AbortController();
         setRespostaAluno(respostaAluno);
@@ -55,6 +55,7 @@ export default function ExerciseDialog(props) {
         // eslint-disable-next-line
     }, [respostaAluno])
 
+    // Fechar card
     const handleClose = (event) => {
         setOpen(preValue => ({
             ...preValue,
@@ -62,18 +63,15 @@ export default function ExerciseDialog(props) {
         }))
     };
 
-    const handleFinalized = (event) => {
+    // Finalizar exercício
+    const handleFinalized = () => {
         setCheck(preValue => ({
             ...preValue,
             [name]: true
         }));
         setProgresso(progresso+1);
-
-        // api
-        //     .inserirRespostaAluno(respostaAluno)
-        //     .then(res => {
-        //         console.log(res.data);
-        //     })
+        setWasChecked(true);
+        handleClose();
     };
 
     return (
@@ -93,7 +91,7 @@ export default function ExerciseDialog(props) {
                 <Grid item={true} xs={12} lg={12} sm={12} align='center'>
                 {
                     (question.length > 0) 
-                        ? <ActivityCard atividadeID={activity._id} handleClose={handleClose} handleFinalized={handleFinalized} respostaAluno={respostaAluno} setRespostaAluno={setRespostaAluno} question={question}/>
+                        ? <ActivityCard atividadeID={activity._id} name={name} handleClose={handleClose} handleFinalized={handleFinalized} respostaAluno={respostaAluno} setRespostaAluno={setRespostaAluno} question={question}/>
                         : null
                 }
                 </Grid>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+
+import { CircularProgress, Typography, Box } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import CheckIcon from '@material-ui/icons/Check';
@@ -50,7 +49,6 @@ CircularProgressWithLabel.propTypes = {
 
 function CircularIntegration() {
   const classes = useStyles();
-
   return (
     <div className={classes.root}>
       <div className={classes.wrapper}>
@@ -61,16 +59,24 @@ function CircularIntegration() {
 }
 
 export default function CircularStatic(props) {
-  const { progresso } = props;
+  const { progresso, numTasks } = props;
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    setProgress(progresso*25);
-  }, [progresso]);
+    const abortController = new AbortController();
+      setProgress(progresso * (100/numTasks));
+    return abortController.abort();
+    // eslint-disable-next-line
+  }, [progresso, numTasks]);
 
-  if (progresso < 4) {
-    return <CircularProgressWithLabel value={progress} />;
-  } else {
-    return <CircularIntegration/>
+  const returnCircle = () => {
+    
+    if (progresso < numTasks) {
+      return <CircularProgressWithLabel value={progress} />;
+    } else {
+      return <CircularIntegration/>
+    }
   }
+
+  return ( <> { returnCircle() } </> );
 }

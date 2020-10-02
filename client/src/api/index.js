@@ -97,7 +97,7 @@ export const inserirProgresso = novoProgresso => api.post("/progresso-conteudo",
 export const atualizarProgresso = (id, progressoAtualizado) => api.put(`/progresso-conteudo/${id}`, progressoAtualizado);
 export const removerProgresso = id => api.delete(`/progresso-conteudo/${id}`);
 export const encProgressoPorID = id => api.get(`/progresso-conteudo/${id}`);
-export const encProgressoPorTopico = id => api.get(`/progresso-conteudo/topico/${id}`);
+export const encProgressoPorTopico = (alunoID, topicoID) => api.get(`/progresso-conteudo/topico/${alunoID}/${topicoID}`);
 export const listarProgressoPorAluno = id => api.get(`/progresso-conteudo/aluno/${id}`);
 
 const apis = {

@@ -1,52 +1,52 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Button, Grid, IconButton, Typography } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import QuestionCard from './QuestionCard';
-import { useStyles } from './styles';
-import { StoreContext } from '../../utils';
 import SwipeableViews from 'react-swipeable-views';
 
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+// -- Local Components / Styles
+import { StoreContext } from '../../utils';
+import { QuestionCard } from '../';
+import { useStyles } from './styles';
 
+// -- Material UI
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Button, Grid, IconButton, Typography } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
 
 export default function ActivityCard(props) {
-    const token = useContext(StoreContext);
-    const classes = useStyles();
     const { handleClose, handleFinalized, question, atividadeID, revisaoID, respostaAluno, setRespostaAluno } = props;
-    const [ value, setValue ] = useState(1);
-    const [ flag, setFlag ] = useState(false);
-    const [ respostaQuestao, setRespostaQuestao ] = useState([]);
-
+    const token = useContext(StoreContext);
+    const [value, setValue] = useState(1);
+    const [flag, setFlag] = useState(false);
+    const [respostaQuestao, setRespostaQuestao] = useState([]);
+    
+    // MediaQuery / Styles
+    const classes = useStyles();
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     let gabarito = [];
-    
-    question.map((row, index) => {
+    question.forEach((row, index) => {
         let gab = row.resposta.find(element => element.gabarito === true);
         let quest = row._id;
-        
-        gabarito[index] = { 
-            gab,
-            quest
-        } 
-
-        return null;
+        return gabarito[index] = { gab, quest }
     });
 
+    // Salva Resposta do Aluno
+    function settingAnswer(aux) {
+        setRespostaAluno(prevValue => ({
+            ...prevValue,
+            respostaQuestaoID: aux
+        }));
+    }
+
+    // Pega dados da resposta do aluno e prepara para salvamento
     useEffect(() => {
-        
         const abortController = new AbortController();
-        
         if (flag === true) {
-            
             const alunoID = token.token.userID;
             let aux = [];
-            
             Object.entries(respostaQuestao).map((row, index) => {
-            
                 let nota = 0;
                 let gab = gabarito.find(element => element.quest === row[0]);
                 
@@ -63,16 +63,6 @@ export default function ActivityCard(props) {
 
                 return null;
             });
-
-            async function settingAnswer(aux) {
-                await setRespostaAluno(prevValue => ({
-                    ...prevValue,
-                    respostaQuestaoID: aux
-                }));
-            }
-
-            console.log(aux);
-
             settingAnswer(aux);
         }
 
@@ -80,34 +70,28 @@ export default function ActivityCard(props) {
         // eslint-disable-next-line
     }, [flag])
 
+    // Obrigado atualização
     useEffect(() => {
         const abortController = new AbortController();
-        
         setRespostaAluno(respostaAluno);
-        // console.log(respostaAluno)
-
         return abortController.abort();
         // eslint-disable-next-line
     }, [respostaAluno])
 
-    const handleSubmit = async event => {
-
-        const name = event.target.offsetParent.id;
+    const handleSubmit = () => {
         const alunoID = token.token.userID;
-
         setRespostaAluno((prevValue) => ({
             ...prevValue,
             alunoID,
             atividadeID,
             revisaoID
         }))
-
-        await setFlag(true);
-        
-        handleFinalized(name);
+        setFlag(true);
+        handleFinalized();
     };
 
-    function returnQuestionCard() {
+    // Retorna card com as questões na versão desktop
+    function retDesktopQuestionCard() {
         return (
             <div key={value}>                        
                 <Typography variant="h6" className={classes.title}>{"Questão " + (value)}</Typography>
@@ -127,7 +111,7 @@ export default function ActivityCard(props) {
     }
 
     return (
-        <Grid container={true} spacing={0}>
+        <Grid container={true} className={classes.question}>
             {/* Voltar para Esquerda */}
             <Grid align="left" item={true} xs={1} lg={1} sm={1}>
                 <IconButton className={classes.backArrow} color="primary" disabled={ value === 1 ? true : false } onClick={() => setValue(value-1)}>
@@ -139,12 +123,12 @@ export default function ActivityCard(props) {
             <Grid className={classes.question} align="center" item={true} xs={10} lg={10} sm={10}>
                 { 
                     !smScreen 
-                        ? returnQuestionCard()
-                        : <SwipeableViews enableMouseEvents> 
+                        ? retDesktopQuestionCard()
+                        : <SwipeableViews animateHeight={true} className={classes.swipeableViews} enableMouseEvents> 
                             {
                                 question.map((row, index) => {
                                     return ( 
-                                        <div key={index}>                        
+                                        <div className={classes.questionCardDiv} key={index}>                        
                                             <Typography variant="h6" className={classes.title}>{"Questão " + (index+1)}</Typography>
                                             <QuestionCard 
                                                 idQuestion={row._id}
@@ -174,18 +158,14 @@ export default function ActivityCard(props) {
 
             {/* Rodapé */}
             <Grid item={true} xs={12} lg={12} sm={12} align='center' >                        
-                <Grid item={true} xs={12} lg={12} sm={12} align='center' >                        
-            <Grid item={true} xs={12} lg={12} sm={12} align='center' >                        
                 <Button className={classes.buttons} variant='contained' color="primary" onClick={handleClose}>
                     Voltar
                 </Button>
                 { 
                     value === question.length 
-                    ? <Button className={classes.buttons} id="exercicioFixacao" variant='contained' color="primary" onClick={handleSubmit}> Concluir Atividade </Button>
-                    : null
+                        ? <Button className={classes.buttons} variant='contained' color="primary" onClick={handleSubmit}> Concluir Atividade </Button>
+                        : null
                 }
-            </Grid> 
-                </Grid> 
             </Grid> 
         </Grid>
     )

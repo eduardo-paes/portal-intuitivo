@@ -120,7 +120,7 @@ router.post("/progresso-conteudo", ProgressoTopicoCtrl.inserirProgresso);
 router.put("/progresso-conteudo/:id", ProgressoTopicoCtrl.atualizarProgresso);
 router.delete("/progresso-conteudo/:id", ProgressoTopicoCtrl.removerProgresso);
 router.get("/progresso-conteudo/:id", ProgressoTopicoCtrl.encProgressoPorID);
-router.get("/progresso-conteudo/topico/:id", ProgressoTopicoCtrl.encProgressoPorTopico);
+router.get("/progresso-conteudo/topico/:alunoID/:topicoID", ProgressoTopicoCtrl.encProgressoPorTopico);
 router.get("/progresso-conteudo/aluno/:id", ProgressoTopicoCtrl.listarProgressoPorAluno);
 
 // Rota para armazenamento de arquivos
