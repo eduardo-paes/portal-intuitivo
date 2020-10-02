@@ -1,9 +1,7 @@
 import React from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { getTheWeek } from '../../utils/auxFunctions';
-import { Typography } from '@material-ui/core';
+//import { getTheWeek } from '../../utils/auxFunctions';
 import { GeneralSubtitle } from '../../assets/styles/styledComponents';
 
 const BorderLinearProgress = withStyles((theme) => ({

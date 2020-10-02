@@ -61,7 +61,7 @@ function CircularIntegration() {
 }
 
 export default function CircularStatic(props) {
-  const { progresso, value } = props;
+  const { progresso } = props;
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {

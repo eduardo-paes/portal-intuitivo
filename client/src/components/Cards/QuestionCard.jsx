@@ -4,7 +4,6 @@ import { MyCardContent } from "../../assets/styles/styledComponents"
 import RadioAnswer from "../Radio/RadioAnswer";
 import { Grid, TextField } from "@material-ui/core";
 import {useStyles} from '../../assets/styles/classes';
-import { useEffect } from "react";
 
 export default function QuestionCard (props) {
 
@@ -14,18 +13,18 @@ export default function QuestionCard (props) {
     const [answered, setAnswered] = React.useState(false);
     const [color, setColor] = React.useState('default');
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    // const handleSubmit = (event) => {
+    //     event.preventDefault();
         
-        if (value === gabarito._id) {
-            setColor("primary");
-            } else if (value !== gabarito._id && value !== '') {
-            setColor("secondary");
-            } else {
-            setColor("default");
-            }
-            setAnswered(true);
-    };
+    //     if (value === gabarito._id) {
+    //         setColor("primary");
+    //         } else if (value !== gabarito._id && value !== '') {
+    //         setColor("secondary");
+    //         } else {
+    //         setColor("default");
+    //         }
+    //         setAnswered(true);
+    // };
 
     function pegarRespostaDiscursiva(event) {
         const { value } = event.target;  

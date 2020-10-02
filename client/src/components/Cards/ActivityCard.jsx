@@ -31,7 +31,9 @@ export default function ActivityCard(props) {
         gabarito[index] = { 
             gab,
             quest
-        }
+        } 
+
+        return null;
     });
 
     useEffect(() => {
@@ -58,6 +60,8 @@ export default function ActivityCard(props) {
                     resposta: row[1],
                     nota
                 }   
+
+                return null;
             });
 
             async function settingAnswer(aux) {

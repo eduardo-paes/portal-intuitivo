@@ -6,7 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import { MyContainer } from '../../assets/styles/styledComponents';
 
 export default function RadioAnswer(props) {
-  const { answered, color, idQuestion, gabarito, resposta, respostaQuestao, setRespostaQuestao, value, setValue } = props;
+  const { answered, color, idQuestion, gabarito, resposta, setRespostaQuestao, value, setValue } = props;
 
   const handleChange = (event) => {
     const { value } = event.target;
