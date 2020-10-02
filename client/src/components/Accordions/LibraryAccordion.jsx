@@ -30,6 +30,7 @@ const AccordionPersonalized = withStyles({
 export default function ContentAccordion(props) {
     const { topicoID, disciplinaNome, titulo, semana, linkAula } = props;
     const { token } = useContext(StoreContext)
+    const alunoID = token.userID;
     const classes = useStyles();
     
     // Definição dos estados que serão utilizados
@@ -56,7 +57,7 @@ export default function ContentAccordion(props) {
     });
     const [topicProgress, setTopicProgress] = useState({
         topicoID: topicoID,
-        alunoID: token.userID,
+        alunoID: alunoID,
         progresso: {}
     });
     const [numTasks, setNumTasks] = useState(2);                              // Número de tarefas do tópico
@@ -79,64 +80,6 @@ export default function ContentAccordion(props) {
         setProgresso(progresso + 1);
         setWasChecked(true);
         window.open(linkAula,'_blank');
-    }
-
-    const initialLoading = () => {
-        async function fetchAtividadeAPI() {
-            const response = await api.listarAtividadesPorTopico(topicoID);
-            if (response.data.success) {
-                let value = response.data.data;
-                let count = 0;
-                
-                // Salva as respectivas atividades em seus campos
-                value.forEach(item => {
-                    if (item.tipoAtividade === 'Retomada') {
-                        count++;
-                        return setActivity(preValue => ({
-                            ...preValue,
-                            retomada: item
-                        }))
-                    } else if (item.tipoAtividade === 'Fixação') {
-                        count++;
-                        return setActivity(preValue => ({
-                            ...preValue,
-                            fixacao: item
-                        }))
-                    } else if (item.tipoAtividade === 'Aprofundamento') {
-                        count++;
-                        return setActivity(preValue => ({
-                            ...preValue,
-                            aprofundamento: item
-                        }))
-                    }
-                })
-                
-                // Número de botões no acordeão
-                count === 0 && setNumTasks(2);
-                count === 1 && setNumTasks(3);
-                count === 2 && setNumTasks(4);
-                count === 3 && setNumTasks(5);
-
-                // Grid com divisão dinâmica
-                if (count) {
-                    count === 1 && setGridSize({
-                        exe: 4,
-                        cont: 4
-                    });
-
-                    count === 2 && setGridSize({
-                        exe: 3,
-                        cont: 3
-                    });
-
-                    count === 3 && setGridSize({
-                        exe: 2,
-                        cont: 3
-                    });
-                }
-            }
-        }
-        fetchAtividadeAPI();
     }
 
     async function saveProgress() {
@@ -164,6 +107,67 @@ export default function ContentAccordion(props) {
         }
     }
 
+    // -- Carregamento inicial
+    useEffect(() => {
+        if (topicoID) {
+            async function fetchAtividadeAPI() {
+                const response = await api.listarAtividadesPorTopico(topicoID);
+                if (response.data.success) {
+                    let value = response.data.data;
+                    let count = 0;
+                    
+                    // Salva as respectivas atividades em seus campos
+                    value.forEach(item => {
+                        if (item.tipoAtividade === 'Retomada') {
+                            count++;
+                            return setActivity(preValue => ({
+                                ...preValue,
+                                retomada: item
+                            }))
+                        } else if (item.tipoAtividade === 'Fixação') {
+                            count++;
+                            return setActivity(preValue => ({
+                                ...preValue,
+                                fixacao: item
+                            }))
+                        } else if (item.tipoAtividade === 'Aprofundamento') {
+                            count++;
+                            return setActivity(preValue => ({
+                                ...preValue,
+                                aprofundamento: item
+                            }))
+                        }
+                    })
+                    
+                    // Número de botões no acordeão
+                    count === 0 && setNumTasks(2);
+                    count === 1 && setNumTasks(3);
+                    count === 2 && setNumTasks(4);
+                    count === 3 && setNumTasks(5);
+
+                    // Grid com divisão dinâmica
+                    if (count) {
+                        count === 1 && setGridSize({
+                            exe: 4,
+                            cont: 4
+                        });
+
+                        count === 2 && setGridSize({
+                            exe: 3,
+                            cont: 3
+                        });
+
+                        count === 3 && setGridSize({
+                            exe: 2,
+                            cont: 3
+                        });
+                    }
+                }
+            }
+            fetchAtividadeAPI();
+        }
+    }, [])
+
     // -- Salva o progresso após cada alteração em Check
     useEffect(() => {
         const abortController = new AbortController();
@@ -182,27 +186,29 @@ export default function ContentAccordion(props) {
     // -- Fetch do Progresso
     useEffect(() => {
         const abortController = new AbortController();
-        async function fetchProgressAPI() {
-            const response = await api.encProgressoPorTopico(topicoID);
-            const value = response.data;
-            if (value.success) {
-                setTopicProgress(value.data);
-                if (value.data.progresso) {
-                    let auxProgress = value.data.progresso;
-                    let count = 0;
-                    setCheck(auxProgress);
+        if (topicoID && alunoID) {
+            async function fetchProgressAPI() {
+                const response = await api.encProgressoPorTopico(alunoID, topicoID);
+                const value = response.data;
+                if (value.success) {
+                    setTopicProgress(value.data);
+                    if (value.data.progresso) {
+                        let auxProgress = value.data.progresso;
+                        let count = 0;
+                        setCheck(auxProgress);
 
-                    auxProgress.videoaula && count++;
-                    auxProgress.materialEstudo && count++;
-                    auxProgress.exercicioAprofundamento && count++;
-                    auxProgress.exercicioFixacao && count++;
-                    auxProgress.exercicioRetomada && count++;
+                        auxProgress.videoaula && count++;
+                        auxProgress.materialEstudo && count++;
+                        auxProgress.exercicioAprofundamento && count++;
+                        auxProgress.exercicioFixacao && count++;
+                        auxProgress.exercicioRetomada && count++;
 
-                    setProgresso(count);
+                        setProgresso(count);
+                    }
                 }
             }
+            fetchProgressAPI();
         }
-        fetchProgressAPI();
         return abortController.abort();
         // eslint-disable-next-line
     }, [])
@@ -432,7 +438,7 @@ export default function ContentAccordion(props) {
             <AccordionPersonalized>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    onClick={() => initialLoading()}
+                    // onClick={() => initialLoading()}
                     aria-controls="panel1a-content"
                     id="cabecalhoAccordionLibrary">
                     <CircularStatic progresso={progresso} numTasks={numTasks}/>

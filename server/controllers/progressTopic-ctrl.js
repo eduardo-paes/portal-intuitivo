@@ -53,7 +53,7 @@ atualizarProgresso = async (req, res) => {
     }
 
     const progresso = new ProgressoTopico(body);
-    
+
     // Verifica se dados não são nulos
     if (!progresso) {
         return res
@@ -150,7 +150,8 @@ encProgressoPorID = async (req, res) => {
 encProgressoPorTopico = async (req, res) => {
     await ProgressoTopico
         .findOne({
-            topicoID: req.params.id
+            alunoID: req.params.alunoID,
+            topicoID: req.params.topicoID
         }, (err, progressoEncontrado) => {
             if (err) {
                 return res

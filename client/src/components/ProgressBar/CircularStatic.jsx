@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+
+import { CircularProgress, Typography, Box } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import CheckIcon from '@material-ui/icons/Check';
@@ -71,6 +70,7 @@ export default function CircularStatic(props) {
   }, [progresso, numTasks]);
 
   const returnCircle = () => {
+    
     if (progresso < numTasks) {
       return <CircularProgressWithLabel value={progress} />;
     } else {

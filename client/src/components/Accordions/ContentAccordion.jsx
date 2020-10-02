@@ -22,7 +22,8 @@ import AprofundamentoIcon from '@material-ui/icons/FindInPage';
 
 export default function ContentAccordion(props) {
     const { revisaoID, topicoID, nome, color, disciplina, linkAula } = props;
-    const { token } = useContext(StoreContext)
+    const { token } = useContext(StoreContext);
+    const alunoID = token.userID;
     const classes = useStyles();
 
     // Definição dos estados que serão utilizados
@@ -83,7 +84,33 @@ export default function ContentAccordion(props) {
         window.open(linkAula,'_blank');
     }
     
-    const initialLoading = () => {
+    async function saveProgress() {
+        const novoProgresso = {
+            alunoID: topicProgress.alunoID,
+            topicoID: topicProgress.topicoID,
+            progresso: check,
+        }
+
+        if (!topicProgress._id) {
+            await api
+                .inserirProgresso(novoProgresso)
+                .then(res => {
+                    setTopicProgress(preValue => ({
+                        ...preValue,
+                        _id: res.data.id
+                    }))
+                })
+        } else {
+            await api
+                .atualizarProgresso(topicProgress._id, novoProgresso)
+                .then(res => {
+                    console.log(res.data.message);
+                })
+        }
+    }
+
+    // -- Carregamento inicial
+    useEffect(() => {
         if (topicoID) {
             async function fetchAtividadeAPI() {
                 const response = await api.listarAtividadesPorTopico(topicoID);
@@ -141,32 +168,7 @@ export default function ContentAccordion(props) {
             }
             fetchAtividadeAPI();
         }
-    }
-    
-    async function saveProgress() {
-        const novoProgresso = {
-            alunoID: topicProgress.alunoID,
-            topicoID: topicProgress.topicoID,
-            progresso: check,
-        }
-
-        if (!topicProgress._id) {
-            await api
-                .inserirProgresso(novoProgresso)
-                .then(res => {
-                    setTopicProgress(preValue => ({
-                        ...preValue,
-                        _id: res.data.id
-                    }))
-                })
-        } else {
-            await api
-                .atualizarProgresso(topicProgress._id, novoProgresso)
-                .then(res => {
-                    console.log(res.data.message);
-                })
-        }
-    }
+    }, [])
 
     // -- Salva o progresso após cada alteração em Check
     useEffect(() => {
@@ -186,27 +188,29 @@ export default function ContentAccordion(props) {
     // -- Fetch do Progresso
     useEffect(() => {
         const abortController = new AbortController();
-        async function fetchProgressAPI() {
-            const response = await api.encProgressoPorTopico(topicoID);
-            const value = response.data;
-            if (value.success) {
-                setTopicProgress(value.data);
-                if (value.data.progresso) {
-                    let auxProgress = value.data.progresso;
-                    let count = 0;
-                    setCheck(auxProgress);
+        if (topicoID && alunoID) {
+            async function fetchProgressAPI() {
+                const response = await api.encProgressoPorTopico(alunoID, topicoID);
+                const value = response.data;
+                if (value.success) {
+                    setTopicProgress(value.data);
+                    if (value.data.progresso) {
+                        let auxProgress = value.data.progresso;
+                        let count = 0;
+                        setCheck(auxProgress);
 
-                    auxProgress.videoaula && count++;
-                    auxProgress.materialEstudo && count++;
-                    auxProgress.exercicioAprofundamento && count++;
-                    auxProgress.exercicioFixacao && count++;
-                    auxProgress.exercicioRetomada && count++;
+                        auxProgress.videoaula && count++;
+                        auxProgress.materialEstudo && count++;
+                        auxProgress.exercicioAprofundamento && count++;
+                        auxProgress.exercicioFixacao && count++;
+                        auxProgress.exercicioRetomada && count++;
 
-                    setProgresso(count);
+                        setProgresso(count);
+                    }
                 }
             }
+            fetchProgressAPI();
         }
-        fetchProgressAPI();
         return abortController.abort();
         // eslint-disable-next-line
     }, [])
@@ -491,7 +495,6 @@ export default function ContentAccordion(props) {
             <AccordionPersonalized>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    onClick={() => initialLoading()}
                     aria-controls="panel1a-content"
                     id="cabecalhoAccordionLibrary">
                     <CircularStatic progresso={progresso} numTasks={numTasks}/>
@@ -500,15 +503,15 @@ export default function ContentAccordion(props) {
 
                 <AccordionDetails>
                     <Grid container={true} className={classes.accordionDetails} spacing={2}>
-                    {/* {
+                    {
                         (revisaoID !== undefined )
                             ? returnAD() 
                             : (disciplina === 'Redação') 
                                 ? returnRedacao() 
                                 : returnTopico()
-                    } */}
+                    }
 
-                    {returnTopico()}
+                    {/* {returnTopico()} */}
                     </Grid>
                 </AccordionDetails>
             </AccordionPersonalized>
