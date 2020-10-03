@@ -40,6 +40,7 @@ router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
 router.get("/controle-conteudo/:id", ConteudoCtrl.encConteudoPorID);
 router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);
 router.get("/controle-conteudo/disciplina/:id", ConteudoCtrl.listarConteudoPorDisciplina);
+router.get(`/controle-conteudo/filtro/:numeracao?/:disciplinaID?/:topicoID?`, ConteudoCtrl.listarConteudoPorFiltro);
 router.get(`/controle-conteudo/topico/:id?/:numeracao?`, ConteudoCtrl.encConteudoPersonalizado);
 
 // DISCIPLINA -- Definição dos métodos para cada rota da disciplina
