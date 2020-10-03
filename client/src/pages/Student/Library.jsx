@@ -3,7 +3,7 @@ import { makeStyles, useMediaQuery, useTheme, Grid, MenuItem, Tooltip, Fab, Grow
 import { GeneralSubtitle, GeneralTitle, MyContainer, MyTextField } from "../../assets/styles/styledComponents"
 import { LibraryAccordion } from "../../components";
 import ClearAllIcon from '@material-ui/icons/ClearAll';
-import FilterListIcon from '@material-ui/icons/FilterList';
+import { currentWeek } from "../../utils";
 import api from '../../api';
 
 const useStyles = makeStyles((theme) => ({
@@ -32,46 +32,52 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Library (props) {
+export default function Library (props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [filter, setFilter] = useState({ topico: "", disciplina: "", numeracao: "" });
+  const [filter, setFilter] = useState({ topico: 0, disciplina: 0, numeracao: 0 });
   const [listaDisciplina, setListaDisciplina] = useState([]);
   const [listaConteudo, setListaConteudo] = useState([]);
   const [numeracao, setNumeracao] = useState([]);
-  const [checked, setChecked] = useState(false);
   const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // -- Carrega Disciplinas/Conteúdos
+  // Preenche constante de numeração de acordo com o número de semanas do ano letivo
+  async function getCurrentWeek() {
+    const numSemanas = await currentWeek();
+    for (let i = 1; i <= numSemanas; ++i) { setNumeracao(preValue => ([ ...preValue, i ])) }
+  }
+
+  // Lista Disciplina
+  async function fetchDisciplinaAPI() {
+    const response = await api.listarDisciplinas();
+    setListaDisciplina(response.data.data);
+  }
+
+  // Lista Conteúdo
+  async function fetchConteudoAPI() {
+    const { numeracao, disciplina, topico } = filter;
+    const response = await api.listarConteudoPorFiltro(numeracao, disciplina, topico);
+    const value = response.data;
+    if (value.success) {
+      setListaConteudo(value.data);
+    }
+  }
+
+  // -- Carrega Disciplinas/Número de Semanas
   useEffect(() => {
     const abortController = new AbortController();
-    // Preenche constante de numeração
-    for (let i = 1; i < 33; ++i) { setNumeracao(preValue => ([ ...preValue, i ])) }
-
-    // Lista Disciplina
-    async function fetchDisciplinaAPI() {
-      const response = await api.listarDisciplinas();
-      setListaDisciplina(response.data.data);
-    }
-
-    // Lista Conteúdo
-    async function fetchConteudoAPI() {
-      const response = await api.listarConteudos();
-      setListaConteudo(response.data.data);
-    }
-
-    // Fetchs
+    getCurrentWeek();
     fetchDisciplinaAPI();
-    fetchConteudoAPI();
-
     return abortController.abort();
   }, []);
 
-  // -- Ao clicar em Filtro
-  function onCheck() {
-    setChecked((prev) => !prev); 
-    clearFilter();
-  }
+  // -- Carrega Conteúdo de acordo com semana atual
+  useEffect(() => {
+    const abortController = new AbortController();
+    fetchConteudoAPI();
+    return abortController.abort();
+    // eslint-disable-next-line
+  }, [filter])
 
   // -- Ao alterar qualquer valor do filtro
   function onFilterChange (event) {
@@ -84,7 +90,7 @@ function Library (props) {
 
   // -- Limpa o filtro
   function clearFilter() {
-    setFilter({ topico: "", disciplina: "", numeracao: "" });
+    setFilter({ topico: 0, disciplina: 0, numeracao: 0 });
   }
 
   // -- Lista os conteúdos
@@ -92,20 +98,11 @@ function Library (props) {
     if (listaConteudo.length > 0) {
       return listaConteudo.map((row, index) => {
         const { _id, topico, disciplinaID, numeracao, videoAulaURL } = row;
-
-        let auxTopic = (topico.includes(filter.topico) || filter.topico === '') ? true : false;
-        let auxSubject = (disciplinaID._id === filter.disciplina || filter.disciplina === '') ? true : false;
-        let auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
-
-        if (auxTopic && auxSubject && auxWeek) {
           return (
             <Grid key={index} item={true} xs={12} lg={12} sm={12}>
               <LibraryAccordion topicoID={_id} disciplinaNome={disciplinaID.nome} titulo={topico} semana={numeracao} linkAula={videoAulaURL}/>
             </Grid>
           )
-        }
-        // eslint-disable-next-line
-        return;
       })
     }
   }
@@ -125,16 +122,16 @@ function Library (props) {
       </section>
 
       <section id="libraryFilter">
-        <Grid container={true} style={{marginTop: "1rem"}} justify={checked ? "center" : "flex-end"}>
+        <Grid container={true} style={{marginTop: "1rem"}} justify={"center"}>
 
-          <Grid item={true} hidden={!checked} xs={12} sm={10}>
+          <Grid item={true} xs={12} sm={11}>
             <Grid container={true} justify="flex-start" spacing={1}>
 
               <Grid item={true} xs={12} lg={4} sm={4}>
                 <Grow
-                  in={checked}
+                  in={true}
                   style={{ transformOrigin: '0 0 0' }}
-                  {...(checked ? { timeout: 1000 } : {})}
+                  {...({ timeout: 1000 })}
                 >
                   <MyTextField
                     id="campoDisciplina"
@@ -142,15 +139,15 @@ function Library (props) {
                     label="Tópico"
                     name="topico"
                     className={classes.filterText}
-                    value={filter.topico === undefined ? "" : filter.topico}
+                    value={filter.topico ? filter.topico : ''}
                     onChange={onFilterChange}/>
                 </Grow>
               </Grid>
               <Grid item={true} xs={12} lg={4} sm={4}>
                 <Grow
-                  in={checked}
+                  in={true}
                   style={{ transformOrigin: '0 0 0' }}
-                  {...(checked ? { timeout: 1000 } : {})}
+                  {...({ timeout: 1000 })}
                 >
                   <MyTextField
                     id="campoDisciplina"
@@ -159,7 +156,7 @@ function Library (props) {
                     label="Disciplina"
                     name="disciplina"
                     className={classes.filterText}
-                    value={filter.disciplina === undefined ? "" : filter.disciplina}
+                    value={filter.disciplina ? filter.disciplina : ''}
                     onChange={onFilterChange}>
                     {
                       listaDisciplina.map((row, index) => {
@@ -171,9 +168,9 @@ function Library (props) {
               </Grid>
               <Grid item={true} xs={12} lg={4} sm={4}>
                 <Grow
-                  in={checked}
+                  in={true}
                   style={{ transformOrigin: '0 0 0' }}
-                  {...(checked ? { timeout: 1000 } : {})}
+                  {...({ timeout: 1000 })}
                 >
                   <MyTextField
                     id="filtroNumeracao"
@@ -183,7 +180,7 @@ function Library (props) {
                     name="numeracao"
                     type="text"
                     className={classes.filter}
-                    value={filter.numeracao}
+                    value={filter.numeracao ? filter.numeracao : ''}
                     onChange={onFilterChange}>
                       {
                         numeracao.map((row, index) => {
@@ -197,38 +194,18 @@ function Library (props) {
             </Grid>
           </Grid>
 
-          <Grid item={true} xs={12} sm={2}>
-            <Grid container={true} className={smScreen ? classes.smFilterFab : 'none'} justify="center" spacing={smScreen ? 1 : 0}>
-
-              <Grid item={true} xs={6} sm={6} className={smScreen ? classes.smLeftFilterFab : classes.filterFab}>
-                <Grow
-                  in={checked}
-                  style={{ transformOrigin: '0 0 0' }}
-                  {...(checked ? { timeout: 1000 } : {})}
-                  hidden={!checked}
-                >
-                    <Tooltip title="Limpar">
-                      <Fab color="secondary" justify="flex-end" aria-label="clear" onClick={() => clearFilter()}>
-                        <ClearAllIcon />
-                      </Fab>
-                    </Tooltip>
-                </Grow>
-              </Grid>
-              <Grid item={true} xs={6} sm={6} className={(smScreen && checked) ? classes.smRightFilterFab : classes.filterFab}>
-                <Grow
-                  in={true}
-                  style={{ transformOrigin: '0 0 0' }}
-                  {...(true ? { timeout: 1000 } : {})}
-                >
-                  <Tooltip title="Filtrar">
-                    <Fab color="primary" justify="flex-start" aria-label="filter" onClick={() => onCheck()}>
-                      <FilterListIcon />
-                    </Fab>
-                  </Tooltip>
-                </Grow>
-              </Grid>
-            
-            </Grid>
+          <Grid item={true} xs={12} sm={1} className={smScreen ? classes.smFilterFab : 'none'} align="center">
+            <Grow
+              in={true}
+              style={{ transformOrigin: '0 0 0' }}
+              {...({ timeout: 1000 })}
+            >
+                <Tooltip title="Limpar">
+                  <Fab color="secondary" justify="flex-end" aria-label="clear" onClick={() => clearFilter()}>
+                    <ClearAllIcon />
+                  </Fab>
+                </Tooltip>
+            </Grow>
           </Grid>
 
         </Grid>
@@ -242,5 +219,3 @@ function Library (props) {
     </MyContainer>
   );
 };
-
-export default Library;

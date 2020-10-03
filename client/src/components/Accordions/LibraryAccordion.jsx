@@ -258,7 +258,7 @@ export default function ContentAccordion(props) {
                 </Grid>
 
                 {/* Material de Estudo */}
-                <Grid item={true} xs={12} sm={gridSize.cont}>
+                <Grid item={true} xs={12} sm={gridSize.cont ? gridSize.cont : 'auto'}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
                     {
                         check.materialEstudo 
@@ -292,7 +292,7 @@ export default function ContentAccordion(props) {
                 </Grid>
                 
                 {/* Video-aula */}
-                <Grid item={true} xs={12} sm={gridSize.cont}>
+                <Grid item={true} xs={12} sm={gridSize.cont ? gridSize.cont : 'auto'}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.videoaula}/>
                     {
                         check.videoaula 
@@ -318,8 +318,8 @@ export default function ContentAccordion(props) {
 
                 {/* Exercícios de Fixação */}
                 { activity.fixacao.length !== 0 &&
-                    <Grid item={true} xs={12} sm={gridSize.exe}>
-                        <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.exercicioFixacao}/>
+                    <Grid item={true} xs={12} sm={gridSize.exe ? gridSize.exe : 'auto'}>
+                        <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.exercicioFixacao ? check.exercicioFixacao : false}/>
                         {
                             check.exercicioFixacao 
                                 ? <GreenButton 
@@ -355,8 +355,8 @@ export default function ContentAccordion(props) {
 
                 {/* Exercícios de Retomada */}
                 { activity.retomada.length !== 0 &&
-                    <Grid item={true} xs={12} sm={gridSize.exe}>
-                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioRetomada}/>
+                    <Grid item={true} xs={12} sm={gridSize.exe ? gridSize.exe : 'auto'}>
+                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioRetomada ? check.exercicioRetomada : false}/>
                         {
                             check.exercicioRetomada 
                                 ? <GreenButton 
@@ -394,8 +394,8 @@ export default function ContentAccordion(props) {
 
                 {/* Exercícios de Aprofundamento */}
                 { activity.aprofundamento.length !== 0 &&
-                    <Grid item={true} xs={12} sm={gridSize.exe}>
-                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioAprofundamento}/>
+                    <Grid item={true} xs={12} sm={gridSize.exe ? gridSize.exe : 'auto'}>
+                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioAprofundamento ? check.exercicioAprofundamento : false}/>
                         {
                             check.exercicioAprofundamento 
                                 ? <GreenButton 
@@ -438,7 +438,6 @@ export default function ContentAccordion(props) {
             <AccordionPersonalized>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    // onClick={() => initialLoading()}
                     aria-controls="panel1a-content"
                     id="cabecalhoAccordionLibrary">
                     <CircularStatic progresso={progresso} numTasks={numTasks}/>

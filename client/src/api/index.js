@@ -16,6 +16,7 @@ export const listarConteudos = () => api.get("/controle-conteudo");
 export const atualizarConteudo = (id, conteudoAtualizado) => api.put(`/controle-conteudo/${id}`, conteudoAtualizado);
 export const removerConteudo = id => api.delete(`/controle-conteudo/${id}`);
 export const encConteudoPorID = id => api.get(`/controle-conteudo/${id}`);
+export const listarConteudoPorFiltro = (numeracao, disciplinaID, topicoID) => api.get(`/controle-conteudo/filtro/${numeracao}/${disciplinaID}/${topicoID}`);
 export const listarConteudoPorDisciplina = id => api.get(`/controle-conteudo/disciplina/${id}`);
 export const encConteudoPersonalizado = (id, numeracao) => api.get(`/controle-conteudo/topico/${id}/${numeracao}`);
 
@@ -115,6 +116,7 @@ const apis = {
     atualizarConteudo,
     removerConteudo,
     encConteudoPorID,
+    listarConteudoPorFiltro,
     listarConteudoPorDisciplina,
     encConteudoPersonalizado,
     // Disciplina

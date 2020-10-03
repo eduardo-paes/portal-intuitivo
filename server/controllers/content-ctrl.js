@@ -187,28 +187,69 @@ listarConteudoPorDisciplina = async (req, res) => {
 encConteudoPersonalizado = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota 
     await Conteudo
-    .find({ 
-        disciplinaID: { $eq: req.params.id }, 
-        numeracao: { $eq: req.params.numeracao } 
-    }, (err, conteudoEncontrado) => {
-        if (err) {
+        .find({ 
+            disciplinaID: { $eq: req.params.id }, 
+            numeracao: { $eq: req.params.numeracao } 
+        }, (err, conteudoEncontrado) => {
+            if (err) {
+                return res
+                .status(400)
+                .json({success: false, error: err})
+            }
+            
+            if (!conteudoEncontrado) {
+                return res
+                .status(404)
+                .json({success: false, error: "Conteúdo não encontrado."})
+            }
+            
             return res
-            .status(400)
-            .json({success: false, error: err})
-        }
+            .status(200)
+            .json({success: true, data: conteudoEncontrado})
+            })
+        .catch(err => console.log(err))
         
-        if (!conteudoEncontrado) {
+}
+
+// Função para listar conteúdo por semana e dia da semana
+listarConteudoPorFiltro = async (req, res) => {
+    let { numeracao, disciplinaID, topicoID } = req.params;
+    var query = {};
+
+    if (numeracao === '0') {
+        query.numeracao = { $gte: numeracao };
+    } else {
+        query.numeracao = { $eq: numeracao };
+    }
+
+    if (disciplinaID !== '0') {
+        query.disciplinaID = { $eq: disciplinaID }
+    }
+
+    if (topicoID !== '0') {
+        query.topico = { $regex: topicoID }
+    }
+
+    await Conteudo
+        .find(query)
+        .sort({numeracao: 1})
+        .exec((err, listaConteudos) => {
+            if (err) {
+                return res
+                .status(400)
+                .json({success: false, error: err})
+            }
+            
+            if (!listaConteudos) {
+                return res
+                .status(404)
+                .json({success: false, error: "Conteúdo não encontrado."})
+            }
+
             return res
-            .status(404)
-            .json({success: false, error: "Conteúdo não encontrado."})
-        }
-        
-        return res
-        .status(200)
-        .json({success: true, data: conteudoEncontrado})
-        })
-    .catch(err => console.log(err))
-        
+                .status(200)
+                .json({success: true, data: listaConteudos})
+            })
 }
 
 // Função para listar os conteúdos contidos no banco
@@ -239,5 +280,6 @@ module.exports = {
     encConteudoPorID,
     listarConteudos,
     listarConteudoPorDisciplina,
+    listarConteudoPorFiltro,
     encConteudoPersonalizado
 }
