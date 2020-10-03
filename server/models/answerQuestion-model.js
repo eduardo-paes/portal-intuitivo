@@ -8,6 +8,14 @@ const RespostaQuestao = new Schema({
         ref: 'usuario',
         required: true
     },
+    atividadeID: {
+        type: Schema.Types.ObjectId,
+        ref: 'atividade'
+    },
+    revisaoID: {
+        type: Schema.Types.ObjectId,
+        ref: 'revisoe'
+    },
     questaoID: {
         type: Schema.Types.ObjectId,
         ref: 'questoe',

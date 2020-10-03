@@ -37,6 +37,7 @@ export const listarTagsPorDisciplina = id => api.get(`/configuracoes/tags/${id}`
 
 // -- Funções relacionadas à RespostaQuestao
 export const inserirRespostaQuestao = novaRespostaQuestao => api.post("/resposta-questao", novaRespostaQuestao);
+export const atualizarRespostaQuestao = (id, conteudoAtualizado) => api.put(`/resposta-questao/${id}`)
 export const removerRespostaQuestao = id => api.delete(`/resposta-questao/${id}`);
 export const encRespostaQuestaoPorID = id => api.get(`/resposta-questao/${id}`);
 export const listarRespostaQuestao = () => api.get(`/resposta-questao`);

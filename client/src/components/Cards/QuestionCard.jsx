@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./QuestionStyles.css"
 import { MyCardContent } from "../../assets/styles/styledComponents"
 import RadioAnswer from "../Radio/RadioAnswer";
@@ -8,10 +8,20 @@ import {useStyles} from '../../assets/styles/classes';
 export default function QuestionCard (props) {
 
     const classes = useStyles();
-    const { idQuestion, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao } = props;
+    const { idQuestion, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao, teste, setTeste } = props;
     const [value, setValue] = React.useState(0);
     const [answered, setAnswered] = React.useState(false);
     const [color, setColor] = React.useState('default');
+
+    function getAnswer() {
+        console.log(idQuestion)
+        if (teste) {
+            Object.entries(teste).map((row, index) => {
+                if (idQuestion === row[0])
+                    setValue(row[1]);
+            })
+        }
+    }
 
     // const handleSubmit = (event) => {
     //     event.preventDefault();
@@ -26,13 +36,23 @@ export default function QuestionCard (props) {
     //         setAnswered(true);
     // };
 
+    useEffect(() => {
+        // console.log(teste);
+        getAnswer();
+    }, [idQuestion])
+
+
     function pegarRespostaDiscursiva(event) {
         const { value } = event.target;  
         const id = idQuestion;
-        setRespostaQuestao((preValue) => ({
-            ...preValue,
-              [id]: value
+        setTeste(prevValue => ({
+            ...prevValue,
+            [id]: value
         }));
+        // setRespostaQuestao((preValue) => ({
+        //     ...preValue,
+        //       [id]: value
+        // }));
     }
 
     return (
@@ -63,7 +83,7 @@ export default function QuestionCard (props) {
                                 className={classes.answerField}
                                 id={respostaQuestao.questao}
                                 label="Resposta"
-                                placeholder=""
+                                defaultValue={value ? value : null}
                                 multiline
                                 value={respostaQuestao.resposta}
                                 onChange={pegarRespostaDiscursiva}

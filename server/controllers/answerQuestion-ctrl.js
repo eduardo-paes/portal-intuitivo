@@ -41,6 +41,67 @@ inserirRespostaQuestao = (req, res) => {
         });
 }
 
+// Função para atualizar questao por ID
+atualizarRespostaQuestao = async (req, res) => {
+    // Recebe dados do formulário
+    const body = req.body;
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: "Os dados devem ser fornecidos.",
+        })
+    }
+
+    const RespostaQuestaoAtualizada = new RespostaQuestao(body);
+
+    // Verifica se dados não são nulos
+    if (!RespostaQuestaoAtualizada) {
+        return res
+            .status(400)
+            .json({success: false, error: "Os dados são nulos ou incompatíveis."})
+    }
+
+    // Busca questão pelo id (id da rota)
+    RespostaQuestao.findOne({
+        _id: req.params.id
+    }, (err, respostaQuestaoEncontrada) => {
+        if (err) {
+            return res
+                .status(404)
+                .json({
+                    err, 
+                    message: "Resposta da questão não encontrada."
+                })
+        }
+
+        // Atualiza dados da questão encontrada
+        respostaQuestaoEncontrada.alunoID = respostaQuestaoAtualizada.alunoID
+        respostaQuestaoEncontrada.atividadeID = respostaQuestaoAtualizada.atividadeID
+        respostaQuestaoEncontrada.revisaoID = respostaQuestaoAtualizada.revisaoID
+        respostaQuestaoEncontrada.questaoID = respostaQuestaoAtualizada.questaoID
+        respostaQuestaoEncontrada.resposta = respostaQuestaoAtualizada.resposta
+        respostaQuestaoEncontrada.nota = respostaQuestaoAtualizada.nota
+
+        // Salva alterações
+        respostaQuestaoEncontrada
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    id: respostaQuestaoEncontrada._id,
+                    message:"Resposta da questão atualizada com sucesso.",
+                })
+            })
+            .catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: "Resposta da questão não atualizada.",
+                })
+            });
+    });
+}
+
 // Função para remover respostaQuestao por ID
 removerRespostaQuestao = async (req, res) => {
     // Encontra respostaQuestao pelo ID e remove
@@ -87,6 +148,33 @@ encRespostaQuestaoPorID = async (req, res) => {
     await RespostaQuestao
         .findOne({
             _id: req.params.id
+        }, (err, respostaQuestaoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!respostaQuestaoEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Resposta da questão não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: respostaQuestaoEncontrada})
+        })
+        .catch(err => console.log(err))
+}
+
+
+// Função para buscar tagQuestao por ID
+encRespostaQuestao = async (req, res) => {
+    // Encontra tagQuestao por ID fornecido na rota
+    await RespostaQuestao
+        .findOne({
+            atividadeID: req.params.id
         }, (err, respostaQuestaoEncontrada) => {
             if (err) {
                 return res
@@ -177,6 +265,7 @@ listarRQPorAlunoID = async (req, res) => {
 // Exporta os módulos
 module.exports = {
     inserirRespostaQuestao,
+    atualizarRespostaQuestao,
     removerRespostaQuestao,
     encRespostaQuestaoPorID,
     listarRespostaQuestao,

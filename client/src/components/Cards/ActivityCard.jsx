@@ -19,6 +19,7 @@ export default function ActivityCard(props) {
     const [value, setValue] = useState(1);
     const [flag, setFlag] = useState(false);
     const [respostaQuestao, setRespostaQuestao] = useState([]);
+    const [teste, setTeste] = useState([]);
     
     // MediaQuery / Styles
     const classes = useStyles();
@@ -43,28 +44,31 @@ export default function ActivityCard(props) {
     // Pega dados da resposta do aluno e prepara para salvamento
     useEffect(() => {
         const abortController = new AbortController();
-        if (flag === true) {
-            const alunoID = token.token.userID;
-            let aux = [];
-            Object.entries(respostaQuestao).map((row, index) => {
-                let nota = 0;
-                let gab = gabarito.find(element => element.quest === row[0]);
-                
-                if (gab.gab) {
-                    if( gab.gab._id === row[1] ) nota = 1;
-                }    
-                
-                aux[index] = {
-                    alunoID,
-                    questaoID: row[0],
-                    resposta: row[1],
-                    nota
-                }   
+        
+        if ()
 
-                return null;
-            });
-            settingAnswer(aux);
-        }
+        // if (flag === true) {
+        //     const alunoID = token.token.userID;
+        //     let aux = [];
+        //     Object.entries(respostaQuestao).map((row, index) => {
+        //         let nota = 0;
+        //         let gab = gabarito.find(element => element.quest === row[0]);
+                
+        //         if (gab.gab) {
+        //             if( gab.gab._id === row[1] ) nota = 1;
+        //         }    
+                
+        //         aux[index] = {
+        //             alunoID,
+        //             questaoID: row[0],
+        //             resposta: row[1],
+        //             nota
+        //         }   
+
+        //         return null;
+        //     });
+        //     settingAnswer(aux);
+        // }
 
         return abortController.abort();
         // eslint-disable-next-line
@@ -80,6 +84,7 @@ export default function ActivityCard(props) {
 
     const handleSubmit = () => {
         const alunoID = token.token.userID;
+        console.log(respostaAluno);
         setRespostaAluno((prevValue) => ({
             ...prevValue,
             alunoID,
@@ -105,6 +110,8 @@ export default function ActivityCard(props) {
                     setRespostaQuestao={setRespostaQuestao}
                     respostaQuestao={respostaQuestao}
                     atividadeID={atividadeID}
+                    teste={teste}
+                    setTeste={setTeste}
                 />
             </div>
         );
