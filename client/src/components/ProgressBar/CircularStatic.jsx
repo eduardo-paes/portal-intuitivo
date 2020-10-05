@@ -19,27 +19,37 @@ const useStyles = makeStyles((theme) => ({
     color: '#fafafa',
     borderRadius: '50%'
   },
+  boxDiv: {
+    margin: 0,
+    border: 0,
+    padding: 0
+  }
 }));
 
 function CircularProgressWithLabel(props) {
+  const classes = useStyles();
   return (
-    <Box position="relative" display="inline-flex">
-      <CircularProgress variant="static" {...props} />
-      <Box
-        top={0}
-        left={0}
-        bottom={0}
-        right={0}
-        position="absolute"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Typography variant="caption" component="div" color="textSecondary">
-          {`${Math.round(props.value)}%`}
-        </Typography>
+    <div className={classes.boxDiv}>
+
+      <Box position="relative" display="inline-flex">
+        <CircularProgress variant="static" {...props} />
+        <Box
+          top={0}
+          left={0}
+          bottom={0}
+          right={0}
+          position="absolute"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Typography variant="caption" component="div" color="textSecondary">
+            {`${Math.round(props.value)}%`}
+          </Typography>
+        </Box>
       </Box>
-    </Box>
+
+    </div>
   );
 }
 

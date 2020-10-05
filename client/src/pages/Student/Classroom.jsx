@@ -24,7 +24,7 @@ export default function Classroom (props) {
   }, []);
 
   return (
-    <MyContainer>
+    <MyContainer id="studentPageContainer">
       <section id="classroomHeader">
         <Grid container={true} spacing={1}>
           <Grid item={true} xs={12} sm={12}>

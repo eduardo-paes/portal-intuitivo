@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles, useMediaQuery, useTheme, Grid, MenuItem, Tooltip, Fab, Grow } from "@material-ui/core";
-import { GeneralSubtitle, GeneralTitle, MyContainer, MyTextField } from "../../assets/styles/styledComponents"
-import { LibraryAccordion } from "../../components";
+
+// -- Material UI
+import { makeStyles, useMediaQuery, useTheme, Grid, MenuItem, Tooltip, Typography, Fab, Grow } from "@material-ui/core";
 import ClearAllIcon from '@material-ui/icons/ClearAll';
+
+// -- Local Components
+import { GeneralSubtitle, GeneralTitle, MyContainer, MyTextField } from "../../assets/styles/styledComponents"
+import { ContentAccordion, AccordionSkeleton } from "../../components";
+
+// -- External Functions
 import { currentWeek } from "../../utils";
 import api from '../../api';
 
@@ -40,6 +46,7 @@ export default function Library (props) {
   const [listaConteudo, setListaConteudo] = useState([]);
   const [numeracao, setNumeracao] = useState([]);
   const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Preenche constante de numeração de acordo com o número de semanas do ano letivo
   async function getCurrentWeek() {
@@ -61,6 +68,7 @@ export default function Library (props) {
     if (value.success) {
       setListaConteudo(value.data);
     }
+    setIsLoaded(true);
   }
 
   // -- Carrega Disciplinas/Número de Semanas
@@ -94,21 +102,36 @@ export default function Library (props) {
   }
 
   // -- Lista os conteúdos
-  function ListarConteudo() {
-    if (listaConteudo.length > 0) {
+  function returnContent() {
+    if (isLoaded) {
+      if (!listaConteudo.length) {
+        return (
+          <Grid item={true}>
+            <Typography id="secondaryHeading" className={classes.secondaryHeading}>Nenhum conteúdo encontrado!</Typography>
+          </Grid>
+        )
+      }
       return listaConteudo.map((row, index) => {
         const { _id, topico, disciplinaID, numeracao, videoAulaURL } = row;
           return (
             <Grid key={index} item={true} xs={12} lg={12} sm={12}>
-              <LibraryAccordion topicoID={_id} disciplinaNome={disciplinaID.nome} titulo={topico} semana={numeracao} linkAula={videoAulaURL}/>
+              <ContentAccordion 
+                topicoID={_id} 
+                disciplinaNome={disciplinaID.nome} 
+                titulo={topico} 
+                semana={numeracao}
+                tipoAcordeao="biblioteca"
+                linkAula={videoAulaURL}/>
             </Grid>
           )
       })
+    } else {
+      return AccordionSkeleton();
     }
   }
 
   return (
-    <MyContainer>
+    <MyContainer id="studentPageContainer">
       <section id="libraryHeader">
         <Grid container={true} spacing={2}>
           <Grid item={true} xs={12} sm={12}>
@@ -213,7 +236,7 @@ export default function Library (props) {
 
       <section id="libraryMain">
         <Grid container={true} spacing={2} className={classes.libraryMain}>
-          { ListarConteudo() }
+          { returnContent() }
         </Grid>
       </section>
     </MyContainer>

@@ -211,7 +211,7 @@ encConteudoPersonalizado = async (req, res) => {
         
 }
 
-// Função para listar conteúdo por semana e dia da semana
+// Função para listar conteúdo de acordo com filtro
 listarConteudoPorFiltro = async (req, res) => {
     let { numeracao, disciplinaID, topicoID } = req.params;
     var query = {};
@@ -234,6 +234,50 @@ listarConteudoPorFiltro = async (req, res) => {
         .find(query)
         .sort({numeracao: 1})
         .exec((err, listaConteudos) => {
+            if (err) {
+                return res
+                .status(400)
+                .json({success: false, error: err})
+            }
+            
+            if (!listaConteudos) {
+                return res
+                .status(404)
+                .json({success: false, error: "Conteúdo não encontrado."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: listaConteudos})
+            })
+}
+
+// Função para listar conteúdo por semana e dia da semana
+listarConteudoCorrente = async (req, res) => {
+    var { numeracao, diaSemana } = req.params;
+    
+    var query = {};
+    if (numeracao !== '0') {
+        query.numeracao = { $eq: numeracao };
+    }
+
+    var populateQuery = {
+        path: 'disciplinaID',
+        match: {
+            diaSemana: diaSemana
+        }
+    };
+
+    await Conteudo
+        .find(query)
+        .populate(populateQuery)
+        .sort({numeracao: 1})
+        .exec((err, listaConteudos) => {
+
+            listaConteudos = listaConteudos.filter(conteudo => {
+                return conteudo.disciplinaID;
+            });
+
             if (err) {
                 return res
                 .status(400)
@@ -281,5 +325,6 @@ module.exports = {
     listarConteudos,
     listarConteudoPorDisciplina,
     listarConteudoPorFiltro,
+    listarConteudoCorrente,
     encConteudoPersonalizado
 }

@@ -9,6 +9,10 @@ export const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
 
+  accordionSummary: {
+    margin: '0.625rem 0'
+  },
+
   activityButton: {
     // minWidth: '17rem'
   },
@@ -28,8 +32,8 @@ export const useStyles = makeStyles((theme) => ({
   },
 
   arrow: { 
-    height: '50px',
-    width: '30px'
+    height: '3.125rem',
+    width: '1.875rem'
   },
 
   backArrow: {
@@ -61,8 +65,8 @@ export const useStyles = makeStyles((theme) => ({
   forwardArrow: {
     marginTop: '50%',
     top: '50%',
-    height: '30px',
-    width: '30px',
+    height: '1.875rem',
+    width: '1.875rem',
     [theme.breakpoints.down('sm')]: {
       display: 'none'
     }
@@ -110,12 +114,14 @@ export const useStyles = makeStyles((theme) => ({
   },
   
   secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
+    fontSize: theme.typography.pxToRem(16),
     color: theme.palette.text.secondary,
     textAlign: 'left',
     [theme.breakpoints.down('sm')]: {
-      fontSize: theme.typography.pxToRem(13),
+      fontSize: theme.typography.pxToRem(14),
       textAlign: 'center',
+      marginTop: '-1rem',
+      // marginBottom: '0.4rem'
     }
   },
 

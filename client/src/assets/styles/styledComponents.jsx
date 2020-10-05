@@ -2,8 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 
 // -- Material UI
-import {withStyles, styled} from '@material-ui/core/styles';
-import {red, cyan, green} from '@material-ui/core/colors';
+import { withStyles, styled } from '@material-ui/core/styles';
+import { red, cyan, green } from '@material-ui/core/colors';
 import { Avatar, Typography, Container, TextField, Button, CardContent, Card } from '@material-ui/core';
 
 // Ícones: Material-UI
@@ -56,6 +56,18 @@ const GreenButton = withStyles((theme) => ({
     },
 }))(Button);
 
+const CreateButton = (props) => {
+    const {title, url} = props;
+    return (
+        <Link to={url} style={{ textDecoration: 'none' }}>
+            <Button variant="outlined" color="primary" startIcon={<AddIcon/>}>
+                {title}
+            </Button>
+        </Link>
+    )
+}  
+
+// -- Title Styles
 const GeneralTitle = withStyles((theme) => ({
     root: {
         color: "#606161",
@@ -76,27 +88,6 @@ const GeneralSubtitle = withStyles((theme) => ({
     },
 }))(Typography);
 
-const QuestionNumeration = withStyles((theme) => ({
-    root: {
-        color: "#606161",
-        fontStyle: 'normal',
-        fontWeight: '700',
-        marginTop: '1rem',
-        fontSize: "1rem"
-    },
-}))(Typography);
-
-const CreateButton = (props) => {
-    const {title, url} = props;
-    return (
-        <Link to={url} style={{ textDecoration: 'none' }}>
-            <Button variant="outlined" color="primary" startIcon={<AddIcon/>}>
-                {title}
-            </Button>
-        </Link>
-    )
-}    
-
 // -- Others
 const MyTextField = styled(TextField)({
     marginBottom: "0.625rem", 
@@ -109,11 +100,11 @@ const MyContainer = styled(Container)({
     justifyContent: "center",
     justifySelf: "center",
     justifyItems: "center",
-    padding: "1.2rem 1.875rem 1.2rem 1.875rem", 
+    padding: "1.2rem 1.875rem 1.2rem 1.875rem",
     margin: "0",
     maxWidth: "none",
     maxHeight: "none",
-    minWidth: "18.75rem"
+    minWidth: "18.75rem",
 });
 
 const MyTypography = styled(Typography)({ color: "#606161" });
@@ -141,6 +132,16 @@ const MyAvatar = styled(Avatar) ({
     width: "9.375rem",
     height: "9.375rem"
 })
+
+const QuestionNumeration = withStyles((theme) => ({
+    root: {
+        color: "#606161",
+        fontStyle: 'normal',
+        fontWeight: '700',
+        marginTop: '1rem',
+        fontSize: "1rem"
+    },
+}))(Typography);
 
 export {
     AddButton,

@@ -232,6 +232,7 @@ encAtividadePorID = async (req, res) => {
         });
 }
 
+// Retorna as questões de certa atividade especificada pelo ID
 encQuestoesDaAtividadeID = async (req, res) => {
     // Encontra questões por AtividadeID fornecido na rota
     await AtividadeQuestao
@@ -254,6 +255,44 @@ encQuestoesDaAtividadeID = async (req, res) => {
                 .status(200)
                 .json({success: true, data: questoesEncontradas})
         });
+}
+
+// Retorna redação da semana
+encRedacaoDaSemana = async (req, res) => {
+    // Recebe numeracao === topicoID.numeracao
+    const populateQuery = {
+        path: 'topicoID',
+        select: 'numeracao',
+        match: {
+            numeracao: req.params.numeracao
+        }
+    };
+
+    await Atividade
+        .find({ tipoAtividade: 'Redação' })
+        .populate('disciplinaID')
+        .populate(populateQuery)
+        .exec((err, redacaoEncontrada) => {
+                // Remove dados cuja numeração não condiz com a buscada e, portanto, são nulos
+                redacaoEncontrada = redacaoEncontrada.filter(redacao => {
+                    return redacao.topicoID;
+                });
+
+                // Erro
+                if (err) {
+                    return res.status(400).json({success: false, error: err})
+                }
+                
+                // Nada encontrado
+                if (!redacaoEncontrada) {
+                    return res.status(404).json({success: false, error: "Conteúdo não encontrado."})
+                }
+
+                console.log(redacaoEncontrada);
+
+                // Dados encontrados com sucesso
+                return res.status(200).json({success: true, data: redacaoEncontrada})
+            })
 }
 
 // Função para listar os atividades contidos no banco
@@ -307,6 +346,7 @@ module.exports = {
     removerAtividade,
     encAtividadePorID,
     encQuestoesDaAtividadeID,
+    encRedacaoDaSemana,
     listarAtividade,
     listarAtividadesPorTopico
 }

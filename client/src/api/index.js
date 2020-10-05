@@ -19,6 +19,7 @@ export const encConteudoPorID = id => api.get(`/controle-conteudo/${id}`);
 export const listarConteudoPorFiltro = (numeracao, disciplinaID, topicoID) => api.get(`/controle-conteudo/filtro/${numeracao}/${disciplinaID}/${topicoID}`);
 export const listarConteudoPorDisciplina = id => api.get(`/controle-conteudo/disciplina/${id}`);
 export const encConteudoPersonalizado = (id, numeracao) => api.get(`/controle-conteudo/topico/${id}/${numeracao}`);
+export const listarConteudoCorrente = (numeracao, diaSemana) => api.get(`/controle-conteudo/corrente/${numeracao}/${diaSemana}`);
 
 // -- Funções relacionadas à Disciplina
 export const inserirDisciplina = novaDisciplina => api.post("/configuracoes/disciplina", novaDisciplina);
@@ -79,7 +80,8 @@ export const atualizarAtividade = (id, atividadeAtualizada) => api.put(`/control
 export const removerAtividade = id => api.delete(`/controle-atividade/${id}`);
 export const encAtividadePorID = id => api.get(`/controle-atividade/${id}`);
 export const encQuestoesDaAtividadeID = id => api.get(`/controle-atividade/questoes/${id}`);
-export const listarAtividadesPorTopico = (id) => api.get(`/plano-estudo/${id}`);
+export const encRedacaoDaSemana = numeracao => api.get(`/controle-atividade/redacao/${numeracao}`);
+export const listarAtividadesPorTopico = (id) => api.get(`/controle-atividade/topico/${id}`);
 
 // -- Funções relacionadas à Revisao
 export const inserirRevisao = novaRevisao => api.post("/controle-revisao", novaRevisao);
@@ -121,6 +123,7 @@ const apis = {
     listarConteudoPorFiltro,
     listarConteudoPorDisciplina,
     encConteudoPersonalizado,
+    listarConteudoCorrente,
     // Disciplina
     inserirDisciplina,
     listarDisciplinas,
@@ -174,6 +177,7 @@ const apis = {
     removerAtividade,
     encAtividadePorID,
     encQuestoesDaAtividadeID,
+    encRedacaoDaSemana,
     listarAtividadesPorTopico,
     // Revisão
     inserirRevisao,

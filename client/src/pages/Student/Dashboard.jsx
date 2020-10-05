@@ -55,7 +55,7 @@ export default function Dashboard (props) {
   const classes = useStyles();
 
   return (
-    <MyContainer>
+    <MyContainer id="studentPageContainer">
 
       <section id="cabecalhoDashboard">
         <GeneralTitle className="heading-page">Dashboard</GeneralTitle>
