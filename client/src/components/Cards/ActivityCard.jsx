@@ -12,20 +12,22 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
+import api from '../../api';
 
 export default function ActivityCard(props) {
-    const { handleClose, handleFinalized, question, atividadeID, revisaoID, respostaAluno, setRespostaAluno } = props;
+    const { handleClose, handleFinalized, question, atividadeID, revisaoID } = props;
     const token = useContext(StoreContext);
     const [value, setValue] = useState(1);
-    const [flag, setFlag] = useState(false);
+    const [answered, setAnswered] = useState(false);
+    const [respostaQuestaoIDs, setRespostaQuestaoIDs] = useState([]);
     const [respostaQuestao, setRespostaQuestao] = useState([]);
-    const [teste, setTeste] = useState([]);
     
     // MediaQuery / Styles
     const classes = useStyles();
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+    let arrayAux = [];
     let gabarito = [];
     question.forEach((row, index) => {
         let gab = row.resposta.find(element => element.gabarito === true);
@@ -33,64 +35,30 @@ export default function ActivityCard(props) {
         return gabarito[index] = { gab, quest }
     });
 
-    // Salva Resposta do Aluno
-    function settingAnswer(aux) {
-        setRespostaAluno(prevValue => ({
-            ...prevValue,
-            respostaQuestaoID: aux
-        }));
+    // Passa para a próxima questão e salva a resposta do aluno na questão anterior;
+    async function incrementValue () {
+        
+        await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
+        setValue(value+1);
     }
 
-    // Pega dados da resposta do aluno e prepara para salvamento
-    useEffect(() => {
-        const abortController = new AbortController();
-        //if (respostaAtual)
+    // Passa para volta pra questão anterior e salva a resposta do aluno na questão passada;
+    async function decrementValue () {
 
-        // if (flag === true) {
-        //     const alunoID = token.token.userID;
-        //     let aux = [];
-        //     Object.entries(respostaQuestao).map((row, index) => {
-        //         let nota = 0;
-        //         let gab = gabarito.find(element => element.quest === row[0]);
-                
-        //         if (gab.gab) {
-        //             if( gab.gab._id === row[1] ) nota = 1;
-        //         }    
-                
-        //         aux[index] = {
-        //             alunoID,
-        //             questaoID: row[0],
-        //             resposta: row[1],
-        //             nota
-        //         }   
+        await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
+        setValue(value-1);
+    }
 
-        //         return null;
-        //     });
-        //     settingAnswer(aux);
-        // }
-
-        return abortController.abort();
-        // eslint-disable-next-line
-    }, [flag])
-
-    // Obrigado atualização
-    useEffect(() => {
-        const abortController = new AbortController();
-        setRespostaAluno(respostaAluno);
-        return abortController.abort();
-        // eslint-disable-next-line
-    }, [respostaAluno])
-
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        const respostaQuestaoID = ["5f7b7d2f59e6cd1464b8dc78", "5f7b8341584bec14f3aaa61a", "5f7b83c3584bec14f3aaa61b"]
         const alunoID = token.token.userID;
-        console.log(respostaAluno);
-        setRespostaAluno((prevValue) => ({
-            ...prevValue,
+        const respostaAluno = {
             alunoID,
             atividadeID,
-            revisaoID
-        }))
-        setFlag(true);
+            revisaoID,
+            respostaQuestaoID
+        }
+        await api.inserirRespostaAluno(respostaAluno);
         handleFinalized();
     };
 
@@ -106,12 +74,12 @@ export default function ActivityCard(props) {
                     padraoResposta={question[value-1].padraoResposta} 
                     resposta={question[value-1].resposta}
                     gabarito={gabarito[value-1]}
-                    setRespostaQuestao={setRespostaQuestao}
-                    respostaQuestao={respostaQuestao}
+                    setRespostaQuestaoIDs={setRespostaQuestaoIDs}
+                    respostaQuestaoIDs={respostaQuestaoIDs}
                     atividadeID={atividadeID}
                     revisaoID={revisaoID}
-                    teste={teste}
-                    setTeste={setTeste}
+                    respostaQuestao={respostaQuestao}
+                    setRespostaQuestao={setRespostaQuestao}
                     alunoID={token.token.userID}
                 />
             </div>
@@ -122,7 +90,7 @@ export default function ActivityCard(props) {
         <Grid container={true} className={classes.question}>
             {/* Voltar para Esquerda */}
             <Grid align="left" item={true} xs={1} lg={1} sm={1}>
-                <IconButton className={classes.backArrow} color="primary" disabled={ value === 1 ? true : false } onClick={() => setValue(value-1)}>
+                <IconButton className={classes.backArrow} color="primary" disabled={ value === 1 ? true : false } onClick={decrementValue}>
                     <ArrowBackIcon className={classes.arrow}/>
                 </IconButton>
             </Grid>
@@ -161,7 +129,7 @@ export default function ActivityCard(props) {
 
             {/* Continuar para Direita */}
             <Grid align="rigth" item={true} xs={1} lg={1} sm={1}>
-                <IconButton className={classes.forwardArrow} size="medium" color="primary" disabled={ value === question.length ? true : false } onClick={() => {setValue(value+1)}}>
+                <IconButton className={classes.forwardArrow} size="medium" color="primary" disabled={ value === question.length ? true : false } onClick={incrementValue}>
                     <ArrowForwardIcon className={classes.arrow}/>
                 </IconButton>
             </Grid>

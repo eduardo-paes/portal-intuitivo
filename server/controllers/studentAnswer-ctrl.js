@@ -1,24 +1,4 @@
 const RespostaAluno = require('../models/studentAnswer-model');
-const RespostaQuestao = require('../models/answerQuestion-model');
-
-inserirRespostaQuestao = async (rqID, questao, aluno, resposta, nota) => {
-    const body = { _id: rqID, questaoID: questao, alunoID: aluno, resposta: resposta, nota: nota };
-    console.log(body);
-    const novaRespostaQuestao = new RespostaQuestao(body);
-    await novaRespostaQuestao.save();
-}
-
-// Função para remover tagQuestao no banco
-removerRespostaQuestao = (rqID) => {
-    RespostaQuestao.findOneAndDelete({ _id: rqID}, err => {
-            if (err) {
-                console.log(err);
-                return false;
-            }
-            return true;
-        })
-        .catch(err => console.log(err))
-}
 
 // Função para inserir RespostaAluno no banco
 inserirRespostaAluno = (req, res) => {
@@ -41,19 +21,6 @@ inserirRespostaAluno = (req, res) => {
         return res
             .status(400)
             .json({success: false, error: err});
-    }
-
-    console.log(novaRespostaAluno);
-    // Inserir respostaQuestao
-    if (novaRespostaAluno.respostaQuestaoID.length > 0) {
-        let rqID, rqIDs = [];
-        // Insere as TQs
-        novaRespostaAluno.respostaQuestaoID.map(row => {
-            rqID = mongoose.Types.ObjectId();
-            rqIDs.push(rqID);
-            inserirTagQuestao(rqID, row.questaoID, row.alunoID, row.resposta, row.nota);
-        })
-        novaRespostaAluno.respostaQuestaoID = rqIDs;
     }
 
     // Salva nova respostaAluno

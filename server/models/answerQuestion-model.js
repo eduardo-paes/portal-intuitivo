@@ -23,11 +23,9 @@ const RespostaQuestao = new Schema({
     },
     resposta: {
         type: String,
-        required: true
     },
     nota: {
         type: Number,
-        required: true
     }
 });
 

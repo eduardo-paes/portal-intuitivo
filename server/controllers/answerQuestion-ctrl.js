@@ -3,8 +3,7 @@ const RespostaQuestao = require('../models/answerQuestion-model');
 // Função para inserir respostaQuestao no banco
 inserirRespostaQuestao = (req, res) => {
     // Recebe dados do formulário
-    const body = req.body;
-    console.log("Inserindo RQ");
+    const body = req.body
     
     if (!body) {
         return res.status(400).json({
@@ -13,8 +12,7 @@ inserirRespostaQuestao = (req, res) => {
         })
     }
     
-    const novaRespostaQuestao = new RespostaQuestao(body);
-    console.log(novaRespostaQuestao);
+    const novaRespostaQuestao = new RespostaQuestao(body)
     
     // Verifica se dados não são nulos
     if (!novaRespostaQuestao) {
@@ -22,8 +20,6 @@ inserirRespostaQuestao = (req, res) => {
             .status(400)
             .json({success: false, error: err});
     }
-
-    // console.log(novaRespostaQuestao)
 
     // Salva nova tagQuestao
     novaRespostaQuestao
@@ -47,8 +43,6 @@ inserirRespostaQuestao = (req, res) => {
 atualizarRespostaQuestao = async (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
-
-    console.log("Atualizando RQ");
     
     if (!body) {
         return res.status(400).json({
@@ -57,11 +51,10 @@ atualizarRespostaQuestao = async (req, res) => {
         })
     }
     
-    const RespostaQuestaoAtualizada = new RespostaQuestao(body);
-    console.log(RespostaQuestaoAtualizada);
+    const respostaQuestaoAtualizada = new RespostaQuestao(body);
 
     // Verifica se dados não são nulos
-    if (!RespostaQuestaoAtualizada) {
+    if (!respostaQuestaoAtualizada) {
         return res
             .status(400)
             .json({success: false, error: "Os dados são nulos ou incompatíveis."})
@@ -147,7 +140,7 @@ removerRespostaQuestao = async (req, res) => {
         .catch(err => console.log(err))
 }
 
-// Função para buscar tagQuestao por ID
+// Encontra resposta da questão pelo ID fornecido na rota
 encRespostaQuestaoPorID = async (req, res) => {
     // Encontra tagQuestao por ID fornecido na rota
     await RespostaQuestao
@@ -173,18 +166,16 @@ encRespostaQuestaoPorID = async (req, res) => {
         .catch(err => console.log(err))
 }
 
-// Função para buscar tagQuestao por ID
+// Encontra resposta da questão pelo id do aluno, da questão e da atividade fornecidos na rota
 encRespostaQuestaoPorAtividade = async (req, res) => {
-    // Encontra tagQuestao por ID fornecido na rota
-    
+
     await RespostaQuestao
         .findOne({
             atividadeID: req.params.atividadeID,
             alunoID: req.params.alunoID,
             questaoID: req.params.questaoID
         }, (err, respostaQuestaoEncontrada) => {
-            console.log(respostaQuestaoEncontrada);
-            console.log(err)
+            
             if (err) {
                 return res
                     .status(400)
@@ -203,16 +194,16 @@ encRespostaQuestaoPorAtividade = async (req, res) => {
         .catch(err => console.log(err))
 }
 
-// Função para buscar tagQuestao por ID
+// Encontra resposta da questão pelo id do aluno, da questão e da revisão fornecidos na rota
 encRespostaQuestaoPorRevisao = async (req, res) => {
-    // Encontra tagQuestao por ID fornecido na rota
-    console.log(req.params);
+    
     await RespostaQuestao
         .findOne({
             revisaoID: req.params.revisaoID,
             alunoID: req.params.alunoID,
             questaoID: req.params.questaoID
         }, (err, respostaQuestaoEncontrada) => {
+            
             if (err) {
                 return res
                     .status(400)

@@ -20,7 +20,7 @@ import FixacaoIcon from '@material-ui/icons/LocalLibrary';
 import RetomadaIcon from '@material-ui/icons/AssignmentReturn';
 import AprofundamentoIcon from '@material-ui/icons/FindInPage';
 
-function subtituloAcordeão(tipoAcordeao, titulo, disciplinaNome, semana, classes) {
+function subtituloAcordeao(tipoAcordeao, titulo, disciplinaNome, semana, classes) {
     if (tipoAcordeao === 'biblioteca') {
         return (
             <Grid item={true} xs={12} sm={12}>
@@ -375,7 +375,7 @@ export default function ContentAccordion(props) {
         return (
             <>
                 {/* Subtitulo do Acordeão */}
-                {subtituloAcordeão(tipoAcordeao, titulo, disciplinaNome, semana, classes)}
+                {subtituloAcordeao(tipoAcordeao, titulo, disciplinaNome, semana, classes)}
 
                 {/* Material de Estudo */}
                 <Grid item={true} xs={12} sm={gridSize.cont ? gridSize.cont : 'auto'}>
