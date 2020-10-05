@@ -45,3 +45,9 @@ html, body, #root {
     text-decoration: none;
 	cursor: pointer;
 }
+
+@media (max-width: 768px) {
+    #studentPageContainer {
+        padding: 1rem 0.5rem 1rem 0.5rem;
+    }
+}

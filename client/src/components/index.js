@@ -50,7 +50,7 @@ import QuestionCard from './Cards/QuestionCard'
 
 // -- Accorddions
 import ContentAccordion from './Accordions/ContentAccordion'
-import LibraryAccordion from './Accordions/LibraryAccordion'
+import AccordionSkeleton from './Accordions/SkeletonAccordion'
 
 // -- Viewrs
 import PDFViewer from './PDFViewer/PDFViewer'
@@ -96,7 +96,7 @@ export {
     QuestionCard,
 
     ContentAccordion,
-    LibraryAccordion,
+    AccordionSkeleton,
 
     PDFViewer,
 }

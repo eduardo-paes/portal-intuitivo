@@ -218,10 +218,11 @@ export default function ActivityForm (props) {
                             onChange={handleChange}
                             error={atividade.erros.tipoAtividade ? true : false}>
                                 <MenuItem value="Nenhum">Nenhum</MenuItem>
-                                <MenuItem value="Fixação">Fixação</MenuItem>
-                                <MenuItem value="Retomada">Retomada</MenuItem>
                                 <MenuItem value="Aprofundamento">Aprofundamento</MenuItem>
                                 <MenuItem value="Avaliação Diagnóstica">Avaliação Diagnóstica</MenuItem>
+                                <MenuItem value="Fixação">Fixação</MenuItem>
+                                <MenuItem value="Redação">Redação</MenuItem>
+                                <MenuItem value="Retomada">Retomada</MenuItem>
                         </MyTextField>
                         {atividade.erros.tipoAtividade && <p className={classes.errorMessage}>{atividade.erros.tipoAtividade}</p>}
                     </Grid>
@@ -239,6 +240,13 @@ export default function ActivityForm (props) {
                             error={atividade.erros.disciplina ? true : false}>
                                 {
                                     listaDisciplinas.map((row, index) => {
+                                        if (atividade.tipoAtividade === "Redação") {
+                                            if (row.areaConhecimento === 'Linguagens') {
+                                                return <MenuItem key={index} value={row._id} onClick={() => handleSubjectChange("disciplinaID", row._id, row.areaConhecimento)}>{row.nome}</MenuItem>
+                                            }
+                                            // eslint-disable-next-line
+                                            return;
+                                        }
                                         return <MenuItem key={index} value={row._id} onClick={() => handleSubjectChange("disciplinaID", row._id, row.areaConhecimento)}>{row.nome}</MenuItem>
                                     })
                                 }

@@ -3,14 +3,14 @@ import { StoreContext } from "../../utils";
 import api from '../../api';
 
 // -- Material UI Components
-import { AccordionDetails, AccordionSummary, Button, Checkbox, Grid, Slide, Typography, withStyles } from '@material-ui/core';
+import { AccordionDetails, AccordionSummary, Button, Checkbox, Grid, Grow, Typography, withStyles } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
 import CircularStatic from '../ProgressBar/CircularStatic';
 
 // -- Components
 import { GreenButton } from '../../assets/styles/styledComponents';
 import { useStyles } from './styles';
-import { ExerciseDialog, StudyContentDialog } from '../'
+import { ExerciseDialog, StudyContentDialog } from '..'
 
 // -- Icons
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -20,14 +20,35 @@ import FixacaoIcon from '@material-ui/icons/LocalLibrary';
 import RetomadaIcon from '@material-ui/icons/AssignmentReturn';
 import AprofundamentoIcon from '@material-ui/icons/FindInPage';
 
+function subtituloAcordeão(tipoAcordeao, titulo, disciplinaNome, semana, classes) {
+    if (tipoAcordeao === 'biblioteca') {
+        return (
+            <Grid item={true} xs={12} sm={12}>
+                <Grid container={true} style={{padding: "0 1rem 0"}}>
+                    <Grid item={true} xs={6} sm={6}>
+                        <Typography className={classes.secondaryHeading}>{disciplinaNome}</Typography>
+                    </Grid>
+                    <Grid item={true} xs={6} sm={6}>
+                        <Typography className={classes.subtitleLibrary}>Semana {semana}</Typography>
+                    </Grid>
+                </Grid>
+            </Grid>
+        )
+    } else {
+        return (
+            <Grid item={true} xs={12} sm={12}>
+                <Typography id="secondaryHeading" className={classes.secondaryHeading}>{titulo}</Typography>
+            </Grid>
+        )
+    }
+}
+
 export default function ContentAccordion(props) {
-    const { revisaoID, topicoID, nome, color, disciplina, linkAula } = props;
-    const { token } = useContext(StoreContext);
+    const { revisaoID, topicoID, disciplinaNome, titulo, semana, linkAula, tipoAcordeao } = props;
+    const { token } = useContext(StoreContext)
     const alunoID = token.userID;
     const classes = useStyles();
 
-    // Definição dos estados que serão utilizados
-    const [ questoesAD, setQuestoesAD ] = useState([]); 
     // Definição dos estados que serão utilizados
     const [progresso, setProgresso] = useState(0);
     const [activity, setActivity] = useState({
@@ -40,7 +61,7 @@ export default function ContentAccordion(props) {
         videoaula: false,
         exercicioFixacao: false,
         exercicioRetomada: false,
-        exercicioAprofundamento: false
+        exercicioAprofundamento: false,
     });
     const [check, setCheck] = useState({
         materialEstudo: false,
@@ -52,15 +73,21 @@ export default function ContentAccordion(props) {
     });
     const [topicProgress, setTopicProgress] = useState({
         topicoID: topicoID,
-        alunoID: token.userID,
+        alunoID: alunoID,
         progresso: {}
     });
     const [numTasks, setNumTasks] = useState(2);                              // Número de tarefas do tópico
     const [wasChecked, setWasChecked] = useState(false)
-    
+    const [questoesAD, setQuestoesAD] = useState([]); 
+
+    // Ajuste de cores do acordeão
+    let { color } = props;
+    if (!color) {color = '#fdc504'};
+
+    // Acordeão personalizado
     const AccordionPersonalized = withStyles({
         root: {
-          borderBottom: `0.20rem solid ${color}`,
+          borderBottom: `0.2rem solid ${color}`,
           width: '100%'
         }
     })(MuiAccordion);
@@ -73,7 +100,7 @@ export default function ContentAccordion(props) {
             [name]: true
         }));
     };
-    
+
     const handleClickVideo = (event) => {
         setCheck(preValue => ({
             ...preValue,
@@ -83,7 +110,7 @@ export default function ContentAccordion(props) {
         setWasChecked(true);
         window.open(linkAula,'_blank');
     }
-    
+
     async function saveProgress() {
         const novoProgresso = {
             alunoID: topicProgress.alunoID,
@@ -117,6 +144,13 @@ export default function ContentAccordion(props) {
                 if (response.data.success) {
                     let value = response.data.data;
                     let count = 0;
+
+                    // Caso a atividade seja uma redação
+                    if (disciplinaNome === 'Redação') {
+                        setCheck({ redacao: false });
+                        setOpen({ redacao: false });
+                        return setActivity(value);
+                    }
                     
                     // Salva as respectivas atividades em seus campos
                     value.forEach(item => {
@@ -168,6 +202,7 @@ export default function ContentAccordion(props) {
             }
             fetchAtividadeAPI();
         }
+        // eslint-disable-next-line
     }, [])
 
     // -- Salva o progresso após cada alteração em Check
@@ -215,65 +250,94 @@ export default function ContentAccordion(props) {
         // eslint-disable-next-line
     }, [])
 
-    // -- Fetch das Atividades
+    // -- Atualiza os checks de cada atividade após cada alteração em atividade
     useEffect(() => {
-        let fixTam = activity.fixacao.length;
-        let retTam = activity.retomada.length;
-        let aprTam = activity.aprofundamento.length;
+        if (disciplinaNome !== 'Redação') {
+            let fixTam = activity.fixacao.length;
+            let retTam = activity.retomada.length;
+            let aprTam = activity.aprofundamento.length;
 
-        if (fixTam && check.exercicioFixacao === undefined) {
-            setCheck(preValue => ({
-                ...preValue,
-                exercicioFixacao: topicProgress.progresso.fixacao,
-            }))
-        }
+            if (fixTam && check.exercicioFixacao === undefined) {
+                setCheck(preValue => ({
+                    ...preValue,
+                    exercicioFixacao: topicProgress.progresso.fixacao,
+                }))
+            }
 
-        if (retTam && check.exercicioRetomada === undefined) {
-            setCheck(preValue => ({
-                ...preValue,
-                exercicioRetomada: topicProgress.progresso.retomada,
-            }))
-        }
+            if (retTam && check.exercicioRetomada === undefined) {
+                setCheck(preValue => ({
+                    ...preValue,
+                    exercicioRetomada: topicProgress.progresso.retomada,
+                }))
+            }
 
-        if (aprTam && check.exercicioAprofundamento === undefined) {
-            setCheck(preValue => ({
-                ...preValue,
-                exercicioAprofundamento: topicProgress.progresso.aprofundamento
-            }))
+            if (aprTam && check.exercicioAprofundamento === undefined) {
+                setCheck(preValue => ({
+                    ...preValue,
+                    exercicioAprofundamento: topicProgress.progresso.aprofundamento
+                }))
+            }
         }
     // eslint-disable-next-line
     }, [activity])
 
+    // -- Acordeão de Redação
+    const returnRedacao = () => {
 
-    function returnRedacao() {
+        const handleCheckEssay = () => {
+            setOpen({ redacao: true });
+        }
 
-        function handleUpload() {
-            setCheck(preValue => ({
-                ...preValue,
-                redacao: true
-            }));
-            setProgresso(4);
+        const handleUpload = () => {
+            setCheck({ redacao: true });
+            setProgresso(progresso + 1);
         }
 
         return (
             <>
                 <Grid align="center" item={true} xs={12} lg={6} sm={6}>
-                    <Typography id="secondaryHeading" className={classes.secondaryHeading}>Para entregar sua redação, clique no botão ao lado.</Typography>
+                    <Typography id="secondaryHeading" className={classes.secondaryHeading}>
+                        Nos botões a seguir você pode visualizar o enunciado e entregar sua redação para correção dos nossos professores.
+                    </Typography>
                 </Grid>
-                {/* Subir Redação */}
-                <Grid align="center" item={true} xs={12} lg={6} sm={6}>
+
+                {/* Visualizar Enunciado */}
+                <Grid align="center" item={true} align='right' xs={12} lg={3} sm={3}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
                     {
                         check.redacao 
-                            ? <GreenButton className={classes.activityButton} id="redacao" variant="contained" color="primary" onClick={handleUpload}>Subir Redação</GreenButton>
-                            : <Button className={classes.activityButton} id="redacao" variant="outlined" color="primary" onClick={handleUpload}>Subir Redação</Button>
+                            ? <GreenButton fullWidth={true} id="redacao" variant="contained" color="primary" onClick={handleCheckEssay}>Enunciado</GreenButton>
+                            : <Button fullWidth={true} id="redacao" variant="outlined" color="primary" onClick={handleCheckEssay}>Enunciado</Button>
+                    }
+
+                        <ExerciseDialog 
+                            activity={activity}
+                            open={open.redacao}
+                            setOpen={setOpen}
+                            setCheck={setCheck}
+                            title="Retomada"
+                            name="exercicioRetomada"
+                            progresso={progresso}
+                            setProgresso={setProgresso}
+                            setWasChecked={setWasChecked}
+                        />
+                </Grid>
+
+                {/* Subir Redação */}
+                <Grid align="center" item={true} align='right' xs={12} lg={3} sm={3}>
+                    <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
+                    {
+                        check.redacao 
+                            ? <GreenButton fullWidth={true} id="redacao" variant="contained" color="primary" onClick={handleUpload}>Subir Redação</GreenButton>
+                            : <Button fullWidth={true} id="redacao" variant="outlined" color="primary" onClick={handleUpload}>Subir Redação</Button>
                     }
                 </Grid>
             </>
         )
     }
 
-    function returnAD() {
+    // -- Acordeão de ADs
+    const returnAD = () => {
         return (
             <>
                 <Grid align="center" item={true} xs={12} lg={6} sm={6}>
@@ -306,16 +370,15 @@ export default function ContentAccordion(props) {
         )
     }
 
-    function returnTopico() {
+    // -- Acordeão Padrão dos Tópicos
+    const returnTopico = () => {
         return (
             <>
-                {/* Subtitulo do Accordion */}
-                <Grid item={true} xs={12} sm={12}>
-                    <Typography id="secondaryHeading" className={classes.secondaryHeading}>{nome}</Typography>
-                </Grid>
+                {/* Subtitulo do Acordeão */}
+                {subtituloAcordeão(tipoAcordeao, titulo, disciplinaNome, semana, classes)}
 
                 {/* Material de Estudo */}
-                <Grid item={true} xs={12} sm={gridSize.cont}>
+                <Grid item={true} xs={12} sm={gridSize.cont ? gridSize.cont : 'auto'}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
                     {
                         check.materialEstudo 
@@ -338,7 +401,7 @@ export default function ContentAccordion(props) {
                     }
                     <StudyContentDialog 
                         topicoID={topicoID}
-                        titulo={nome}
+                        titulo={titulo}
                         progresso={progresso}
                         setProgresso={setProgresso}
                         open={open}
@@ -349,7 +412,7 @@ export default function ContentAccordion(props) {
                 </Grid>
                 
                 {/* Video-aula */}
-                <Grid item={true} xs={12} sm={gridSize.cont}>
+                <Grid item={true} xs={12} sm={gridSize.cont ? gridSize.cont : 'auto'}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.videoaula}/>
                     {
                         check.videoaula 
@@ -375,8 +438,8 @@ export default function ContentAccordion(props) {
 
                 {/* Exercícios de Fixação */}
                 { activity.fixacao.length !== 0 &&
-                    <Grid item={true} xs={12} sm={gridSize.exe}>
-                        <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.exercicioFixacao}/>
+                    <Grid item={true} xs={12} sm={gridSize.exe ? gridSize.exe : 'auto'}>
+                        <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.exercicioFixacao ? check.exercicioFixacao : false}/>
                         {
                             check.exercicioFixacao 
                                 ? <GreenButton 
@@ -412,8 +475,8 @@ export default function ContentAccordion(props) {
 
                 {/* Exercícios de Retomada */}
                 { activity.retomada.length !== 0 &&
-                    <Grid item={true} xs={12} sm={gridSize.exe}>
-                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioRetomada}/>
+                    <Grid item={true} xs={12} sm={gridSize.exe ? gridSize.exe : 'auto'}>
+                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioRetomada ? check.exercicioRetomada : false}/>
                         {
                             check.exercicioRetomada 
                                 ? <GreenButton 
@@ -451,8 +514,8 @@ export default function ContentAccordion(props) {
 
                 {/* Exercícios de Aprofundamento */}
                 { activity.aprofundamento.length !== 0 &&
-                    <Grid item={true} xs={12} sm={gridSize.exe}>
-                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioAprofundamento}/>
+                    <Grid item={true} xs={12} sm={gridSize.exe ? gridSize.exe : 'auto'}>
+                        <Checkbox className={classes.checkbox} disabled={true} hidden={true} checked={check.exercicioAprofundamento ? check.exercicioAprofundamento : false}/>
                         {
                             check.exercicioAprofundamento 
                                 ? <GreenButton 
@@ -491,42 +554,29 @@ export default function ContentAccordion(props) {
     }
 
     return (
-        <Slide direction="up" in={true} mountOnEnter unmountOnExit>
+        <Grow in={true} style={{ transformOrigin: '0 0 0' }} {...({ timeout: 1000 })}>
             <AccordionPersonalized>
                 <AccordionSummary
+                    className={classes.accordionSummary}
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
                     id="cabecalhoAccordionLibrary">
                     <CircularStatic progresso={progresso} numTasks={numTasks}/>
-                    <Typography id="heading" className={classes.heading}>{disciplina}</Typography>
+                    <Typography id="heading" className={classes.heading}>{titulo}</Typography>
                 </AccordionSummary>
 
                 <AccordionDetails>
                     <Grid container={true} className={classes.accordionDetails} spacing={2}>
-                    {
-                        (revisaoID !== undefined )
-                            ? returnAD() 
-                            : (disciplina === 'Redação') 
-                                ? returnRedacao() 
-                                : returnTopico()
-                    }
-
-                    {/* {returnTopico()} */}
+                        {
+                            (revisaoID !== undefined )
+                                ? returnAD() 
+                                : (disciplinaNome === 'Redação') 
+                                    ? returnRedacao() 
+                                    : returnTopico()
+                        }
                     </Grid>
                 </AccordionDetails>
             </AccordionPersonalized>
-        </Slide>
+        </Grow>
     )
 }
-
-/*
-
-{
-    (revisaoID !== undefined )
-        ? returnAD() 
-        : (disciplina === 'Redação') 
-            ? returnRedacao() 
-            : returnTopico()
-}
-
-*/

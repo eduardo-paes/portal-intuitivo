@@ -42,6 +42,7 @@ router.get("/controle-conteudo", ConteudoCtrl.listarConteudos);
 router.get("/controle-conteudo/disciplina/:id", ConteudoCtrl.listarConteudoPorDisciplina);
 router.get(`/controle-conteudo/filtro/:numeracao?/:disciplinaID?/:topicoID?`, ConteudoCtrl.listarConteudoPorFiltro);
 router.get(`/controle-conteudo/topico/:id?/:numeracao?`, ConteudoCtrl.encConteudoPersonalizado);
+router.get(`/controle-conteudo/corrente/:numeracao?/:diaSemana?`, ConteudoCtrl.listarConteudoCorrente);
 
 // DISCIPLINA -- Definição dos métodos para cada rota da disciplina
 router.post("/configuracoes/disciplina", DisciplinaCtrl.inserirDisciplina);
@@ -99,7 +100,8 @@ router.delete("/controle-atividade/:id", AtividadeCtrl.removerAtividade);
 router.get("/controle-atividade/:id", AtividadeCtrl.encAtividadePorID);
 router.get("/controle-atividade/questoes/:id", AtividadeCtrl.encQuestoesDaAtividadeID);
 router.get("/controle-atividade", AtividadeCtrl.listarAtividade);
-router.get("/plano-estudo/:id", AtividadeCtrl.listarAtividadesPorTopico);
+router.get("/controle-atividade/topico/:id", AtividadeCtrl.listarAtividadesPorTopico);
+router.get("/controle-atividade/redacao/:numeracao", AtividadeCtrl.encRedacaoDaSemana);
 
 // REVISAO -- Definição dos métodos para cada rota de atividade
 router.post("/controle-revisao", RevisaoCtrl.inserirRevisao);
