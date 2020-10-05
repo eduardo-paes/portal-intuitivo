@@ -78,8 +78,11 @@ router.get("/controle-questao/tags/:id", QuestaoCtrl.listarTQPorQuestaoID);
 
 // RESPOSTA-QUESTÃO -- Definição dos métodos para cada rota de respostaQuestão
 router.post("/resposta-questao", RespostaQuestaoCtrl.inserirRespostaQuestao);
+router.put("/resposta-questao/:id", RespostaQuestaoCtrl.atualizarRespostaQuestao);
 router.delete("/resposta-questao/:id", RespostaQuestaoCtrl.removerRespostaQuestao);
 router.get("/resposta-questao/:id", RespostaQuestaoCtrl.encRespostaQuestaoPorID);
+router.get("/resposta-questao/:atividadeID/:alunoID/:questaoID", RespostaQuestaoCtrl.encRespostaQuestaoPorAtividade);
+router.get("/resposta-questao/:revisaoID/:alunoID/:questaoID", RespostaQuestaoCtrl.encRespostaQuestaoPorRevisao);
 router.get("/resposta-questao", RespostaQuestaoCtrl.listarRespostaQuestao);
 router.get("/resposta-questao/questao/:id", RespostaQuestaoCtrl.listarRQPorQuestaoID);
 router.get("/resposta-questao/user/:id", RespostaQuestaoCtrl.listarRQPorAlunoID);

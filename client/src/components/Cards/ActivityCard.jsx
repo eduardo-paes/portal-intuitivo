@@ -44,8 +44,7 @@ export default function ActivityCard(props) {
     // Pega dados da resposta do aluno e prepara para salvamento
     useEffect(() => {
         const abortController = new AbortController();
-        
-        if ()
+        //if (respostaAtual)
 
         // if (flag === true) {
         //     const alunoID = token.token.userID;
@@ -110,8 +109,10 @@ export default function ActivityCard(props) {
                     setRespostaQuestao={setRespostaQuestao}
                     respostaQuestao={respostaQuestao}
                     atividadeID={atividadeID}
+                    revisaoID={revisaoID}
                     teste={teste}
                     setTeste={setTeste}
+                    alunoID={token.token.userID}
                 />
             </div>
         );
@@ -147,6 +148,8 @@ export default function ActivityCard(props) {
                                                 setRespostaQuestao={setRespostaQuestao}
                                                 respostaQuestao={respostaQuestao}
                                                 atividadeID={atividadeID}
+                                                revisaoID={revisaoID}
+                                                alunoID={token.token.userID}
                                             />
                                         </div>            
                                     );

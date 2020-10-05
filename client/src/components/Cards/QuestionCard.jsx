@@ -4,23 +4,34 @@ import { MyCardContent } from "../../assets/styles/styledComponents"
 import RadioAnswer from "../Radio/RadioAnswer";
 import { Grid, TextField } from "@material-ui/core";
 import {useStyles} from '../../assets/styles/classes';
+import api from "../../api";
 
 export default function QuestionCard (props) {
 
     const classes = useStyles();
-    const { idQuestion, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao, teste, setTeste } = props;
+    const { idQuestion, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao, teste, setTeste, atividadeID, revisaoID, alunoID } = props;
     const [value, setValue] = React.useState(0);
     const [answered, setAnswered] = React.useState(false);
+    const [flag, setFlag] = React.useState(false);
     const [color, setColor] = React.useState('default');
+    const [res, setRes] = React.useState();
+    const idRQ = getAnswer();
 
-    function getAnswer() {
-        console.log(idQuestion)
-        if (teste) {
-            Object.entries(teste).map((row, index) => {
-                if (idQuestion === row[0])
-                    setValue(row[1]);
-            })
+    async function getAnswer() {
+        let response;
+        
+        if (atividadeID) {
+            response = await api.encRespostaQuestaoPorAtividade(atividadeID, alunoID, idQuestion);
+        } else if (revisaoID) {
+            response = await api.encRespostaQuestaoPorRevisao(revisaoID, alunoID, idQuestion);
         }
+        
+        if (response.data.success === true) {
+            setTeste(response.data.data);
+            return response.data.data._id;
+        }
+
+        return false;
     }
 
     // const handleSubmit = (event) => {
@@ -37,17 +48,36 @@ export default function QuestionCard (props) {
     // };
 
     useEffect(() => {
-        // console.log(teste);
-        getAnswer();
-    }, [idQuestion])
+    }, [idQuestion]);
 
+    useEffect(() => {
+        async function atualizarRQ () {
+            const response = getAnswer();
+            await api.atualizarRespostaQuestao(response.data.data._id, teste);       
+        }
+        async function inserirRQ () {
+            await api.inserirRespostaQuestao(teste);       
+        }
+        console.log(teste);
+        if (teste.length !== 0) {
+            if (idRQ) atualizarRQ(idRQ, teste);
+            else inserirRQ(teste);
+        } else {
+            setTeste(prevValue => ({
+                ...prevValue,
+                alunoID,
+                atividadeID,
+                revisaoID,
+                questaoID: idQuestion
+            }))
+        }
+    }, [teste]);
 
     function pegarRespostaDiscursiva(event) {
         const { value } = event.target;  
-        const id = idQuestion;
         setTeste(prevValue => ({
             ...prevValue,
-            [id]: value
+            resposta: value
         }));
         // setRespostaQuestao((preValue) => ({
         //     ...preValue,
@@ -69,7 +99,7 @@ export default function QuestionCard (props) {
                                 idQuestion={idQuestion} 
                                 respostaQuestao={respostaQuestao}
                                 setRespostaQuestao={setRespostaQuestao} 
-                                value={value} 
+                                value={teste.resposta ? teste.resposta : null} 
                                 setValue={setValue} 
                                 answered={answered} 
                                 gabarito={gabarito._id} 
@@ -83,9 +113,9 @@ export default function QuestionCard (props) {
                                 className={classes.answerField}
                                 id={respostaQuestao.questao}
                                 label="Resposta"
-                                defaultValue={value ? value : null}
+                                defaultValue={value ? value : ''}
                                 multiline
-                                value={respostaQuestao.resposta}
+                                value={teste.resposta ? teste.resposta : null}
                                 onChange={pegarRespostaDiscursiva}
                             />
                         </Grid>

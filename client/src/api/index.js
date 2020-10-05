@@ -38,9 +38,11 @@ export const listarTagsPorDisciplina = id => api.get(`/configuracoes/tags/${id}`
 
 // -- Funções relacionadas à RespostaQuestao
 export const inserirRespostaQuestao = novaRespostaQuestao => api.post("/resposta-questao", novaRespostaQuestao);
-export const atualizarRespostaQuestao = (id, conteudoAtualizado) => api.put(`/resposta-questao/${id}`)
+export const atualizarRespostaQuestao = (id, respostaQuestaoAtualizada) => api.put(`/resposta-questao/${id}`, respostaQuestaoAtualizada)
 export const removerRespostaQuestao = id => api.delete(`/resposta-questao/${id}`);
 export const encRespostaQuestaoPorID = id => api.get(`/resposta-questao/${id}`);
+export const encRespostaQuestaoPorAtividade = (atividadeID, alunoID, questaoID) => api.get(`/resposta-questao/${atividadeID}/${alunoID}/${questaoID}`);
+export const encRespostaQuestaoPorRevisao = (revisaoID, alunoID, questaoID) => api.get(`/resposta-questao/${revisaoID}/${alunoID}/${questaoID}`);
 export const listarRespostaQuestao = () => api.get(`/resposta-questao`);
 export const listarRQPorQuestaoID = questaoID => api.get(`/resposta-questao/questao/${questaoID}`);
 export const listarRQPorAlunoID = alunoID => api.get(`/resposta-questao/user/${alunoID}`);
@@ -135,8 +137,11 @@ const apis = {
     listarTagsPorDisciplina,
     //Resposta-Questão
     inserirRespostaQuestao,
+    atualizarRespostaQuestao,
     removerRespostaQuestao,
     encRespostaQuestaoPorID,
+    encRespostaQuestaoPorAtividade,
+    encRespostaQuestaoPorRevisao,
     listarRespostaQuestao,
     listarRQPorQuestaoID,
     listarRQPorAlunoID,

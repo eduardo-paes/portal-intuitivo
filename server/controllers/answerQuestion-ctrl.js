@@ -4,16 +4,18 @@ const RespostaQuestao = require('../models/answerQuestion-model');
 inserirRespostaQuestao = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
-
+    console.log("Inserindo RQ");
+    
     if (!body) {
         return res.status(400).json({
             success: false,
             error: "A resposta da questão deve ser fornecida.",
         })
     }
-
+    
     const novaRespostaQuestao = new RespostaQuestao(body);
-
+    console.log(novaRespostaQuestao);
+    
     // Verifica se dados não são nulos
     if (!novaRespostaQuestao) {
         return res
@@ -46,14 +48,17 @@ atualizarRespostaQuestao = async (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
 
+    console.log("Atualizando RQ");
+    
     if (!body) {
         return res.status(400).json({
             success: false,
             error: "Os dados devem ser fornecidos.",
         })
     }
-
+    
     const RespostaQuestaoAtualizada = new RespostaQuestao(body);
+    console.log(RespostaQuestaoAtualizada);
 
     // Verifica se dados não são nulos
     if (!RespostaQuestaoAtualizada) {
@@ -168,13 +173,45 @@ encRespostaQuestaoPorID = async (req, res) => {
         .catch(err => console.log(err))
 }
 
-
 // Função para buscar tagQuestao por ID
-encRespostaQuestao = async (req, res) => {
+encRespostaQuestaoPorAtividade = async (req, res) => {
     // Encontra tagQuestao por ID fornecido na rota
+    
     await RespostaQuestao
         .findOne({
-            atividadeID: req.params.id
+            atividadeID: req.params.atividadeID,
+            alunoID: req.params.alunoID,
+            questaoID: req.params.questaoID
+        }, (err, respostaQuestaoEncontrada) => {
+            console.log(respostaQuestaoEncontrada);
+            console.log(err)
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!respostaQuestaoEncontrada) {
+                return res
+                    .json({success: false, error: "Resposta da questão não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: respostaQuestaoEncontrada})
+        })
+        .catch(err => console.log(err))
+}
+
+// Função para buscar tagQuestao por ID
+encRespostaQuestaoPorRevisao = async (req, res) => {
+    // Encontra tagQuestao por ID fornecido na rota
+    console.log(req.params);
+    await RespostaQuestao
+        .findOne({
+            revisaoID: req.params.revisaoID,
+            alunoID: req.params.alunoID,
+            questaoID: req.params.questaoID
         }, (err, respostaQuestaoEncontrada) => {
             if (err) {
                 return res
@@ -268,6 +305,8 @@ module.exports = {
     atualizarRespostaQuestao,
     removerRespostaQuestao,
     encRespostaQuestaoPorID,
+    encRespostaQuestaoPorAtividade,
+    encRespostaQuestaoPorRevisao,
     listarRespostaQuestao,
     listarRQPorQuestaoID,
     listarRQPorAlunoID
