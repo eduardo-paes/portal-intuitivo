@@ -106,6 +106,20 @@ export const encProgressoPorID = id => api.get(`/progresso-conteudo/${id}`);
 export const encProgressoPorTopico = (alunoID, topicoID) => api.get(`/progresso-conteudo/topico/${alunoID}/${topicoID}`);
 export const listarProgressoPorAluno = id => api.get(`/progresso-conteudo/aluno/${id}`);
 
+// -- Funções relacionadas à Progresso da Redação
+export const inserirProgressoRedacao = novoProgresso => api.post("/progresso-redacao", novoProgresso);
+export const atualizarProgressoRedacao = (id, progressoAtualizado) => api.put(`/progresso-redacao/${id}`, progressoAtualizado);
+export const removerProgressoRedacao = id => api.delete(`/progresso-redacao/${id}`);
+export const encProgressoRedacaoPorID = id => api.get(`/progresso-redacao/${id}`);
+export const encProgressoPorRedacaoID = (alunoID, redacaoID) => api.get(`/progresso-redacao/${alunoID}/${redacaoID}`);
+
+// -- Funções relacionadas à Progresso da Revisão
+export const inserirProgressoRevisao = novoProgresso => api.post("/progresso-revisao", novoProgresso);
+export const atualizarProgressoRevisao = (id, progressoAtualizado) => api.put(`/progresso-revisao/${id}`, progressoAtualizado);
+export const removerProgressoRevisao = id => api.delete(`/progresso-revisao/${id}`);
+export const encProgressoRevisaoPorID = id => api.get(`/progresso-revisao/${id}`);
+export const encProgressoPorRevisaoID = (alunoID, revisaoID) => api.get(`/progresso-revisao/${alunoID}/${revisaoID}`);
+
 const apis = {
     // Usuário
     inserirUsuario,
@@ -199,6 +213,18 @@ const apis = {
     encProgressoPorID,
     encProgressoPorTopico,
     listarProgressoPorAluno,
+    // ProgressoRedacao
+    inserirProgressoRedacao,
+    atualizarProgressoRedacao,
+    removerProgressoRedacao,
+    encProgressoRedacaoPorID,
+    encProgressoPorRedacaoID,
+    // ProgressoRevisao
+    inserirProgressoRevisao,
+    atualizarProgressoRevisao,
+    removerProgressoRevisao,
+    encProgressoRevisaoPorID,
+    encProgressoPorRevisaoID,
 }
 
 export default apis;

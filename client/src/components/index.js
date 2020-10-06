@@ -52,8 +52,9 @@ import QuestionCard from './Cards/QuestionCard'
 import ContentAccordion from './Accordions/ContentAccordion'
 import AccordionSkeleton from './Accordions/SkeletonAccordion'
 
-// -- Viewrs
+// -- Others
 import PDFViewer from './PDFViewer/PDFViewer'
+import RadioAnswer from "./Radio/RadioAnswer";
 
 export { 
     UserTable,
@@ -99,4 +100,5 @@ export {
     AccordionSkeleton,
 
     PDFViewer,
+    RadioAnswer,
 }

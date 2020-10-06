@@ -23,7 +23,7 @@ const RespostaAlunoCtrl = require("../controllers/studentAnswer-ctrl");
 const AtividadeCtrl = require("../controllers/activity-ctrl");
 const RevisaoCtrl = require("../controllers/revision-ctrl");
 const ClassLinkCtrl = require("../controllers/class-link-ctrl");
-const ProgressoTopicoCtrl = require("../controllers/progressTopic-ctrl");
+const ProgressoCtrl = require("../controllers/generalProgress-ctrl");
 
 // USUÁRIO -- Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
@@ -122,12 +122,26 @@ router.get("/aula-link/:id", ClassLinkCtrl.encClassLinkPorID);
 router.get("/aula-link", ClassLinkCtrl.listarClassLink);  
 
 // PROGRESSO -- Definição dos métodos para cada rota de progressoTopico
-router.post("/progresso-conteudo", ProgressoTopicoCtrl.inserirProgresso);
-router.put("/progresso-conteudo/:id", ProgressoTopicoCtrl.atualizarProgresso);
-router.delete("/progresso-conteudo/:id", ProgressoTopicoCtrl.removerProgresso);
-router.get("/progresso-conteudo/:id", ProgressoTopicoCtrl.encProgressoPorID);
-router.get("/progresso-conteudo/topico/:alunoID/:topicoID", ProgressoTopicoCtrl.encProgressoPorTopico);
-router.get("/progresso-conteudo/aluno/:id", ProgressoTopicoCtrl.listarProgressoPorAluno);
+router.post("/progresso-conteudo", ProgressoCtrl.inserirProgresso);
+router.put("/progresso-conteudo/:id", ProgressoCtrl.atualizarProgresso);
+router.delete("/progresso-conteudo/:id", ProgressoCtrl.removerProgresso);
+router.get("/progresso-conteudo/:id", ProgressoCtrl.encProgressoPorID);
+router.get("/progresso-conteudo/topico/:alunoID/:topicoID", ProgressoCtrl.encProgressoPorTopico);
+router.get("/progresso-conteudo/aluno/:id", ProgressoCtrl.listarProgressoPorAluno);
+
+// PROGRESSO -- Definição dos métodos para cada rota de progressoRedacao
+router.post("/progresso-redacao", ProgressoCtrl.inserirProgressoRedacao);
+router.put("/progresso-redacao/:id", ProgressoCtrl.atualizarProgressoRedacao);
+router.delete("/progresso-redacao/:id", ProgressoCtrl.removerProgressoRedacao);
+router.get("/progresso-redacao/:id", ProgressoCtrl.encProgressoRedacaoPorID);
+router.get("/progresso-redacao/:alunoID/:redacaoID", ProgressoCtrl.encProgressoPorRedacaoID);
+
+// PROGRESSO -- Definição dos métodos para cada rota de progressoRevisao
+router.post("/progresso-revisao", ProgressoCtrl.inserirProgressoRevisao);
+router.put("/progresso-revisao/:id", ProgressoCtrl.atualizarProgressoRevisao);
+router.delete("/progresso-revisao/:id", ProgressoCtrl.removerProgressoRevisao);
+router.get("/progresso-revisao/:id", ProgressoCtrl.encProgressoRevisaoPorID);
+router.get("/progresso-revisao/:alunoID/:revisaoID", ProgressoCtrl.encProgressoPorRevisaoID);
 
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {

@@ -74,14 +74,18 @@ export default function CircularStatic(props) {
 
   useEffect(() => {
     const abortController = new AbortController();
+    if (numTasks) {
       setProgress(progresso * (100/numTasks));
+    } else {
+      setProgress(progresso * 100);
+    }
     return abortController.abort();
     // eslint-disable-next-line
   }, [progresso, numTasks]);
 
   const returnCircle = () => {
     
-    if (progresso < numTasks) {
+    if (progresso < numTasks || progresso === 0) {
       return <CircularProgressWithLabel value={progress} />;
     } else {
       return <CircularIntegration/>

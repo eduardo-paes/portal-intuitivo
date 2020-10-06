@@ -3,7 +3,7 @@ import { StoreContext } from "../../utils";
 import api from '../../api';
 
 // -- Material UI Components
-import { AccordionDetails, AccordionSummary, Button, Checkbox, Grid, Grow, Typography, withStyles } from '@material-ui/core';
+import { AccordionDetails, AccordionSummary, Button, Checkbox, Grid, Fade, Typography, withStyles } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
 import CircularStatic from '../ProgressBar/CircularStatic';
 
@@ -19,6 +19,8 @@ import AulaIcon from '@material-ui/icons/OndemandVideo';
 import FixacaoIcon from '@material-ui/icons/LocalLibrary';
 import RetomadaIcon from '@material-ui/icons/AssignmentReturn';
 import AprofundamentoIcon from '@material-ui/icons/FindInPage';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 function subtituloAcordeao(tipoAcordeao, titulo, disciplinaNome, semana, classes) {
     if (tipoAcordeao === 'biblioteca') {
@@ -44,13 +46,13 @@ function subtituloAcordeao(tipoAcordeao, titulo, disciplinaNome, semana, classes
 }
 
 export default function ContentAccordion(props) {
-    const { revisaoID, topicoID, disciplinaNome, titulo, semana, linkAula, tipoAcordeao } = props;
+    const { topicoID, disciplinaNome, titulo, semana, linkAula, tipoAcordeao, essay, revision } = props;
     const { token } = useContext(StoreContext)
     const alunoID = token.userID;
     const classes = useStyles();
 
     // Definição dos estados que serão utilizados
-    const [progresso, setProgresso] = useState(0);
+    const [progresso, setProgresso] = useState(0);                              // Contagem do Progresso
     const [activity, setActivity] = useState({
         retomada: [],
         fixacao: [],
@@ -76,9 +78,9 @@ export default function ContentAccordion(props) {
         alunoID: alunoID,
         progresso: {}
     });
-    const [numTasks, setNumTasks] = useState(2);                              // Número de tarefas do tópico
-    const [wasChecked, setWasChecked] = useState(false)
-    const [questoesAD, setQuestoesAD] = useState([]); 
+    const [numTasks, setNumTasks] = useState((essay || revision) ? 0 : 2);      // Número de tarefas do tópico
+    const [wasChecked, setWasChecked] = useState(false);                        // Flag de salvamento do Progresso                      
+    const [wasLoaded, setWasLoaded] = useState(false);                          // Flag de carregamento da animação do Acordeão
 
     // Ajuste de cores do acordeão
     let { color } = props;
@@ -92,7 +94,7 @@ export default function ContentAccordion(props) {
         }
     })(MuiAccordion);
 
-    // Definição das funções 
+    // Função de abertura dos diálogos
     const handleClickOpen = (event) => {
         const name = event.target.offsetParent.id;
         setOpen(preValue => ({
@@ -101,17 +103,12 @@ export default function ContentAccordion(props) {
         }));
     };
 
-    const handleClickVideo = (event) => {
-        setCheck(preValue => ({
-            ...preValue,
-            videoaula: true
-        }));
-        setProgresso(progresso + 1);
-        setWasChecked(true);
-        window.open(linkAula,'_blank');
-    }
+    // ==============================================
+    // Funções da API
+    // ==============================================
 
-    async function saveProgress() {
+    // Salvamento do progresso do TÓPICO
+    async function saveTopicProgress() {
         const novoProgresso = {
             alunoID: topicProgress.alunoID,
             topicoID: topicProgress.topicoID,
@@ -136,72 +133,175 @@ export default function ContentAccordion(props) {
         }
     }
 
-    // -- Carregamento inicial
-    useEffect(() => {
-        if (topicoID) {
-            async function fetchAtividadeAPI() {
-                const response = await api.listarAtividadesPorTopico(topicoID);
-                if (response.data.success) {
-                    let value = response.data.data;
-                    let count = 0;
-
-                    // Caso a atividade seja uma redação
-                    if (disciplinaNome === 'Redação') {
-                        setCheck({ redacao: false });
-                        setOpen({ redacao: false });
-                        return setActivity(value);
-                    }
-                    
-                    // Salva as respectivas atividades em seus campos
-                    value.forEach(item => {
-                        if (item.tipoAtividade === 'Retomada') {
-                            count++;
-                            return setActivity(preValue => ({
-                                ...preValue,
-                                retomada: item
-                            }))
-                        } else if (item.tipoAtividade === 'Fixação') {
-                            count++;
-                            return setActivity(preValue => ({
-                                ...preValue,
-                                fixacao: item
-                            }))
-                        } else if (item.tipoAtividade === 'Aprofundamento') {
-                            count++;
-                            return setActivity(preValue => ({
-                                ...preValue,
-                                aprofundamento: item
-                            }))
-                        }
-                    })
-                    
-                    // Número de botões no acordeão
-                    count === 0 && setNumTasks(2);
-                    count === 1 && setNumTasks(3);
-                    count === 2 && setNumTasks(4);
-                    count === 3 && setNumTasks(5);
-
-                    // Grid com divisão dinâmica
-                    if (count) {
-                        count === 1 && setGridSize({
-                            exe: 4,
-                            cont: 4
-                        });
-
-                        count === 2 && setGridSize({
-                            exe: 3,
-                            cont: 3
-                        });
-
-                        count === 3 && setGridSize({
-                            exe: 2,
-                            cont: 3
-                        });
-                    }
-                }
-            }
-            fetchAtividadeAPI();
+    // Salvamento do progresso da REDAÇÃO
+    async function saveEssayProgress() {
+        const novoProgresso = {
+            alunoID: topicProgress.alunoID,
+            redacaoID: essay._id,
+            progresso: check.redacao,
         }
+
+        console.log(novoProgresso);
+
+        if (!topicProgress._id) {
+            await api
+                .inserirProgressoRedacao(novoProgresso)
+                .then(res => {
+                    setTopicProgress(preValue => ({
+                        ...preValue,
+                        _id: res.data.id
+                    }))
+                    console.log(res.data.message);
+                })
+        } else {
+            await api
+                .atualizarProgressoRedacao(topicProgress._id, novoProgresso)
+                .then(res => {
+                    console.log(res.data.message);
+                })
+        }
+    }
+
+    // Salvamento do progresso da REVISÃO
+    async function saveRevisionProgress() {
+        const novoProgresso = {
+            alunoID: topicProgress.alunoID,
+            revisaoID: revision._id,
+            progresso: check.avaliacaoDiagnostica,
+        }
+
+        console.log(novoProgresso);
+
+        if (!topicProgress._id) {
+            await api
+                .inserirProgressoRevisao(novoProgresso)
+                .then(res => {
+                    setTopicProgress(preValue => ({
+                        ...preValue,
+                        _id: res.data.id
+                    }))
+                })
+        } else {
+            await api
+                .atualizarProgressoRevisao(topicProgress._id, novoProgresso)
+                .then(res => {
+                    console.log(res.data.message);
+                })
+        }
+    }
+
+    // Carrega progresso do TÓPICO
+    async function fetchProgressoTopicoAPI() {
+        const response = await api.encProgressoPorTopico(alunoID, topicoID);
+        const value = response.data;
+        if (value.success) {
+            setTopicProgress(value.data);
+            if (value.data.progresso) {
+                let auxProgress = value.data.progresso;
+                let count = 0;
+                setCheck(auxProgress);
+                auxProgress.videoaula && count++;
+                auxProgress.materialEstudo && count++;
+                auxProgress.exercicioAprofundamento && count++;
+                auxProgress.exercicioFixacao && count++;
+                auxProgress.exercicioRetomada && count++;
+                setProgresso(count);
+            }
+        }
+    }
+
+    // Carrega progresso da REDAÇÃO
+    async function fetchProgressoRedacaoAPI() {
+        const response = await api.encProgressoPorRedacaoID(alunoID, essay._id);
+        const value = response.data;
+        if (value.success) {
+            setTopicProgress(value.data);
+            setCheck({ redacao: value.data.progresso });
+            setProgresso(value.data.progresso ? 1 : 0);
+        }
+    }
+
+    // Carrega progresso da REVISAO
+    async function fetchProgressoRevisaoAPI() {
+        const response = await api.encProgressoPorRevisaoID(alunoID, revision._id);
+        const value = response.data;
+        if (value.success) {
+            setTopicProgress(value.data);
+            setCheck({ avaliacaoDiagnostica: value.data.progresso });
+            setProgresso(value.data.progresso ? 1 : 0);
+        }
+    }
+
+    // Carrega as atividades do banco
+    async function fetchAtividadeAPI() {
+        const response = await api.listarAtividadesPorTopico(topicoID);
+        if (response.data.success) {
+            let value = response.data.data;
+            let count = 0;
+
+            // Salva as respectivas atividades em seus campos
+            value.forEach(item => {
+                if (item.tipoAtividade === 'Retomada') {
+                    count++;
+                    return setActivity(preValue => ({
+                        ...preValue,
+                        retomada: item
+                    }))
+                } else if (item.tipoAtividade === 'Fixação') {
+                    count++;
+                    return setActivity(preValue => ({
+                        ...preValue,
+                        fixacao: item
+                    }))
+                } else if (item.tipoAtividade === 'Aprofundamento') {
+                    count++;
+                    return setActivity(preValue => ({
+                        ...preValue,
+                        aprofundamento: item
+                    }))
+                }
+            })
+            
+            // Número de botões no acordeão
+            count === 0 && setNumTasks(2);
+            count === 1 && setNumTasks(3);
+            count === 2 && setNumTasks(4);
+            count === 3 && setNumTasks(5);
+
+            // Grid com divisão dinâmica
+            if (count) {
+                count === 1 && setGridSize({ exe: 4, cont: 4 });
+                count === 2 && setGridSize({ exe: 3, cont: 3 });
+                count === 3 && setGridSize({ exe: 2, cont: 3 });
+            }
+        }
+    }
+
+    // -- Carregamento inicial dos dados
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        if (topicoID) {
+            fetchAtividadeAPI();
+            fetchProgressoTopicoAPI();
+            setWasLoaded(true);
+        }
+
+        if (essay) {
+            setCheck({ redacao: false });
+            setOpen({ redacao: false });
+            fetchProgressoRedacaoAPI();
+            setWasLoaded(true);
+        }
+
+        if (revision) {
+            setCheck({ avaliacaoDiagnostica: false });
+            setOpen({ avaliacaoDiagnostica: false });
+            fetchProgressoRevisaoAPI();
+            setWasLoaded(true);
+        }
+
+        return abortController.abort();
         // eslint-disable-next-line
     }, [])
 
@@ -213,42 +313,22 @@ export default function ContentAccordion(props) {
             progresso: check
         }));
         if (wasChecked) {
-            saveProgress();
+            if (topicoID) {
+                saveTopicProgress();
+            }
+
+            if (revision) {
+                saveRevisionProgress();
+            }
+
+            if (essay) {
+                saveEssayProgress();
+            } 
             setWasChecked(false);
         }
         return abortController.abort();
         // eslint-disable-next-line
     }, [check])
-
-    // -- Fetch do Progresso
-    useEffect(() => {
-        const abortController = new AbortController();
-        if (topicoID && alunoID) {
-            async function fetchProgressAPI() {
-                const response = await api.encProgressoPorTopico(alunoID, topicoID);
-                const value = response.data;
-                if (value.success) {
-                    setTopicProgress(value.data);
-                    if (value.data.progresso) {
-                        let auxProgress = value.data.progresso;
-                        let count = 0;
-                        setCheck(auxProgress);
-
-                        auxProgress.videoaula && count++;
-                        auxProgress.materialEstudo && count++;
-                        auxProgress.exercicioAprofundamento && count++;
-                        auxProgress.exercicioFixacao && count++;
-                        auxProgress.exercicioRetomada && count++;
-
-                        setProgresso(count);
-                    }
-                }
-            }
-            fetchProgressAPI();
-        }
-        return abortController.abort();
-        // eslint-disable-next-line
-    }, [])
 
     // -- Atualiza os checks de cada atividade após cada alteração em atividade
     useEffect(() => {
@@ -291,32 +371,45 @@ export default function ContentAccordion(props) {
         const handleUpload = () => {
             setCheck({ redacao: true });
             setProgresso(progresso + 1);
+            setWasChecked(true);
         }
 
         return (
             <>
-                <Grid align="center" item={true} xs={12} lg={6} sm={6}>
+                <Grid item={true} align='center' xs={12} sm={6}>
                     <Typography id="secondaryHeading" className={classes.secondaryHeading}>
                         Nos botões a seguir você pode visualizar o enunciado e entregar sua redação para correção dos nossos professores.
                     </Typography>
                 </Grid>
 
                 {/* Visualizar Enunciado */}
-                <Grid align="center" item={true} align='right' xs={12} lg={3} sm={3}>
+                <Grid item={true} align='right' xs={12} sm={3}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
                     {
                         check.redacao 
-                            ? <GreenButton fullWidth={true} id="redacao" variant="contained" color="primary" onClick={handleCheckEssay}>Enunciado</GreenButton>
-                            : <Button fullWidth={true} id="redacao" variant="outlined" color="primary" onClick={handleCheckEssay}>Enunciado</Button>
+                            ? <GreenButton 
+                                fullWidth={true} 
+                                id="redacao" 
+                                variant="contained" 
+                                color="primary" 
+                                startIcon={<VisibilityIcon />}
+                                onClick={handleCheckEssay}>Enunciado</GreenButton>
+                                : <Button 
+                                fullWidth={true} 
+                                id="redacao" 
+                                variant="outlined" 
+                                color="primary" 
+                                startIcon={<VisibilityIcon />}
+                                onClick={handleCheckEssay}>Enunciado</Button>
                     }
-
+                    
                         <ExerciseDialog 
-                            activity={activity}
-                            open={open.redacao}
+                            activity={essay}
+                            open={open.redacao ? open.redacao : false}
                             setOpen={setOpen}
                             setCheck={setCheck}
-                            title="Retomada"
-                            name="exercicioRetomada"
+                            title="Redação"
+                            name="redacao"
                             progresso={progresso}
                             setProgresso={setProgresso}
                             setWasChecked={setWasChecked}
@@ -324,12 +417,24 @@ export default function ContentAccordion(props) {
                 </Grid>
 
                 {/* Subir Redação */}
-                <Grid align="center" item={true} align='right' xs={12} lg={3} sm={3}>
+                <Grid item={true} align='right' xs={12} sm={3}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
                     {
                         check.redacao 
-                            ? <GreenButton fullWidth={true} id="redacao" variant="contained" color="primary" onClick={handleUpload}>Subir Redação</GreenButton>
-                            : <Button fullWidth={true} id="redacao" variant="outlined" color="primary" onClick={handleUpload}>Subir Redação</Button>
+                            ? <GreenButton 
+                                fullWidth={true} 
+                                id="redacao" 
+                                variant="contained" 
+                                color="primary" 
+                                startIcon={<CloudUploadIcon />}
+                                onClick={handleUpload}>Subir Redação</GreenButton>
+                            : <Button 
+                                fullWidth={true} 
+                                id="redacao" 
+                                variant="outlined" 
+                                color="primary" 
+                                startIcon={<CloudUploadIcon />}
+                                onClick={handleUpload}>Subir Redação</Button>
                     }
                 </Grid>
             </>
@@ -340,31 +445,28 @@ export default function ContentAccordion(props) {
     const returnAD = () => {
         return (
             <>
-                <Grid align="center" item={true} xs={12} lg={6} sm={6}>
-                    <Typography id="secondaryHeading" className={classes.secondaryHeading}>Are you ready?! Clique ao lado para fazer sua avaliação diagnóstica.</Typography>
+                <Grid align="center" item={true} xs={12} sm={8}>
+                    <Typography id="secondaryHeading" className={classes.secondaryHeading}>
+                        Are you ready?! <br/> Já está liberada sua avaliação diagnóstica, clique no botão que se segue para começar!
+                    </Typography>
                 </Grid>
-                <Grid align="center" item={true} xs={12} lg={6} sm={6}>
+                <Grid align="center" item={true} xs={12} sm={4}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
                     {
                         check.avaliacaoDiagnostica 
-                            ? <GreenButton className={classes.activityButton} id="avaliacaoDiagnostica" variant="contained" color="primary" onClick={handleClickOpen}>Avaliação Diagnóstica</GreenButton>
-                            : <Button className={classes.activityButton} id="avaliacaoDiagnostica" variant="outlined" color="primary" onClick={handleClickOpen}>Avaliação Diagnóstica</Button>
+                            ? <GreenButton className={classes.activityButton} fullWidth={true} id="avaliacaoDiagnostica" variant="contained" color="primary" onClick={handleClickOpen}>Avaliação Diagnóstica</GreenButton>
+                            : <Button className={classes.activityButton} fullWidth={true} id="avaliacaoDiagnostica" variant="outlined" color="primary" onClick={handleClickOpen}>Avaliação Diagnóstica</Button>
                     }
-                    {
-                        (questoesAD.length > 0) 
-                            ? <ExerciseDialog 
-                                topicoID={topicoID}
-                                open={open.avaliacaoDiagnostica}
-                                setOpen={setOpen}
-                                setCheck={setCheck}
-                                title="Avaliação Diagnóstica"
-                                name="exercicioFixacao"
-                                activityType="Avaliação Diagnóstica"
-                                progresso={progresso}
-                                setProgresso={setProgresso}
-                                question={questoesAD}/>
-                            : null
-                    }
+                    <ExerciseDialog 
+                        activity={revision}
+                        open={open.avaliacaoDiagnostica ? open.avaliacaoDiagnostica : false}
+                        setOpen={setOpen}
+                        setCheck={setCheck}
+                        title="Avaliação Diagnóstica"
+                        name="avaliacaoDiagnostica"
+                        progresso={progresso}
+                        setProgresso={setProgresso}
+                        setWasChecked={setWasChecked}/>
                 </Grid>
             </>
         )
@@ -372,6 +474,17 @@ export default function ContentAccordion(props) {
 
     // -- Acordeão Padrão dos Tópicos
     const returnTopico = () => {
+        // Ao clicar no botão de videoaula
+        const handleClickVideo = () => {
+            setCheck(preValue => ({
+                ...preValue,
+                videoaula: true
+            }));
+            setProgresso(progresso + 1);
+            setWasChecked(true);
+            window.open(linkAula,'_blank');
+        }
+
         return (
             <>
                 {/* Subtitulo do Acordeão */}
@@ -554,8 +667,8 @@ export default function ContentAccordion(props) {
     }
 
     return (
-        <Grow in={true} style={{ transformOrigin: '0 0 0' }} {...({ timeout: 1000 })}>
-            <AccordionPersonalized>
+        <Fade in={wasLoaded} style={{transitionDelay: '250ms'}}>
+            <AccordionPersonalized TransitionProps={{ unmountOnExit: false }}>
                 <AccordionSummary
                     className={classes.accordionSummary}
                     expandIcon={<ExpandMoreIcon />}
@@ -568,15 +681,15 @@ export default function ContentAccordion(props) {
                 <AccordionDetails>
                     <Grid container={true} className={classes.accordionDetails} spacing={2}>
                         {
-                            (revisaoID !== undefined )
+                            (revision)
                                 ? returnAD() 
-                                : (disciplinaNome === 'Redação') 
+                                : (essay) 
                                     ? returnRedacao() 
                                     : returnTopico()
                         }
                     </Grid>
                 </AccordionDetails>
             </AccordionPersonalized>
-        </Grow>
+        </Fade>
     )
 }

@@ -15,7 +15,7 @@ import { useTheme } from '@material-ui/core/styles';
 import api from '../../api';
 
 export default function ActivityCard(props) {
-    const { handleClose, handleFinalized, question, atividadeID, revisaoID } = props;
+    const { handleClose, handleFinalized, question, atividadeID, revisaoID, name } = props;
     const token = useContext(StoreContext);
     const [value, setValue] = useState(1);
     const [answered, setAnswered] = useState(false);
@@ -81,6 +81,7 @@ export default function ActivityCard(props) {
                     respostaQuestao={respostaQuestao}
                     setRespostaQuestao={setRespostaQuestao}
                     alunoID={token.token.userID}
+                    name={name}
                 />
             </div>
         );

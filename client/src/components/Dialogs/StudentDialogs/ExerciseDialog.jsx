@@ -31,9 +31,10 @@ export default function ExerciseDialog(props) {
 
     // -- Fetch das questões
     async function fetchQuestaoAPI(atividadeID) {
-        const resQuestao = await api.encQuestoesDaAtividadeID(atividadeID);
-        const valQuestao = resQuestao.data.data;
-        let questao = valQuestao.map(item => { return item.questaoID });
+        const response = await api.encQuestoesDaAtividadeID(atividadeID);
+        const value = response.data.data;
+        let questao = value.map(item => { return item.questaoID });
+        console.log(value);
         setQuestion(questao);
     }
 

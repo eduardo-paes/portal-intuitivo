@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 // -- Material UI
-import { makeStyles, useMediaQuery, useTheme, Grid, MenuItem, Tooltip, Typography, Fab, Grow } from "@material-ui/core";
+import { makeStyles, useMediaQuery, useTheme, Grid, MenuItem, Tooltip, Typography, Fab, Fade } from "@material-ui/core";
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 
 // -- Local Components
@@ -151,11 +151,7 @@ export default function Library (props) {
             <Grid container={true} justify="flex-start" spacing={1}>
 
               <Grid item={true} xs={12} lg={4} sm={4}>
-                <Grow
-                  in={true}
-                  style={{ transformOrigin: '0 0 0' }}
-                  {...({ timeout: 1000 })}
-                >
+                <Fade in={true} style={{transitionDelay: '250ms'}}>
                   <MyTextField
                     id="campoDisciplina"
                     variant="outlined"
@@ -164,14 +160,10 @@ export default function Library (props) {
                     className={classes.filterText}
                     value={filter.topico ? filter.topico : ''}
                     onChange={onFilterChange}/>
-                </Grow>
+                </Fade>
               </Grid>
               <Grid item={true} xs={12} lg={4} sm={4}>
-                <Grow
-                  in={true}
-                  style={{ transformOrigin: '0 0 0' }}
-                  {...({ timeout: 1000 })}
-                >
+                <Fade in={true} style={{transitionDelay: '250ms'}}>
                   <MyTextField
                     id="campoDisciplina"
                     variant="outlined"
@@ -187,14 +179,10 @@ export default function Library (props) {
                       })
                     }
                   </MyTextField>
-                </Grow>
+                </Fade>
               </Grid>
               <Grid item={true} xs={12} lg={4} sm={4}>
-                <Grow
-                  in={true}
-                  style={{ transformOrigin: '0 0 0' }}
-                  {...({ timeout: 1000 })}
-                >
+                <Fade in={true} style={{transitionDelay: '250ms'}}>
                   <MyTextField
                     id="filtroNumeracao"
                     select={true}
@@ -211,14 +199,14 @@ export default function Library (props) {
                         })
                       }
                   </MyTextField>
-                </Grow>
+                </Fade>
               </Grid>
               
             </Grid>
           </Grid>
 
           <Grid item={true} xs={12} sm={1} className={smScreen ? classes.smFilterFab : 'none'} align="center">
-            <Grow
+            <Fade
               in={true}
               style={{ transformOrigin: '0 0 0' }}
               {...({ timeout: 1000 })}
@@ -228,7 +216,7 @@ export default function Library (props) {
                     <ClearAllIcon />
                   </Fab>
                 </Tooltip>
-            </Grow>
+            </Fade>
           </Grid>
 
         </Grid>

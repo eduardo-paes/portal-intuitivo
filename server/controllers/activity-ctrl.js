@@ -288,8 +288,6 @@ encRedacaoDaSemana = async (req, res) => {
                     return res.status(404).json({success: false, error: "Conteúdo não encontrado."})
                 }
 
-                console.log(redacaoEncontrada);
-
                 // Dados encontrados com sucesso
                 return res.status(200).json({success: true, data: redacaoEncontrada})
             })
