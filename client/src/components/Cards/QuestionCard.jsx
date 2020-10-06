@@ -11,49 +11,63 @@ import api from "../../api";
 
 export default function QuestionCard (props) {
     const classes = useStyles();
-    const { idQuestion, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao, respostaQuestaoIDs, setRespostaQuestaoIDs, atividadeID, revisaoID, alunoID, name } = props;
+    const { idQuestion, answered, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao, respostaQuestaoIDs, setRespostaQuestaoIDs, atividadeID, revisaoID, alunoID, name } = props;
     const [value, setValue] = useState(0);
-    const [answered, setAnswered] = useState(false);
     const [color, setColor] = useState('default');
 
     // const [flag, setFlag] = useState(false);
     // const [res, setRes] = useState();
 
-    async function atualizarRQ (resposta) {
-        const response = getAnswer();
-        await api.atualizarRespostaQuestao(response.data.data._id, {resposta});       
+    async function limpar() {
+        api.removerRespostaQuestao("5f7cddd8b66d292960c2028b");
+        api.removerRespostaQuestao("5f7cde00b66d292960c2028c");
+        api.removerRespostaQuestao("5f7cde30b66d292960c2028e");
+        api.removerRespostaQuestao("5f7cde37b66d292960c20290");
+        api.removerRespostaQuestao("5f7cde58b66d292960c20291");
+        api.removerRespostaQuestao("5f7cdea1b66d292960c20292");
+        // api.removerRespostaQuestao("5f7cdc9189242c217269ac44");
+        // api.removerRespostaQuestao("5f7cdcc7b66d292960c20287");
+        // api.removerRespostaQuestao("5f7cdccab66d292960c20289");
     }
     
-    async function getAnswer() {
+    async function pegarResposta() {
+        
         let response;
+
         
         if (atividadeID) {
             response = await api.encRespostaQuestaoPorAtividade(atividadeID, alunoID, idQuestion);
-        } else if (revisaoID) {
+        } else {
             response = await api.encRespostaQuestaoPorRevisao(revisaoID, alunoID, idQuestion);
         }
         
         if (response.data.success === true) {
+            console.log(response.data.data._id)
             setRespostaQuestao(response.data.data);
-            return response.data.data._id;
-        }
-        
-        else {
+        } else {
             await api.inserirRespostaQuestao({
                 alunoID,
                 atividadeID,
                 revisaoID,
-                questaoID: idQuestion
+                questaoID: idQuestion,
+                resposta: ''
             }).then((res) => {
                 setRespostaQuestao(res.data.data);
-                setRespostaQuestaoIDs(res.data.data._id);
+
+                if(!respostaQuestaoIDs.find(element => element === res.data.id)) {
+                    let array = respostaQuestaoIDs;
+                    array.push(res.data.id);
+                    setRespostaQuestaoIDs(array);
+                }
             });
         }
     }
     
     useEffect(() => {
         const abortController = new AbortController();
-        getAnswer();
+        pegarResposta();
+        // limpar();
+        console.log(respostaQuestaoIDs);
         return abortController.abort();
     }, [idQuestion]);
 
@@ -74,11 +88,7 @@ export default function QuestionCard (props) {
             return (
                 <Grid className={classes.questionText} item={true} align="left" xs={12} lg={12} sm={12}>
                     <RadioAnswer 
-                        idQuestion={idQuestion} 
-                        respostaQuestao={respostaQuestao}
-                        setRespostaQuestao={setRespostaQuestao} 
-                        value={respostaQuestao.resposta ? respostaQuestao.resposta : ''} 
-                        setValue={setValue} 
+                        idQuestion={idQuestion}
                         answered={answered} 
                         gabarito={gabarito._id} 
                         color={color} 

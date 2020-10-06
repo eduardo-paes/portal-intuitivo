@@ -17,21 +17,24 @@ inserirRespostaQuestao = (req, res) => {
     // Verifica se dados não são nulos
     if (!novaRespostaQuestao) {
         return res
-            .status(400)
-            .json({success: false, error: err});
+        .status(400)
+        .json({success: false, error: err});
     }
-
+    console.log(novaRespostaQuestao);
+    
     // Salva nova tagQuestao
     novaRespostaQuestao
         .save()
         .then(() => {
             return res.status(201).json({
                 success: true,
+                data: novaRespostaQuestao,
                 id: novaRespostaQuestao._id,
                 message: "Resposta da questão inserida com sucesso!",
             })
         })
         .catch(error => {
+            console.log(error);
             return res.status(400).json({
                 error,
                 message: "Resposta da questão não inserida.",
@@ -196,25 +199,26 @@ encRespostaQuestaoPorAtividade = async (req, res) => {
 
 // Encontra resposta da questão pelo id do aluno, da questão e da revisão fornecidos na rota
 encRespostaQuestaoPorRevisao = async (req, res) => {
-    
+
     await RespostaQuestao
         .findOne({
             revisaoID: req.params.revisaoID,
             alunoID: req.params.alunoID,
             questaoID: req.params.questaoID
         }, (err, respostaQuestaoEncontrada) => {
+
             
             if (err) {
                 return res
-                    .status(400)
-                    .json({success: false, error: err})
+                .status(400)
+                .json({success: false, error: err})
             }
-
+            
             if (!respostaQuestaoEncontrada) {
                 return res
-                    .status(404)
-                    .json({success: false, error: "Resposta da questão não encontrada."})
+                .json({success: false, error: "Resposta da questão não encontrada."})
             }
+            
 
             return res
                 .status(200)
