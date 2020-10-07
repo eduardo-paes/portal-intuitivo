@@ -15,10 +15,9 @@ import { useTheme } from '@material-ui/core/styles';
 import api from '../../api';
 
 export default function ActivityCard(props) {
-    const { handleClose, handleFinalized, question, atividadeID, revisaoID, name } = props;
+    const { handleClose, handleFinalized, question, atividadeID, revisaoID, name, answered } = props;
     const token = useContext(StoreContext);
     const [value, setValue] = useState(1);
-    const [answered, setAnswered] = useState(false);
     const [respostaQuestaoIDs, setRespostaQuestaoIDs] = useState([]);
     const [respostaQuestao, setRespostaQuestao] = useState([]);
     
@@ -51,15 +50,14 @@ export default function ActivityCard(props) {
     }
 
     const handleSubmit = async () => {
-        const respostaQuestaoID = ["5f7b7d2f59e6cd1464b8dc78", "5f7b8341584bec14f3aaa61a", "5f7b83c3584bec14f3aaa61b"]
+
         const alunoID = token.token.userID;
         const respostaAluno = {
             alunoID,
             atividadeID,
             revisaoID,
-            respostaQuestaoID
+            respostaQuestaoIDs
         }
-        setAnswered(true);
         await api.inserirRespostaAluno(respostaAluno);
         handleFinalized();
     };

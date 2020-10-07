@@ -81,9 +81,35 @@ removerRespostaAluno = async (req, res) => {
         .catch(err => console.log(err))
 }
 
-// Função para buscar tagQuestao por ID
+// Função para buscar resposta do aluno pelo id do aluno e da atividade
+encRespostaAluno = async (req, res) => {
+    // Encontra resposta do aluno pelo id do aluno e da atividade fornecidos na rota
+    await RespostaAluno
+        .findOne({
+            alunoID: req.params.alunoID,
+            revisaoID: req.params.revisaoID
+        }, (err, respostaAlunoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!respostaAlunoEncontrada) {
+                return res
+                    .json({success: false, error: "Resposta do aluno não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: respostaAlunoEncontrada})
+        })
+        .catch(err => console.log(err))
+}
+
+// Função para buscar resposta do aluno por ID
 encRespostaAlunoPorID = async (req, res) => {
-    // Encontra tagQuestao por ID fornecido na rota
+    // Encontra resposta do aluno por ID fornecido na rota
     await RespostaAluno
         .findOne({
             _id: req.params.id

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import api from '../../../api';
 
 // -- Material UI Components
 import { AppBar, Dialog, Grid, IconButton, Slide, Toolbar, Typography } from '@material-ui/core';
 
 // -- Components
+import { StoreContext } from '../../../utils';
 import { useStyles } from '../../../assets/styles/classes';
 import { ActivityCard } from '../../'
 
@@ -24,10 +25,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 }); 
 
 export default function ExerciseDialog(props) {
-    const { activity, open, setOpen, setCheck, title, name, progresso, setProgresso, setWasChecked } = props;
+    const { activity, open, setOpen, setCheck, title, name, progresso, setProgresso, setWasChecked, setAnswered, answered } = props;
     const classes = useStyles();
     const [question, setQuestion] = useState([]); 
     const [respostaAluno, setRespostaAluno] = useState(initialState);
+    const token = useContext(StoreContext);
 
     // -- Fetch das questões
     async function fetchQuestaoAPI(atividadeID) {
@@ -51,6 +53,12 @@ export default function ExerciseDialog(props) {
     // -- Resposta do aluno
     useEffect(() => {
         const abortController = new AbortController();
+        const alunoID = token.token.userID;
+        async function verificarRespostaAluno() {
+            let response = await api.encRespostaAluno(alunoID, activity._id);
+            if (response.data.success) setAnswered(true);
+            setAnswered(false)
+        }
         setRespostaAluno(respostaAluno);
         return abortController.abort();
         // eslint-disable-next-line

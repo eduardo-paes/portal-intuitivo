@@ -92,6 +92,7 @@ router.get("/resposta-questao/user/:id", RespostaQuestaoCtrl.listarRQPorAlunoID)
 router.post("/resposta-aluno", RespostaAlunoCtrl.inserirRespostaAluno);
 router.delete("/resposta-aluno/:id", RespostaAlunoCtrl.removerRespostaAluno);
 router.get("/resposta-aluno/:id", RespostaAlunoCtrl.encRespostaAlunoPorID);
+// router.get("/resposta-aluno/:alunoID/:revisaoID", RespostaAlunoCtrl.encRespostaAluno);
 router.get("/resposta-aluno", RespostaAlunoCtrl.listarRespostaAluno);
 router.get("/resposta-aluno/respostaquestao/:id", RespostaAlunoCtrl.listarRAPorRespostaQuestaoID);
 router.get("/resposta-aluno/user/:id", RespostaAlunoCtrl.listarRAPorAlunoID);

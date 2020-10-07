@@ -80,7 +80,8 @@ export default function ContentAccordion(props) {
     });
     const [numTasks, setNumTasks] = useState((essay || revision) ? 0 : 2);      // Número de tarefas do tópico
     const [wasChecked, setWasChecked] = useState(false);                        // Flag de salvamento do Progresso                      
-    const [wasLoaded, setWasLoaded] = useState(false);                          // Flag de carregamento da animação do Acordeão
+    const [wasLoaded, setWasLoaded] = useState(false);
+    const [answered, setAnswered] = useState(false);                          // Flag de carregamento da animação do Acordeão
 
     // Ajuste de cores do acordeão
     let { color } = props;
@@ -413,6 +414,8 @@ export default function ContentAccordion(props) {
                             progresso={progresso}
                             setProgresso={setProgresso}
                             setWasChecked={setWasChecked}
+                            answered={answered}
+                            setAnswered={setAnswered}
                         />
                 </Grid>
 
