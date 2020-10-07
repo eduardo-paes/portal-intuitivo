@@ -26,7 +26,7 @@ export default function ActivityCard(props) {
     const classes = useStyles();
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
+    
     let arrayAux = [];
     let gabarito = [];
 
@@ -52,6 +52,7 @@ export default function ActivityCard(props) {
 
     const handleSubmit = async () => {
 
+        await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         const alunoID = token.token.userID;
         const respostaAluno = {
             alunoID,
@@ -63,8 +64,14 @@ export default function ActivityCard(props) {
         handleFinalized();
     };
 
+    const voltar = async () => {
+        await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
+        handleClose();
+    }
+
     // Retorna card com as questões na versão desktop
     function retDesktopQuestionCard() {
+        
         return (
             <div key={value}>                        
                 <Typography variant="h6" className={classes.title}>{isEssay ? "Enunciado" : "Questão " + (value)}</Typography>
@@ -99,6 +106,7 @@ export default function ActivityCard(props) {
             </Grid>
 
             {/* QuestionCard */}
+            
             <Grid className={classes.question} align="center" item={true} xs={isEssay ? 11 : 10} lg={isEssay ? 11 : 10} sm={isEssay ? 11 : 10}>
                 { 
                     !smScreen 
@@ -106,25 +114,32 @@ export default function ActivityCard(props) {
                         : <SwipeableViews animateHeight={true} className={classes.swipeableViews} enableMouseEvents> 
                             {
                                 question.map((row, index) => {
-                                    return ( 
+                                    arrayAux.push(respostaQuestao.resposta);
+                                    // console.log(arrayAux)
+                                    return (
                                         <div className={classes.questionCardDiv} key={index}>                        
                                             <Typography variant="h6" className={classes.title}>{isEssay ? "Enunciado" : "Questão " + (index+1)}</Typography>
                                             <QuestionCard 
                                                 idQuestion={row._id}
+                                                atividadeID={atividadeID}
                                                 enunciado={row.enunciado} 
+                                                alunoID={token.token.userID}
                                                 tipoResposta={row.tipoResposta} 
                                                 padraoResposta={row.padraoResposta} 
                                                 resposta={row.resposta}
                                                 gabarito={gabarito[index]}
                                                 setRespostaQuestao={setRespostaQuestao}
                                                 respostaQuestao={respostaQuestao}
-                                                atividadeID={atividadeID}
+                                                setRespostaQuestaoIDs={setRespostaQuestaoIDs}
+                                                respostaQuestaoIDs={respostaQuestaoIDs}
                                                 revisaoID={revisaoID}
-                                                alunoID={token.token.userID}
                                                 name={name}
+                                                answered={answered}
+                                                mobile={smScreen}
+                                                respostaMobile={arrayAux[index]}
                                             />
-                                        </div>            
-                                    );
+                                        </div>
+                                    )
                                 })
                             } 
                         </SwipeableViews>
@@ -140,7 +155,7 @@ export default function ActivityCard(props) {
 
             {/* Rodapé */}
             <Grid item={true} xs={12} lg={12} sm={12} align='center' >                        
-                <Button className={classes.buttons} variant='contained' color="primary" onClick={handleClose}>
+                <Button className={classes.buttons} variant='contained' color="primary" onClick={voltar}>
                     Voltar
                 </Button>
                 { 

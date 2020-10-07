@@ -5,8 +5,6 @@ inserirRespostaAluno = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
 
-    console.log(req.body)
-
     if (!body) {
         return res.status(400).json({
             success: false,

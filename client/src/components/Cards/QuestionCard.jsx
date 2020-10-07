@@ -11,24 +11,9 @@ import api from "../../api";
 
 export default function QuestionCard (props) {
     const classes = useStyles();
-    const { idQuestion, answered, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao, respostaQuestaoIDs, setRespostaQuestaoIDs, atividadeID, revisaoID, alunoID, name } = props;
+    const { idQuestion, answered, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao, respostaQuestaoIDs, setRespostaQuestaoIDs, atividadeID, revisaoID, alunoID, name, mobile, respostaMobile } = props;
     const [value, setValue] = useState(0);
     const [color, setColor] = useState('default');
-
-    // const [flag, setFlag] = useState(false);
-    // const [res, setRes] = useState();
-
-    async function limpar() {
-        api.removerRespostaQuestao("5f7cddd8b66d292960c2028b");
-        api.removerRespostaQuestao("5f7cde00b66d292960c2028c");
-        api.removerRespostaQuestao("5f7cde30b66d292960c2028e");
-        api.removerRespostaQuestao("5f7cde37b66d292960c20290");
-        api.removerRespostaQuestao("5f7cde58b66d292960c20291");
-        api.removerRespostaQuestao("5f7cdea1b66d292960c20292");
-        // api.removerRespostaQuestao("5f7cdc9189242c217269ac44");
-        // api.removerRespostaQuestao("5f7cdcc7b66d292960c20287");
-        // api.removerRespostaQuestao("5f7cdccab66d292960c20289");
-    }
     
     async function pegarResposta() {
         
@@ -42,7 +27,6 @@ export default function QuestionCard (props) {
         }
         
         if (response.data.success === true) {
-            console.log(response.data.data._id)
             setRespostaQuestao(response.data.data);
         } else {
             await api.inserirRespostaQuestao({
@@ -93,6 +77,8 @@ export default function QuestionCard (props) {
                         resposta={resposta}
                         respostaQuestao={respostaQuestao}
                         setRespostaQuestao={setRespostaQuestao}
+                        mobile={mobile} 
+                        respostaMobile={respostaMobile}
                     />
                 </Grid>
             )
@@ -107,7 +93,12 @@ export default function QuestionCard (props) {
                         label="Resposta"
                         defaultValue={value ? value : ''}
                         multiline
-                        value={respostaQuestao.resposta ? respostaQuestao.resposta : null}
+                        value={
+                            respostaQuestao.resposta && !mobile ?
+                            respostaQuestao.resposta : 
+                            respostaQuestao.resposta && mobile ?
+                            respostaMobile : null
+                        }
                         onChange={pegarRespostaDiscursiva}
                     />
                 </Grid>

@@ -80,7 +80,6 @@ export default function ContentAccordion(props) {
     });
     const [numTasks, setNumTasks] = useState((essay || revision) ? 0 : 2);      // Número de tarefas do tópico
     const [wasChecked, setWasChecked] = useState(false);                        // Flag de salvamento do Progresso                      
-    const [answered, setAnswered] = useState(false);                          // Flag de carregamento da animação do Acordeão
 
     const [wasLoaded, setWasLoaded] = useState(false);                          // Flag de carregamento da animação do Acordeão
     const [feedOpen, setFeedOpen] = useState(false);                            // Abre dialogo de inserção da redação
@@ -282,6 +281,10 @@ export default function ContentAccordion(props) {
         }
     }
 
+    function verificaProgresso() {
+        if (revision === 'Avaliação Diagnóstica') return topicProgress.progresso;
+    }
+
     // -- Carregamento inicial dos dados
     useEffect(() => {
         const abortController = new AbortController();
@@ -289,6 +292,7 @@ export default function ContentAccordion(props) {
         if (topicoID) {
             fetchAtividadeAPI();
             fetchProgressoTopicoAPI();
+            console.log(topicProgress);
             setWasLoaded(true);
         }
 
@@ -296,6 +300,7 @@ export default function ContentAccordion(props) {
             setCheck({ redacao: false });
             setOpen({ redacao: false });
             fetchProgressoRedacaoAPI();
+            console.log(topicProgress);
             setWasLoaded(true);
         }
 
@@ -303,6 +308,7 @@ export default function ContentAccordion(props) {
             setCheck({ avaliacaoDiagnostica: false });
             setOpen({ avaliacaoDiagnostica: false });
             fetchProgressoRevisaoAPI();
+            console.log(topicProgress);
             setWasLoaded(true);
         }
 
@@ -444,8 +450,6 @@ export default function ContentAccordion(props) {
                             progresso={progresso}
                             setProgresso={setProgresso}
                             setWasChecked={setWasChecked}
-                            answered={answered}
-                            setAnswered={setAnswered}
                         />
                 </Grid>
 
@@ -488,7 +492,11 @@ export default function ContentAccordion(props) {
                         name="avaliacaoDiagnostica"
                         progresso={progresso}
                         setProgresso={setProgresso}
-                        setWasChecked={setWasChecked}/>
+                        setWasChecked={setWasChecked}
+                        answered=
+                            {
+                               verificaProgresso()  
+                            }/>
                 </Grid>
             </>
         )

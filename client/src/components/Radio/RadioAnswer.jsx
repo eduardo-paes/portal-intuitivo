@@ -17,7 +17,7 @@ export const useStyles = makeStyles((theme) => ({
 }))
 
 export default function RadioAnswer(props) {
-  const { answered, color, gabarito, resposta, respostaQuestao, setRespostaQuestao } = props;
+  const { answered, color, gabarito, resposta, respostaQuestao, setRespostaQuestao, mobile, respostaMobile } = props;
   const classes = useStyles();
 
   const handleChange = (event) => {
@@ -32,7 +32,16 @@ export default function RadioAnswer(props) {
   return (
     <>
       <FormControl className={classes.formControl} component="fieldset">
-        <RadioGroup aria-label="respostas" value={respostaQuestao.resposta ? respostaQuestao.resposta : null} name="respostas" onChange={handleChange}>
+        <RadioGroup 
+          aria-label="respostas" 
+          value={
+              respostaQuestao.resposta && !mobile ?
+              respostaQuestao.resposta : 
+              respostaQuestao.resposta && mobile ?
+              respostaMobile : null
+          } 
+          name="respostas" 
+          onChange={handleChange}>
           {
               resposta.map((row, index) => {
                   return (
