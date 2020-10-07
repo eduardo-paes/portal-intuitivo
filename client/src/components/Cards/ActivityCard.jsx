@@ -69,7 +69,7 @@ export default function ActivityCard(props) {
     function retDesktopQuestionCard() {
         return (
             <div key={value}>                        
-                <Typography variant="h6" hidden={name === 'redacao' ? true : false} className={classes.title}>{"Questão " + (value)}</Typography>
+                <Typography variant="h6" className={classes.title}>{isEssay ? "Enunciado" : "Questão " + (value)}</Typography>
                 <QuestionCard 
                     idQuestion={question[value-1]._id}
                     enunciado={question[value-1].enunciado} 
@@ -92,7 +92,7 @@ export default function ActivityCard(props) {
     }
 
     return (
-        <Grid container={true} className={classes.question}>
+        <Grid container={true} justify="center" className={classes.question}>
             {/* Voltar para Esquerda */}
             <Grid align="left" hidden={isEssay} item={true} xs={1} lg={1} sm={1}>
                 <IconButton className={classes.backArrow} color="primary" disabled={ value === 1 ? true : false } onClick={decrementValue}>
@@ -101,7 +101,7 @@ export default function ActivityCard(props) {
             </Grid>
 
             {/* QuestionCard */}
-            <Grid className={classes.question} align="center" item={true} xs={isEssay ? 12 : 10} lg={isEssay ? 12 : 10} sm={isEssay ? 12 : 10}>
+            <Grid className={classes.question} align="center" item={true} xs={isEssay ? 11 : 10} lg={isEssay ? 11 : 10} sm={isEssay ? 11 : 10}>
                 { 
                     !smScreen 
                         ? retDesktopQuestionCard()
@@ -110,7 +110,7 @@ export default function ActivityCard(props) {
                                 question.map((row, index) => {
                                     return ( 
                                         <div className={classes.questionCardDiv} key={index}>                        
-                                            <Typography variant="h6" hidden={isEssay} className={classes.title}>{"Questão " + (index+1)}</Typography>
+                                            <Typography variant="h6" className={classes.title}>{isEssay ? "Enunciado" : "Questão " + (index+1)}</Typography>
                                             <QuestionCard 
                                                 idQuestion={row._id}
                                                 enunciado={row.enunciado} 
@@ -147,7 +147,7 @@ export default function ActivityCard(props) {
                 </Button>
                 { 
                     value === question.length && !isEssay
-                        ? <Button className={classes.buttons} variant='contained' color="primary" onClick={handleSubmit}> Concluir Atividade </Button>
+                        ? <Button className={classes.buttons} variant='contained' color="primary" onClick={handleSubmit}>{smScreen ? 'Concluir' : 'Concluir Atividade'}</Button>
                         : null
                 }
             </Grid> 
