@@ -36,11 +36,10 @@ export default function ExerciseDialog(props) {
         const response = await api.encQuestoesDaAtividadeID(atividadeID);
         const value = response.data.data;
         let questao = value.map(item => { return item.questaoID });
-        console.log(value);
         setQuestion(questao);
     }
 
-    // -- Carrega as questões
+    // -- Carrega as questões da atividade
     useEffect(() => {
         const abortController = new AbortController();
         if (open && activity) {
@@ -50,7 +49,7 @@ export default function ExerciseDialog(props) {
         // eslint-disable-next-line
     }, [activity, open] )
 
-    // -- Resposta do aluno
+    // -- Confirma salvamento das Respostas do aluno
     useEffect(() => {
         const abortController = new AbortController();
         const alunoID = token.token.userID;
@@ -64,7 +63,7 @@ export default function ExerciseDialog(props) {
         // eslint-disable-next-line
     }, [respostaAluno])
 
-    // Fechar card
+    // -- Fechamento do card
     const handleClose = (event) => {
         setOpen(preValue => ({
             ...preValue,
@@ -72,7 +71,7 @@ export default function ExerciseDialog(props) {
         }))
     };
 
-    // Finalizar exercício
+    // -- Finalização da atividade
     const handleFinalized = () => {
         setCheck(preValue => ({
             ...preValue,

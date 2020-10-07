@@ -66,8 +66,6 @@ export default function QuestionCard (props) {
     useEffect(() => {
         const abortController = new AbortController();
         pegarResposta();
-        // limpar();
-        console.log(respostaQuestaoIDs);
         return abortController.abort();
     }, [idQuestion]);
 
@@ -86,7 +84,7 @@ export default function QuestionCard (props) {
         
         if (tipoResposta === "multiplaEscolha") {
             return (
-                <Grid className={classes.questionText} item={true} align="left" xs={12} lg={12} sm={12}>
+                <Grid className={classes.questionGrid} item={true} align="left" xs={12} lg={12} sm={12}>
                     <RadioAnswer 
                         idQuestion={idQuestion}
                         answered={answered} 
@@ -102,7 +100,7 @@ export default function QuestionCard (props) {
         
         if (tipoResposta === "discursiva") {
             return (
-                <Grid className={classes.questionText} item={true} align="center" xs={12} lg={12} sm={12}>
+                <Grid className={classes.questionGrid} item={true} align="center" xs={12} lg={12} sm={12}>
                     <TextField
                         className={classes.answerField}
                         id={respostaQuestao.questao ? respostaQuestao.questao : ''}
@@ -119,11 +117,11 @@ export default function QuestionCard (props) {
 
     return (
         <MyCardContent>
-            <Grid container={true} spacing={0}>
-                <Grid className={classes.questionText} item={true} align="left" xs={12} lg={12} sm={12}>
+            <Grid container={true}>
+                <Grid item={true} align="left" xs={12} lg={12} sm={12}>
                     <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: enunciado}} />
                 </Grid>
-                <Grid className={classes.answer} container={true} spacing={2}>
+                <Grid container={true}>
                     { returnAnswerOption() }
                 </Grid>
             </Grid>

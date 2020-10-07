@@ -10,7 +10,7 @@ import CircularStatic from '../ProgressBar/CircularStatic';
 // -- Components
 import { GreenButton } from '../../assets/styles/styledComponents';
 import { useStyles } from './styles';
-import { ExerciseDialog, StudyContentDialog } from '..'
+import { ExerciseDialog, StudyContentDialog, UploadEssay } from '..'
 
 // -- Icons
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -20,7 +20,7 @@ import FixacaoIcon from '@material-ui/icons/LocalLibrary';
 import RetomadaIcon from '@material-ui/icons/AssignmentReturn';
 import AprofundamentoIcon from '@material-ui/icons/FindInPage';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import SimpleFeedback from '../Dialogs/StudentDialogs/SimpleFeedback';
 
 function subtituloAcordeao(tipoAcordeao, titulo, disciplinaNome, semana, classes) {
     if (tipoAcordeao === 'biblioteca') {
@@ -80,9 +80,15 @@ export default function ContentAccordion(props) {
     });
     const [numTasks, setNumTasks] = useState((essay || revision) ? 0 : 2);      // Número de tarefas do tópico
     const [wasChecked, setWasChecked] = useState(false);                        // Flag de salvamento do Progresso                      
-    const [wasLoaded, setWasLoaded] = useState(false);
     const [answered, setAnswered] = useState(false);                          // Flag de carregamento da animação do Acordeão
 
+    const [wasLoaded, setWasLoaded] = useState(false);                          // Flag de carregamento da animação do Acordeão
+    const [feedOpen, setFeedOpen] = useState(false);                            // Abre dialogo de inserção da redação
+    const [feedMsg, setFeedMsg] = useState({
+        title: 'Redação enviada!',
+        message: 'Aí sim! Agora é só aguardar a correção de nossos professores. Em breve você estará recebendo sua correção!'
+    });
+    
     // Ajuste de cores do acordeão
     let { color } = props;
     if (!color) {color = '#fdc504'};
@@ -141,8 +147,6 @@ export default function ContentAccordion(props) {
             redacaoID: essay._id,
             progresso: check.redacao,
         }
-
-        console.log(novoProgresso);
 
         if (!topicProgress._id) {
             await api
@@ -364,15 +368,41 @@ export default function ContentAccordion(props) {
 
     // -- Acordeão de Redação
     const returnRedacao = () => {
-
+        
         const handleCheckEssay = () => {
             setOpen({ redacao: true });
         }
 
-        const handleUpload = () => {
-            setCheck({ redacao: true });
-            setProgresso(progresso + 1);
-            setWasChecked(true);
+        const fetchRedacaoIMG = (file) => {
+            const formData = new FormData();
+            formData.append("foto", file);
+            fetch(`http://localhost:5000/api/upload-redacao/${alunoID}/${essay._id}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => { 
+                    if (res.status !== 200) {
+                        setFeedMsg({
+                            title: 'Ops! Houve um erro ao enviar sua redação.',
+                            message: 'Verifique se o arquivo que nos enviou não está corrompido ou se possui um dos seguintes formatos permitidos: .jpg, .png, .jpeg.'
+                        })
+                        setFeedOpen(true);
+                        return false;
+                    }
+                    return true;
+                })
+        }
+
+        const handleUpload = async (event) => {
+            const file = event.target.files[0];
+            const value = await fetchRedacaoIMG(file);
+
+            if (value) {
+                setCheck({ redacao: true });
+                setProgresso(progresso + 1);
+                setWasChecked(true);
+                setFeedOpen(true);
+            }
         }
 
         return (
@@ -422,23 +452,12 @@ export default function ContentAccordion(props) {
                 {/* Subir Redação */}
                 <Grid item={true} align='right' xs={12} sm={3}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
-                    {
-                        check.redacao 
-                            ? <GreenButton 
-                                fullWidth={true} 
-                                id="redacao" 
-                                variant="contained" 
-                                color="primary" 
-                                startIcon={<CloudUploadIcon />}
-                                onClick={handleUpload}>Subir Redação</GreenButton>
-                            : <Button 
-                                fullWidth={true} 
-                                id="redacao" 
-                                variant="outlined" 
-                                color="primary" 
-                                startIcon={<CloudUploadIcon />}
-                                onClick={handleUpload}>Subir Redação</Button>
-                    }
+                    <UploadEssay handleUpload={handleUpload} checked={check.redacao} />
+                    <SimpleFeedback
+                        open={feedOpen}
+                        setOpen={setFeedOpen}
+                        title={feedMsg.title}
+                        message={feedMsg.message}/>
                 </Grid>
             </>
         )
@@ -457,8 +476,8 @@ export default function ContentAccordion(props) {
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
                     {
                         check.avaliacaoDiagnostica 
-                            ? <GreenButton className={classes.activityButton} fullWidth={true} id="avaliacaoDiagnostica" variant="contained" color="primary" onClick={handleClickOpen}>Avaliação Diagnóstica</GreenButton>
-                            : <Button className={classes.activityButton} fullWidth={true} id="avaliacaoDiagnostica" variant="outlined" color="primary" onClick={handleClickOpen}>Avaliação Diagnóstica</Button>
+                            ? <GreenButton className={classes.activityButton} fullWidth={true} id="avaliacaoDiagnostica" variant="contained" color="primary" onClick={handleClickOpen}>Avaliação Concluída</GreenButton>
+                            : <Button className={classes.activityButton} fullWidth={true} id="avaliacaoDiagnostica" variant="outlined" color="primary" onClick={handleClickOpen}>Iniciar Avaliação</Button>
                     }
                     <ExerciseDialog 
                         activity={revision}

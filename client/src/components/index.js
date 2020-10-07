@@ -34,6 +34,7 @@ import PDFPreviewDialog from "./Dialogs/PDFPreviewDialog"
 import SlideDialog from "./Dialogs/SlideDialog"
 import ExerciseDialog from "./Dialogs/StudentDialogs/ExerciseDialog"
 import StudyContentDialog from "./Dialogs/StudentDialogs/StudyContentDialog"
+import SimpleFeedback from "./Dialogs/StudentDialogs/SimpleFeedback"
 
 // -- Editor
 import TextEditor from "./Editor/Editor"
@@ -41,8 +42,10 @@ import TextEditor from "./Editor/Editor"
 // -- Date
 import DatePicker from "./Calendar/DatePicker"
 
-// -- Upload Content
+// -- Uploads
+import UploadButton from './Upload/UploadButton'
 import UploadContent from './Upload/UploadContent'
+import UploadEssay from './Upload/UploadEssay'
 
 // -- Cards
 import ActivityCard from './Cards/ActivityCard'
@@ -88,10 +91,14 @@ export {
     SlideDialog,
     ExerciseDialog,
     StudyContentDialog,
+    SimpleFeedback,
 
     TextEditor,
     DatePicker,
+
+    UploadButton,
     UploadContent,
+    UploadEssay,
 
     ActivityCard,
     QuestionCard,

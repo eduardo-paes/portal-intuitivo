@@ -5,10 +5,6 @@ export const useStyles = makeStyles((theme) => ({
   activityButton: {
       width: '17rem'
   },
-  
-  answer: {
-    marginLeft: '-1.5rem'
-  },
 
   answerField: {
     width: '100%',
@@ -37,10 +33,10 @@ export const useStyles = makeStyles((theme) => ({
   },
 
   buttons: {
-    marginLeft: '0.5rem',
-    marginRight: '0.5rem',
-    marginUp: '1rem',
-    marginBottom: '2rem'
+    margin: '0 0.5rem',
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '-2rem',
+    }
   },
   
   checkbox: {
@@ -85,13 +81,7 @@ export const useStyles = makeStyles((theme) => ({
   },
 
   question: {
-    marginTop: '1rem',
-    marginLeft: '0',
-    marginRight: '0',
-    // [theme.breakpoints.down('sm')]: {
-    //   marginLeft: '1rem',
-    //   marginRight: '0.5rem'
-    // }
+    margin: '1rem 0'
   },
 
   questionCardDiv: {
@@ -100,9 +90,11 @@ export const useStyles = makeStyles((theme) => ({
     border: 0,
   },
 
-  questionText: {
-    marginLeft: '1rem',
-    marginRight: '2rem',
+  questionGrid: {
+    marginLeft: '5rem',
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: '1rem',
+    }
   },
   
   root: {
@@ -139,5 +131,4 @@ export const useStyles = makeStyles((theme) => ({
     fontWeight: '600',
     color: '#606161'
   }
-
 }));

@@ -15,7 +15,6 @@ const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
     root: {
         display: "flex",
-        // background: "#fff"
     },
     drawerHeader: {
         display: "flex",
@@ -36,13 +35,15 @@ const useStyles = makeStyles(theme => ({
         marginLeft: -drawerWidth
     },
     contentShift: {
-        transition: theme
+        [theme.breakpoints.up('sm')]: {
+            transition: theme
             .transitions
             .create("margin", {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen
             }),
-        marginLeft: 0
+            marginLeft: 0,
+        }
     },
 }));
 

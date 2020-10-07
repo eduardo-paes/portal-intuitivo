@@ -94,10 +94,11 @@ export default function StudyPlan () {
   useEffect(() => {
     const abortController = new AbortController();
     if (thisWeek && currentDay) {
-      let day = (currentDay >= 5 || currentDay === 0);
+      // let day = (currentDay >= 5 || currentDay === 0);
+      let day = true;
 
       (isMounting.content) && fetchConteudoAPI();                               // Carrega tópicos do dia
-      (thisWeek > 3 && true && isMounting.revision) && fetchRevisaoAPI();        // Carrega ADs da semana
+      (thisWeek > 3 && day && isMounting.revision) && fetchRevisaoAPI();        // Carrega ADs da semana
       (isMounting.essay) && fetchRedacaoAPI();                                  // Carrega Redação da semana
     } else {
       gettingCurrentDate();
