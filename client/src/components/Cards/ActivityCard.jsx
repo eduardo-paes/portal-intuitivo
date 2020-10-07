@@ -30,6 +30,7 @@ export default function ActivityCard(props) {
 
     let arrayAux = [];
     let gabarito = [];
+
     question.forEach((row, index) => {
         let gab = row.resposta.find(element => element.gabarito === true);
         let quest = row._id;
@@ -59,6 +60,7 @@ export default function ActivityCard(props) {
             revisaoID,
             respostaQuestaoID
         }
+        setAnswered(true);
         await api.inserirRespostaAluno(respostaAluno);
         handleFinalized();
     };
@@ -83,6 +85,7 @@ export default function ActivityCard(props) {
                     setRespostaQuestao={setRespostaQuestao}
                     alunoID={token.token.userID}
                     name={name}
+                    answered={answered}
                 />
             </div>
         );

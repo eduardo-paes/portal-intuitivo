@@ -6,10 +6,11 @@ import FormControl from '@material-ui/core/FormControl';
 import { MyContainer } from '../../assets/styles/styledComponents';
 
 export default function RadioAnswer(props) {
-  const { answered, color, idQuestion, gabarito, resposta, value, setValue, respostaQuestao, setRespostaQuestao } = props;
+  const { answered, color, gabarito, resposta, respostaQuestao, setRespostaQuestao } = props;
 
   const handleChange = (event) => {
     const { value } = event.target;
+
     setRespostaQuestao(prevValue => ({
       ...prevValue,
       resposta: value
@@ -19,7 +20,7 @@ export default function RadioAnswer(props) {
   return (
     <MyContainer>
       <FormControl component="fieldset">
-        <RadioGroup aria-label="respostas" value={respostaQuestao.resposta} name="respostas" onChange={handleChange}>
+        <RadioGroup aria-label="respostas" value={respostaQuestao.resposta ? respostaQuestao.resposta : null} name="respostas" onChange={handleChange}>
           {
               resposta.map((row, index) => {
                   return (

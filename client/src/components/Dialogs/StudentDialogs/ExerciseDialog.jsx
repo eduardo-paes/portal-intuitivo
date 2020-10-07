@@ -91,15 +91,17 @@ export default function ExerciseDialog(props) {
                 <Grid item={true} xs={12} lg={12} sm={12} align='center'>
                 {
                     (question.length > 0) 
-                        ?   <ActivityCard 
-                                atividadeID={activity._id} 
-                                name={name} 
-                                handleClose={handleClose} 
-                                handleFinalized={handleFinalized} 
-                                respostaAluno={respostaAluno} 
-                                setRespostaAluno={setRespostaAluno} 
-                                question={question}/>
-                        :   null
+                        ? <ActivityCard 
+                            atividadeID={activity.tipoAtividade === 'Avaliação Diagnóstica' ? undefined : activity._id} 
+                            revisaoID={activity.tipoAtividade !== 'Avaliação Diagnóstica' ? undefined : activity._id} 
+                            name={name} 
+                            handleClose={handleClose} 
+                            handleFinalized={handleFinalized} 
+                            respostaAluno={respostaAluno} 
+                            setRespostaAluno={setRespostaAluno} 
+                            question={question}
+                        />
+                        : null
                 }
                 </Grid>
             </Grid>
