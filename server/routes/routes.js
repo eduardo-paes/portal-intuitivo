@@ -143,6 +143,10 @@ router.delete("/progresso-revisao/:id", ProgressoCtrl.removerProgressoRevisao);
 router.get("/progresso-revisao/:id", ProgressoCtrl.encProgressoRevisaoPorID);
 router.get("/progresso-revisao/:alunoID/:revisaoID", ProgressoCtrl.encProgressoPorRevisaoID);
 
+// ============================================================================
+//  Rotas para armazenamento de arquivos
+// ============================================================================
+
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {
     const crypto = require("crypto");
@@ -157,7 +161,11 @@ router.post("/upload-questao", (req, res) => {
                 fileName = `${hash.toString('hex')}-${file.originalname}`
                 cb(null, fileName);
             });
-        },
+        }
+    });
+
+    const upload = multer({ 
+        storage: questaoStorage,
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname)
             if (ext !== '.jpg' && ext !== '.png' && ext !== '.mp4') {
@@ -165,9 +173,7 @@ router.post("/upload-questao", (req, res) => {
             }
             cb(null, true)
         }
-    });
-
-    const upload = multer({ storage: questaoStorage }).single("file");
+     }).single("file");
     
     upload(req, res, err => {
         if (err) {
@@ -230,6 +236,45 @@ router.post("/upload-profile/:id", (req, res) => {
             return res.json({ success: false, err });
         }
         return res.json({ success: true });
+    });
+});
+
+// Rota para armazenamento da redação do aluno
+router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
+    let alunoID = req.params.alunoID;
+    let redacaoID = req.params.redacaoID;
+
+    let redacaoStorage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, path.resolve(__dirname, "..", "..", "uploads", "redacao"));
+        },
+        filename: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            file.key = { alunoID, redacaoID }
+            cb(null, `${ alunoID + redacaoID + ext }`);
+        }
+    });
+
+    const upload = multer({ 
+        storage: redacaoStorage,
+        fileFilter: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg') {
+                return cb(res.status(400).end('Somente jpg, png, jpeg são permitidos.'), false);
+            }
+            cb(null, true)
+        },
+        limits:{
+            // fileSize: 1024 * 1024
+        }
+     }).single("foto");
+    
+    upload(req, res, err => {
+        if (err) {
+            console.log(err);
+            return res.status(400);
+        }
+        return res.status(200);
     });
 });
 

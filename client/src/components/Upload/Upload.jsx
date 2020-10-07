@@ -1,4 +1,3 @@
-
 import React from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import UploadButtons from "./UploadButton";
@@ -11,8 +10,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Upload(props) {
-  const {onUpload} = props;
+export default function Upload(props) {
+  const { onUpload } = props;
   const classes = useStyles();
   
   return (
@@ -21,5 +20,3 @@ function Upload(props) {
     </div>
   );
 }
-
-export default Upload;

@@ -21,6 +21,7 @@ export default function ActivityCard(props) {
     const [answered, setAnswered] = useState(false);
     const [respostaQuestaoIDs, setRespostaQuestaoIDs] = useState([]);
     const [respostaQuestao, setRespostaQuestao] = useState([]);
+    const isEssay = (name === 'redacao') ? true : false;
     
     // MediaQuery / Styles
     const classes = useStyles();
@@ -66,7 +67,7 @@ export default function ActivityCard(props) {
     function retDesktopQuestionCard() {
         return (
             <div key={value}>                        
-                <Typography variant="h6" className={classes.title}>{"Questão " + (value)}</Typography>
+                <Typography variant="h6" hidden={name === 'redacao' ? true : false} className={classes.title}>{"Questão " + (value)}</Typography>
                 <QuestionCard 
                     idQuestion={question[value-1]._id}
                     enunciado={question[value-1].enunciado} 
@@ -90,14 +91,14 @@ export default function ActivityCard(props) {
     return (
         <Grid container={true} className={classes.question}>
             {/* Voltar para Esquerda */}
-            <Grid align="left" item={true} xs={1} lg={1} sm={1}>
+            <Grid align="left" hidden={isEssay} item={true} xs={1} lg={1} sm={1}>
                 <IconButton className={classes.backArrow} color="primary" disabled={ value === 1 ? true : false } onClick={decrementValue}>
                     <ArrowBackIcon className={classes.arrow}/>
                 </IconButton>
             </Grid>
 
             {/* QuestionCard */}
-            <Grid className={classes.question} align="center" item={true} xs={10} lg={10} sm={10}>
+            <Grid className={classes.question} align="center" item={true} xs={isEssay ? 12 : 10} lg={isEssay ? 12 : 10} sm={isEssay ? 12 : 10}>
                 { 
                     !smScreen 
                         ? retDesktopQuestionCard()
@@ -106,7 +107,7 @@ export default function ActivityCard(props) {
                                 question.map((row, index) => {
                                     return ( 
                                         <div className={classes.questionCardDiv} key={index}>                        
-                                            <Typography variant="h6" className={classes.title}>{"Questão " + (index+1)}</Typography>
+                                            <Typography variant="h6" hidden={isEssay} className={classes.title}>{"Questão " + (index+1)}</Typography>
                                             <QuestionCard 
                                                 idQuestion={row._id}
                                                 enunciado={row.enunciado} 
@@ -119,6 +120,7 @@ export default function ActivityCard(props) {
                                                 atividadeID={atividadeID}
                                                 revisaoID={revisaoID}
                                                 alunoID={token.token.userID}
+                                                name={name}
                                             />
                                         </div>            
                                     );
@@ -129,7 +131,7 @@ export default function ActivityCard(props) {
             </Grid>
 
             {/* Continuar para Direita */}
-            <Grid align="rigth" item={true} xs={1} lg={1} sm={1}>
+            <Grid align="rigth" hidden={isEssay} item={true} xs={1} lg={1} sm={1}>
                 <IconButton className={classes.forwardArrow} size="medium" color="primary" disabled={ value === question.length ? true : false } onClick={incrementValue}>
                     <ArrowForwardIcon className={classes.arrow}/>
                 </IconButton>
@@ -141,7 +143,7 @@ export default function ActivityCard(props) {
                     Voltar
                 </Button>
                 { 
-                    value === question.length 
+                    value === question.length && !isEssay
                         ? <Button className={classes.buttons} variant='contained' color="primary" onClick={handleSubmit}> Concluir Atividade </Button>
                         : null
                 }
