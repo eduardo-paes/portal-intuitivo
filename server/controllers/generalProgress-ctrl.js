@@ -537,11 +537,7 @@ encProgressoPorRevisaoID = async (req, res) => {
             alunoID: req.params.alunoID,
             revisaoID: req.params.revisaoID
         }, (err, progressoEncontrado) => {
-<<<<<<< HEAD
-
-=======
             
->>>>>>> 423a5034d9066f0734a9e886b5a84681bdc41efd
             if (err) {
                 return res
                     .status(400)

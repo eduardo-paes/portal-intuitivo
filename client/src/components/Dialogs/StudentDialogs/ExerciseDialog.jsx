@@ -53,11 +53,6 @@ export default function ExerciseDialog(props) {
     useEffect(() => {
         const abortController = new AbortController();
         const alunoID = token.token.userID;
-        async function verificarRespostaAluno() {
-            let response = await api.encRespostaAluno(alunoID, activity._id);
-            if (response.data.success) setAnswered(true);
-            setAnswered(false)
-        }
         setRespostaAluno(respostaAluno);
         return abortController.abort();
         // eslint-disable-next-line
@@ -108,6 +103,7 @@ export default function ExerciseDialog(props) {
                             respostaAluno={respostaAluno} 
                             setRespostaAluno={setRespostaAluno} 
                             question={question}
+                            answered={answered}
                         />
                         : null
                 }

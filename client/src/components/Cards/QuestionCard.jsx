@@ -77,8 +77,6 @@ export default function QuestionCard (props) {
                         resposta={resposta}
                         respostaQuestao={respostaQuestao}
                         setRespostaQuestao={setRespostaQuestao}
-                        mobile={mobile} 
-                        respostaMobile={respostaMobile}
                     />
                 </Grid>
             )
@@ -92,6 +90,7 @@ export default function QuestionCard (props) {
                         id={respostaQuestao.questao ? respostaQuestao.questao : ''}
                         label="Resposta"
                         defaultValue={value ? value : ''}
+                        disabled={answered}
                         multiline
                         value={
                             respostaQuestao.resposta && !mobile ?

@@ -36,6 +36,17 @@ export default function ActivityCard(props) {
         return gabarito[index] = { gab, quest }
     });
 
+    function verificaProgresso() {
+        if (revisaoID) {
+            return answered.progresso;
+        } if (atividadeID && answered.progresso) {
+            if (name === 'exercicioFixacao') return  answered.progresso.exercicioFixacao;
+            if (name === 'exercicioRetomada') return  answered.progresso.exercicioRetomada;
+            if (name === 'exercicioAprofundamento') return  answered.progresso.exercicioAprofundamento;
+        }
+        return false;
+    }
+
     // Passa para a próxima questão e salva a resposta do aluno na questão anterior;
     async function incrementValue () {
         
@@ -90,7 +101,7 @@ export default function ActivityCard(props) {
                     setRespostaQuestao={setRespostaQuestao}
                     alunoID={token.token.userID}
                     name={name}
-                    answered={answered}
+                    answered={verificaProgresso()}
                 />
             </div>
         );
@@ -134,7 +145,7 @@ export default function ActivityCard(props) {
                                                 respostaQuestaoIDs={respostaQuestaoIDs}
                                                 revisaoID={revisaoID}
                                                 name={name}
-                                                answered={answered}
+                                                answered={verificaProgresso()}
                                                 mobile={smScreen}
                                                 respostaMobile={arrayAux[index]}
                                             />

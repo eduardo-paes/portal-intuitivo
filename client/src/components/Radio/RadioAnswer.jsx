@@ -48,7 +48,7 @@ export default function RadioAnswer(props) {
                       <FormControlLabel 
                           key={index} 
                           value={row._id} 
-                          control={<Radio id={row._id} disabled={answered && row._id === gabarito ? false : answered} color={color}/>}
+                          control={<Radio id={row._id} disabled={answered} color={color}/>}
                           style={{margin: 0}}
                           label={
                             <div 

@@ -283,10 +283,6 @@ export default function ContentAccordion(props) {
         }
     }
 
-    function verificaProgresso() {
-        if (revision === 'Avaliação Diagnóstica') return topicProgress.progresso;
-    }
-
     // -- Carregamento inicial dos dados
     useEffect(() => {
         const abortController = new AbortController();
@@ -294,11 +290,6 @@ export default function ContentAccordion(props) {
         if (topicoID) {
             fetchAtividadeAPI();
             fetchProgressoTopicoAPI();
-<<<<<<< HEAD
-            console.log(topicProgress);
-            setWasLoaded(true);
-=======
->>>>>>> 423a5034d9066f0734a9e886b5a84681bdc41efd
         }
 
         if (essay) {
@@ -308,22 +299,12 @@ export default function ContentAccordion(props) {
                 materialEstudo: false
             });
             fetchProgressoRedacaoAPI();
-<<<<<<< HEAD
-            console.log(topicProgress);
-            setWasLoaded(true);
-=======
->>>>>>> 423a5034d9066f0734a9e886b5a84681bdc41efd
         }
 
         if (revision) {
             setCheck({ avaliacaoDiagnostica: false });
             setOpen({ avaliacaoDiagnostica: false });
             fetchProgressoRevisaoAPI();
-<<<<<<< HEAD
-            console.log(topicProgress);
-            setWasLoaded(true);
-=======
->>>>>>> 423a5034d9066f0734a9e886b5a84681bdc41efd
         }
 
         return abortController.abort();
@@ -535,10 +516,8 @@ export default function ContentAccordion(props) {
                         progresso={progresso}
                         setProgresso={setProgresso}
                         setWasChecked={setWasChecked}
-                        answered=
-                            {
-                               verificaProgresso()  
-                            }/>
+                        answered={topicProgress}
+                    />
                 </Grid>
             </>
         )
@@ -657,6 +636,7 @@ export default function ContentAccordion(props) {
                             progresso={progresso}
                             setProgresso={setProgresso}
                             setWasChecked={setWasChecked}
+                            answered={topicProgress}
                         />
                     </Grid>
                 }
@@ -696,6 +676,7 @@ export default function ContentAccordion(props) {
                             progresso={progresso}
                             setProgresso={setProgresso}
                             setWasChecked={setWasChecked}
+                            answered={topicProgress}
                         />
                     </Grid>
                 }
@@ -734,6 +715,7 @@ export default function ContentAccordion(props) {
                             progresso={progresso}
                             setProgresso={setProgresso}
                             setWasChecked={setWasChecked}
+                            answered={topicProgress}
                         />
                     </Grid>
                 }
