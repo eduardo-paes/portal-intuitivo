@@ -14,6 +14,8 @@ import ActivityList from "./Activities/ActivityList"
 import ActivityInsert from "./Activities/ActivityInsert"
 import ActivityUpdate from "./Activities/ActivityUpdate"
 
+import Correction from "./Correction/Correction"
+
 import Home from "./Student/Home"
 import Classroom from "./Student/Classroom"
 import Dashboard from "./Student/Dashboard"
@@ -41,6 +43,8 @@ export {
     ActivityList,
     ActivityInsert,
     ActivityUpdate,
+
+    Correction,
 
     Home,
     Classroom, 

@@ -3,7 +3,7 @@ import { StoreContext } from "../../utils";
 import api from '../../api';
 
 // -- Material UI Components
-import { AccordionDetails, AccordionSummary, Button, Checkbox, Grid, Fade, Typography, withStyles } from '@material-ui/core';
+import { AccordionDetails, AccordionSummary, Button, Checkbox, Grid, Slide, Typography, withStyles } from '@material-ui/core';
 import MuiAccordion from '@material-ui/core/Accordion';
 import CircularStatic from '../ProgressBar/CircularStatic';
 
@@ -84,8 +84,8 @@ export default function ContentAccordion(props) {
     const [wasLoaded, setWasLoaded] = useState(false);                          // Flag de carregamento da animação do Acordeão
     const [feedOpen, setFeedOpen] = useState(false);                            // Abre dialogo de inserção da redação
     const [feedMsg, setFeedMsg] = useState({
-        title: 'Redação enviada!',
-        message: 'Aí sim! Agora é só aguardar a correção de nossos professores. Em breve você estará recebendo sua correção!'
+        title: '',
+        message: ''
     });
     
     // Ajuste de cores do acordeão
@@ -101,8 +101,8 @@ export default function ContentAccordion(props) {
     })(MuiAccordion);
 
     // Função de abertura dos diálogos
-    const handleClickOpen = (event) => {
-        const name = event.target.offsetParent.id;
+    const handleClickOpen = async (event) => {
+        const name = await event.target.offsetParent.id;
         setOpen(preValue => ({
             ...preValue,
             [name]: true
@@ -174,8 +174,6 @@ export default function ContentAccordion(props) {
             progresso: check.avaliacaoDiagnostica,
         }
 
-        console.log(novoProgresso);
-
         if (!topicProgress._id) {
             await api
                 .inserirProgressoRevisao(novoProgresso)
@@ -184,6 +182,7 @@ export default function ContentAccordion(props) {
                         ...preValue,
                         _id: res.data.id
                     }))
+                    console.log(res.data.message);
                 })
         } else {
             await api
@@ -220,7 +219,10 @@ export default function ContentAccordion(props) {
         const value = response.data;
         if (value.success) {
             setTopicProgress(value.data);
-            setCheck({ redacao: value.data.progresso });
+            setCheck({ 
+                redacao: value.data.progresso,
+                materialEstudo: value.data.progresso,
+            });
             setProgresso(value.data.progresso ? 1 : 0);
         }
     }
@@ -292,24 +294,36 @@ export default function ContentAccordion(props) {
         if (topicoID) {
             fetchAtividadeAPI();
             fetchProgressoTopicoAPI();
+<<<<<<< HEAD
             console.log(topicProgress);
             setWasLoaded(true);
+=======
+>>>>>>> 423a5034d9066f0734a9e886b5a84681bdc41efd
         }
 
         if (essay) {
             setCheck({ redacao: false });
-            setOpen({ redacao: false });
+            setOpen({ 
+                redacao: false, 
+                materialEstudo: false
+            });
             fetchProgressoRedacaoAPI();
+<<<<<<< HEAD
             console.log(topicProgress);
             setWasLoaded(true);
+=======
+>>>>>>> 423a5034d9066f0734a9e886b5a84681bdc41efd
         }
 
         if (revision) {
             setCheck({ avaliacaoDiagnostica: false });
             setOpen({ avaliacaoDiagnostica: false });
             fetchProgressoRevisaoAPI();
+<<<<<<< HEAD
             console.log(topicProgress);
             setWasLoaded(true);
+=======
+>>>>>>> 423a5034d9066f0734a9e886b5a84681bdc41efd
         }
 
         return abortController.abort();
@@ -323,23 +337,16 @@ export default function ContentAccordion(props) {
             ...preValue,
             progresso: check
         }));
+
         if (wasChecked) {
-            if (topicoID) {
-                saveTopicProgress();
-            }
-
-            if (revision) {
-                saveRevisionProgress();
-            }
-
-            if (essay) {
-                saveEssayProgress();
-            } 
+            topicoID && saveTopicProgress();
+            revision && saveRevisionProgress();
+            essay && saveEssayProgress();
             setWasChecked(false);
         }
         return abortController.abort();
         // eslint-disable-next-line
-    }, [check])
+    }, [wasChecked])
 
     // -- Atualiza os checks de cada atividade após cada alteração em atividade
     useEffect(() => {
@@ -374,19 +381,15 @@ export default function ContentAccordion(props) {
 
     // -- Acordeão de Redação
     const returnRedacao = () => {
-        
-        const handleCheckEssay = () => {
-            setOpen({ redacao: true });
-        }
 
-        const fetchRedacaoIMG = (file) => {
+        const fetchRedacaoIMG = async (file) => {
             const formData = new FormData();
             formData.append("foto", file);
-            fetch(`http://localhost:5000/api/upload-redacao/${alunoID}/${essay._id}`, {
+            return await fetch(`http://localhost:5000/api/upload-redacao/${alunoID}/${essay._id}`, {
                     method: 'POST',
                     body: formData
                 })
-                .then(res => { 
+                .then(res => {
                     if (res.status !== 200) {
                         setFeedMsg({
                             title: 'Ops! Houve um erro ao enviar sua redação.',
@@ -395,6 +398,10 @@ export default function ContentAccordion(props) {
                         setFeedOpen(true);
                         return false;
                     }
+                    setFeedMsg({
+                        title: 'Redação enviada!',
+                        message: 'Aí sim! Agora é só aguardar a correção de nossos professores. Em breve você estará recebendo sua correção!'
+                    })
                     return true;
                 })
         }
@@ -402,21 +409,56 @@ export default function ContentAccordion(props) {
         const handleUpload = async (event) => {
             const file = event.target.files[0];
             const value = await fetchRedacaoIMG(file);
-
+            
             if (value) {
+                setFeedOpen(true);
                 setCheck({ redacao: true });
                 setProgresso(progresso + 1);
                 setWasChecked(true);
-                setFeedOpen(true);
             }
         }
 
         return (
             <>
-                <Grid item={true} align='center' xs={12} sm={6}>
+                <Grid item={true} align='center' xs={12} sm={3}>
                     <Typography id="secondaryHeading" className={classes.secondaryHeading}>
-                        Nos botões a seguir você pode visualizar o enunciado e entregar sua redação para correção dos nossos professores.
+                        Não se esqueça de ler com atenção o tema e a proposta da redacão.
                     </Typography>
+                </Grid>
+
+                {/* Material de Estudo */}
+                <Grid item={true} align='right' xs={12} sm={3}>
+                    <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
+                    {
+                        check.redacao 
+                            ? <GreenButton 
+                                className={classes.activityButton} 
+                                id="materialEstudo"
+                                variant="contained"
+                                color="primary"
+                                fullWidth={true}
+                                startIcon={<SchoolIcon />}
+                                onClick={handleClickOpen}>Tema</GreenButton>
+                            : <Button 
+                                className={classes.activityButton} 
+                                id="materialEstudo" 
+                                variant="outlined" 
+                                color="primary" 
+                                fullWidth={true}
+                                startIcon={<SchoolIcon />}
+                                onClick={handleClickOpen}>Tema</Button>
+                    }
+                    <StudyContentDialog 
+                        topicoID={essay.topicoID._id}
+                        titulo={titulo}
+                        progresso={progresso}
+                        setProgresso={setProgresso}
+                        open={open}
+                        setOpen={setOpen}
+                        check={check}
+                        setCheck={setCheck}
+                        setWasChecked={setWasChecked}
+                    />
                 </Grid>
 
                 {/* Visualizar Enunciado */}
@@ -430,14 +472,14 @@ export default function ContentAccordion(props) {
                                 variant="contained" 
                                 color="primary" 
                                 startIcon={<VisibilityIcon />}
-                                onClick={handleCheckEssay}>Enunciado</GreenButton>
+                                onClick={handleClickOpen}>Proposta</GreenButton>
                                 : <Button 
                                 fullWidth={true} 
                                 id="redacao" 
                                 variant="outlined" 
                                 color="primary" 
                                 startIcon={<VisibilityIcon />}
-                                onClick={handleCheckEssay}>Enunciado</Button>
+                                onClick={handleClickOpen}>Proposta</Button>
                     }
                     
                         <ExerciseDialog 
@@ -506,12 +548,14 @@ export default function ContentAccordion(props) {
     const returnTopico = () => {
         // Ao clicar no botão de videoaula
         const handleClickVideo = () => {
-            setCheck(preValue => ({
-                ...preValue,
-                videoaula: true
-            }));
-            setProgresso(progresso + 1);
-            setWasChecked(true);
+            if (!check.videoaula) {
+                setCheck(preValue => ({
+                    ...preValue,
+                    videoaula: true
+                }));
+                setProgresso(progresso + 1);
+                setWasChecked(true);
+            }
             window.open(linkAula,'_blank');
         }
 
@@ -549,6 +593,7 @@ export default function ContentAccordion(props) {
                         setProgresso={setProgresso}
                         open={open}
                         setOpen={setOpen}
+                        check={check}
                         setCheck={setCheck}
                         setWasChecked={setWasChecked}
                     />
@@ -697,14 +742,14 @@ export default function ContentAccordion(props) {
     }
 
     return (
-        <Fade in={wasLoaded} style={{transitionDelay: '250ms'}}>
+        <Slide in={wasLoaded} direction="up">
             <AccordionPersonalized TransitionProps={{ unmountOnExit: false }}>
                 <AccordionSummary
                     className={classes.accordionSummary}
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
                     id="cabecalhoAccordionLibrary">
-                    <CircularStatic progresso={progresso} numTasks={numTasks}/>
+                    <CircularStatic progresso={progresso} numTasks={numTasks} wasLoaded={wasLoaded} setWasLoaded={setWasLoaded} />
                     <Typography id="heading" className={classes.heading}>{titulo}</Typography>
                 </AccordionSummary>
 
@@ -720,6 +765,6 @@ export default function ContentAccordion(props) {
                     </Grid>
                 </AccordionDetails>
             </AccordionPersonalized>
-        </Fade>
+        </Slide>
     )
 }

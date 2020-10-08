@@ -1,18 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from '../../../node_modules/react-router-dom'
 import { AddButton, DeleteButton, MyAvatar, MyTextField, MyContainer, GeneralTitle } from "../../assets/styles/styledComponents"
-import { MenuItem, Grid } from '@material-ui/core'
+import { MenuItem, Grid, Fab, makeStyles } from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 // Upload da Imagem do Perfil
 import Upload from "../Upload/Upload";
 import "./Styles/styleUserForm.css"
+import api from '../../api';
+
+const useStyles = makeStyles((theme) => ({
+    fabButton: {
+        marginTop: '0.4rem', 
+        marginLeft: "1.2rem",
+        [theme.breakpoints.down('sm')]: {
+            marginLeft: "0.8rem",
+        }
+    }
+}));
 
 export default function UserForm (props) {
-    const { data, setUsuario, onSubmit, typeForm, edit } = props;
+    const { data, setUsuario, onSubmit, typeForm, edit, profDisciplinas, setProfDisciplinas } = props;
     const { nome, email, acesso, senha, erros, url } = data;
+
+    const classes = useStyles();
+    const [listaDisciplina, setListaDisciplina] = useState([]);
+    const [subjectLoading, setSubjectLoading] = useState(true);
     
     // Guarda o dado vindo do input
-    async function handleChange (event) {
+    const handleChange = (event) => {
         const {name, value} = event.target;
         setUsuario(preValue => ({
             ...preValue,
@@ -21,14 +38,73 @@ export default function UserForm (props) {
     }
 
     // Guarda o dado vindo do upload da imagem de perfil
-    async function handleUpload (event) {
-        const file = event.target.files[0];
+    const handleUpload = async (event) => {
+        const file = await event.target.files[0];
         setUsuario(preValue => ({
             ...preValue,
             url: URL.createObjectURL(file),
             foto: file
         }));
     }
+
+    // -- Faz alterações em disciplina do professor
+    const handleSubjectChange = (position, value) => {
+        const updatedSubjectItems = profDisciplinas.map((item, index) => {
+          if (index === position) {
+            return { ...item, disciplinaID: value };
+          }
+          
+          return item;
+        });
+        setProfDisciplinas(updatedSubjectItems);
+    }
+
+    // -- Adiciona novo campo para disciplina
+    const addNewSubject = () => {
+        setProfDisciplinas([
+          ...profDisciplinas,
+          { disciplinaID: '', }
+        ]);
+    }
+
+    // -- Remover disciplina
+    const deleteThisSubject = (event, position) => {
+        setProfDisciplinas(profDisciplinas.filter((value, index) => {
+            return index !== position;
+        }));
+    }
+
+    // -- Caso o usuário seja do tipo professor, permite que sejam escolhidas disciplinas
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (acesso === 'Professor' && subjectLoading) {
+            async function fetchDisciplinaAPI() {
+                const response = await api.listarDisciplinas();
+                const value = response.data;
+                if (value.success) {
+                    setListaDisciplina(value.data);
+                }
+            }
+            fetchDisciplinaAPI();
+            setSubjectLoading(false);
+        }
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [acesso])
+
+    // -- Salva alterações de disciplina do professor no campo 'disciplina' do usuário
+    useEffect(() => {
+        const abortController = new AbortController();
+        const disciplinasCorrigidas = profDisciplinas.filter(item => {
+            return item.disciplinaID !== undefined;
+        })
+        setUsuario(preValue => ({
+            ...preValue,
+            disciplina: disciplinasCorrigidas
+        }))
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [profDisciplinas])
 
     return (
         <MyContainer>
@@ -82,6 +158,46 @@ export default function UserForm (props) {
                                 <MenuItem value="Professor">Professor</MenuItem>
                                 <MenuItem value="Administrador">Administrador</MenuItem>
                         </MyTextField>
+
+                        {
+                            (acesso === "Professor") && profDisciplinas.map((item, index) => {
+                                let tam = profDisciplinas.length;
+                                return (
+                                    <Grid key={index} container={true}>
+                                        <Grid item={true} xs={10} sm={11}>
+                                            <MyTextField
+                                                select={true}
+                                                label="Disciplina"
+                                                name="disciplina"
+                                                value={item.disciplinaID}
+                                                hidden={acesso !== "Professor" ? true : false}
+                                                variant="outlined"
+                                                onChange={e => handleSubjectChange(index, e.target.value)}
+                                                helperText={erros.disciplina}
+                                                fullWidth={true}
+                                                error={erros.disciplina ? true : false}>
+                                                    {
+                                                        listaDisciplina.map((row, disKey) => {
+                                                            return <MenuItem key={disKey} value={row._id}>{row.nome}</MenuItem>
+                                                        })
+                                                    }
+                                            </MyTextField>
+                                        </Grid>
+
+                                        <Grid item={true} xs={2} sm={1}>
+                                            {index === tam-1 
+                                                ?   <Fab className={classes.fabButton} onClick={addNewSubject} size="small" color="primary" aria-label="add">
+                                                        <AddIcon />
+                                                    </Fab>
+                                                :   <Fab className={classes.fabButton} onClick={(event) => deleteThisSubject (event, index)} size="small" color="secondary" aria-label="add">
+                                                        <DeleteIcon />
+                                                    </Fab>
+                                            } 
+                                        </Grid>
+                                    </Grid>
+                                )
+                            })
+                        }
 
                         <MyTextField
                             id="userPasswordInput"

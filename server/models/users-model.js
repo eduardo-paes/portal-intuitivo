@@ -18,7 +18,15 @@ const Usuario = new Schema({
     senha: {
         type: String,
         required: true
-    }
+    },
+    disciplina: [
+        {
+            disciplinaID: {
+                type: Schema.Types.ObjectId, 
+                ref: 'disciplina'
+            }
+        }
+    ],
 });
 
 module.exports = mongoose.model("usuario", Usuario);

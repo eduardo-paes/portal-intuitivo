@@ -93,7 +93,8 @@ const MyTextField = styled(TextField)({
     marginBottom: "0.625rem", 
     backgroundColor: "#fff", 
     display: "flex", 
-    color: "primary"
+    color: "primary",
+    minWidth: 0
 });
 
 const MyContainer = styled(Container)({

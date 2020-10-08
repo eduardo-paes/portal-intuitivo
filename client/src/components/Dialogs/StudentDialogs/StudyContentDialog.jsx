@@ -15,7 +15,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 }); 
 
 export default function StudyContentDialog(props) {
-    const { topicoID, titulo, progresso, setProgresso, open, setOpen, setCheck, setWasChecked } = props;
+    const { topicoID, titulo, progresso, setProgresso, open, setOpen, check, setCheck, setWasChecked } = props;
     const classes = useStyles();
 
     // Fecha slide com conteúdo
@@ -28,12 +28,14 @@ export default function StudyContentDialog(props) {
 
     // Marca conteúdo como finalizado / concluído
     const handleFinalized = () => {
-        setCheck(preValue => ({
-            ...preValue,
-            materialEstudo: true
-        }));
-        setProgresso(progresso + 1);
-        setWasChecked(true);
+        if (!check.materialEstudo) {
+            setCheck(preValue => ({
+                ...preValue,
+                materialEstudo: true
+            }));
+            setProgresso(progresso + 1);
+            setWasChecked(true);
+        }
         handleClose();
     };
 

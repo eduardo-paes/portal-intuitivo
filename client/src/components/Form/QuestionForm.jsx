@@ -172,13 +172,14 @@ export default function QuestionForm (props) {
                 return item.opcao !== "";
             })
 
-            // Caso o array opcoes já contém algum valor, arrayAux recebe esses valores, do contrário recebe um array vazio
+            // Caso o array opcoes já contenha algum valor, arrayAux recebe esses valores, do contrário recebe um array vazio
             var arrayAux = optionsAux.length > 0 ? optionsAux : [];
 
             // Caso não, o array auxiliar será um vetor vazio
             if (arrayAux === []) {
                 setOpcoes(options);
             }
+
             // De outro modo, serão inseridos novos valores
             else {
                 options.forEach(item => {arrayAux.push(item)});

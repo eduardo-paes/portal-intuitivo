@@ -8,9 +8,6 @@ const router = express.Router();
 router.use(bodyparser.urlencoded({extended: true}));
 router.use(bodyparser.json());
 
-// Multer para importação de arquivos
-const multer = require("multer");
-
 // Importação dos métodos de controle
 const UsuarioCtrl = require("../controllers/user-ctrl");
 const ConteudoCtrl = require("../controllers/content-ctrl");
@@ -148,6 +145,12 @@ router.get("/progresso-revisao/:alunoID/:revisaoID", ProgressoCtrl.encProgressoP
 //  Rotas para armazenamento de arquivos
 // ============================================================================
 
+// Importação para uploade de arquivos
+const multer = require("multer");
+const fs = require('fs')
+const { promisify } = require('util')
+const unlinkAsync = promisify(fs.unlink)
+
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {
     const crypto = require("crypto");
@@ -250,32 +253,45 @@ router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "redacao"));
         },
         filename: (req, file, cb) => {
-            const ext = path.extname(file.originalname);
+            var ext = path.extname(file.originalname);
+            if (ext !== '.pdf') {
+                ext = '.jpg';
+            }
             file.key = { alunoID, redacaoID }
             cb(null, `${ alunoID + redacaoID + ext }`);
         }
     });
 
+    const removeCopyFile = async (ext) => {
+        var filePath = '';
+        if (ext === '.pdf') {
+            filePath = path.resolve(__dirname, "..", "..", "uploads", "redacao", alunoID + redacaoID + '.jpg');
+        } else {
+            filePath = path.resolve(__dirname, "..", "..", "uploads", "redacao", alunoID + redacaoID + '.pdf');
+        }
+        await unlinkAsync(filePath);
+    }
+
     const upload = multer({ 
         storage: redacaoStorage,
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname);
-            if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg') {
-                return cb(res.status(400).end('Somente jpg, png, jpeg são permitidos.'), false);
+            removeCopyFile(ext);
+            if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== '.pdf') {
+                return cb(res.status(400).end('Somente jpg, png, jpeg e pdf são permitidos.'), false);
             }
             cb(null, true)
         },
         limits:{
             // fileSize: 1024 * 1024
         }
-     }).single("foto");
+    }).single("foto");
     
     upload(req, res, err => {
-        if (err) {
-            console.log(err);
-            return res.status(400);
+        if (!err) {
+            return res.json({ success: true });
         }
-        return res.status(200);
+        console.log(err);
     });
 });
 
