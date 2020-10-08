@@ -12,10 +12,11 @@ import StudyPlan from '@material-ui/icons/LibraryBooks';
 import Library from '@material-ui/icons/MenuBook';
 import Classroom from '@material-ui/icons/Class';
 // --
-import ContentControl from '@material-ui/icons/NoteAdd';
 import Analize from '@material-ui/icons/Timeline';
 import Exercises from '@material-ui/icons/Ballot';
 import Questions from '@material-ui/icons/Storage';
+import Correction from '@material-ui/icons/AssignmentTurnedIn';
+import ContentControl from '@material-ui/icons/InsertDriveFile';
 // --
 import UserControl from '@material-ui/icons/People';
 import Settings from '@material-ui/icons/Settings';
@@ -95,13 +96,17 @@ function ItemsDrawer(props) {
                 icon: <Exercises/>,
                 onClick: () => history.push("/controle-atividade")
             }, {
-                text: "Material de Estudo",
-                icon: <ContentControl/>,
-                onClick: () => history.push("/controle-conteudo")
-            }, {
                 text: "Banco de Questões",
                 icon: <Questions/>,
                 onClick: () => history.push("/controle-questoes")
+            }, {
+                text: "Correções",
+                icon: <Correction/>,
+                onClick: () => history.push("/correcao-atividades")
+            }, {
+                text: "Material de Estudo",
+                icon: <ContentControl/>,
+                onClick: () => history.push("/controle-conteudo")
             }, 
         ],
         admin: [

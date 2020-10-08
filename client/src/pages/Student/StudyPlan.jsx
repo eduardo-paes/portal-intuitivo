@@ -37,7 +37,11 @@ export default function StudyPlan () {
   const [essay, setEssay] = useState(0);
   const [revision, setRevision] = useState(0); 
 
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState({
+    content: false,
+    essay: false,
+    revision: false
+  });
   const [thisWeek, setThisWeek] = useState(0);
   const [currentDay, setCurrentDay] = useState(0);
   const [isMounting, setIsMounting] = useState({
@@ -58,12 +62,16 @@ export default function StudyPlan () {
     const value = response.data;
     if (value.success) {
       setContent(value.data);
-      setIsLoaded(true);
       setIsMounting(preValue => ({
         ...preValue,
         content: false
       }))
     }
+
+    setIsLoaded(preValue => ({
+      ...preValue,
+      content: true
+    }));
   }
 
   async function fetchRevisaoAPI() {
@@ -76,18 +84,27 @@ export default function StudyPlan () {
         revision: false
       }))
     }
+
+    setIsLoaded(preValue => ({
+      ...preValue,
+      revision: true
+    }));
   }
 
   async function fetchRedacaoAPI() {
-      const response = await api.encRedacaoDaSemana(2);
-      const value = response.data;
-      if (value.success) {
-        setEssay(value.data[0]);
-        setIsMounting(preValue => ({
-          ...preValue,
-          essay: false
-        }))
-      }
+    const response = await api.encRedacaoDaSemana(2);
+    const value = response.data;
+    if (value.success) {
+      setEssay(value.data[0]);
+      setIsMounting(preValue => ({
+        ...preValue,
+        essay: false
+      }))
+    }
+    setIsLoaded(preValue => ({
+      ...preValue,
+      essay: true
+    }));
   }
 
   // -- Carrega tópicos por semana e dia da semana
@@ -112,74 +129,81 @@ export default function StudyPlan () {
 
   // -- Retorna acordeões dos tópicos
   function returnContent() {
-    if (isLoaded && content.length === 0 && !revision && !essay) {
-      return (
-        <Grid className={classes.grid} item={true}>
-          <Typography id="secondaryHeading" className={classes.secondaryHeading}>Não há conteúdo a ser estudado hoje, portanto, aproveite o descanso!</Typography>
-        </Grid>
-      )
-    } 
-    
-    else if(!isLoaded) {
-      return AccordionSkeleton();
-    }
-    
-    else {
-      return content.map((row, index) => {
+    if (isLoaded.content && isLoaded.revision && isLoaded.essay) {
+      if (!content.length && !revision && !essay) {
         return (
-          <Grid className={classes.grid} key={index} item={true} xs={12} lg={12} sm={12}>
-            <ContentAccordion 
-              color={borderColor[index]}
-              disciplinaNome={row.disciplinaID.nome}
-              topicoID={row._id} 
-              titulo={row.topico}
-              linkAula={row.videoAulaURL}
-              tipoAcordeao="planoEstudo"
-              week={thisWeek}
-            />
+          <Grid className={classes.grid} item={true}>
+            <Typography id="secondaryHeading" className={classes.secondaryHeading}>Não há conteúdo a ser estudado hoje, portanto, aproveite o descanso!</Typography>
           </Grid>
         )
-      })
+      } else {
+        return content.map((row, index) => {
+          return (
+            <Grid className={classes.grid} key={index} item={true} xs={12} lg={12} sm={12}>
+              <ContentAccordion 
+                color={borderColor[index]}
+                disciplinaNome={row.disciplinaID.nome}
+                topicoID={row._id} 
+                titulo={row.topico}
+                linkAula={row.videoAulaURL}
+                tipoAcordeao="planoEstudo"
+                week={thisWeek}
+              />
+            </Grid>
+          )
+        })
+      }
+    }
+    else {
+      return AccordionSkeleton(3);
     }
   }
 
   // -- Retorna acordeões dos ADs
   function returnRevision() {
-    if (revision) {
-      return (
-        <Grid className={classes.grid} item={true} xs={12} lg={12} sm={12}>
-          <ContentAccordion 
-            color={borderColor[borderColor.length-1]}
-            area={revision.areaConhecimento}
-            disciplinaNome={revision.tipoAtividade}
-            revisaoID={revision._id} 
-            revision={revision}
-            titulo={revision.tipoAtividade}
-            questoesAvDiag={revision.questoes}
-            tipoAcordeao="planoEstudo"
-            week={thisWeek}
-          />
-        </Grid>
-      )
+    if (isLoaded.content && isLoaded.revision && isLoaded.essay) {
+      if (revision) {
+        return (
+          <Grid className={classes.grid} item={true} xs={12} lg={12} sm={12}>
+            <ContentAccordion 
+              color={borderColor[borderColor.length-1]}
+              area={revision.areaConhecimento}
+              disciplinaNome={revision.tipoAtividade}
+              revisaoID={revision._id} 
+              revision={revision}
+              titulo={revision.tipoAtividade}
+              questoesAvDiag={revision.questoes}
+              tipoAcordeao="planoEstudo"
+              week={thisWeek}
+            />
+          </Grid>
+        )
+      }
+    } else {
+      return AccordionSkeleton(1);
     }
   }
 
   // -- Retorna acordeão de redação
   function returnEssay() {
-    if (essay) {
-      return (
-        <Grid className={classes.grid} item={true} xs={12} lg={12} sm={12}>
-          <ContentAccordion 
-            color={borderColor[borderColor.length-2]}
-            area={"Linguagens"}
-            disciplinaNome={"Redação"}
-            essay={essay} 
-            titulo={"Redação de " + essay.disciplinaID.nome}
-            tipoAcordeao="planoEstudo"
-            week={thisWeek}
-          />
-        </Grid>
-      )
+    if (isLoaded.content && isLoaded.revision && isLoaded.essay) {
+      if (essay) {
+        return (
+          <Grid className={classes.grid} item={true} xs={12} lg={12} sm={12}>
+            <ContentAccordion 
+              color={borderColor[borderColor.length-2]}
+              area={"Linguagens"}
+              disciplinaNome={"Redação"}
+              essay={essay} 
+              titulo={"Redação de " + essay.disciplinaID.nome}
+              tipoAcordeao="planoEstudo"
+              week={thisWeek}
+            />
+          </Grid>
+        )
+      }
+    } else {
+      return AccordionSkeleton(1);
     }
   }
 

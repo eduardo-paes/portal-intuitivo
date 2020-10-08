@@ -7,16 +7,20 @@ import UserForm from "../../components/Form/UserForm"
 import validate from "../../components/Form/Validation/FormValidateUser"
 
 // -- Hook Principal
-export default function UsersInsert(props) {
+export default function UsersInsert() {
     const initialState = {
         nome: "",
         email: "",
         acesso: "",
+        disciplina: [],
         erros: [],
         url: "",
         foto: {}
     }
     const [usuario, setUsuario] = useState(initialState);
+    const [profDisciplinas, setProfDisciplinas] = useState([{
+        disciplinaID: ''
+    }]);
 
     // Salva as mudanças no banco
     async function handleIncludeUser () {
@@ -27,15 +31,18 @@ export default function UsersInsert(props) {
             erros: error
         }));
 
+        console.log(usuario)
+
         if (error.validated) {
-            const { nome, email, acesso, senha, foto } = usuario;
+            const { nome, email, acesso, senha, disciplina, foto } = usuario;
 
             // Cria usuário atualizado
             const novoUsuario = {
                 nome,
                 email,
                 acesso,
-                senha
+                senha,
+                disciplina
             };
 
             // Guarda novo usuário no banco
@@ -67,6 +74,8 @@ export default function UsersInsert(props) {
             setUsuario={setUsuario}
             typeForm="Registrar"
             edit={false}
+            profDisciplinas={profDisciplinas}
+            setProfDisciplinas={setProfDisciplinas}
         /> 
     );
 }

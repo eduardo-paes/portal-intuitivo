@@ -14,26 +14,36 @@ export default function UsersUpdate (props) {
         nome: "",
         email: "",
         acesso: "",
+        disciplina: [],
         erros: [],
         url: "",
         foto: {}
     }
     const [usuario, setUsuario] = useState(initialState);
+    const [profDisciplinas, setProfDisciplinas] = useState([{
+        disciplinaID: ''
+    }]);
 
     useEffect(() => {
         const abortController = new AbortController();
         async function fetchUsuarioAPI () {
             const response = await api.encUsuarioPorID(props.match.params.id);
-            const value = response.data.data;
+            const value = response.data;
+            
+            if (value.success) {
+                setUsuario(preValue => ({
+                    ...preValue,
+                    nome: value.data.nome, 
+                    email: value.data.email, 
+                    acesso: value.data.acesso, 
+                    senha: value.data.senha, 
+                    url: `http://localhost:5000/uploads/profile/${props.match.params.id}.jpeg`
+                }));
+            }
     
-            setUsuario(preValue => ({
-                ...preValue,
-                nome: value.nome, 
-                email: value.email, 
-                acesso: value.acesso, 
-                senha: value.senha, 
-                url: `http://localhost:5000/uploads/profile/${props.match.params.id}.jpeg`
-            }));
+            if (value.data.disciplina) {
+                setProfDisciplinas(value.data.disciplina);
+            }
         }
         fetchUsuarioAPI();
         return abortController.abort();
@@ -49,14 +59,15 @@ export default function UsersUpdate (props) {
         }));
 
         if (error.validated) {
-            const {id, nome, email, acesso, senha, foto} = usuario;
+            const {id, nome, email, acesso, senha, disciplina, foto} = usuario;
 
             // Cria usuário atualizado
             const usuarioAtualizado = {
                 nome,
                 email,
                 acesso,
-                senha
+                senha,
+                disciplina
             }
 
             // Guarda usuário atualizado no banco
@@ -86,6 +97,8 @@ export default function UsersUpdate (props) {
             setUsuario={setUsuario}
             typeForm="Atualizar"
             edit={true}
+            profDisciplinas={profDisciplinas}
+            setProfDisciplinas={setProfDisciplinas}
         /> 
     );
 }

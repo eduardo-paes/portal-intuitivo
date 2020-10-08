@@ -126,7 +126,7 @@ export default function Library (props) {
           )
       })
     } else {
-      return AccordionSkeleton();
+      return AccordionSkeleton(4);
     }
   }
 

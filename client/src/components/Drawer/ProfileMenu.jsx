@@ -10,7 +10,8 @@ const useStyles = makeStyles((theme) => ({
     userName: {
         fontSize: "1rem",
         color: "#fff",
-        fontWeight: "500",
+        fontWeight: "600",
+        marginLeft: '0.5rem'
     }
 }));
 

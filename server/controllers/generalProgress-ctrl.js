@@ -534,6 +534,7 @@ encProgressoPorRevisaoID = async (req, res) => {
             alunoID: req.params.alunoID,
             revisaoID: req.params.revisaoID
         }, (err, progressoEncontrado) => {
+            
             if (err) {
                 return res
                     .status(400)
@@ -545,6 +546,8 @@ encProgressoPorRevisaoID = async (req, res) => {
                     .status(404)
                     .json({success: false, error: "Progresso não encontrado."})
             }
+
+            console.log(progressoEncontrado);
 
             return res
                 .status(200)
