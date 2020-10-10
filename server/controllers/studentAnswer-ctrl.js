@@ -198,6 +198,37 @@ listarRAPorAlunoID = async (req, res) => {
         .catch(err => console.log(err))
 }
 
+listarRespostaAlunoPorDisciplina = async (req, res) => {
+    const { disciplina } = req.params;
+    populateQuery = {
+        path: 'atividadeID',
+        match: {
+            disciplinaID: disciplina
+        }
+    };
+    await RespostaAluno
+            .find({})
+            .populate('respostaQuestaoID')
+            .populate(populateQuery)
+            .exec((err, respostaAlunoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!respostaAlunoEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Resposta do aluno não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: respostaAlunoEncontrada})
+        })
+}
+
 // Exporta os módulos
 module.exports = {
     inserirRespostaAluno,
@@ -205,5 +236,6 @@ module.exports = {
     encRespostaAlunoPorID,
     listarRespostaAluno,
     listarRAPorRespostaQuestaoID,
-    listarRAPorAlunoID
+    listarRAPorAlunoID,
+    listarRespostaAlunoPorDisciplina
 }

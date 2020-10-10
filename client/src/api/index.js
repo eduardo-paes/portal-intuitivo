@@ -56,6 +56,7 @@ export const encRespostaAluno = (alunoID, revisaoID) => api.get(`/resposta-aluno
 export const listarRespostaAluno = () => api.get(`/resposta-aluno`);
 export const listarRAPorRespostaQuestaoID = respostaQuestaoID => api.get(`/resposta-aluno/respostaquestao/${respostaQuestaoID}`);
 export const listarRAPorAlunoID = alunoID => api.get(`/resposta-aluno/user/${alunoID}`);
+export const listarRespostaAlunoPorDisciplina = disParams => api.get(`/resposta-aluno/correcoes/${disParams}`);
 
 // -- Funções relacionadas à AnoLetivo
 export const inserirAnoLetivo = novaAnoLetivo => api.post("/configuracoes/ano-letivo", novaAnoLetivo);
@@ -171,6 +172,7 @@ const apis = {
     listarRespostaAluno,
     listarRAPorRespostaQuestaoID,
     listarRAPorAlunoID,
+    listarRespostaAlunoPorDisciplina,
     // Ano Letivo
     inserirAnoLetivo,
     listarAnoLetivo,

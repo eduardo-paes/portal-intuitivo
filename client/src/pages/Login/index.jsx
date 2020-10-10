@@ -75,7 +75,8 @@ function Login() {
                     userID: data._id,
                     userName: data.nome,
                     accessType: data.acesso,
-                    nameImage: data.nomeArquivo
+                    nameImage: data.nomeArquivo,
+                    disciplina: data.disciplina ? data.disciplina : []
                 }
             }
         }

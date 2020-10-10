@@ -280,6 +280,7 @@ atualizarProgressoRedacao = async (req, res) => {
 
         // Atualiza dados encontrados
         progressoEncontrado.progresso = progresso.progresso
+        progressoEncontrado.corrigido = progresso.corrigido
 
         // Salva alterações
         progressoEncontrado

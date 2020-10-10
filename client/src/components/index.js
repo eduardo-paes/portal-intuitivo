@@ -5,6 +5,7 @@ import DisTable from "./Tables/DisTable"
 import TagTable from "./Tables/TagTable"
 import QuestionTable from "./Tables/QuestionTable"
 import ActivityTable from "./Tables/ActivityTable"
+import CorrectionTable from "./Tables/CorrectionTable"
 
 // -- Forms
 import UserForm from "./Form/UserForm"
@@ -28,6 +29,7 @@ import TopBar from "./Drawer/TopBar"
 import ActivityDialog from "./Dialogs/ActivityDialog"
 import ActivityDialogFilter from "./Dialogs/ActivityDialogFilter"
 import ContentDialogForm from "./Dialogs/ContentDialogForm"
+import CorrectionDialogFilter from "./Dialogs/CorrectionDialogFilter"
 import QuestionDialog from "./Dialogs/QuestionDialog"
 import QuestionDialogFilter from "./Dialogs/QuestionDialogFilter"
 import PDFPreviewDialog from "./Dialogs/PDFPreviewDialog"
@@ -66,6 +68,7 @@ export {
     TagTable,
     QuestionTable,
     ActivityTable,
+    CorrectionTable,
 
     UserForm, 
     QuestionForm,
@@ -85,6 +88,7 @@ export {
     ActivityDialog,
     ActivityDialogFilter,
     ContentDialogForm,
+    CorrectionDialogFilter,
     QuestionDialog,
     QuestionDialogFilter,
     PDFPreviewDialog,
