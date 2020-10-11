@@ -95,6 +95,7 @@ router.get("/resposta-aluno/:id", RespostaAlunoCtrl.encRespostaAlunoPorID);
 router.get("/resposta-aluno", RespostaAlunoCtrl.listarRespostaAluno);
 router.get("/resposta-aluno/respostaquestao/:id", RespostaAlunoCtrl.listarRAPorRespostaQuestaoID);
 router.get("/resposta-aluno/user/:id", RespostaAlunoCtrl.listarRAPorAlunoID);
+router.get("/resposta-aluno/correcoes/:disciplina", RespostaAlunoCtrl.listarRespostaAlunoPorDisciplina);
 
 // ATIVIDADE -- Definição dos métodos para cada rota de atividade
 router.post("/controle-atividade", AtividadeCtrl.inserirAtividade);

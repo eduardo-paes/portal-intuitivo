@@ -20,6 +20,10 @@ const ProgressoRedacao = new Schema({
     dataConclusao: {
         type: Date,
         default: Date.now, 
+    },
+    corrigido: {
+        type: Boolean,
+        required: false
     }
 });
 

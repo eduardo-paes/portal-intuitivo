@@ -102,7 +102,7 @@ function ItemsDrawer(props) {
             }, {
                 text: "Correções",
                 icon: <Correction/>,
-                onClick: () => history.push("/correcao-atividades")
+                onClick: () => history.push("/controle-correcoes")
             }, {
                 text: "Material de Estudo",
                 icon: <ContentControl/>,
