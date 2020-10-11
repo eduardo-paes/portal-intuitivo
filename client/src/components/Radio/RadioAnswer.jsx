@@ -17,7 +17,7 @@ export const useStyles = makeStyles((theme) => ({
 }))
 
 export default function RadioAnswer(props) {
-  const { answered, color, gabarito, resposta, respostaQuestao, setRespostaQuestao, mobile, respostaMobile } = props;
+  const { answered, resposta, respostaQuestao, setRespostaQuestao, mobile, respostaMobile } = props;
   const classes = useStyles();
 
   const handleChange = (event) => {
@@ -48,7 +48,7 @@ export default function RadioAnswer(props) {
                       <FormControlLabel 
                           key={index} 
                           value={row._id} 
-                          control={<Radio id={row._id} disabled={answered} color={color}/>}
+                          control={<Radio id={row._id} disabled={answered}/>}
                           style={{margin: 0}}
                           label={
                             <div 

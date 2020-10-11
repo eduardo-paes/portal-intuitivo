@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import SwipeableViews from 'react-swipeable-views';
 
 // -- Local Components / Styles
@@ -21,14 +21,12 @@ export default function ActivityCard(props) {
     const [respostaQuestaoIDs, setRespostaQuestaoIDs] = useState([]);
     const [respostaQuestao, setRespostaQuestao] = useState([]);
     const isEssay = (name === 'redacao') ? true : false;
-    const alunoID = token.token.userID;
     
     // MediaQuery / Styles
     const classes = useStyles();
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
     
-    let arrayAux = [];
     let gabarito = [];
 
     question.forEach((row, index) => {

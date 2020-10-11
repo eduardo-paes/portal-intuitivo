@@ -25,7 +25,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 }); 
 
 export default function ExerciseDialog(props) {
-    const { activity, open, setOpen, setCheck, title, name, progresso, setProgresso, setWasChecked, setAnswered, answered } = props;
+    const { activity, open, setOpen, setCheck, title, name, progresso, setProgresso, setWasChecked, answered } = props;
     const classes = useStyles();
     const [question, setQuestion] = useState([]); 
     const [respostaAluno, setRespostaAluno] = useState(initialState);
@@ -64,7 +64,6 @@ export default function ExerciseDialog(props) {
     // -- Confirma salvamento das Respostas do aluno
     useEffect(() => {
         const abortController = new AbortController();
-        const alunoID = token.token.userID;
         setRespostaAluno(respostaAluno);
         return abortController.abort();
         // eslint-disable-next-line

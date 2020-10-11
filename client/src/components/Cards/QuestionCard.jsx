@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { Grid, TextField } from "@material-ui/core";
 import { MyCardContent } from "../../assets/styles/styledComponents"
@@ -11,9 +11,7 @@ import api from "../../api";
 
 export default function QuestionCard (props) {
     const classes = useStyles();
-    const { idQuestion, answered, enunciado, tipoResposta, gabarito, padraoResposta, resposta, respostaQuestao, setRespostaQuestao, respostaQuestaoIDs, setRespostaQuestaoIDs, atividadeID, revisaoID, alunoID, name, mobile, respostaMobile } = props;
-    const [value, setValue] = useState(0);
-    const [color, setColor] = useState('default');
+    const { idQuestion, answered, enunciado, tipoResposta, gabarito, resposta, respostaQuestao, setRespostaQuestao, respostaQuestaoIDs, setRespostaQuestaoIDs, atividadeID, revisaoID, alunoID, name, mobile, respostaMobile } = props;
     
     async function pegarResposta() {
         
@@ -45,24 +43,12 @@ export default function QuestionCard (props) {
             });
         }
     }
-
-    async function pegarRespostaQuestao() {
-        
-        let response;
-
-        if (atividadeID) response = await api.encRespostaQuestaoPorAtividade(atividadeID, alunoID, idQuestion);
-        else response = await api.encRespostaQuestaoPorRevisao(revisaoID, alunoID, idQuestion);
-
-        console.log(response);
-        
-        if (response.data.success) return response.data.data.resposta;
-        return null;
-    }
     
     useEffect(() => {
         const abortController = new AbortController();
         pegarResposta();
         return abortController.abort();
+        // eslint-disable-next-line
     }, [idQuestion]);
 
     function pegarRespostaDiscursiva(event) {
@@ -85,7 +71,6 @@ export default function QuestionCard (props) {
                         idQuestion={idQuestion}
                         answered={answered} 
                         gabarito={gabarito._id} 
-                        color={color}
                         mobile={mobile}
                         respostaMobile={respostaMobile} 
                         resposta={resposta}
