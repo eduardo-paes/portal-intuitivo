@@ -246,7 +246,61 @@ listarRespostaQuestao = async (req, res) => {
     });
 }
 
-// Função para listar TQ por QuestaoID
+// Função para listar RQ por AtividadeID
+listarRQPorAtividadeID = async (req, res) => {
+    await RespostaQuestao
+        .find({ 
+            alunoID: req.params.alunoID,
+            atividadeID: req.params.atividadeID 
+        }, 
+            (err, respostaQuestaoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!respostaQuestaoEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Resposta da Questão não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: respostaQuestaoEncontrada})
+        })
+        .catch(err => console.log(err))
+}
+
+// Função para listar RQ por RevisaoID
+listarRQPorRevisaoID = async (req, res) => {
+    await RespostaQuestao
+        .find({ 
+            alunoID: req.params.alunoID,
+            revisaoID: req.params.revisaoID 
+        }, 
+            (err, respostaQuestaoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!respostaQuestaoEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Resposta da Questão não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: respostaQuestaoEncontrada})
+        })
+        .catch(err => console.log(err))
+}
+
+// Função para listar RQ por QuestaoID
 listarRQPorQuestaoID = async (req, res) => {
     await RespostaQuestao
         .find({ questaoID: req.params.id }, 
@@ -304,5 +358,7 @@ module.exports = {
     encRespostaQuestaoPorRevisao,
     listarRespostaQuestao,
     listarRQPorQuestaoID,
+    listarRQPorAtividadeID,
+    listarRQPorRevisaoID,
     listarRQPorAlunoID
 }

@@ -79,6 +79,8 @@ router.post("/resposta-questao", RespostaQuestaoCtrl.inserirRespostaQuestao);
 router.put("/resposta-questao/:id", RespostaQuestaoCtrl.atualizarRespostaQuestao);
 router.delete("/resposta-questao/:id", RespostaQuestaoCtrl.removerRespostaQuestao);
 router.get("/resposta-questao/:id", RespostaQuestaoCtrl.encRespostaQuestaoPorID);
+router.get("/resposta-questao/atividade/:alunoID/:atividadeID", RespostaQuestaoCtrl.listarRQPorAtividadeID);
+router.get("/resposta-questao/revisao/:alunoID/:revisaoID", RespostaQuestaoCtrl.listarRQPorRevisaoID);
 router.get("/resposta-questao/atividade/:atividadeID/:alunoID/:questaoID", RespostaQuestaoCtrl.encRespostaQuestaoPorAtividade);
 router.get("/resposta-questao/revisao/:revisaoID/:alunoID/:questaoID", RespostaQuestaoCtrl.encRespostaQuestaoPorRevisao);
 router.get("/resposta-questao", RespostaQuestaoCtrl.listarRespostaQuestao);

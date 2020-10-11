@@ -18,7 +18,6 @@ export default function QuestionCard (props) {
     async function pegarResposta() {
         
         let response;
-
         
         if (atividadeID) {
             response = await api.encRespostaQuestaoPorAtividade(atividadeID, alunoID, idQuestion);
@@ -45,6 +44,19 @@ export default function QuestionCard (props) {
                 }
             });
         }
+    }
+
+    async function pegarRespostaQuestao() {
+        
+        let response;
+
+        if (atividadeID) response = await api.encRespostaQuestaoPorAtividade(atividadeID, alunoID, idQuestion);
+        else response = await api.encRespostaQuestaoPorRevisao(revisaoID, alunoID, idQuestion);
+
+        console.log(response);
+        
+        if (response.data.success) return response.data.data.resposta;
+        return null;
     }
     
     useEffect(() => {
@@ -73,7 +85,9 @@ export default function QuestionCard (props) {
                         idQuestion={idQuestion}
                         answered={answered} 
                         gabarito={gabarito._id} 
-                        color={color} 
+                        color={color}
+                        mobile={mobile}
+                        respostaMobile={respostaMobile} 
                         resposta={resposta}
                         respostaQuestao={respostaQuestao}
                         setRespostaQuestao={setRespostaQuestao}
@@ -89,7 +103,6 @@ export default function QuestionCard (props) {
                         className={classes.answerField}
                         id={respostaQuestao.questao ? respostaQuestao.questao : ''}
                         label="Resposta"
-                        defaultValue={value ? value : ''}
                         disabled={answered}
                         multiline
                         value={

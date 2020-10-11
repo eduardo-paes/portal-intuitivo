@@ -15,12 +15,13 @@ import { useTheme } from '@material-ui/core/styles';
 import api from '../../api';
 
 export default function ActivityCard(props) {
-    const { handleClose, handleFinalized, question, atividadeID, revisaoID, name, answered } = props;
+    const { handleClose, handleFinalized, question, atividadeID, revisaoID, name, answered, respostas } = props;
     const token = useContext(StoreContext);
     const [value, setValue] = useState(1);
     const [respostaQuestaoIDs, setRespostaQuestaoIDs] = useState([]);
     const [respostaQuestao, setRespostaQuestao] = useState([]);
     const isEssay = (name === 'redacao') ? true : false;
+    const alunoID = token.token.userID;
     
     // MediaQuery / Styles
     const classes = useStyles();
@@ -36,6 +37,7 @@ export default function ActivityCard(props) {
         return gabarito[index] = { gab, quest }
     });
 
+    // Função para verificar se a atividade já foi respondida pelo aluno ou não
     function verificaProgresso() {
         if (revisaoID) {
             return answered.progresso;
@@ -125,8 +127,6 @@ export default function ActivityCard(props) {
                         : <SwipeableViews animateHeight={true} className={classes.swipeableViews} enableMouseEvents> 
                             {
                                 question.map((row, index) => {
-                                    arrayAux.push(respostaQuestao.resposta);
-                                    // console.log(arrayAux)
                                     return (
                                         <div className={classes.questionCardDiv} key={index}>                        
                                             <Typography variant="h6" className={classes.title}>{isEssay ? "Enunciado" : "Questão " + (index+1)}</Typography>
@@ -147,7 +147,7 @@ export default function ActivityCard(props) {
                                                 name={name}
                                                 answered={verificaProgresso()}
                                                 mobile={smScreen}
-                                                respostaMobile={arrayAux[index]}
+                                                respostaMobile={respostas[index]}
                                             />
                                         </div>
                                     )
@@ -170,7 +170,7 @@ export default function ActivityCard(props) {
                     Voltar
                 </Button>
                 { 
-                    value === question.length && !isEssay
+                    value === question.length && !isEssay && !verificaProgresso()
                         ? <Button className={classes.buttons} variant='contained' color="primary" onClick={handleSubmit}>{smScreen ? 'Concluir' : 'Concluir Atividade'}</Button>
                         : null
                 }

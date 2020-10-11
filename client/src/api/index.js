@@ -46,6 +46,8 @@ export const encRespostaQuestaoPorAtividade = (atividadeID, alunoID, questaoID) 
 export const encRespostaQuestaoPorRevisao = (revisaoID, alunoID, questaoID) => api.get(`/resposta-questao/revisao/${revisaoID}/${alunoID}/${questaoID}`);
 export const listarRespostaQuestao = () => api.get(`/resposta-questao`);
 export const listarRQPorQuestaoID = questaoID => api.get(`/resposta-questao/questao/${questaoID}`);
+export const listarRQPorAtividadeID = (alunoID, atividadeID) => api.get(`/resposta-questao/atividade/${alunoID}/${atividadeID}`);
+export const listarRQPorRevisaoID = (alunoID, revisaoID) => api.get(`/resposta-questao/revisao/${alunoID}/${revisaoID}`);
 export const listarRQPorAlunoID = alunoID => api.get(`/resposta-questao/user/${alunoID}`);
 
 // -- Funções relacionadas à RespostaAluno
@@ -162,6 +164,8 @@ const apis = {
     encRespostaQuestaoPorRevisao,
     listarRespostaQuestao,
     listarRQPorQuestaoID,
+    listarRQPorAtividadeID,
+    listarRQPorRevisaoID,
     listarRQPorAlunoID,
     //Resposta-Aluno
     inserirRespostaAluno,

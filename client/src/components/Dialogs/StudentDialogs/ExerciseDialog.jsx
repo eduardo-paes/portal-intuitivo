@@ -29,7 +29,9 @@ export default function ExerciseDialog(props) {
     const classes = useStyles();
     const [question, setQuestion] = useState([]); 
     const [respostaAluno, setRespostaAluno] = useState(initialState);
+    const [respostas, setRespostas] = useState([]);
     const token = useContext(StoreContext);
+    const alunoID = token.token.userID;
 
     // -- Fetch das questões
     async function fetchQuestaoAPI(atividadeID) {
@@ -39,11 +41,21 @@ export default function ExerciseDialog(props) {
         setQuestion(questao);
     }
 
+    // -- Fetch da resposta das questões
+    async function fetchRespostasQuestaoAPI(atividadeID, tipo) {
+        let response;
+        if (tipo === 'Avaliação Diagnóstica') response = await api.listarRQPorRevisaoID(alunoID, atividadeID);
+        else response = await api.listarRQPorAtividadeID(alunoID, atividadeID);
+        let Respostas = response.data.data.map(item => { return item.resposta });
+        setRespostas(Respostas);
+    }
+
     // -- Carrega as questões da atividade
     useEffect(() => {
         const abortController = new AbortController();
         if (open && activity) {
             fetchQuestaoAPI(activity._id);
+            fetchRespostasQuestaoAPI(activity._id, activity.tipoAtividade);
         }
         return abortController.abort();
         // eslint-disable-next-line
@@ -100,6 +112,7 @@ export default function ExerciseDialog(props) {
                             name={name} 
                             handleClose={handleClose} 
                             handleFinalized={handleFinalized} 
+                            respostas={respostas}
                             respostaAluno={respostaAluno} 
                             setRespostaAluno={setRespostaAluno} 
                             question={question}
