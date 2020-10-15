@@ -44,22 +44,24 @@ export default function Correction(props) {
         aluno: false
     })
 
-    async function fetchOneSubjectList(disciplinaID) {
-        const response = await api.listarRespostaAlunoPorDisciplina(disciplinaID);
-        console.log(response);
-        return response.data;
-    }
-
     function fetchAtividades() {
         var arrayAux = [];
 
-        disciplinas.forEach(item => {
-            const value = fetchOneSubjectList(item.disciplinaID);
-            console.log(value);
-            // value.success && arrayAux.concat(value.data);
-        })
-        
-        setAtividade(arrayAux);
+        disciplinas.forEach(async function (item) {
+            const response = await api.listarRespostaAlunoPorDisciplina(item.disciplinaID);
+            const value = response.data;
+
+            if (value.success) {
+                if (arrayAux.length) {
+                    arrayAux = arrayAux.concat(value.data);
+                } else {
+                    arrayAux = value.data;
+                }
+                setAtividade(arrayAux);
+                console.log(arrayAux);
+            }
+        });
+
         setWasLoaded(preValue => ({
             ...preValue,
             atividade: true
@@ -89,7 +91,7 @@ export default function Correction(props) {
     useEffect(() => {
         const abortController = new AbortController();
 
-        console.log(disciplinas);
+        // console.log(disciplinas);
 
         if (toLoad.atividade) {
             setIsEssay(false);
@@ -138,12 +140,12 @@ export default function Correction(props) {
             </section>
 
             <section id="tabelaCorrecoes">
-                {/* <CorrectionTable 
+                <CorrectionTable 
                     data={isEssay ? redacao : atividade} 
                     essay={isEssay} 
                     filterDialog={filterDialog}
                     setFilterDialog={setFilterDialog}
-                /> */}
+                />
             </section>
 
         </MyContainer>

@@ -315,6 +315,7 @@ listarQuestaoPorArea = async (req, res) => {
     .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' }})
     .populate({ path: 'disciplinaID', match: { 'areaConhecimento': req.params.area }})
     .exec((err, listaQuestao) => {
+
         // Verificação de erros
         if (err) {
             return res.status(400).json({ 

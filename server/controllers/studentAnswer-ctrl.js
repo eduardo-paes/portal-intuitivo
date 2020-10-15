@@ -202,22 +202,41 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
     const { disciplina } = req.params;
     populateQuery = {
         path: 'atividadeID',
-        match: {
-            disciplinaID: disciplina
-        }
+        populate: {
+            path: 'topicoID',
+            select: ['topico','numeracao', 'disciplinaID'],
+            populate: {
+                path: 'disciplinaID',
+                select: 'nome',
+                match: {
+                    _id: disciplina
+                }
+            }
+        },
     };
+
+    // populateSubject = {
+    //     path: 'atividadeID.disciplinaID',
+    //     select: 'nome'
+    // };
+    
     await RespostaAluno
             .find({ corrigido: false })
             .populate('respostaQuestaoID')
             .populate(populateQuery)
             .exec((err, respostaAlunoEncontrada) => {
+
             if (err) {
                 return res
                     .status(400)
                     .json({success: false, error: err})
             }
+            
+            respostaAlunoEncontrada = respostaAlunoEncontrada.filter(function(item) {
+                return item.atividadeID.topicoID.disciplinaID;
+            });
 
-            if (!respostaAlunoEncontrada) {
+            if (respostaAlunoEncontrada.length === 0) {
                 return res
                     .status(404)
                     .json({success: false, error: "Resposta do aluno não encontrada."})

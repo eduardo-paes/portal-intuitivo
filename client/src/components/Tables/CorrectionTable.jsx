@@ -44,21 +44,43 @@ function CorrigirRespostas(props) {
 
 // -- Funções auxiliares para Ordenação
 function descendingComparator(a, b, orderBy) {
-    if (orderBy === 'topicoID.topico') {
-        if (b.topicoID.topico < a.topicoID.topico) {
+    console.log(a[orderBy]);
+
+    if (orderBy === 'topico') {
+        if (b.atividadeID.topicoID.topico < a.atividadeID.topicoID.topico) {
             return -1;
         }
-        if (b.topicoID.topico > a.topicoID.topico) {
+        if (b.atividadeID.topicoID.topico > a.atividadeID.topicoID.topico) {
             return 1;
         }
         return 0;
     } 
     
-    else if (orderBy === 'disciplinaID.nome') {
-        if (b.disciplinaID.nome < a.disciplinaID.nome) {
+    else if (orderBy === 'disciplina') {
+        if (b.atividadeID.topicoID.disciplinaID.nome < a.atividadeID.topicoID.disciplinaID.nome) {
             return -1;
         }
-        if (b.disciplinaID.nome > a.disciplinaID.nome) {
+        if (b.atividadeID.topicoID.disciplinaID.nome > a.atividadeID.topicoID.disciplinaID.nome) {
+            return 1;
+        }
+        return 0;
+    }
+
+    else if (orderBy === 'numeracao') {
+        if (b.atividadeID.topicoID.numeracao < a.atividadeID.topicoID.numeracao) {
+            return -1;
+        }
+        if (b.atividadeID.topicoID.numeracao > a.atividadeID.topicoID.numeracao) {
+            return 1;
+        }
+        return 0;
+    }
+
+    else if (orderBy === 'tipoAtividade') {
+        if (b.atividadeID.tipoAtividade < a.atividadeID.tipoAtividade) {
+            return -1;
+        }
+        if (b.atividadeID.tipoAtividade > a.atividadeID.tipoAtividade) {
             return 1;
         }
         return 0;
@@ -101,14 +123,11 @@ const headActivityCells = [
         id: 'tipoAtividade',
         label: 'Tipo'
     }, {
-        id: 'disciplinaID.nome',
+        id: 'disciplina',
         label: 'Disciplina'
     }, {
-        id: 'topicoID.topico',
+        id: 'topico',
         label: 'Tópico'
-    }, {
-        id: 'aluno',
-        label: 'Aluno'
     }, {
         id: 'funcoes',
         label: ''
@@ -126,9 +145,6 @@ const headEssayCells = [
         id: 'topicoID.topico',
         label: 'Tópico'
     }, {
-        id: 'aluno',
-        label: 'Aluno'
-    }, {
         id: 'funcoes',
         label: ''
     }
@@ -142,9 +158,6 @@ const phoneHeadActivityCells = [
         id: 'disciplinaID.nome',
         label: 'Disciplina'
     }, {
-        id: 'aluno',
-        label: 'Aluno'
-    }, {
         id: 'funcoes',
         label: ''
     }
@@ -157,9 +170,6 @@ const phoneHeadEssayCells = [
     }, {
         id: 'disciplinaID.nome',
         label: 'Disciplina'
-    }, {
-        id: 'aluno',
-        label: 'Aluno'
     }, {
         id: 'funcoes',
         label: ''
@@ -179,7 +189,7 @@ function EnhancedTableHead(props) {
         if (width) {
             (essay) ? setCells(phoneHeadEssayCells) : setCells(phoneHeadActivityCells);
         } else {
-            (essay) ? setCells(headActivityCells) : setCells(headEssayCells);
+            (essay) ? setCells(headEssayCells) : setCells(headActivityCells);
         }
     }, [essay, width])
 
@@ -327,12 +337,14 @@ const useStyles = makeStyles((theme) => ({
 export default function CorrectionTable(props) {
     const {data, filterDialog, setFilterDialog, essay} = props;
     
+    console.log(data);
+
     const classes = useStyles();
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('nome');
+    const [orderBy, setOrderBy] = useState('topicoID.topico');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const cleanFilter = {
@@ -393,33 +405,34 @@ export default function CorrectionTable(props) {
                             essay={essay}
                             width={smScreen}/>
                         <TableBody>
-                            {
+                            {                                
                                 (data.length > 0) && stableSort(data, getComparator(order, orderBy))
                                     .slice(
                                         page * rowsPerPage,
                                         page * rowsPerPage + rowsPerPage
                                     )
                                     .map(row => {
-                                        const { numeracao, tipoAtividade, disciplinaID, topicoID, alunoID } = row;
+                                        const { atividadeID, alunoID } = row;
+                                        const { tipoAtividade, topicoID } = atividadeID;
+                                        const { numeracao, topico, disciplinaID } = topicoID;
 
-                                        let auxStudent = (alunoID.nome.includes(filter.aluno) || filter.aluno === '') ? true : false;
+                                        // let auxStudent = (alunoID.nome.includes(filter.aluno) || filter.aluno === '') ? true : false;
                                         let auxType = (tipoAtividade === filter.tipo || filter.tipo === '' || essay) ? true : false;
-                                        let auxSubject = (topicoID._id === filter.topico || filter.topico === '') ? true : false;
-                                        let auxTopic = (disciplinaID._id === filter.disciplina || filter.disciplina === '') ? true : false;
+                                        let auxSubject = (disciplinaID._id === filter.disciplina || filter.disciplina === '') ? true : false;
+                                        let auxTopic = (topicoID._id === filter.topico || filter.topico === '') ? true : false;
                                         let auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
 
-                                        if (auxStudent && auxType && auxSubject && auxTopic && auxWeek) {
+                                        if (auxType && auxSubject && auxTopic && auxWeek) {
                                             return (
                                                 <TableRow hover={true} tabIndex={-1} key={row._id}>
                                                     
                                                     <TableCell className={classes.row} align="left">{numeracao}</TableCell>
                                                     {!essay && <TableCell className={classes.row} align="left">{tipoAtividade}</TableCell>}
                                                     <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>
-                                                    {!smScreen && <TableCell className={classes.row} align="left">{topicoID.topico}</TableCell>}
-                                                    <TableCell className={classes.row} align="left">{alunoID.nome}</TableCell>
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{topico}</TableCell>}
 
                                                     <TableCell align={smScreen ? "right" : "left"}>
-                                                        <CorrigirRespostas essay={essay} alunoID={alunoID.nome} atividadeID={row._id}/>
+                                                        <CorrigirRespostas essay={essay} alunoID={alunoID} atividadeID={row._id}/>
                                                     </TableCell>
                                                 </TableRow>
                                             );

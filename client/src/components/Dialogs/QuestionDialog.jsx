@@ -54,6 +54,7 @@ export default function QuestionDialog(props) {
   };
 
   const handlingWithMath = (text) => {
+    console.log(text);
     if (text !== undefined && text.includes('<math')) {
       return (
         <TextEditor 
