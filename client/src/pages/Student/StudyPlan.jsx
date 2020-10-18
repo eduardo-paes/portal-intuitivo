@@ -33,17 +33,21 @@ export default function StudyPlan () {
     '#39b2d2',
   ];
 
+  // Armazena conteúdo dos acordeões
   const [content, setContent] = useState([]); 
   const [essay, setEssay] = useState(0);
   const [revision, setRevision] = useState(0); 
 
+  // Armazena informações sobre dia e semana corrente
+  const [thisWeek, setThisWeek] = useState(0);
+  const [currentDay, setCurrentDay] = useState(0);
+
+  // Armazena informações de montagem
   const [isLoaded, setIsLoaded] = useState({
     content: false,
     essay: false,
     revision: false
   });
-  const [thisWeek, setThisWeek] = useState(0);
-  const [currentDay, setCurrentDay] = useState(0);
   const [isMounting, setIsMounting] = useState({
     content: true,
     revision: true,
@@ -94,6 +98,7 @@ export default function StudyPlan () {
   async function fetchRedacaoAPI() {
     const response = await api.encRedacaoDaSemana(2);
     const value = response.data;
+    
     if (value.success) {
       setEssay(value.data[0]);
       setIsMounting(preValue => ({
@@ -110,7 +115,8 @@ export default function StudyPlan () {
   // -- Carrega tópicos por semana e dia da semana
   useEffect(() => {
     const abortController = new AbortController();
-    if (thisWeek && currentDay) {
+
+    if (thisWeek && currentDay >= 0) {
       // let day = (currentDay >= 5 || currentDay === 0);
       let day = true;
 

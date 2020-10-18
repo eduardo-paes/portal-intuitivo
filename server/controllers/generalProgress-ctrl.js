@@ -1,6 +1,7 @@
 const ProgressoTopico = require('../models/progressTopic-model');
 const ProgressoRedacao = require('../models/progressEssay-model');
 const ProgressoRevisao = require('../models/progressRevision-model');
+const { populate } = require('../models/progressTopic-model');
 
 // ================================================
 // PROGRESSO RELACIONADO AO TÓPICO
@@ -379,6 +380,81 @@ encProgressoPorRedacaoID = async (req, res) => {
         .catch(err => console.log(err))
 }
 
+listarRedacoesNaoCorrigidas = async (req, res) => {
+    const { disciplina } = req.params;
+
+    const populateQuery = {
+        path: 'redacaoID',
+        populate: {
+            path: 'topicoID',
+            select: ['topico','numeracao', 'disciplinaID'],
+            populate: {
+                path: 'disciplinaID',
+                select: 'nome',
+                match: {
+                    _id: disciplina
+                }
+            }
+        },
+    };
+
+    await ProgressoRedacao
+        .find({corrigido: false})
+        .populate(populateQuery)
+        .exec((err, listaRedacoes) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+            
+            listaRedacoes = listaRedacoes.filter(function(item) {
+                return item.redacaoID.topicoID.disciplinaID;
+            });
+
+            console.log(listaRedacoes);
+
+            if (listaRedacoes.length === 0) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Redações não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: listaRedacoes})
+        });
+}
+
+listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
+    const { redacaoID } = req.params;
+
+    await ProgressoRedacao
+        .find({
+            _id: redacaoID,
+            corrigido: false
+        })
+        .exec((err, listaRedacoes) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            console.log(listaRedacoes);
+
+            if (listaRedacoes.length === 0) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Redações não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: listaRedacoes})
+        });
+}
+
 // ================================================
 // PROGRESSO RELACIONADO À REVISÃO
 // ================================================
@@ -575,6 +651,8 @@ module.exports = {
     removerProgressoRedacao,
     encProgressoRedacaoPorID,
     encProgressoPorRedacaoID,
+    listarRedacoesNaoCorrigidas,
+    listarRedacoesNaoCorrigidasPorRedacaoID,
     // Revisão
     inserirProgressoRevisao,
     atualizarProgressoRevisao,

@@ -115,7 +115,8 @@ export const inserirProgressoRedacao = novoProgresso => api.post("/progresso-red
 export const atualizarProgressoRedacao = (id, progressoAtualizado) => api.put(`/progresso-redacao/${id}`, progressoAtualizado);
 export const removerProgressoRedacao = id => api.delete(`/progresso-redacao/${id}`);
 export const encProgressoRedacaoPorID = id => api.get(`/progresso-redacao/${id}`);
-export const encProgressoPorRedacaoID = (alunoID, redacaoID) => api.get(`/progresso-redacao/${alunoID}/${redacaoID}`);
+export const encProgressoPorRedacaoID = (alunoID, redacaoID) => api.get(`/progresso-redacao/lista/${alunoID}/${redacaoID}`);
+export const listarRedacoesNaoCorrigidas = disParams => api.get(`/progresso-redacao/correcoes/${disParams}`);
 
 // -- Funções relacionadas à Progresso da Revisão
 export const inserirProgressoRevisao = novoProgresso => api.post("/progresso-revisao", novoProgresso);
@@ -227,6 +228,7 @@ const apis = {
     removerProgressoRedacao,
     encProgressoRedacaoPorID,
     encProgressoPorRedacaoID,
+    listarRedacoesNaoCorrigidas,
     // ProgressoRevisao
     inserirProgressoRevisao,
     atualizarProgressoRevisao,

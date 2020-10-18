@@ -135,7 +135,8 @@ router.post("/progresso-redacao", ProgressoCtrl.inserirProgressoRedacao);
 router.put("/progresso-redacao/:id", ProgressoCtrl.atualizarProgressoRedacao);
 router.delete("/progresso-redacao/:id", ProgressoCtrl.removerProgressoRedacao);
 router.get("/progresso-redacao/:id", ProgressoCtrl.encProgressoRedacaoPorID);
-router.get("/progresso-redacao/:alunoID/:redacaoID", ProgressoCtrl.encProgressoPorRedacaoID);
+router.get("/progresso-redacao/lista/:alunoID/:redacaoID", ProgressoCtrl.encProgressoPorRedacaoID);
+router.get("/progresso-redacao/correcoes/:disciplina", ProgressoCtrl.listarRedacoesNaoCorrigidas);
 
 // PROGRESSO -- Definição dos métodos para cada rota de progressoRevisao
 router.post("/progresso-revisao", ProgressoCtrl.inserirProgressoRevisao);

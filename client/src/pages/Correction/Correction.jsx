@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { StoreContext } from "../../utils";
 import api from '../../api'
 
-import { GeneralTitle, MyContainer } from "../../assets/styles/styledComponents"
+import { GeneralSubtitle, GeneralTitle, MyContainer } from "../../assets/styles/styledComponents"
 import { makeStyles, ButtonGroup, Tooltip, Button, Grid } from "@material-ui/core";
 import { CorrectionTable } from '../../components'
 
@@ -26,7 +26,7 @@ export default function Correction(props) {
     const classes = useStyles();
     const { token } = useContext(StoreContext);
     const disciplinas = token.disciplina;
-    const professorID = token.userID;
+    // const professorID = token.userID;
 
     const [atividade, setAtividade] = useState([]);
     const [redacao, setRedacao] = useState([]);
@@ -36,12 +36,10 @@ export default function Correction(props) {
     const [wasLoaded, setWasLoaded] = useState({
         atividade: false,
         redacao: false,
-        aluno: false
     })
     const [toLoad, setToLoad] = useState({
         atividade: true,
         redacao: false,
-        aluno: false
     })
 
     function fetchAtividades() {
@@ -58,7 +56,6 @@ export default function Correction(props) {
                     arrayAux = value.data;
                 }
                 setAtividade(arrayAux);
-                console.log(arrayAux);
             }
         });
 
@@ -73,15 +70,27 @@ export default function Correction(props) {
     }
 
     async function fetchRedacoes() {
-        const response = await api.listarRedacoesNaoCorrigidas(disciplinas);
-        const value = response.data;
-        if (value.success) {
-            setRedacao(value.data);
-            setWasLoaded(preValue => ({
-                ...preValue,
-                redacao: true
-            }));
-        }
+        var arrayAux = [];
+
+        disciplinas.forEach(async function (item) {
+            const response = await api.listarRedacoesNaoCorrigidas(item.disciplinaID);
+            const value = response.data;
+
+            if (value.success) {
+                if (arrayAux.length) {
+                    arrayAux = arrayAux.concat(value.data);
+                } else {
+                    arrayAux = value.data;
+                }
+                setRedacao(arrayAux);
+                console.log(arrayAux);
+            }
+        });
+
+        setWasLoaded(preValue => ({
+            ...preValue,
+            redacao: true
+        }));
         setToLoad(preValue => ({
             ...preValue,
             redacao: false
@@ -91,8 +100,7 @@ export default function Correction(props) {
     useEffect(() => {
         const abortController = new AbortController();
 
-        // console.log(disciplinas);
-
+        // Carrega atividades não corrigidas
         if (toLoad.atividade) {
             setIsEssay(false);
             (!wasLoaded.atividade && !atividade.length) 
@@ -100,18 +108,43 @@ export default function Correction(props) {
                 :   setToLoad(preValue => ({ ...preValue, atividade: false }));
         }
 
-        // if (toLoad.redacao) {
-        //     setIsEssay(true);
-        //     (!wasLoaded.redacao && !redacao.length) 
-        //         ?   fetchRedacoes()
-        //         :   setToLoad(preValue => ({ ...preValue, redacao: false }));
-        // }
-
-        // (toLoad.aluno && !wasLoaded.aluno) && fetchAlunos();
+        // Carrega reações não corrigidas
+        if (toLoad.redacao) {
+            setIsEssay(true);
+            (!wasLoaded.redacao && !redacao.length) 
+                ?   fetchRedacoes()
+                    :   setToLoad(preValue => ({ ...preValue, redacao: false }));
+        }
 
         return abortController.abort();
         // eslint-disable-next-line
     }, [toLoad])
+
+    const ReturnCorrectionTable = () => {
+        var data = [];
+        var title = "";
+
+        if (isEssay) {
+            data = redacao;
+            title = "redações";
+        } else {
+            data = atividade;
+            title = "atividades";
+        }
+
+        if (data.length > 0) {
+            return (
+                <CorrectionTable 
+                    data={data} 
+                    essay={isEssay} 
+                    filterDialog={filterDialog}
+                    setFilterDialog={setFilterDialog}
+                />
+            )
+        } else {
+            return <GeneralSubtitle>Pode relaxar que não há {title} pendentes para correção aqui!</GeneralSubtitle>
+        }
+    }
 
     return (
         <MyContainer>
@@ -140,12 +173,7 @@ export default function Correction(props) {
             </section>
 
             <section id="tabelaCorrecoes">
-                <CorrectionTable 
-                    data={isEssay ? redacao : atividade} 
-                    essay={isEssay} 
-                    filterDialog={filterDialog}
-                    setFilterDialog={setFilterDialog}
-                />
+                {ReturnCorrectionTable()}
             </section>
 
         </MyContainer>

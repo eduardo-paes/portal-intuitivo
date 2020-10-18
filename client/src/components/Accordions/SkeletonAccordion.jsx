@@ -5,7 +5,7 @@ const AccordionSkeleton = (num) => {
   const retSkeletons = () => {
     var array = [];
     for (let index = 0; index < num; index++) {
-      array.push(<Skeleton animation="wave" height={130} />)
+      array.push(<Skeleton key={index} animation="wave" height={130} />)
     }
     return array;
   }

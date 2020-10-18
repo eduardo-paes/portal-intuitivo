@@ -214,11 +214,6 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
             }
         },
     };
-
-    // populateSubject = {
-    //     path: 'atividadeID.disciplinaID',
-    //     select: 'nome'
-    // };
     
     await RespostaAluno
             .find({ corrigido: false })

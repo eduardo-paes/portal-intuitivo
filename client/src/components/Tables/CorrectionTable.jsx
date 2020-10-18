@@ -29,12 +29,11 @@ import ClearAllIcon from '@material-ui/icons/ClearAll';
 
 // Botão de Atualização
 function CorrigirRespostas(props) {
-    const { essay, alunoID, atividadeID } = props;
-    const urlID = alunoID + "/" + atividadeID;
+    const { essay, atividadeID } = props;
     const url = essay ? "/controle-correcoes/redacao/" : "/controle-correcoes/atividades/";
 
     return (
-        <RouterLink to={url + urlID}>
+        <RouterLink to={url + atividadeID}>
             <IconButton aria-label="corrigir" color="primary" size="small">
                 <EditIcon/>
             </IconButton>
@@ -44,8 +43,6 @@ function CorrigirRespostas(props) {
 
 // -- Funções auxiliares para Ordenação
 function descendingComparator(a, b, orderBy) {
-    console.log(a[orderBy]);
-
     if (orderBy === 'topico') {
         if (b.atividadeID.topicoID.topico < a.atividadeID.topicoID.topico) {
             return -1;
@@ -337,8 +334,6 @@ const useStyles = makeStyles((theme) => ({
 export default function CorrectionTable(props) {
     const {data, filterDialog, setFilterDialog, essay} = props;
     
-    console.log(data);
-
     const classes = useStyles();
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -412,8 +407,9 @@ export default function CorrectionTable(props) {
                                         page * rowsPerPage + rowsPerPage
                                     )
                                     .map(row => {
-                                        const { atividadeID, alunoID } = row;
-                                        const { tipoAtividade, topicoID } = atividadeID;
+
+                                        const task = essay ? row.redacaoID : row.atividadeID;
+                                        const { tipoAtividade, topicoID } = task;
                                         const { numeracao, topico, disciplinaID } = topicoID;
 
                                         // let auxStudent = (alunoID.nome.includes(filter.aluno) || filter.aluno === '') ? true : false;
@@ -432,7 +428,7 @@ export default function CorrectionTable(props) {
                                                     {!smScreen && <TableCell className={classes.row} align="left">{topico}</TableCell>}
 
                                                     <TableCell align={smScreen ? "right" : "left"}>
-                                                        <CorrigirRespostas essay={essay} alunoID={alunoID} atividadeID={row._id}/>
+                                                        <CorrigirRespostas essay={essay} atividadeID={row._id}/>
                                                     </TableCell>
                                                 </TableRow>
                                             );

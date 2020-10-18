@@ -145,6 +145,7 @@ export default function ContentAccordion(props) {
             alunoID: topicProgress.alunoID,
             redacaoID: essay._id,
             progresso: check.redacao,
+            corrigido: false
         }
 
         if (!topicProgress._id) {

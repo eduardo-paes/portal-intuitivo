@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { MyContainer, MyCard, MyCardContent, GeneralTitle, GeneralSubtitle } from "../../assets/styles/styledComponents"
 import { makeStyles } from '@material-ui/core/styles';
@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard (props) {
   const classes = useStyles();
+  const [wasLoaded, setWasLoaded] = useState(false);
 
   return (
     <MyContainer id="studentPageContainer">
@@ -75,19 +76,19 @@ export default function Dashboard (props) {
                 <List className={classes.root}>
                   <ListItem>
                     <ListItemAvatar>
-                      <CircularStatic progresso={4}/>
+                      <CircularStatic wasLoaded={wasLoaded} setWasLoaded={setWasLoaded} numTasks={1} progresso={4}/>
                     </ListItemAvatar>
                     <ListItemText primary="Introdução à História" secondary="História" />
                   </ListItem>
                   <ListItem>
                     <ListItemAvatar>
-                      <CircularStatic progresso={2}/>
+                      <CircularStatic wasLoaded={wasLoaded} setWasLoaded={setWasLoaded} numTasks={1} progresso={2}/>
                     </ListItemAvatar>
                     <ListItemText primary="Introdução à Física" secondary="Física" />
                   </ListItem>
                   <ListItem>
                     <ListItemAvatar>
-                      <CircularStatic progresso={0}/>
+                      <CircularStatic wasLoaded={wasLoaded} setWasLoaded={setWasLoaded} numTasks={1} progresso={0}/>
                     </ListItemAvatar>
                     <ListItemText primary="Redação" secondary="Semana 17" />
                   </ListItem>
