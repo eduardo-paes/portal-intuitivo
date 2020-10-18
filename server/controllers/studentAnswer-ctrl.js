@@ -4,15 +4,16 @@ const RespostaAluno = require('../models/studentAnswer-model');
 inserirRespostaAluno = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
-
+    
     if (!body) {
         return res.status(400).json({
             success: false,
             error: "A resposta do aluno deve ser fornecida.",
         })
     }
-
+    
     const novaRespostaAluno = new RespostaAluno(body);
+    console.log(novaRespostaAluno);
 
     // Verifica se dados não são nulos
     if (!novaRespostaAluno) {
@@ -22,21 +23,21 @@ inserirRespostaAluno = (req, res) => {
     }
 
     // Salva nova respostaAluno
-    novaRespostaAluno
-        .save()
-        .then(() => {
-            return res.status(201).json({
-                success: true,
-                id: novaRespostaAluno._id,
-                message: "Resposta do aluno inserida com sucesso!",
-            })
-        })
-        .catch(error => {
-            return res.status(400).json({
-                error,
-                message: "Resposta do aluno não inserida.",
-            })
-        });
+    // novaRespostaAluno
+    //     .save()
+    //     .then(() => {
+    //         return res.status(201).json({
+    //             success: true,
+    //             id: novaRespostaAluno._id,
+    //             message: "Resposta do aluno inserida com sucesso!",
+    //         })
+    //     })
+    //     .catch(error => {
+    //         return res.status(400).json({
+    //             error,
+    //             message: "Resposta do aluno não inserida.",
+    //         })
+    //     });
 }
 
 // Função para remover respostaAluno por ID
@@ -198,9 +199,44 @@ listarRAPorAlunoID = async (req, res) => {
         .catch(err => console.log(err))
 }
 
+// Função para listar RA por AtividadeID
+listarRAPorAtividadeID = async (req, res) => {
+    const populateQuery = {
+        path: 'atividadeID', 
+        select: 'questoes', 
+        populate: {
+            path: 'questoes',
+            populate: 'questaoID'
+        }
+    }
+    await RespostaAluno
+        .find({ atividadeID: req.params.atividadeID })
+        .populate({path: 'alunoID', select: 'nome'})
+        .populate(populateQuery)
+        .populate({path: 'respostaQuestaoIDs', select: ['nota', 'resposta']})
+        .exec((err, respostaAlunoEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!respostaAlunoEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Resposta do aluno não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: respostaAlunoEncontrada})
+        })
+}
+
 listarRespostaAlunoPorDisciplina = async (req, res) => {
     const { disciplina } = req.params;
-    populateQuery = {
+
+    const populateQuery = {
         path: 'atividadeID',
         populate: {
             path: 'topicoID',
@@ -216,11 +252,10 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
     };
     
     await RespostaAluno
-            .find({ corrigido: false })
+            .find({  })
             .populate('respostaQuestaoID')
             .populate(populateQuery)
             .exec((err, respostaAlunoEncontrada) => {
-
             if (err) {
                 return res
                     .status(400)
@@ -249,6 +284,7 @@ module.exports = {
     removerRespostaAluno,
     encRespostaAlunoPorID,
     listarRespostaAluno,
+    listarRAPorAtividadeID,
     listarRAPorRespostaQuestaoID,
     listarRAPorAlunoID,
     listarRespostaAlunoPorDisciplina

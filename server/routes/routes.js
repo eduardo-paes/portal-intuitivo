@@ -95,6 +95,7 @@ router.get("/resposta-aluno/:id", RespostaAlunoCtrl.encRespostaAlunoPorID);
 router.get("/resposta-aluno", RespostaAlunoCtrl.listarRespostaAluno);
 router.get("/resposta-aluno/respostaquestao/:id", RespostaAlunoCtrl.listarRAPorRespostaQuestaoID);
 router.get("/resposta-aluno/user/:id", RespostaAlunoCtrl.listarRAPorAlunoID);
+router.get("/resposta-aluno/atividade/:atividadeID", RespostaAlunoCtrl.listarRAPorAtividadeID);
 router.get("/resposta-aluno/correcoes/:disciplina", RespostaAlunoCtrl.listarRespostaAlunoPorDisciplina);
 
 // ATIVIDADE -- Definição dos métodos para cada rota de atividade
@@ -137,6 +138,7 @@ router.delete("/progresso-redacao/:id", ProgressoCtrl.removerProgressoRedacao);
 router.get("/progresso-redacao/:id", ProgressoCtrl.encProgressoRedacaoPorID);
 router.get("/progresso-redacao/lista/:alunoID/:redacaoID", ProgressoCtrl.encProgressoPorRedacaoID);
 router.get("/progresso-redacao/correcoes/:disciplina", ProgressoCtrl.listarRedacoesNaoCorrigidas);
+router.get("/progresso-redacao/redacaoID/:redacaoID", ProgressoCtrl.listarRedacoesNaoCorrigidasPorRedacaoID);
 
 // PROGRESSO -- Definição dos métodos para cada rota de progressoRevisao
 router.post("/progresso-revisao", ProgressoCtrl.inserirProgressoRevisao);

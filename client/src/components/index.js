@@ -61,6 +61,12 @@ import AccordionSkeleton from './Accordions/SkeletonAccordion'
 import PDFViewer from './PDFViewer/PDFViewer'
 import RadioAnswer from "./Radio/RadioAnswer";
 
+// -- Tabs
+import FullWidthTab from './Tabs/FullWidthTab'
+import VerticalTab from './Tabs/VerticalTab'
+import EssayVerticalTab from './Tabs/EssayVerticalTab'
+import EssayFullWidthTabs from "./Tabs/EssayFullWidthTab"
+
 export { 
     UserTable,
     ContentTable,
@@ -112,4 +118,9 @@ export {
 
     PDFViewer,
     RadioAnswer,
+
+    FullWidthTab,
+    VerticalTab,
+    EssayVerticalTab,
+    EssayFullWidthTabs
 }

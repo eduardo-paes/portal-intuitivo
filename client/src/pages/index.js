@@ -15,6 +15,8 @@ import ActivityInsert from "./Activities/ActivityInsert"
 import ActivityUpdate from "./Activities/ActivityUpdate"
 
 import Correction from "./Correction/Correction"
+import ActivityToCorrect from "./Correction/ActivityToCorrect"
+import EssayToCorrect from "./Correction/EssayToCorrect"
 
 import Home from "./Student/Home"
 import Classroom from "./Student/Classroom"
@@ -45,6 +47,8 @@ export {
     ActivityUpdate,
 
     Correction,
+    ActivityToCorrect,
+    EssayToCorrect,
 
     Home,
     Classroom, 

@@ -434,14 +434,13 @@ listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
             _id: redacaoID,
             corrigido: false
         })
+        .populate({path: 'alunoID', select: 'nome'})
         .exec((err, listaRedacoes) => {
             if (err) {
                 return res
                     .status(400)
                     .json({success: false, error: err})
             }
-
-            console.log(listaRedacoes);
 
             if (listaRedacoes.length === 0) {
                 return res

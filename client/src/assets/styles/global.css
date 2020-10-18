@@ -63,3 +63,7 @@ html, body, #root {
 #mostrarEnunciadoOpcao {
     font-size: 0.9rem;
 }
+
+.MuiTabs-flexContainer {
+    background-color: #fff;
+}

@@ -427,7 +427,7 @@ export default function CorrectionTable(props) {
                                                     <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>
                                                     {!smScreen && <TableCell className={classes.row} align="left">{topico}</TableCell>}
 
-                                                    <TableCell align={smScreen ? "right" : "left"}>
+                                                    <TableCell align={smScreen ? "left" : "right"}>
                                                         <CorrigirRespostas essay={essay} atividadeID={row._id}/>
                                                     </TableCell>
                                                 </TableRow>

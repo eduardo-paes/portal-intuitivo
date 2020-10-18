@@ -58,6 +58,7 @@ export const encRespostaAluno = (alunoID, revisaoID) => api.get(`/resposta-aluno
 export const listarRespostaAluno = () => api.get(`/resposta-aluno`);
 export const listarRAPorRespostaQuestaoID = respostaQuestaoID => api.get(`/resposta-aluno/respostaquestao/${respostaQuestaoID}`);
 export const listarRAPorAlunoID = alunoID => api.get(`/resposta-aluno/user/${alunoID}`);
+export const listarRAPorAtividadeID = atividadeID => api.get(`/resposta-aluno/atividade/${atividadeID}`);
 export const listarRespostaAlunoPorDisciplina = disParams => api.get(`/resposta-aluno/correcoes/${disParams}`);
 
 // -- Funções relacionadas à AnoLetivo
@@ -117,6 +118,7 @@ export const removerProgressoRedacao = id => api.delete(`/progresso-redacao/${id
 export const encProgressoRedacaoPorID = id => api.get(`/progresso-redacao/${id}`);
 export const encProgressoPorRedacaoID = (alunoID, redacaoID) => api.get(`/progresso-redacao/lista/${alunoID}/${redacaoID}`);
 export const listarRedacoesNaoCorrigidas = disParams => api.get(`/progresso-redacao/correcoes/${disParams}`);
+export const listarRedacoesNaoCorrigidasPorRedacaoID = disParams => api.get(`/progresso-redacao/redacaoID/${disParams}`);
 
 // -- Funções relacionadas à Progresso da Revisão
 export const inserirProgressoRevisao = novoProgresso => api.post("/progresso-revisao", novoProgresso);
@@ -177,6 +179,7 @@ const apis = {
     listarRespostaAluno,
     listarRAPorRespostaQuestaoID,
     listarRAPorAlunoID,
+    listarRAPorAtividadeID,
     listarRespostaAlunoPorDisciplina,
     // Ano Letivo
     inserirAnoLetivo,
@@ -229,6 +232,7 @@ const apis = {
     encProgressoRedacaoPorID,
     encProgressoPorRedacaoID,
     listarRedacoesNaoCorrigidas,
+    listarRedacoesNaoCorrigidasPorRedacaoID,
     // ProgressoRevisao
     inserirProgressoRevisao,
     atualizarProgressoRevisao,
