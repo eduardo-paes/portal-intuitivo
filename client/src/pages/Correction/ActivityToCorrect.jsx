@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { MyContainer, MyCard, MyCardContent, GeneralTitle, GeneralSubtitle } from "../../assets/styles/styledComponents"
-import { Grid, AppBar, Tabs, Tab, Typography, Box } from "@material-ui/core";
+import { Grid, AppBar, Tabs, Tab, Typography, Box, Accordion, AccordionSummary, AccordionDetails, Avatar } from "@material-ui/core";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -12,13 +12,19 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
 import CircularStatic from "../../components/ProgressBar/CircularStatic";
 import QuestionCircularStatic from "../../components/ProgressBar/QuestionProgress";
-import { FullWidthTab } from "../../components";
+import { FullWidthTab, RadioCorrected } from "../../components";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import api from "../../api";
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
   
-  exampleCard: {
+  accordion: {
+    marginTop: '1rem',
+    minHeight: "15rem"
+  },
+
+  card: {
     marginTop: '1rem',
     minHeight: "15rem"
   },
@@ -42,6 +48,14 @@ const useStyles = makeStyles((theme) => ({
   
   questionProgress: {
     marginLeft: '2rem',
+  },
+
+  student: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    paddingLeft: '1rem'
   },
   
   subTitle: {
@@ -104,6 +118,7 @@ export default function ActivityToCorrect (props) {
     }
   }
 
+  //#region Comentário
   // const listarOpcoes = (questao, questaoID) => {
     
   //   if (questao.tipoResposta === "multiplaEscolha") {
@@ -143,6 +158,7 @@ export default function ActivityToCorrect (props) {
   //       )
   //   }
   // }
+  //#endregion
 
   useEffect(() => {
     pegarRespostasAluno('5f748e1d456f54037534cab1');
@@ -152,12 +168,11 @@ export default function ActivityToCorrect (props) {
   }, [wasLoaded])
 
   function ListarRAPorQuestao() {
-    console.log(questoes);
     if (respostaAluno.length !== 0 && questoes.length !== 0) {
       return (
         <>
           <Grid item={true} xs={12} sm={4}>
-            <MyCard className={classes.exampleCard}>
+            <MyCard className={classes.card}>
               <MyCardContent className={classes.question}>
                 <h2 className={classes.title}  id="questaoNumeracao">{`Questão ${indice + 1}`}</h2>
                 <Grid item={true} align="center">
@@ -167,17 +182,26 @@ export default function ActivityToCorrect (props) {
             </MyCard>
           </Grid>
   
-          <Grid item={true} xs={12} sm={5}>
-            <MyCard className={classes.exampleCard}>
-              <h2 className={classes.title} id="piorDesempenho">Sociologia</h2>
-              <MyCardContent>
-                <Grid item={true} align="center">
-                  <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
-                  <GeneralSubtitle className={classes.subTitle}>67 / 107</GeneralSubtitle>
-                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={2.504672897}/>
-                </Grid>
-              </MyCardContent>
-            </MyCard>
+          <Grid item={true} xs={12} sm={5} className={classes.accordion}>
+            {
+              respostaAluno.length !== 0 ? 
+              respostaAluno.map((row, index) => {
+                return (
+                  <Accordion key={index}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1a-content"
+                    >
+                      <Avatar sizes="small" src={`http://localhost:5000/uploads/profile/${row.alunoID._id}.jpeg`} alt="Preview"/>
+                      <Typography className={classes.student}>{row.alunoID.nome}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <RadioCorrected resposta={questoes[indice].resposta} respostaAluno={row.respostaQuestaoIDs[indice].resposta} gabarito={questoes[index].resposta.find(element => element.gabarito === true)}/>
+                    </AccordionDetails>
+                  </Accordion>
+                )
+              }) : null
+            }
           </Grid>
         </>
       )
@@ -186,27 +210,36 @@ export default function ActivityToCorrect (props) {
 
   function ListarRAPorAluno() {
     return (
-      <Grid item sm={9}>
-        <MyCard className={classes.exampleCard}>
-          <Grid container direction='row' justify='space-evenly'>
-            <Grid item={true} align="center" sm={4}>
-              <h2 className={classes.title} id="melhorDesempenho">Química</h2>
-              <MyCardContent>
-                <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
-                <GeneralSubtitle className={classes.subTitle}>111 / 119</GeneralSubtitle>
-                <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={3.731092437}/>
-              </MyCardContent>
-            </Grid>
-            <Grid item={true} align="center" sm={4}>
-              <h2 className={classes.title} id="piorDesempenho">Sociologia</h2>
-              <MyCardContent>
-                <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
-                <GeneralSubtitle className={classes.subTitle}>67 / 107</GeneralSubtitle>
-                <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={2.504672897}/>
-              </MyCardContent>
-            </Grid>
-          </Grid>
-        </MyCard>
+      <Grid item sm={9} className={classes.accordion}>
+        {
+          questoes.length !== 0 ? 
+          questoes.map((row, index) => {
+            return (
+              <Accordion key={index}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                >
+                  <Typography>{`Questão ${index+1}`}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Grid container>
+                    <Grid item sm={6}>
+                      <Grid item={true} align="center">
+                        <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: questoes[index].enunciado}} />
+                      </Grid>
+                    </Grid>
+                    <Grid item sm={6}>
+                      <Grid item={true} align="center">
+                        <RadioCorrected resposta={questoes[index].resposta} respostaAluno={respostaAluno.length !== 0 ? respostaAluno[0].respostaQuestaoIDs[index].resposta : null} gabarito={questoes[index].resposta.find(element => element.gabarito === true)}/>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
+            )
+          }) : null
+        }
       </Grid>
     )
   }
@@ -215,7 +248,7 @@ export default function ActivityToCorrect (props) {
     <MyContainer id="activityContainer">
 
       <section id="cabecalhoAtividade">
-        <GeneralTitle className="heading-page">Atividade</GeneralTitle>
+        <GeneralTitle className="heading-page">{`Atividade de ${ respostaAluno.length !== 0 ? respostaAluno[0].atividadeID.tipoAtividade : 'Fixação'}`}</GeneralTitle>
       </section>
 
       <section id="muralDashboard">
@@ -230,7 +263,7 @@ export default function ActivityToCorrect (props) {
               <FullWidthTab 
                 questoes={
                   respostaAluno.length !== 0 ? 
-                  respostaAluno[0].respostaQuestaoIDs : 0
+                  questoes : 0
                 }
                 alunos={ alunos }
                 listarPorAluno={listarPorAluno}

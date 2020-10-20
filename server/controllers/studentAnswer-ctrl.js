@@ -13,7 +13,6 @@ inserirRespostaAluno = (req, res) => {
     }
     
     const novaRespostaAluno = new RespostaAluno(body);
-    console.log(novaRespostaAluno);
 
     // Verifica se dados não são nulos
     if (!novaRespostaAluno) {
@@ -154,7 +153,7 @@ listarRespostaAluno = async (req, res) => {
 // Função para listar TQ por QuestaoID
 listarRAPorRespostaQuestaoID = async (req, res) => {
     await RespostaAluno
-        .find({ respostaQuestaoID: req.params.id }, 
+        .find({ respostaQuestaoIDs: req.params.id }, 
             (err, respostaAlunoEncontrada) => {
             if (err) {
                 return res
@@ -203,7 +202,7 @@ listarRAPorAlunoID = async (req, res) => {
 listarRAPorAtividadeID = async (req, res) => {
     const populateQuery = {
         path: 'atividadeID', 
-        select: 'questoes', 
+        select: ['questoes', 'tipoAtividade'], 
         populate: {
             path: 'questoes',
             populate: 'questaoID'
@@ -253,7 +252,7 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
     
     await RespostaAluno
             .find({  })
-            .populate('respostaQuestaoID')
+            .populate('respostaQuestaoIDs')
             .populate(populateQuery)
             .exec((err, respostaAlunoEncontrada) => {
             if (err) {

@@ -60,6 +60,7 @@ import AccordionSkeleton from './Accordions/SkeletonAccordion'
 // -- Others
 import PDFViewer from './PDFViewer/PDFViewer'
 import RadioAnswer from "./Radio/RadioAnswer";
+import RadioCorrected from "./Radio/RadioCorrected";
 
 // -- Tabs
 import FullWidthTab from './Tabs/FullWidthTab'
@@ -118,6 +119,7 @@ export {
 
     PDFViewer,
     RadioAnswer,
+    RadioCorrected,
 
     FullWidthTab,
     VerticalTab,
