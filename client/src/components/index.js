@@ -57,6 +57,9 @@ import QuestionCard from './Cards/QuestionCard'
 import ContentAccordion from './Accordions/ContentAccordion'
 import AccordionSkeleton from './Accordions/SkeletonAccordion'
 
+// -- Sliders
+import DiscreteSlider from './Sliders/DiscreteSlider'
+
 // -- Others
 import PDFViewer from './PDFViewer/PDFViewer'
 import RadioAnswer from "./Radio/RadioAnswer";
@@ -116,6 +119,8 @@ export {
 
     ContentAccordion,
     AccordionSkeleton,
+
+    DiscreteSlider,
 
     PDFViewer,
     RadioAnswer,

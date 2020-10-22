@@ -21,22 +21,22 @@ inserirRespostaAluno = (req, res) => {
             .json({success: false, error: err});
     }
 
-    // Salva nova respostaAluno
-    // novaRespostaAluno
-    //     .save()
-    //     .then(() => {
-    //         return res.status(201).json({
-    //             success: true,
-    //             id: novaRespostaAluno._id,
-    //             message: "Resposta do aluno inserida com sucesso!",
-    //         })
-    //     })
-    //     .catch(error => {
-    //         return res.status(400).json({
-    //             error,
-    //             message: "Resposta do aluno não inserida.",
-    //         })
-    //     });
+    //Salva novaRespostaAluno
+    novaRespostaAluno
+        .save()
+        .then(() => {
+            return res.status(201).json({
+                success: true,
+                id: novaRespostaAluno._id,
+                message: "Resposta do aluno inserida com sucesso!",
+            })
+        })
+        .catch(error => {
+            return res.status(400).json({
+                error,
+                message: "Resposta do aluno não inserida.",
+            })
+        });
 }
 
 // Função para remover respostaAluno por ID
@@ -234,6 +234,7 @@ listarRAPorAtividadeID = async (req, res) => {
 
 listarRespostaAlunoPorDisciplina = async (req, res) => {
     const { disciplina } = req.params;
+    let array = [];
 
     const populateQuery = {
         path: 'atividadeID',
@@ -247,7 +248,7 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
                     _id: disciplina
                 }
             }
-        },
+        }
     };
     
     await RespostaAluno
@@ -262,7 +263,10 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
             }
             
             respostaAlunoEncontrada = respostaAlunoEncontrada.filter(function(item) {
-                return item.atividadeID.topicoID.disciplinaID;
+                if (!array.find(element => element === item.atividadeID._id)) {
+                    array.push(item.atividadeID._id);
+                    return item.atividadeID.topicoID.disciplinaID;
+                }    
             });
 
             if (respostaAlunoEncontrada.length === 0) {

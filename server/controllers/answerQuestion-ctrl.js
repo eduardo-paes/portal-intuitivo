@@ -55,6 +55,7 @@ atualizarRespostaQuestao = async (req, res) => {
     }
     
     const respostaQuestaoAtualizada = new RespostaQuestao(body);
+    console.log(respostaQuestaoAtualizada);
 
     // Verifica se dados não são nulos
     if (!respostaQuestaoAtualizada) {

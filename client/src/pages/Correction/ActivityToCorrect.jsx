@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import PropTypes from 'prop-types';
-import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { MyContainer, MyCard, MyCardContent, GeneralTitle, GeneralSubtitle } from "../../assets/styles/styledComponents"
-import { Grid, AppBar, Tabs, Tab, Typography, Box, Accordion, AccordionSummary, AccordionDetails, Avatar } from "@material-ui/core";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import { Grid, AppBar, Tabs, Tab, Typography, Box, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField } from "@material-ui/core";
 import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
-import CircularStatic from "../../components/ProgressBar/CircularStatic";
-import QuestionCircularStatic from "../../components/ProgressBar/QuestionProgress";
-import { FullWidthTab, RadioCorrected } from "../../components";
+import { DiscreteSlider, FullWidthTab, RadioCorrected } from "../../components";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import api from "../../api";
 
@@ -35,6 +27,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1rem',
     marginTop: '1rem',
     color: '#606161',
+  },
+
+  discursiveAnswer: {
+    width: '90%'
   },
   
   phrase: {
@@ -161,11 +157,25 @@ export default function ActivityToCorrect (props) {
   //#endregion
 
   useEffect(() => {
-    pegarRespostasAluno('5f748e1d456f54037534cab1');
+    pegarRespostasAluno('5f6e088852b44f08881e63f8');
     listarAlunos();
     listarQuestoes();
-    console.log(respostaAluno[0]);
+    console.log(respostaAluno)
   }, [wasLoaded])
+
+  function retornarRespostaDiscursiva(defaultValue, resposta, id) {
+    return (
+      <Grid item={true} align="center" xs={12} lg={12} sm={12}>
+        <TextField
+          className={classes.discursiveAnswer}
+          disabled={true}
+          multiline
+          value={resposta}
+        />
+        <DiscreteSlider respostaQuestaoID={id} defaultValue={defaultValue}/>
+      </Grid>
+    )
+  }
 
   function ListarRAPorQuestao() {
     if (respostaAluno.length !== 0 && questoes.length !== 0) {
@@ -196,7 +206,11 @@ export default function ActivityToCorrect (props) {
                       <Typography className={classes.student}>{row.alunoID.nome}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <RadioCorrected resposta={questoes[indice].resposta} respostaAluno={row.respostaQuestaoIDs[indice].resposta} gabarito={questoes[index].resposta.find(element => element.gabarito === true)}/>
+                      {
+                        questoes[indice].tipoResposta === 'multiplaEscolha' ? 
+                          <RadioCorrected resposta={questoes[indice].resposta} respostaAluno={row.respostaQuestaoIDs[indice].resposta} gabarito={questoes[indice].resposta.find(element => element.gabarito === true)}/>
+                        : retornarRespostaDiscursiva(row.respostaQuestaoIDs[indice].nota, row.respostaQuestaoIDs[indice].resposta, row.respostaQuestaoIDs[indice]._id)
+                      }
                     </AccordionDetails>
                   </Accordion>
                 )
@@ -231,7 +245,11 @@ export default function ActivityToCorrect (props) {
                     </Grid>
                     <Grid item sm={6}>
                       <Grid item={true} align="center">
-                        <RadioCorrected resposta={questoes[index].resposta} respostaAluno={respostaAluno.length !== 0 ? respostaAluno[0].respostaQuestaoIDs[index].resposta : null} gabarito={questoes[index].resposta.find(element => element.gabarito === true)}/>
+                      {
+                        questoes[index].tipoResposta === 'multiplaEscolha' && respostaAluno.length !== 0 ? 
+                        <RadioCorrected resposta={questoes[index].resposta} respostaAluno={respostaAluno[indice].respostaQuestaoIDs[index].resposta} gabarito={questoes[index].resposta.find(element => element.gabarito === true)}/>
+                        : retornarRespostaDiscursiva(respostaAluno[indice].respostaQuestaoIDs[index].nota , respostaAluno[indice].respostaQuestaoIDs[index].resposta, respostaAluno[indice].respostaQuestaoIDs[index]._id)
+                      }
                       </Grid>
                     </Grid>
                   </Grid>

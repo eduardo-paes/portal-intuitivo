@@ -25,6 +25,11 @@ export default function QuestionCard (props) {
         
         if (response.data.success === true) {
             setRespostaQuestao(response.data.data);
+            if(!respostaQuestaoIDs.find(element => element === response.data.data._id)) {
+                let array = respostaQuestaoIDs;
+                array.push(response.data.data._id);
+                setRespostaQuestaoIDs(array);
+            }
         } else {
             await api.inserirRespostaQuestao({
                 alunoID,
@@ -89,7 +94,7 @@ export default function QuestionCard (props) {
                     <TextField
                         className={classes.answerField}
                         id={respostaQuestao.questao ? respostaQuestao.questao : ''}
-                        label={answered ? null : "Resposta"}
+                        label={respostaQuestao.resposta ? null : "Resposta"}
                         disabled={answered}
                         multiline
                         value={
