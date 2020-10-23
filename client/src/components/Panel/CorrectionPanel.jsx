@@ -1,24 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { GeneralSubtitle, MyCardContent } from "../../assets/styles/styledComponents"
-import { Grid } from '@material-ui/core';
+import { makeStyles, Grid } from '@material-ui/core';
 
-import api from "../../api";
+// import api from "../../api";
+
+const useStyles = makeStyles((theme) => ({
+    container: {
+      marginLeft: "1rem"
+    },
+  }));
 
 export default function CorrectionPanel(props) {
-    const {redacaoID, alunoID} = props;
-    const [propostaRedacao, setPropostaRedacao] = useState([]);
-    const [redacaoAluno, setRedacaoAluno] = useState([]);
+    const classes = useStyles();
 
-    useEffect(() => {
-        const abortController = new AbortController();
-        // fetchPropostaRedacao();
-        return abortController.abort();
-    },[redacaoID])
+    // const {redacaoID, alunoID} = props;
+    // const [propostaRedacao, setPropostaRedacao] = useState([]);
+    // const [redacaoAluno, setRedacaoAluno] = useState([]);
+
+    // useEffect(() => {
+    //     const abortController = new AbortController();
+    //     fetchPropostaRedacao();
+    //     return abortController.abort();
+    // },[redacaoID])
 
     return (
             <>
-                <Grid container={true}>
+                <Grid className={classes.container} container={true} spacing={2}>
                     <Grid item={true} xs={12} sm={6}>
                         <MyCardContent id="CorrectionCardQuestion">
                             <GeneralSubtitle>

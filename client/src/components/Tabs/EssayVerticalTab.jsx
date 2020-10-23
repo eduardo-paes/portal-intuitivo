@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Tabs, Tab, Typography } from '@material-ui/core';
-import { CorrectionPanel } from "../"
+import { CorrectionPanel } from '..';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -44,11 +44,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
     height: 360,
-    fullWidth: true
   },
   tabs: {
     backgroundColor: "theme.palette.background.paper",
     borderRight: `1px solid ${theme.palette.divider}`,
+    minWidth: 161
   },
 }));
 
@@ -80,17 +80,8 @@ export default function EssayVerticalTabs(props) {
               })
               : <Tab label={"Alunos"} {...a11yProps(0)} />
           } 
-
         </Tabs>
-        {
-          data.map((row, index) => {
-            return (
-              <TabPanel key={index} value={value} index={index}>
-                <CorrectionPanel />
-              </TabPanel>
-            )
-          })
-        } 
+        <CorrectionPanel />
       </div >
     );
 }
