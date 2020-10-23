@@ -12,7 +12,7 @@ export default function CorrectionPanel(props) {
 
     useEffect(() => {
         const abortController = new AbortController();
-        fetchPropostaRedacao();
+        // fetchPropostaRedacao();
         return abortController.abort();
     },[redacaoID])
 

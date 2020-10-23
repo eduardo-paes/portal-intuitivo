@@ -408,11 +408,14 @@ listarRedacoesNaoCorrigidas = async (req, res) => {
                     .json({success: false, error: err})
             }
             
-            listaRedacoes = listaRedacoes.filter(function(item) {
-                return item.redacaoID.topicoID.disciplinaID;
-            });
+            let array = [];
 
-            console.log(listaRedacoes);
+            listaRedacoes = listaRedacoes.filter(function(item) {
+                if (!array.find(element => element === item.redacaoID._id)) {
+                    array.push(item.redacaoID._id);
+                    return item.redacaoID.topicoID.disciplinaID;
+                }    
+            });
 
             if (listaRedacoes.length === 0) {
                 return res
@@ -429,12 +432,15 @@ listarRedacoesNaoCorrigidas = async (req, res) => {
 listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
     const { redacaoID } = req.params;
 
+    populateQuery = {
+        path: 'alunoID', select: 'nome'
+    }
+
     await ProgressoRedacao
         .find({
-            _id: redacaoID,
             corrigido: false
         })
-        .populate({path: 'alunoID', select: 'nome'})
+        .populate(populateQuery)
         .exec((err, listaRedacoes) => {
             if (err) {
                 return res
@@ -447,6 +453,12 @@ listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
                     .status(404)
                     .json({success: false, error: "Redações não encontrada."})
             }
+
+            listaRedacoes.filter(item => {
+                return item._id == redacaoID;
+            });
+
+            console.log(listaRedacoes);
 
             return res
                 .status(200)

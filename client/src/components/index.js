@@ -70,6 +70,7 @@ import FullWidthTab from './Tabs/FullWidthTab'
 import VerticalTab from './Tabs/VerticalTab'
 import EssayVerticalTab from './Tabs/EssayVerticalTab'
 import EssayFullWidthTabs from "./Tabs/EssayFullWidthTab"
+import CorrectionPanel from './Panel/CorrectionPanel'
 
 export { 
     UserTable,
@@ -129,5 +130,6 @@ export {
     FullWidthTab,
     VerticalTab,
     EssayVerticalTab,
-    EssayFullWidthTabs
+    EssayFullWidthTabs,
+    CorrectionPanel
 }

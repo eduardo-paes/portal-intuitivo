@@ -42,7 +42,7 @@
     "webpack": "4.42.0"
   },
   "scripts": {
-    "start": "set PORT=8000 && react-scripts start"
+    "start": "PORT=8000 react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"
