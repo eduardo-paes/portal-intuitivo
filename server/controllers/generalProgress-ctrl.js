@@ -458,8 +458,6 @@ listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
                 return item._id == redacaoID;
             });
 
-            console.log(listaRedacoes);
-
             return res
                 .status(200)
                 .json({success: true, data: listaRedacoes})

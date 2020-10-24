@@ -87,6 +87,7 @@ export const encAtividadePorID = id => api.get(`/controle-atividade/${id}`);
 export const encQuestoesDaAtividadeID = id => api.get(`/controle-atividade/questoes/${id}`);
 export const encRedacaoDaSemana = numeracao => api.get(`/controle-atividade/redacao/${numeracao}`);
 export const listarAtividadesPorTopico = (id) => api.get(`/controle-atividade/topico/${id}`);
+export const encPropostaRedacao = (id) => api.get(`/controle-atividade/proposta-redacao/${id}`);
 
 // -- Funções relacionadas à Revisao
 export const inserirRevisao = novaRevisao => api.post("/controle-revisao", novaRevisao);
@@ -205,6 +206,7 @@ const apis = {
     encQuestoesDaAtividadeID,
     encRedacaoDaSemana,
     listarAtividadesPorTopico,
+    encPropostaRedacao,
     // Revisão
     inserirRevisao,
     listarRevisao,

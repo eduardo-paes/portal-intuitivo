@@ -20,7 +20,7 @@ app.use('/uploads', express.static(__dirname + './../uploads'));
 
 // Rota inicial - teste
 app.get("/", (req, res) => {
-    res.send("Hello World!")
+    res.send("Portal Intuitivo - Server")
 });
 
 // Rotas principais importadas de Routes

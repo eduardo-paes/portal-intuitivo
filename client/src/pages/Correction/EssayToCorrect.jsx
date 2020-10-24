@@ -20,7 +20,6 @@ export default function EssayToCorrect (props) {
 
   const fetchRedacoes = async () => {
     if (!redacoes.length) {
-      console.log(props.match.params);
       const response = await api.listarRedacoesNaoCorrigidasPorRedacaoID(essayID);
       const value = response.data;
 

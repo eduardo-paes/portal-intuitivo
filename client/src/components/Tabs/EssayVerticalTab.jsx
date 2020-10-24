@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Tabs, Tab, Typography } from '@material-ui/core';
 import { CorrectionPanel } from '..';
+import { useEffect } from 'react';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
-    height: 360,
+    minHeight: 400,
   },
   tabs: {
     backgroundColor: "theme.palette.background.paper",
@@ -56,9 +57,21 @@ export default function EssayVerticalTabs(props) {
     const { data } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
+    const [alunoID, setAlunoID] = useState('');
+    var flag = 1;
+
+    useEffect(() => {
+      const abortController = new AbortController();
+      if (flag && data.length) {
+        setAlunoID(data[0].alunoID._id);
+        flag--;
+      }
+      // eslint-disable-next-line
+      return abortController.abort();
+    },[data]);
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+      setValue(newValue);
     };
 
     return (
@@ -67,7 +80,6 @@ export default function EssayVerticalTabs(props) {
           orientation="vertical"
           variant="scrollable"
           indicatorColor="primary"
-          textColor="#606161"
           value={value}
           onChange={handleChange}
           aria-label="Vertical tabs"
@@ -76,12 +88,15 @@ export default function EssayVerticalTabs(props) {
           {
             (data) 
               ? data.map((row, index) => {
-                return <Tab key={index} label={row.alunoID.nome} {...a11yProps(index)}/>
+                return <Tab key={index} label={row.alunoID.nome} {...a11yProps(index)} onClick={() => setAlunoID(row.alunoID._id)}/>
               })
               : <Tab label={"Alunos"} {...a11yProps(0)} />
           } 
         </Tabs>
-        <CorrectionPanel />
+        {
+          data.length > 0 &&
+          <CorrectionPanel redacaoID={data[0].redacaoID} alunoID={alunoID} />
+        }
       </div >
     );
 }
