@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { MyContainer, MyCard, MyCardContent, GeneralTitle, GeneralSubtitle } from "../../assets/styles/styledComponents"
 import { Grid, AppBar, Tabs, Tab, Typography, Box, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField } from "@material-ui/core";
-import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
 import { DiscreteSlider, FullWidthTab, RadioCorrected } from "../../components";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import api from "../../api";
+import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
@@ -76,8 +76,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ActivityToCorrect (props) {
     
-  let progresso = 3;
-  let numTasks = 5; 
+  let numTasks = 0; 
   const classes = useStyles();
   const [ wasLoaded, setWasLoaded ] = useState(false);
   const [ listarPorAluno, setListarPorAluno ] = useState(false);
@@ -85,6 +84,7 @@ export default function ActivityToCorrect (props) {
   const [ alunos, setAlunos ] = useState([]);
   const [ questoes, setQuestoes ] = useState([]);
   const [ indice, setIndice ] = useState(0);
+  const [ progresso, setProgresso ] = useState(0)
 
   async function pegarRespostasAluno(atividadeID) {
     const response = await api.listarRAPorAtividadeID(atividadeID);
@@ -96,11 +96,24 @@ export default function ActivityToCorrect (props) {
     let aux = [];
     if (respostaAluno.length !== 0) {
       respostaAluno[0].atividadeID.questoes.map( async (row, index) => {
-        const { enunciado, resposta, padraoResposta, tipoResposta } = row.questaoID;
-        aux.push({ enunciado, resposta, padraoResposta, tipoResposta });
+        if (row.questaoID.tipoResposta === 'discursiva') {
+          const { enunciado, resposta, padraoResposta, tipoResposta } = row.questaoID;
+          aux.push({ enunciado, resposta, padraoResposta, tipoResposta });
+        }
+        
       })
       setQuestoes(aux);
     }
+  }
+
+  function calcularProgressoGeral () {
+    respostaAluno.forEach((item) => {
+      item.respostaQuestaoIDs.map((row, index) => {
+        if (row.corrigido === false) ++numTasks;
+      })
+    })
+    console.log(numTasks);
+    console.log(progresso);
   }
 
   function listarAlunos() {
@@ -158,9 +171,9 @@ export default function ActivityToCorrect (props) {
 
   useEffect(() => {
     pegarRespostasAluno('5f6e088852b44f08881e63f8');
+    calcularProgressoGeral();
     listarAlunos();
     listarQuestoes();
-    console.log(respostaAluno)
   }, [wasLoaded])
 
   function retornarRespostaDiscursiva(defaultValue, resposta, id) {
@@ -172,7 +185,7 @@ export default function ActivityToCorrect (props) {
           multiline
           value={resposta}
         />
-        <DiscreteSlider respostaQuestaoID={id} defaultValue={defaultValue}/>
+        <DiscreteSlider respostaQuestaoID={id} defaultValue={defaultValue} setProgresso={setProgresso} progresso={progresso}/>
       </Grid>
     )
   }
@@ -273,7 +286,7 @@ export default function ActivityToCorrect (props) {
         <Grid container={true} spacing={2}>
 
           <Grid item={true} xs={12} sm={12}>
-            <WeeklyProgress />
+            <WeeklyProgress max={numTasks} progresso={progresso} titulo={progresso === numTasks ? '100%' : ((100*progresso)/numTasks)}/>
           </Grid>
 
           <Grid item={true} xs={12} sm={3}>

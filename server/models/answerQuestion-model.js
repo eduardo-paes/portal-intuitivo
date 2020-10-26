@@ -24,12 +24,13 @@ const RespostaQuestao = new Schema({
     resposta: {
         type: String,
     },
-    corrigigo: {
+    corrigido: {
         type: Boolean,
     },
     nota: {
         type: Number,
-    }
+    },
+    
 });
 
 module.exports = mongoose.model("respostaQuestoe", RespostaQuestao);
