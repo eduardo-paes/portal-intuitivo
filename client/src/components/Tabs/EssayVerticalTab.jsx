@@ -93,10 +93,10 @@ export default function EssayVerticalTabs(props) {
               : <Tab label={"Alunos"} {...a11yProps(0)} />
           } 
         </Tabs>
-        {
+        {/* {
           data.length > 0 &&
           <CorrectionPanel redacaoID={data[0].redacaoID} alunoID={alunoID} />
-        }
+        } */}
       </div >
     );
 }

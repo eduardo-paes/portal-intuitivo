@@ -407,7 +407,6 @@ export default function CorrectionTable(props) {
                                         page * rowsPerPage + rowsPerPage
                                     )
                                     .map(row => {
-
                                         const task = essay ? row.redacaoID : row.atividadeID;
                                         const { tipoAtividade, topicoID } = task;
                                         const { numeracao, topico, disciplinaID } = topicoID;
@@ -423,12 +422,12 @@ export default function CorrectionTable(props) {
                                                 <TableRow hover={true} tabIndex={-1} key={row._id}>
                                                     
                                                     <TableCell className={classes.row} align="left">{numeracao}</TableCell>
-                                                    {!essay && <TableCell className={classes.row} align="left">{tipoAtividade}</TableCell>}
+                                                    {!essay && !smScreen && <TableCell className={classes.row} align="left">{tipoAtividade}</TableCell>}
                                                     <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>
                                                     {!smScreen && <TableCell className={classes.row} align="left">{topico}</TableCell>}
 
                                                     <TableCell align={smScreen ? "left" : "right"}>
-                                                        <CorrigirRespostas essay={essay} atividadeID={row._id}/>
+                                                        <CorrigirRespostas essay={essay} atividadeID={row.redacaoID ? row.redacaoID._id : row._id}/>
                                                     </TableCell>
                                                 </TableRow>
                                             );

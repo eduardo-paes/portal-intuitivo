@@ -20,35 +20,35 @@ export default function RadioCorrected(props) {
           name="respostas"
         >
           {
-              resposta.map((row, index) => {
-                  return (
-                      <FormControlLabel 
-                          key={index} 
-                          value={row._id} 
-                          control={
-                            <Radio 
-                              id={row._id} 
-                              color="primary"
-                              className={
-                                (row._id === gabarito._id) ? 
-                                "gabarito" :
-                                'default'
-                              } 
-                              disabled={true}
-                            />
-                          }
-                          style={{margin: 0}}
-                          label={
-                            <div 
-                              id="mostrarEnunciadoOpcao" 
-                              className={row._id === gabarito._id ? 'ck-content gabarito' : 'ck-content'} 
-                              color={row._id === gabarito._id ? green[500] : 'default'}
-                              dangerouslySetInnerHTML={{ __html: row.opcao}} 
-                            /> 
-                          }
-                      />
-                  )
-              })
+            resposta.map((row, index) => {
+              return (
+                <FormControlLabel 
+                  key={index} 
+                  value={row._id} 
+                  control={
+                    <Radio 
+                      id={row._id} 
+                      color="primary"
+                      className={
+                        (row._id === gabarito._id) ? 
+                        "gabarito" :
+                        'default'
+                      } 
+                      disabled={true}
+                    />
+                  }
+                  style={{margin: 0}}
+                  label={
+                    <div 
+                      id="mostrarEnunciadoOpcao" 
+                      className={row._id === gabarito._id ? 'ck-content gabarito' : 'ck-content'} 
+                      color={row._id === gabarito._id ? green[500] : 'default'}
+                      dangerouslySetInnerHTML={{ __html: row.opcao}} 
+                    /> 
+                  }
+                />
+              )
+            })
           }
         </RadioGroup>
       </FormControl>

@@ -5,7 +5,6 @@ import { makeStyles, Grid, Button, Divider } from '@material-ui/core';
 import Image from 'material-ui-image'
 
 import api from "../../api";
-
 import './styles.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -20,6 +19,10 @@ const useStyles = makeStyles((theme) => ({
     },
     divider: {
         marginRight: '1rem'
+    },
+    itemGrid: {
+        minHeight: 400,
+        minWidth: 500,
     }
   }));
 
@@ -69,8 +72,8 @@ export default function CorrectionPanel(props) {
 
     return (
         <>
-            <Grid className={classes.container} container={true} spacing={1}>
-                <Grid item={true} xs={12} sm={5} align='center'>
+            <Grid className={classes.container} container={true} spacing={1} align='center'>
+                <Grid id="propostaRedacao" className={classes.itemGrid} item={true} xs={12} sm={6} align='center'>
                     <GeneralSubtitle>
                         Proposta de Redação
                     </GeneralSubtitle>
@@ -81,11 +84,11 @@ export default function CorrectionPanel(props) {
 
                 <Divider orientation='vertical' className={classes.divider}/>
 
-                <Grid item={true} xs={12} sm={6} align='center'>
+                <Grid id="redacaoAluno" className={classes.itemGrid} item={true} xs={12} sm={5} align='center'>
                     <GeneralSubtitle>
                         Redação do Aluno
                     </GeneralSubtitle>
-                    <Image src={imgURL} />
+                    <Image src={imgURL} alt='Redação do Aluno'/>
                     <Button className={classes.button} variant="outlined" color="primary">
                         Baixar Redação
                     </Button>

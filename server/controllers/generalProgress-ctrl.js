@@ -282,6 +282,7 @@ atualizarProgressoRedacao = async (req, res) => {
         // Atualiza dados encontrados
         progressoEncontrado.progresso = progresso.progresso
         progressoEncontrado.corrigido = progresso.corrigido
+        progressoEncontrado.nota = progresso.nota
 
         // Salva alterações
         progressoEncontrado

@@ -62,8 +62,9 @@ import DiscreteSlider from './Sliders/DiscreteSlider'
 
 // -- Others
 import PDFViewer from './PDFViewer/PDFViewer'
-import RadioAnswer from "./Radio/RadioAnswer";
-import RadioCorrected from "./Radio/RadioCorrected";
+import RadioAnswer from "./Radio/RadioAnswer"
+import RadioCorrected from "./Radio/RadioCorrected"
+import SimpleRadio from './Radio/SimpleRadio'
 
 // -- Tabs
 import FullWidthTab from './Tabs/FullWidthTab'
@@ -126,6 +127,7 @@ export {
     PDFViewer,
     RadioAnswer,
     RadioCorrected,
+    SimpleRadio,
 
     FullWidthTab,
     VerticalTab,

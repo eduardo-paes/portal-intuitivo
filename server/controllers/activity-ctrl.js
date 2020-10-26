@@ -338,7 +338,6 @@ listarAtividadesPorTopico = async (req, res) => {
 }
 
 encPropostaRedacao = async (req, res) => {
-
     await AtividadeQuestao
         .findOne({ atividadeID: req.params.id })
         .populate({path: 'questaoID', select: "enunciado"})
