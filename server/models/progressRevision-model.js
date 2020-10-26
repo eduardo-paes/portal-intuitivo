@@ -20,6 +20,10 @@ const ProgressoRevisao = new Schema({
     dataConclusao: {
         type: Date,
         default: Date.now, 
+    },
+    nota: {
+        type: Number,
+        required: false
     }
 });
 

@@ -337,6 +337,29 @@ listarAtividadesPorTopico = async (req, res) => {
         })
 }
 
+encPropostaRedacao = async (req, res) => {
+    await AtividadeQuestao
+        .findOne({ atividadeID: req.params.id })
+        .populate({path: 'questaoID', select: "enunciado"})
+        .exec((err, atividadeEncontrada) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!atividadeEncontrada) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Atividade não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: atividadeEncontrada})
+        });
+}
+
 // Exporta os módulos
 module.exports = {
     inserirAtividade,
@@ -346,5 +369,6 @@ module.exports = {
     encQuestoesDaAtividadeID,
     encRedacaoDaSemana,
     listarAtividade,
-    listarAtividadesPorTopico
+    listarAtividadesPorTopico,
+    encPropostaRedacao
 }

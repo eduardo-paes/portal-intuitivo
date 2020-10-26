@@ -83,7 +83,6 @@ export default function Correction(props) {
                     arrayAux = value.data;
                 }
                 setRedacao(arrayAux);
-                console.log(arrayAux);
             }
         });
 

@@ -62,14 +62,16 @@ import DiscreteSlider from './Sliders/DiscreteSlider'
 
 // -- Others
 import PDFViewer from './PDFViewer/PDFViewer'
-import RadioAnswer from "./Radio/RadioAnswer";
-import RadioCorrected from "./Radio/RadioCorrected";
+import RadioAnswer from "./Radio/RadioAnswer"
+import RadioCorrected from "./Radio/RadioCorrected"
+import SimpleRadio from './Radio/SimpleRadio'
 
 // -- Tabs
 import FullWidthTab from './Tabs/FullWidthTab'
 import VerticalTab from './Tabs/VerticalTab'
 import EssayVerticalTab from './Tabs/EssayVerticalTab'
 import EssayFullWidthTabs from "./Tabs/EssayFullWidthTab"
+import CorrectionPanel from './Panel/CorrectionPanel'
 
 export { 
     UserTable,
@@ -125,9 +127,11 @@ export {
     PDFViewer,
     RadioAnswer,
     RadioCorrected,
+    SimpleRadio,
 
     FullWidthTab,
     VerticalTab,
     EssayVerticalTab,
-    EssayFullWidthTabs
+    EssayFullWidthTabs,
+    CorrectionPanel
 }
