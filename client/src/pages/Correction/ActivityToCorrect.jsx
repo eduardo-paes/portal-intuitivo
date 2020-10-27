@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { MyContainer, MyCard, MyCardContent, GeneralTitle, GeneralSubtitle } from "../../assets/styles/styledComponents"
-import { Grid, AppBar, Tabs, Tab, Typography, Box, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField } from "@material-ui/core";
-import { DiscreteSlider, FullWidthTab, RadioCorrected } from "../../components";
+import { makeStyles } from '@material-ui/core/styles';
+import { MyContainer, MyCard, MyCardContent, GeneralTitle, GreenButton, AddButton } from "../../assets/styles/styledComponents"
+import { Grid, Typography, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField, Button } from "@material-ui/core";
+import { DiscreteSlider, FullWidthTab, SimpleFeedback } from "../../components";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import api from "../../api";
 import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
@@ -79,6 +79,7 @@ export default function ActivityToCorrect (props) {
   let numTasks = 0; 
   const classes = useStyles();
   const [ wasLoaded, setWasLoaded ] = useState(false);
+  const [ openComment, setOpenComment ] = useState(false);
   const [ listarPorAluno, setListarPorAluno ] = useState(false);
   const [ respostaAluno, setRespostaAluno ] = useState([]);
   const [ alunos, setAlunos ] = useState([]);
@@ -111,9 +112,7 @@ export default function ActivityToCorrect (props) {
       item.respostaQuestaoIDs.map((row, index) => {
         if (row.corrigido === false) ++numTasks;
       })
-    })
-    console.log(numTasks);
-    console.log(progresso);
+    });
   }
 
   function listarAlunos() {
@@ -185,6 +184,8 @@ export default function ActivityToCorrect (props) {
           multiline
           value={resposta}
         />
+        <AddButton onClick={() => {setOpenComment(!openComment)}}>Adicionar Comentário</AddButton>
+        <SimpleFeedback open={openComment} setOpen={setOpenComment} title='Adicionar Comentário' message='addComment'/>
         <DiscreteSlider respostaQuestaoID={id} defaultValue={defaultValue} setProgresso={setProgresso} progresso={progresso}/>
       </Grid>
     )

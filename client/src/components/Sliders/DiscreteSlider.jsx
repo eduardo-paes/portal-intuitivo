@@ -38,7 +38,6 @@ const marks = [
 export default function DiscreteSlider(props) {
   const { defaultValue, respostaQuestaoID, setProgresso, progresso } = props;
   const classes = useStyles();
-  console.log(progresso);
 
   async function valueLabelFormat(value) {
     const index = marks.findIndex((mark) => mark.value === value);
