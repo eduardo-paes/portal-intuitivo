@@ -219,11 +219,7 @@ export default function ActivityToCorrect (props) {
                       <Typography className={classes.student}>{row.alunoID.nome}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      {
-                        questoes[indice].tipoResposta === 'multiplaEscolha' ? 
-                          <RadioCorrected resposta={questoes[indice].resposta} respostaAluno={row.respostaQuestaoIDs[indice].resposta} gabarito={questoes[indice].resposta.find(element => element.gabarito === true)}/>
-                        : retornarRespostaDiscursiva(row.respostaQuestaoIDs[indice].nota, row.respostaQuestaoIDs[indice].resposta, row.respostaQuestaoIDs[indice]._id)
-                      }
+                      { retornarRespostaDiscursiva(row.respostaQuestaoIDs[indice].nota, row.respostaQuestaoIDs[indice].resposta, row.respostaQuestaoIDs[indice]._id) }
                     </AccordionDetails>
                   </Accordion>
                 )
@@ -258,11 +254,7 @@ export default function ActivityToCorrect (props) {
                     </Grid>
                     <Grid item sm={6}>
                       <Grid item={true} align="center">
-                      {
-                        questoes[index].tipoResposta === 'multiplaEscolha' && respostaAluno.length !== 0 ? 
-                        <RadioCorrected resposta={questoes[index].resposta} respostaAluno={respostaAluno[indice].respostaQuestaoIDs[index].resposta} gabarito={questoes[index].resposta.find(element => element.gabarito === true)}/>
-                        : retornarRespostaDiscursiva(respostaAluno[indice].respostaQuestaoIDs[index].nota , respostaAluno[indice].respostaQuestaoIDs[index].resposta, respostaAluno[indice].respostaQuestaoIDs[index]._id)
-                      }
+                      { retornarRespostaDiscursiva(respostaAluno[indice].respostaQuestaoIDs[index].nota , respostaAluno[indice].respostaQuestaoIDs[index].resposta, respostaAluno[indice].respostaQuestaoIDs[index]._id) }
                       </Grid>
                     </Grid>
                   </Grid>

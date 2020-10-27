@@ -78,7 +78,7 @@ export default function VerticalTabs(props) {
           }) :
           alunos !== 0 && alunos !== undefined ?
           alunos.map((row, index) => {
-            return <Tab label={row.nome} {...a11yProps(0)} />
+            return <Tab label={row.nome}/>
           }) :
           <Tab label={"Questão 1"} {...a11yProps(0)} />
         }
