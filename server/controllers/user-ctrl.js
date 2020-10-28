@@ -24,25 +24,35 @@ inserirUsuario = (req, res) => {
             .json({success: false, error: err});
     }
 
-    // Encriptação de senha
-    novoUsuario.senha = encriptarSenha(novoUsuario.senha);
+    bcrypt.genSalt(saltLake, function(errSalt, salt) {
+        if (errSalt) {
+            console.log("Erro GenSalt: ", err);
+        }
 
-    // Salva novo usário
-    novoUsuario
-        .save()
-        .then(() => {
-            return res.status(201).json({
-                success: true,
-                id: novoUsuario._id,
-                message: "Usuário inserido com sucesso!",
-            })
-        })
-        .catch(error => {
-            return res.status(400).json({
-                error,
-                message: "Usuário não inserido!",
-            })
+        bcrypt.hash(novoUsuario.senha, salt, function(errHash, hash) {
+            if (!errHash) { 
+            // Encriptação de senha
+            novoUsuario.senha = hash;
+
+            // Salva novo usário
+            novoUsuario
+                .save()
+                .then(() => {
+                    return res.status(201).json({
+                        success: true,
+                        id: novoUsuario._id,
+                        message: "Usuário inserido com sucesso!",
+                    })
+                })
+                .catch(error => {
+                    return res.status(400).json({
+                        error,
+                        message: "Usuário não inserido!",
+                    })
+                });
+            }
         });
+    });
 }
 
 // Função para atualizar usuário por ID
