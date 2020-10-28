@@ -20,7 +20,6 @@ inserirRespostaQuestao = (req, res) => {
         .status(400)
         .json({success: false, error: err});
     }
-    console.log(novaRespostaQuestao);
     
     // Salva nova tagQuestao
     novaRespostaQuestao
@@ -55,7 +54,6 @@ atualizarRespostaQuestao = async (req, res) => {
     }
     
     const respostaQuestaoAtualizada = new RespostaQuestao(body);
-    console.log(respostaQuestaoAtualizada);
 
     // Verifica se dados não são nulos
     if (!respostaQuestaoAtualizada) {

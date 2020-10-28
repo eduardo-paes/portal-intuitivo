@@ -6,6 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import { TextField } from '@material-ui/core';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -26,10 +27,20 @@ export default function SimpleFeedback(props) {
             <DialogTitle id="alert-dialog-slide-title">{title}</DialogTitle>
 
             <DialogContent>
-                <DialogContentText id="alert-dialog-slide-description">{message}</DialogContentText>
+                {
+                    message === 'addComment' 
+                    ? <TextField/>
+                    : <DialogContentText id="alert-dialog-slide-description">{message}</DialogContentText>
+                }
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => setOpen(false)} color="primary">Ok</Button>
+                <Button onClick={() => setOpen(false)} color="primary">
+                    {
+                        message === 'addComment' 
+                        ? 'Inserir comentário'
+                        : 'Ok'
+                    }
+                </Button>
             </DialogActions>
         </Dialog>
     );

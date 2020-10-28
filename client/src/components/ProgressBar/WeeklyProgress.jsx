@@ -3,18 +3,20 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 //import { getTheWeek } from '../../utils/auxFunctions';
 import { GeneralSubtitle } from '../../assets/styles/styledComponents';
+import { Grid } from '@material-ui/core';
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
-    height: 10,
+    height: 20,
     borderRadius: 5,
+    marginTop: '-1rem',
   },
   colorPrimary: {
     backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
   },
   bar: {
-    borderRadius: 5,
-    backgroundColor: '#1a90ff',
+    borderRadius: 10,
+    backgroundColor: '#94c93d',
   },
 }))(LinearProgress);
 
@@ -22,33 +24,29 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     alignItems: 'center',
-    marginTop: '1rem',
-    marginBottom: '-1rem'
+    marginTop: '0rem',
+    marginBottom: '0rem'
   },
   secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
+    fontSize: theme.typography.pxToRem(20),
     color: theme.palette.text.secondary,
+    justifyContent: 'center',
     display: 'flex',
     [theme.breakpoints.down('sm')]: {
       fontSize: theme.typography.pxToRem(13),
-      justifyContent: 'center',
       textAlign: 'center',
-      marginLeft: '0rem',
     }
   }
 }));
 
-export default function WeeklyProgress() {
+export default function WeeklyProgress(props) {
   const classes = useStyles();
-  //const week = getTheWeek();
-  const week = 17;
-  const progresso = ((100*week)/32);
-  console.log(progresso + "%")
+  const { max, progresso, titulo } = props;
 
   return (
-    <div className={classes.root}>
-      <GeneralSubtitle className={classes.secondaryHeading} id="weeklyProgress">{`Semana ${week} de 32`}</GeneralSubtitle>
-      <BorderLinearProgress variant="determinate" value={progresso} />
-    </div>
+    <Grid item className={classes.root} justify='center'>
+      <GeneralSubtitle className={classes.secondaryHeading} id="weeklyProgress">{titulo}</GeneralSubtitle>
+      <BorderLinearProgress variant="determinate" value={max > 0 ? ((100*progresso)/max) : 100} />
+    </Grid>
   );
 }

@@ -7352,6 +7352,13 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+material-ui-image@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/material-ui-image/-/material-ui-image-3.3.0.tgz#4bf2c5e41f89a7a8c550fdddeadb3bf59647b807"
+  integrity sha512-6Gec+ZtcCnIH+WzcDFT4ayCoUeQouVs6WfZW5ZN7PFU3GITXQ974rJjM5laoMyK0pga1ZiHLMeBTaGxCYexYhg==
+  dependencies:
+    prop-types "^15.5.8"
+
 material-ui@^0.20.2:
   version "0.20.2"
   resolved "https://registry.yarnpkg.com/material-ui/-/material-ui-0.20.2.tgz#5fc9b4b62b691d3b16c89d8e54597a0412b52c7d"
@@ -9237,7 +9244,7 @@ prop-types-extra@^1.1.0:
     react-is "^16.3.2"
     warning "^4.0.0"
 
-prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
