@@ -9,6 +9,7 @@ export const atualizarUsuario = (id, usuarioAtualizado) => api.put(`/controle-us
 export const removerUsuario = id => api.delete(`/controle-usuario/${id}`);
 export const encUsuarioPorID = id => api.get(`/controle-usuario/${id}`);
 export const encUsuarioPorEmail = email => api.get(`/login/${email}`);
+export const confirmarUsuario = usuario => api.post("/confirmar-usuario", usuario);
 
 // -- Funções relacionadas ao Conteúdo
 export const inserirConteudo = novoConteudo => api.post("/controle-conteudo", novoConteudo);
@@ -136,6 +137,7 @@ const apis = {
     removerUsuario,
     encUsuarioPorID,
     encUsuarioPorEmail,
+    confirmarUsuario,
     // Conteúdo
     inserirConteudo,
     listarConteudos,

@@ -29,6 +29,7 @@ router.delete("/controle-usuario/:id", UsuarioCtrl.removerUsuario);
 router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
 router.get("/login/:email", UsuarioCtrl.encUsuarioPorEmail);
+router.post("/confirmar-usuario", UsuarioCtrl.confirmarUsuario); 
 
 // CONTEÚDO -- Definição dos métodos para cada rota do conteúdo
 router.post("/controle-conteudo", ConteudoCtrl.inserirConteudo);

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom';
 import api from '../../api'
 
 // Formulário
@@ -19,6 +20,7 @@ export default function UsersUpdate (props) {
         url: "",
         foto: {}
     }
+    const history = useHistory();
     const [usuario, setUsuario] = useState(initialState);
     const [profDisciplinas, setProfDisciplinas] = useState([{
         disciplinaID: ''
@@ -36,7 +38,7 @@ export default function UsersUpdate (props) {
                     nome: value.data.nome, 
                     email: value.data.email, 
                     acesso: value.data.acesso, 
-                    senha: value.data.senha, 
+                    senha: '', 
                     url: `http://localhost:5000/uploads/profile/${props.match.params.id}.jpeg`
                 }));
             }
@@ -82,6 +84,7 @@ export default function UsersUpdate (props) {
                         body: data
                     })
                     .then(res => {
+                        history.push('/controle-usuario/list');
                         window.location.reload();
                         res.json();
                     })    

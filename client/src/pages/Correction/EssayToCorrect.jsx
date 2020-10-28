@@ -71,22 +71,8 @@ export default function EssayToCorrect (props) {
     }
   }
 
-  useEffect(() => {
-    const abortController = new AbortController();
-    if (!wasLoaded.proposta) {
-      fetchPropostaRedacao();
-    }
-    if (!wasLoaded.redacoes) {
-      fetchRedacoes();
-    }
-    return abortController.abort();
-    // eslint-disable-next-line
-  },[essayID]);
-
-
-  function ListarPorAluno() {
+  const ListarPorAluno = () => {
     const [notaAluno, setNotaAluno] = useState(0);
-
 
     return (
       <>
@@ -134,6 +120,14 @@ export default function EssayToCorrect (props) {
     )
   }
 
+  useEffect(() => {
+    const abortController = new AbortController();
+    if (!wasLoaded.proposta) fetchPropostaRedacao();
+    if (!wasLoaded.redacoes) fetchRedacoes();
+    return abortController.abort();
+    // eslint-disable-next-line
+  },[essayID]);
+
   return (
     <MyContainer id="studentPageContainer">
       <section id="cabecalhoCorrigirRedacao">
@@ -151,7 +145,7 @@ export default function EssayToCorrect (props) {
           </Grid>
 
           <Grid item={true} xs={12} sm={6} align='center'>
-            {ListarPorAluno()}
+            { ListarPorAluno() }
           </Grid>
           
         </Grid>

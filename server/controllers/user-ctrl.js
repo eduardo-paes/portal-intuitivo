@@ -1,4 +1,7 @@
 const Usuario = require('../models/users-model');
+require('dotenv').config();
+const bcrypt = require('bcrypt');
+const saltLake = 11;
 
 // Função para inserir usuário no banco
 inserirUsuario = (req, res) => {
@@ -20,6 +23,9 @@ inserirUsuario = (req, res) => {
             .status(400)
             .json({success: false, error: err});
     }
+
+    // Encriptação de senha
+    novoUsuario.senha = encriptarSenha(novoUsuario.senha);
 
     // Salva novo usário
     novoUsuario
@@ -52,14 +58,13 @@ atualizarUsuario = async (req, res) => {
     }
 
     const usuario = new Usuario(body);
-    console.log(usuario);
     
     // Verifica se dados não são nulos
     if (!usuario) {
         return res
             .status(400)
             .json({success: false, error: "Os dados são nulos ou incompatíveis."})
-    }
+    } 
 
     // Busca usuário pelo id (id da rota)
     Usuario.findOne({
@@ -70,30 +75,41 @@ atualizarUsuario = async (req, res) => {
                 .status(404)
                 .json({err, message: "Usuário não encontrado."})
         }
-
+        
         // Atualiza dados do usuário encontrado
         usuarioEncontrado.nome = usuario.nome
         usuarioEncontrado.email = usuario.email
         usuarioEncontrado.acesso = usuario.acesso
-        usuarioEncontrado.senha = usuario.senha
         usuarioEncontrado.disciplina = usuario.disciplina
 
-        // Salva alterações
-        usuarioEncontrado
-            .save()
-            .then(() => {
-                return res.status(200).json({
-                    success: true,
-                    id: usuarioEncontrado._id,
-                    message:"Usuário atualizado com sucesso!",
-                })
-            })
-            .catch(error => {
-                return res.status(404).json({
-                    error,
-                    message: "Usuário não atualizado!",
-                })
+        bcrypt.genSalt(saltLake, function(errSalt, salt) {
+            if (errSalt) {
+                console.log("Erro GenSalt: ", err);
+            }
+    
+            bcrypt.hash(usuario.senha, salt, function(errHash, hash) {
+                if (!errHash) { 
+                    usuarioEncontrado.senha = hash;
+
+                    // Salva alterações
+                    usuarioEncontrado
+                    .save()
+                    .then(() => {
+                        return res.status(200).json({
+                            success: true,
+                            id: usuarioEncontrado._id,
+                            message:"Usuário atualizado com sucesso!",
+                        })
+                    })
+                    .catch(error => {
+                        return res.status(404).json({
+                            error,
+                            message: "Usuário não atualizado!",
+                        })
+                    });
+                }
             });
+        });
     });
 }
 
@@ -194,6 +210,86 @@ listarUsuarios = async (req, res) => {
     .catch(err => console.log(err))
 }
 
+// Função para validar usuário e senha fornecidos durante autenticação
+confirmarUsuario = async (req, res) => {
+    const body = req.body;
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: "Usuário não fornecido.",
+        })
+    }
+
+    const usuarioRecebido = new Usuario(body);
+
+    // Verifica se dados são nulos
+    if (!usuarioRecebido) {
+        return res
+            .status(400)
+            .json({
+                success: false, 
+                error: "Dados inválidos."
+            });
+    }
+
+    await Usuario.findOne({
+            email: usuarioRecebido.email
+        }, (err, usuarioEncontrado) => {
+
+            if (err) {
+                return res.status(404).json({
+                    success: false,
+                    error: "Usuário não identificado.",
+                })
+            }
+            
+            if (usuarioEncontrado) {
+                bcrypt.compare(usuarioRecebido.senha, usuarioEncontrado.senha).then(function(result) {
+                    if (result) {
+                        const token = {
+                            userID: usuarioEncontrado._id,
+                            userName: usuarioEncontrado.nome,
+                            accessType: usuarioEncontrado.acesso,
+                            disciplina: usuarioEncontrado.disciplina ? usuarioEncontrado.disciplina : []
+                        }
+    
+                        return res.status(200).json({
+                            success: true, 
+                            data: token
+                        });
+                    }
+    
+                    return res.status(404).json({
+                        success: false,
+                        error: "Usuário ou senha inválido.",
+                    })
+                });
+
+            }
+        })
+        .catch(err => console.log(err))
+}
+
+// Função de encriptação de chave
+function encriptarSenha(chave) {
+    bcrypt.genSalt(saltLake, function(err, salt) {
+        if (err) {
+            console.log("Erro GenSalt: ", err);
+            return false;
+        }
+
+        bcrypt.hash(chave, salt, function(err, hash) {
+            if (!err) { 
+                return hash;
+            }
+
+            console.log("Erro Hash: ", err);
+            return false;
+        });
+    });
+}
+
 // Exporta os módulos
 module.exports = {
     inserirUsuario,
@@ -201,5 +297,6 @@ module.exports = {
     removerUsuario,
     encUsuarioPorID,
     encUsuarioPorEmail,
-    listarUsuarios
+    listarUsuarios,
+    confirmarUsuario
 }

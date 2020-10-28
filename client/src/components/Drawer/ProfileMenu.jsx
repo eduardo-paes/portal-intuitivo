@@ -27,6 +27,7 @@ export default function ProfileMenu(props) {
     const { token, setToken } = useContext(StoreContext)
     const [anchorEl, setAnchorEl] = useState(null);
     const [srcImg, setSrcImg] = useState('');
+    
     const profileOpen = Boolean(anchorEl);
     const history = useHistory();
     const nomeAluno = userName(token.userName)
