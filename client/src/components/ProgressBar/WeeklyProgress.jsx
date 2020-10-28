@@ -7,7 +7,7 @@ import { Grid } from '@material-ui/core';
 
 const BorderLinearProgress = withStyles((theme) => ({
   root: {
-    height: 20,
+    height: 10,
     borderRadius: 5,
     marginTop: '-1rem',
   },

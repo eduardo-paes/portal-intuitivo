@@ -212,7 +212,7 @@ listarRAPorAtividadeID = async (req, res) => {
         .find({ atividadeID: req.params.atividadeID })
         .populate({path: 'alunoID', select: 'nome'})
         .populate(populateQuery)
-        .populate({path: 'respostaQuestaoIDs', select: ['nota', 'resposta']})
+        .populate({path: 'respostaQuestaoIDs', select: ['nota', 'resposta', 'comentario']})
         .exec((err, respostaAlunoEncontrada) => {
             if (err) {
                 return res

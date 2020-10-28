@@ -7,8 +7,8 @@ import apis from '../../api';
 const useStyles = makeStyles({
   root: {
     marginTop: '1rem',
-    height: '2rem',
-    width: 300,
+    marginBottom: '2rem',
+    width: '100%',
   },
 });
 
@@ -59,6 +59,7 @@ export default function DiscreteSlider(props) {
         marks={marks}
         min={0}
         max={1}
+        onChange={() => {console.log('mudou')}}
       />
     </div>
   );

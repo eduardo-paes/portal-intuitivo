@@ -30,7 +30,10 @@ const RespostaQuestao = new Schema({
     nota: {
         type: Number,
     },
-    
+    comentario: {
+        type: String,
+        required: false
+    }
 });
 
 module.exports = mongoose.model("respostaQuestoe", RespostaQuestao);
