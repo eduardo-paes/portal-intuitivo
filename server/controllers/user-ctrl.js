@@ -281,25 +281,6 @@ confirmarUsuario = async (req, res) => {
         .catch(err => console.log(err))
 }
 
-// Função de encriptação de chave
-function encriptarSenha(chave) {
-    bcrypt.genSalt(saltLake, function(err, salt) {
-        if (err) {
-            console.log("Erro GenSalt: ", err);
-            return false;
-        }
-
-        bcrypt.hash(chave, salt, function(err, hash) {
-            if (!err) { 
-                return hash;
-            }
-
-            console.log("Erro Hash: ", err);
-            return false;
-        });
-    });
-}
-
 // Exporta os módulos
 module.exports = {
     inserirUsuario,
