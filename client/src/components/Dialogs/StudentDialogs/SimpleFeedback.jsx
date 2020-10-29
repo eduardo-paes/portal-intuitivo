@@ -17,7 +17,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function SimpleFeedback(props) {
     const { open, setOpen, title, message, questionID } = props;
     const [ comment, setComment ] = useState('');
-    console.log(questionID);
 
     async function adicionandoComentario() {
         const response = await apis.encRespostaQuestaoPorID(questionID);
