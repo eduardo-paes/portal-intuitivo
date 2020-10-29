@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Avatar, Grid } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 function a11yProps(index) {
   return {
@@ -12,6 +14,15 @@ function a11yProps(index) {
 }
 
 const useStyles = makeStyles((theme) => ({
+  avatar: {
+    border: '3px solid #94c93d'
+  },
+
+  check: {
+    color: '#94c93d',
+    fontSize: '300%'
+  },
+
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
@@ -24,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function VerticalTabs(props) {
-  const { alunos, questoes, setIndice } = props;
+  const { aCorrigir, alunos, questoes, setIndice } = props;
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -46,14 +57,27 @@ export default function VerticalTabs(props) {
         {
           questoes !== 0 && questoes !== undefined ?
           questoes.map((row, index) => {
-            return <Tab label={"Questão " + ( index + 1 )} {...a11yProps(0)} />
+            if (aCorrigir[index] === true) return <Tab label={"Questão " + ( index + 1 )} {...a11yProps(0)} />
+            return (
+              <Tab label={
+                <Grid container justify='center' alignItems='center'>
+                  <Grid sm={3}>
+                    <CheckIcon className={classes.check}/>
+                    {/* <CheckCircleIcon className={classes.check} fontSize='large'/> */}
+                  </Grid>
+                  <Grid sm={9}>
+                    {"Questão " + ( index + 1 )}
+                  </Grid>
+                </Grid>
+              } {...a11yProps(index)}/>
+            )
           }) :
           alunos !== 0 && alunos !== undefined ?
           alunos.map((row, index) => {
             return ( <Tab label={
               <Grid container justify='center' alignItems='center'>
                 <Grid sm={3}>
-                  <Avatar sizes="small" src={`http://localhost:5000/uploads/profile/${row._id}.jpeg`} alt="Preview"/>
+                  <Avatar className={row.corrigido === true ? classes.avatar : ''} sizes="small" src={`http://localhost:5000/uploads/profile/${row._id}.jpeg`} alt="Preview"/>
                 </Grid>
                 <Grid sm={9}>
                   {row.nome}

@@ -93,6 +93,8 @@ const useStyles = makeStyles((theme) => ({
 export default function ActivityToCorrect (props) {
     
   let numTasks = 0; 
+  let aCorrigirAluno = [];
+  let aCorrigirQuestao = [];
   const classes = useStyles();
   const [ wasLoaded, setWasLoaded ] = useState(false);
   const [ flag, setFlag ] = useState(false);
@@ -101,6 +103,7 @@ export default function ActivityToCorrect (props) {
   const [ alunos, setAlunos ] = useState([]);
   const [ questoes, setQuestoes ] = useState([]);
   const [ indice, setIndice ] = useState(0);
+  const [ aux, setAux ] = useState(0);
   const [ notaAluno, setNotaAluno ] = useState(0);
   const [ progresso, setProgresso ] = useState(0);
   const [ comment, setComment ] = useState('');
@@ -126,9 +129,13 @@ export default function ActivityToCorrect (props) {
   }
 
   function calcularProgressoGeral () {
-    respostaAluno.forEach((item) => {
+    setAux(0);
+    respostaAluno.forEach((item, index) => {
       item.respostaQuestaoIDs.map((row, index) => {
-        if (row.corrigido === false) ++numTasks;
+        if (row.corrigido === false) {
+          ++numTasks;
+          aCorrigirQuestao[index] = true;
+        }
       })
     });
   }
@@ -138,7 +145,13 @@ export default function ActivityToCorrect (props) {
     if (respostaAluno.length !== 0) {
       respostaAluno.map( async (row, index) => {
         const { _id, nome } = row.alunoID;
-        aux.push({_id, nome});
+        const { corrigido } = row;
+        if(!row.respostaQuestaoIDs.find(element => element.corrigido === false)) {
+          let novaResposta = row;
+          novaResposta.corrigido = true;
+          await api.atualizarRespostaAluno(row._id, novaResposta);
+        };
+        aux.push({_id, nome, corrigido});
       })
       setAlunos(aux);
     }
@@ -189,6 +202,7 @@ export default function ActivityToCorrect (props) {
   useEffect(() => {
     pegarRespostasAluno('5f6e088852b44f08881e63f8');
     calcularProgressoGeral();
+    console.log(aCorrigirQuestao);
     listarAlunos();
     listarQuestoes();
   }, [wasLoaded])
@@ -340,6 +354,7 @@ export default function ActivityToCorrect (props) {
                   respostaAluno.length !== 0 ? 
                   questoes : 0
                 }
+                questaoACorrigir={aCorrigirQuestao}
                 alunos={ alunos }
                 listarPorAluno={listarPorAluno}
                 setListarPorAluno={setListarPorAluno}

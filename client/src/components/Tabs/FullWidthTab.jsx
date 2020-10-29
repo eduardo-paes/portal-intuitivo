@@ -8,6 +8,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { VerticalTab } from '..';
+import { useEffect } from 'react';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FullWidthTabs(props) {
-  const { alunos, questoes, listarPorAluno, setListarPorAluno, setIndice } = props;
+  const { alunos, questoes, listarPorAluno, setListarPorAluno, setIndice, questaoACorrigir } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -82,7 +83,7 @@ export default function FullWidthTabs(props) {
         onChangeIndex={handleChangeIndex}
       >
         <TabPanel value={value} index={0} dir={theme.direction} align="center">
-          <VerticalTab questoes={questoes} listarPorAluno={listarPorAluno} setIndice={setIndice}/>
+          <VerticalTab aCorrigir={questaoACorrigir} questoes={questoes} listarPorAluno={listarPorAluno} setIndice={setIndice}/>
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction} align="center">
           <VerticalTab alunos={alunos} listarPorAluno={listarPorAluno} setIndice={setIndice}/>

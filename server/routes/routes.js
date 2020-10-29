@@ -90,6 +90,7 @@ router.get("/resposta-questao/user/:id", RespostaQuestaoCtrl.listarRQPorAlunoID)
 
 // RESPOSTA-ALUNO -- Definição dos métodos para cada rota de respostaAluno
 router.post("/resposta-aluno", RespostaAlunoCtrl.inserirRespostaAluno);
+router.put("/resposta-aluno/:id", RespostaAlunoCtrl.atualizarRespostaAluno);
 router.delete("/resposta-aluno/:id", RespostaAlunoCtrl.removerRespostaAluno);
 router.get("/resposta-aluno/:id", RespostaAlunoCtrl.encRespostaAlunoPorID);
 router.get("/resposta-aluno", RespostaAlunoCtrl.listarRespostaAluno);

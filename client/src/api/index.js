@@ -53,6 +53,7 @@ export const listarRQPorAlunoID = alunoID => api.get(`/resposta-questao/user/${a
 
 // -- Funções relacionadas à RespostaAluno
 export const inserirRespostaAluno = novaRespostaAluno => api.post("/resposta-aluno", novaRespostaAluno);
+export const atualizarRespostaAluno = (id, respostaAlunoAtualizada) => api.put(`/resposta-aluno/${id}`, respostaAlunoAtualizada)
 export const removerRespostaAluno = id => api.delete(`/resposta-aluno/${id}`);
 export const encRespostaAlunoPorID = id => api.get(`/resposta-aluno/${id}`);
 export const encRespostaAluno = (alunoID, revisaoID) => api.get(`/resposta-aluno/${alunoID}/${revisaoID}`);
@@ -176,6 +177,7 @@ const apis = {
     listarRQPorAlunoID,
     //Resposta-Aluno
     inserirRespostaAluno,
+    atualizarRespostaAluno,
     removerRespostaAluno,
     encRespostaAlunoPorID,
     encRespostaAluno,

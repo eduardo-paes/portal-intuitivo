@@ -39,6 +39,67 @@ inserirRespostaAluno = (req, res) => {
         });
 }
 
+// Função para atualizar resposta do aluno por ID
+atualizarRespostaAluno = async (req, res) => {
+    // Recebe dados do formulário
+    const body = req.body;
+    
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: "Os dados devem ser fornecidos.",
+        })
+    }
+    
+    const respostaAlunoAtualizada = new RespostaAluno(body);
+
+    // Verifica se dados não são nulos
+    if (!respostaAlunoAtualizada) {
+        return res
+            .status(400)
+            .json({success: false, error: "Os dados são nulos ou incompatíveis."})
+    }
+
+    // Busca a resposta do aluno pelo id (id da rota)
+    RespostaAluno.findOne({
+        _id: req.params.id
+    }, (err, respostaAlunoEncontrada) => {
+        if (err) {
+            return res
+                .status(404)
+                .json({
+                    err, 
+                    message: "Resposta do aluno não encontrada."
+                })
+        }
+
+        // Atualiza dados da resposta do aluno encontrada
+        respostaAlunoEncontrada.alunoID = respostaAlunoAtualizada.alunoID
+        respostaAlunoEncontrada.atividadeID = respostaAlunoAtualizada.atividadeID
+        respostaAlunoEncontrada.revisaoID = respostaAlunoAtualizada.revisaoID
+        respostaAlunoEncontrada.respostaQuestaoIDs = respostaAlunoAtualizada.respostaQuestaoIDs
+        respostaAlunoEncontrada.corrigido = respostaAlunoAtualizada.corrigido
+        respostaAlunoEncontrada.nota = respostaAlunoAtualizada.nota
+
+        // Salva alterações
+        respostaAlunoEncontrada
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    id: respostaAlunoEncontrada._id,
+                    message:"Resposta do aluno atualizada com sucesso.",
+                })
+            })
+            .catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: "Resposta do aluno não atualizada.",
+                })
+            });
+    });
+}
+
 // Função para remover respostaAluno por ID
 removerRespostaAluno = async (req, res) => {
     // Encontra respostaQuestao pelo ID e remove
@@ -212,7 +273,7 @@ listarRAPorAtividadeID = async (req, res) => {
         .find({ atividadeID: req.params.atividadeID })
         .populate({path: 'alunoID', select: 'nome'})
         .populate(populateQuery)
-        .populate({path: 'respostaQuestaoIDs', select: ['nota', 'resposta', 'comentario']})
+        .populate({path: 'respostaQuestaoIDs', select: ['nota', 'resposta', 'comentario', 'corrigido']})
         .exec((err, respostaAlunoEncontrada) => {
             if (err) {
                 return res
@@ -284,6 +345,7 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
 // Exporta os módulos
 module.exports = {
     inserirRespostaAluno,
+    atualizarRespostaAluno,
     removerRespostaAluno,
     encRespostaAlunoPorID,
     listarRespostaAluno,
