@@ -24,6 +24,10 @@ const ProgressoRedacao = new Schema({
     corrigido: {
         type: Boolean,
         required: false
+    },
+    nota: {
+        type: Number,
+        required: false
     }
 });
 

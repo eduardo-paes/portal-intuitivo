@@ -302,4 +302,61 @@ router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
     });
 });
 
+router.get("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
+    console.log("File to download");
+});
+
+
+// Rota para armazenamento da correção redação do aluno
+router.post("/upload-redacao/corrigida/:alunoID/:redacaoID", (req, res) => {
+    let alunoID = req.params.alunoID;
+    let redacaoID = req.params.redacaoID;
+
+    let redacaoStorage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, path.resolve(__dirname, "..", "..", "uploads", "correcao"));
+        },
+        filename: (req, file, cb) => {
+            var ext = path.extname(file.originalname);
+            if (ext !== '.pdf') {
+                ext = '.jpg';
+            }
+            file.key = { alunoID, redacaoID }
+            cb(null, `corrigida-${ alunoID + redacaoID + ext }`);
+        }
+    });
+
+    const removeCopyFile = async (ext) => {
+        var filePath = '';
+        if (ext === '.pdf') {
+            filePath = path.resolve(__dirname, "..", "..", "uploads", "correcao", alunoID + redacaoID + '.jpg');
+        } else {
+            filePath = path.resolve(__dirname, "..", "..", "uploads", "correcao", alunoID + redacaoID + '.pdf');
+        }
+        await unlinkAsync(filePath);
+    }
+
+    const upload = multer({ 
+        storage: redacaoStorage,
+        fileFilter: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            removeCopyFile(ext);
+            if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== '.pdf') {
+                return cb(res.status(400).end('Somente jpg, png, jpeg e pdf são permitidos.'), false);
+            }
+            cb(null, true)
+        },
+        limits:{
+            // fileSize: 1024 * 1024
+        }
+    }).single("foto");
+    
+    upload(req, res, err => {
+        if (!err) {
+            return res.json({ success: true });
+        }
+        console.log(err);
+    });
+});
+
 module.exports = router;

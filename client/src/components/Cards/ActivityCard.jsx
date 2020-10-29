@@ -62,7 +62,6 @@ export default function ActivityCard(props) {
     }
 
     const handleSubmit = async () => {
-
         await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         const alunoID = token.token.userID;
         const respostaAluno = {

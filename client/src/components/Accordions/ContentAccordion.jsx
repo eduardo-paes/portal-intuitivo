@@ -480,7 +480,7 @@ export default function ContentAccordion(props) {
                 {/* Subir Redação */}
                 <Grid item={true} align='right' xs={12} sm={3}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
-                    <UploadEssay handleUpload={handleUpload} checked={check.redacao} />
+                    <UploadEssay handleUpload={handleUpload} checked={check.redacao} primaryTitle="Subir Redação" secondaryTitle='Reenviar Redação' />
                     <SimpleFeedback
                         open={feedOpen}
                         setOpen={setFeedOpen}

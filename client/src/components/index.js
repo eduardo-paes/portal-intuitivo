@@ -56,6 +56,7 @@ import QuestionCard from './Cards/QuestionCard'
 // -- Accorddions
 import ContentAccordion from './Accordions/ContentAccordion'
 import AccordionSkeleton from './Accordions/SkeletonAccordion'
+import EssayAccordion from './Accordions/EssayAccordion'
 
 // -- Sliders
 import DiscreteSlider from './Sliders/DiscreteSlider'
@@ -65,13 +66,11 @@ import PDFViewer from './PDFViewer/PDFViewer'
 import RadioAnswer from "./Radio/RadioAnswer"
 import RadioCorrected from "./Radio/RadioCorrected"
 import SimpleRadio from './Radio/SimpleRadio'
+import WirisIframe from './MathDisplay/WirisIframe'
 
 // -- Tabs
 import FullWidthTab from './Tabs/FullWidthTab'
 import VerticalTab from './Tabs/VerticalTab'
-import EssayVerticalTab from './Tabs/EssayVerticalTab'
-import EssayFullWidthTabs from "./Tabs/EssayFullWidthTab"
-import CorrectionPanel from './Panel/CorrectionPanel'
 
 export { 
     UserTable,
@@ -121,6 +120,7 @@ export {
 
     ContentAccordion,
     AccordionSkeleton,
+    EssayAccordion,
 
     DiscreteSlider,
 
@@ -128,10 +128,8 @@ export {
     RadioAnswer,
     RadioCorrected,
     SimpleRadio,
+    WirisIframe,
 
     FullWidthTab,
     VerticalTab,
-    EssayVerticalTab,
-    EssayFullWidthTabs,
-    CorrectionPanel
 }

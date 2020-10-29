@@ -19,7 +19,7 @@ export default function SimpleFeedback(props) {
         <Dialog
             open={open}
             TransitionComponent={Transition}
-            keepMounted
+            keepMounted={true}
             onClose={() => setOpen(false)}
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"

@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function UploadEssay(props) {
-  const { handleUpload, checked } = props;
+  const { handleUpload, checked, primaryTitle, secondaryTitle } = props;
   const classes = useStyles();
 
   return (
@@ -33,13 +33,13 @@ export default function UploadEssay(props) {
                 variant="contained" 
                 color="primary" 
                 component="span"
-                startIcon={<CloudUploadIcon />}>Reenviar Redação</GreenButton>
+                startIcon={<CloudUploadIcon />}>{secondaryTitle}</GreenButton>
           :   <Button 
                 fullWidth={true} 
                 variant="outlined" 
                 color="primary" 
                 component="span"
-                startIcon={<CloudUploadIcon />}>Subir Redação</Button>
+                startIcon={<CloudUploadIcon />}>{primaryTitle}</Button>
         }
       </label>
     </>

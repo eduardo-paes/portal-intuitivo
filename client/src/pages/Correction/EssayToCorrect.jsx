@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { MyContainer, GeneralTitle, MyCard, GeneralSubtitle, MyCardContent } from "../../assets/styles/styledComponents"
-import { makeStyles, Grid, Button, Divider, Accordion, AccordionSummary, AccordionDetails, Typography, Avatar } from '@material-ui/core';
-import { SimpleRadio } from "../../components";
-
-import Image from 'material-ui-image'
-
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { MyContainer, GeneralTitle, MyCard, GeneralSubtitle } from "../../assets/styles/styledComponents"
+import { makeStyles, Grid } from '@material-ui/core';
+import { EssayAccordion, WirisIframe } from "../../components";
 
 import api from "../../api";
 
@@ -14,18 +10,8 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 400,
     padding: '1rem'
   },
-  buttonGroup: {
-    textAlign: 'center'
-  },
-  button: {
-    margin: '0.5rem'
-  },
   divider: {
     marginRight: '1rem'
-  },
-  userName: {
-    paddingTop: '0.6rem',
-    paddingLeft: '1rem'
   }
 }));
 
@@ -48,7 +34,6 @@ export default function EssayToCorrect (props) {
       const value = response.data;
       
       if (value.success) {
-        console.log(value.data);
         setRedacoes(value.data);
         setWasLoaded(preValue => ({
           ...preValue,
@@ -71,55 +56,6 @@ export default function EssayToCorrect (props) {
     }
   }
 
-  const ListarPorAluno = () => {
-    const [notaAluno, setNotaAluno] = useState(0);
-
-    return (
-      <>
-        {
-          redacoes.length !== 0 ? 
-          redacoes.map((row, index) => {
-
-            const srcImg = `http://localhost:5000/uploads/profile/${row.alunoID._id}.jpeg`;
-
-            return (
-              <Accordion key={index}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                >
-                  <Avatar sizes="small" src={srcImg} alt="Preview"/>
-                  <Typography className={classes.userName}>{row.alunoID.nome}</Typography>
-                </AccordionSummary>
-
-                <AccordionDetails>
-                  <Grid container={true} spacing={1}>
-
-                    <Grid item={true} sm={12}>
-                      <SimpleRadio title='Nota' value={notaAluno} setValue={setNotaAluno}/>
-                    </Grid>
-
-                    <Grid item={true} sm={12}>
-                      <Button className={classes.button} variant="outlined" color="primary">
-                        Baixar Redação
-                      </Button>
-
-                      <Button className={classes.button}  variant="outlined" color="primary">
-                        Enviar Correção
-                      </Button>
-                    </Grid>
-
-                  </Grid>
-                </AccordionDetails>
-
-              </Accordion>
-            )
-          }) : null
-        }
-      </>
-    )
-  }
-
   useEffect(() => {
     const abortController = new AbortController();
     if (!wasLoaded.proposta) fetchPropostaRedacao();
@@ -140,12 +76,19 @@ export default function EssayToCorrect (props) {
           <Grid item={true} xs={12} sm={6} align='left'>
             <MyCard className={classes.myCard}>
               <GeneralSubtitle>Proposta de Redação</GeneralSubtitle>
-              <div id="propostaRedacao" className='ck-content' dangerouslySetInnerHTML={{ __html: propostaRedacao}} />
+              <WirisIframe text={propostaRedacao}/>
             </MyCard>
           </Grid>
 
           <Grid item={true} xs={12} sm={6} align='center'>
-            { ListarPorAluno() }
+            {
+              redacoes.length !== 0 ? 
+                redacoes.map((row, index) => {
+                  return (
+                    <EssayAccordion key={index} data={row}/>
+                  )
+                }) : null
+            }
           </Grid>
           
         </Grid>

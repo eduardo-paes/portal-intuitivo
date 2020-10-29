@@ -57,6 +57,7 @@ export default function QuestionUpdate(props) {
                 tipoResposta: value.tipoResposta,
                 dataCriacao: value.dataCriacao,
                 dataEdicao: value.dataEdicao,
+                padraoResposta: value.padraoResposta,
                 tags: tags,
                 erros: []
             }));

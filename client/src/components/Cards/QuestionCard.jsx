@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { Grid, TextField } from "@material-ui/core";
 import { MyCardContent } from "../../assets/styles/styledComponents"
-import { RadioAnswer } from "../";
+import { RadioAnswer, WirisIframe } from "../";
 
 import { useStyles } from '../../assets/styles/classes';
 import "./QuestionStyles.css"
@@ -114,7 +114,7 @@ export default function QuestionCard (props) {
         <MyCardContent>
             <Grid container={true}>
                 <Grid item={true} align="left" xs={12} lg={12} sm={12}>
-                    <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: enunciado}} />
+                    <WirisIframe text={enunciado}/>
                 </Grid>
                 <Grid container={true}>
                     { returnAnswerOption() }
