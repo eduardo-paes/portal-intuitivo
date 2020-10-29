@@ -7,13 +7,31 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { TextField } from '@material-ui/core';
+import apis from '../../../api';
+import { useState } from 'react';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function SimpleFeedback(props) {
-    const { open, setOpen, title, message } = props;
+    const { open, setOpen, title, message, questionID } = props;
+    const [ comment, setComment ] = useState('');
+    console.log(questionID);
+
+    async function adicionandoComentario() {
+        const response = await apis.encRespostaQuestaoPorID(questionID);
+        let novaResposta = response.data.data;
+        novaResposta.comentario = comment;
+        //console.log(id);
+        await apis.atualizarRespostaQuestao(questionID, novaResposta);
+        setOpen(false);
+    }
+
+    function handleChange(event) {
+        const { value } = event.target;
+        setComment(value);
+    }
 
     return (
         <Dialog
@@ -29,12 +47,12 @@ export default function SimpleFeedback(props) {
             <DialogContent>
                 {
                     message === 'addComment' 
-                    ? <TextField/>
+                    ? <TextField multiline onChange={handleChange}/>
                     : <DialogContentText id="alert-dialog-slide-description">{message}</DialogContentText>
                 }
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => setOpen(false)} color="primary">
+                <Button onClick={adicionandoComentario} color="primary">
                     {
                         message === 'addComment' 
                         ? 'Inserir comentário'

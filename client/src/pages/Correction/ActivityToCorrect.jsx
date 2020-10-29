@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { MyContainer, MyCard, MyCardContent, GeneralTitle, GreenButton, AddButton } from "../../assets/styles/styledComponents"
-import { Grid, Typography, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField, Button } from "@material-ui/core";
-import { DiscreteSlider, FullWidthTab, SimpleFeedback } from "../../components";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Grid, Typography, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField, Button, IconButton } from "@material-ui/core";
+import { DiscreteSlider, FullWidthTab, SimpleFeedback, SimpleRadio } from "../../components";
 import api from "../../api";
 import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddCommentIcon from '@material-ui/icons/AddComment';
+import RateReviewIcon from '@material-ui/icons/RateReview';
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
@@ -21,6 +23,20 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "15rem"
   },
   
+  comment: {
+    marginTop: '1rem',
+    width: '100%'
+  },
+  
+  commentChanged: {
+    marginTop: '1rem',
+    width: '90%'
+  },
+
+  commentIcon: {
+    marginTop: '1rem'
+  },
+
   content: {
     fontStyle: 'normal',
     fontWeight: `300`,
@@ -30,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   discursiveAnswer: {
-    width: '90%'
+    width: '100%'
   },
   
   phrase: {
@@ -79,13 +95,15 @@ export default function ActivityToCorrect (props) {
   let numTasks = 0; 
   const classes = useStyles();
   const [ wasLoaded, setWasLoaded ] = useState(false);
-  const [ openComment, setOpenComment ] = useState(false);
+  const [ flag, setFlag ] = useState(false);
   const [ listarPorAluno, setListarPorAluno ] = useState(false);
   const [ respostaAluno, setRespostaAluno ] = useState([]);
   const [ alunos, setAlunos ] = useState([]);
   const [ questoes, setQuestoes ] = useState([]);
   const [ indice, setIndice ] = useState(0);
-  const [ progresso, setProgresso ] = useState(0)
+  const [ notaAluno, setNotaAluno ] = useState(0);
+  const [ progresso, setProgresso ] = useState(0);
+  const [ comment, setComment ] = useState('');
 
   async function pegarRespostasAluno(atividadeID) {
     const response = await api.listarRAPorAtividadeID(atividadeID);
@@ -125,49 +143,49 @@ export default function ActivityToCorrect (props) {
       setAlunos(aux);
     }
   }
-
+  
   //#region Comentário
   // const listarOpcoes = (questao, questaoID) => {
     
-  //   if (questao.tipoResposta === "multiplaEscolha") {
-  //       return (
-  //           <Grid className={classes.questionGrid} item={true} align="left" xs={12} lg={12} sm={12}>
-  //               <RadioAnswer 
-  //                   idQuestion={questaoID}
-  //                   answered={answered} 
-  //                   gabarito={gabarito.gab._id} 
-  //                   mobile={mobile}
-  //                   respostaMobile={respostaMobile} 
-  //                   resposta={resposta}
-  //                   respostaQuestao={respostaQuestao}
-  //                   setRespostaQuestao={setRespostaQuestao}
-  //               />
-  //           </Grid>
-  //       )
-  //   }
-    
-  //   if (questao.tipoResposta === "discursiva") {
-  //       return (
-  //           <Grid className={classes.questionGrid} item={true} align="center" xs={12} lg={12} sm={12}>
-  //               <TextField
-  //                   className={classes.answerField}
-  //                   id={respostaQuestao.questao ? respostaQuestao.questao : ''}
-  //                   label={answered ? null : "Resposta"}
-  //                   disabled={answered}
-  //                   multiline
-  //                   value={
-  //                       respostaQuestao.resposta && !mobile ?
-  //                       respostaQuestao.resposta : 
-  //                       respostaQuestao.resposta && mobile ?
-  //                       respostaMobile : null
-  //                   }
+    //   if (questao.tipoResposta === "multiplaEscolha") {
+      //       return (
+        //           <Grid className={classes.questionGrid} item={true} align="left" xs={12} lg={12} sm={12}>
+        //               <RadioAnswer 
+        //                   idQuestion={questaoID}
+        //                   answered={answered} 
+        //                   gabarito={gabarito.gab._id} 
+        //                   mobile={mobile}
+        //                   respostaMobile={respostaMobile} 
+        //                   resposta={resposta}
+        //                   respostaQuestao={respostaQuestao}
+        //                   setRespostaQuestao={setRespostaQuestao}
+        //               />
+        //           </Grid>
+        //       )
+        //   }
+        
+        //   if (questao.tipoResposta === "discursiva") {
+          //       return (
+            //           <Grid className={classes.questionGrid} item={true} align="center" xs={12} lg={12} sm={12}>
+            //               <TextField
+            //                   className={classes.answerField}
+            //                   id={respostaQuestao.questao ? respostaQuestao.questao : ''}
+            //                   label={answered ? null : "Resposta"}
+            //                   disabled={answered}
+            //                   multiline
+            //                   value={
+              //                       respostaQuestao.resposta && !mobile ?
+              //                       respostaQuestao.resposta : 
+              //                       respostaQuestao.resposta && mobile ?
+              //                       respostaMobile : null
+              //                   }
   //               />
   //           </Grid>
   //       )
   //   }
   // }
   //#endregion
-
+  
   useEffect(() => {
     pegarRespostasAluno('5f6e088852b44f08881e63f8');
     calcularProgressoGeral();
@@ -175,7 +193,24 @@ export default function ActivityToCorrect (props) {
     listarQuestoes();
   }, [wasLoaded])
 
-  function retornarRespostaDiscursiva(defaultValue, resposta, id) {
+  function retornarRespostaDiscursiva(defaultValue, resposta, id, comentario) {
+    
+    async function adicionandoComentario() {
+      const response = await api.encRespostaQuestaoPorID(id);
+      let novaResposta = response.data.data;
+      novaResposta.comentario = comment;
+      // console.log(novaResposta);
+      //console.log(id);
+      await api.atualizarRespostaQuestao(id, novaResposta);
+      setFlag(false);
+    }
+  
+    function handleChange(event) {
+      const { value } = event.target;
+      setComment(value);
+      setFlag(true);
+    }
+
     return (
       <Grid item={true} align="center" xs={12} lg={12} sm={12}>
         <TextField
@@ -184,8 +219,24 @@ export default function ActivityToCorrect (props) {
           multiline
           value={resposta}
         />
-        <AddButton onClick={() => {setOpenComment(!openComment)}}>Adicionar Comentário</AddButton>
-        <SimpleFeedback open={openComment} setOpen={setOpenComment} title='Adicionar Comentário' message='addComment'/>
+        <TextField 
+          className={flag ? classes.commentChanged : classes.comment}
+          multiline
+          label='Comentário'
+          onChange={handleChange}
+          defaultValue={comentario ? comentario : ''}
+        />
+        <IconButton size='medium' className={classes.commentIcon} color='primary' onClick={adicionandoComentario}>
+          {
+            flag ?
+              comentario 
+              ? <RateReviewIcon />
+              : <AddCommentIcon />
+            : <></>  
+          }
+        </IconButton>
+        {/* <SimpleFeedback open={openComment} setOpen={setOpenComment} title='Adicionar Comentário' message='addComment' questionID={id}/> */}
+        {/* <SimpleRadio title='Nota' value={notaAluno} setValue={setNotaAluno}/> */}
         <DiscreteSlider respostaQuestaoID={id} defaultValue={defaultValue} setProgresso={setProgresso} progresso={progresso}/>
       </Grid>
     )
@@ -220,7 +271,7 @@ export default function ActivityToCorrect (props) {
                       <Typography className={classes.student}>{row.alunoID.nome}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      { retornarRespostaDiscursiva(row.respostaQuestaoIDs[indice].nota, row.respostaQuestaoIDs[indice].resposta, row.respostaQuestaoIDs[indice]._id) }
+                      { retornarRespostaDiscursiva(row.respostaQuestaoIDs[indice].nota, row.respostaQuestaoIDs[indice].resposta, row.respostaQuestaoIDs[indice]._id, row.respostaQuestaoIDs[indice].comentario) }
                     </AccordionDetails>
                   </Accordion>
                 )

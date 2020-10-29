@@ -83,6 +83,7 @@ atualizarRespostaQuestao = async (req, res) => {
         respostaQuestaoEncontrada.corrigido = respostaQuestaoAtualizada.corrigido
         respostaQuestaoEncontrada.resposta = respostaQuestaoAtualizada.resposta
         respostaQuestaoEncontrada.nota = respostaQuestaoAtualizada.nota
+        respostaQuestaoEncontrada.comentario = respostaQuestaoAtualizada.comentario
 
         // Salva alterações
         respostaQuestaoEncontrada
