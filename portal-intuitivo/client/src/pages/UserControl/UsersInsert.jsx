@@ -57,6 +57,7 @@ export default function UsersInsert() {
                                 body: formData
                             })
                             .then(res => res.json())
+                            
                         // Limpa os campos
                         setUsuario(initialState);
                     }
