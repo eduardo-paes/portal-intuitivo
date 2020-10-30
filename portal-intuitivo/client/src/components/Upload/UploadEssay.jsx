@@ -17,7 +17,7 @@ export default function UploadEssay(props) {
   return (
     <>
       <input
-        accept="image/*"
+        accept="image/*, application/*"
         className={classes.input}
         name="foto"
         id="contained-button-essay"

@@ -159,6 +159,19 @@ const fs = require('fs')
 const { promisify } = require('util')
 const unlinkAsync = promisify(fs.unlink)
 
+// Verifica qual o nome correto do arquivo no diretório
+function checkCorrectFileName (fileName) {
+    const pathEssay = path.resolve(__dirname, "..", "..", "uploads", "redacao");
+    var files = fs.readdirSync(pathEssay);
+    var correctPath = '';
+    files.toString().split(',').forEach(file => {
+        if (file.includes(fileName)) {
+            correctPath = file;
+        }
+    })
+    return correctPath;
+}
+
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {
     const crypto = require("crypto");
@@ -270,27 +283,34 @@ router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
         }
     });
 
-    const removeCopyFile = async (ext) => {
-        var filePath = '';
-        if (ext === '.pdf') {
-            filePath = path.resolve(__dirname, "..", "..", "uploads", "redacao", alunoID + redacaoID + '.jpg');
-        } else {
-            filePath = path.resolve(__dirname, "..", "..", "uploads", "redacao", alunoID + redacaoID + '.pdf');
+    const removeCopyFile = async () => {
+        const pathEssay = path.resolve(__dirname, "..", "..", "uploads", "redacao");
+        const files = fs.readdirSync(pathEssay);
+        
+        var correctPath = '';
+        files.toString().split(',').forEach(file => {
+            if (file.includes(fileName)) {
+                correctPath = file;
+            }
+        })
+
+        if (correctPath !== '') {
+            var filePath = path.resolve(__dirname, "..", "..", "uploads", "redacao", correctPath);
+            await unlinkAsync(filePath);
         }
-        await unlinkAsync(filePath);
     }
 
     const upload = multer({ 
         storage: redacaoStorage,
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname);
-            removeCopyFile(ext);
+            removeCopyFile();
             if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== '.pdf') {
                 return cb(res.status(400).end('Somente jpg, png, jpeg e pdf são permitidos.'), false);
             }
             cb(null, true)
         },
-        limits:{
+        limits: {
             // fileSize: 1024 * 1024
         }
     }).single("foto");
@@ -306,15 +326,16 @@ router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
 // Rota para download da redação do aluno
 router.get("/download-redacao/:alunoID/:redacaoID", (req, res) => {
     const { alunoID, redacaoID } = req.params;
-    const pathEssay = path.resolve(__dirname, "..", "..", "uploads", "redacao");
-    const filePath = pathEssay + '/' + alunoID + redacaoID;
-    res.download(filePath + '.pdf');
+    var fileName = checkCorrectFileName(alunoID + redacaoID);
+    const pathEssay = path.resolve(__dirname, "..", "..", "uploads", "redacao", fileName);
+    res.download(pathEssay);
 });
 
 // Rota para armazenamento da correção redação do aluno
 router.post("/upload-redacao/corrigida/:alunoID/:redacaoID", (req, res) => {
     let alunoID = req.params.alunoID;
     let redacaoID = req.params.redacaoID;
+    let fileName = alunoID + redacaoID;
 
     let redacaoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
@@ -330,21 +351,28 @@ router.post("/upload-redacao/corrigida/:alunoID/:redacaoID", (req, res) => {
         }
     });
 
-    const removeCopyFile = async (ext) => {
-        var filePath = '';
-        if (ext === '.pdf') {
-            filePath = path.resolve(__dirname, "..", "..", "uploads", "correcao", alunoID + redacaoID + '.jpg');
-        } else {
-            filePath = path.resolve(__dirname, "..", "..", "uploads", "correcao", alunoID + redacaoID + '.pdf');
+    const removeCopyFile = async () => {
+        const pathEssay = path.resolve(__dirname, "..", "..", "uploads", "correcao");
+        const files = fs.readdirSync(pathEssay);
+        
+        var correctPath = '';
+        files.toString().split(',').forEach(file => {
+            if (file.includes(fileName)) {
+                correctPath = file;
+            }
+        })
+
+        if (correctPath !== '') {
+            var filePath = path.resolve(__dirname, "..", "..", "uploads", "correcao", correctPath);
+            await unlinkAsync(filePath);
         }
-        await unlinkAsync(filePath);
     }
 
     const upload = multer({ 
         storage: redacaoStorage,
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname);
-            removeCopyFile(ext);
+            removeCopyFile();
             if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== '.pdf') {
                 return cb(res.status(400).end('Somente jpg, png, jpeg e pdf são permitidos.'), false);
             }
@@ -359,7 +387,7 @@ router.post("/upload-redacao/corrigida/:alunoID/:redacaoID", (req, res) => {
         if (!err) {
             return res.json({ success: true });
         }
-        console.log("Erro aqui: ", err);
+        console.log("Erro de Upload: ", err);
     });
 });
 

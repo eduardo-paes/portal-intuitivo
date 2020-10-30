@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   success: {
     backgroundColor: green[500],
     color: '#fafafa',
-    borderRadius: '50%'
+    borderRadius: '50%',
   },
   boxDiv: {
     margin: 0,
