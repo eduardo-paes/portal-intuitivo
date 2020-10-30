@@ -1,6 +1,6 @@
 # Portal Intuitivo
 
-## Etapas Concluídas:
+## Admin/Professor
   - Controle de Usuário
   - Login e Autenticação nas Rotas
   - Gerenciamento de Disciplinas
@@ -10,9 +10,10 @@
   - Definição de Ano Letivo
   - Definição de Aula Online
   - Definição de Tags
-  - Relacionamento Aluno 
-  ** Conteúdo
-  ** Aula Online 
-  ** Atividades
-  + Redação
-  + Questões
+  
+## Aluno 
+  - Conteúdo
+  - Aula Online 
+  - Atividades
+  - Redação
+  - Questões
