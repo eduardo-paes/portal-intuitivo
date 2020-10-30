@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
+import api from "../../api";
+
 import { MyContainer, MyCard, MyCardContent, GeneralTitle } from "../../assets/styles/styledComponents"
 import { Grid, Typography, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField, IconButton } from "@material-ui/core";
-import { DiscreteSlider, FullWidthTab, WirisIframe } from "../../components";
-import api from "../../api";
-import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
+import { DiscreteSlider, FullWidthTab, WirisIframe, LinearProgressBar } from "../../components";
+import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddCommentIcon from '@material-ui/icons/AddComment';
 import RateReviewIcon from '@material-ui/icons/RateReview';
@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
 
   card: {
     marginTop: '1rem',
-    minHeight: "15rem",
-    padding: '0.2rem'
+    minHeight: 400,
+    padding: '1rem'
   },
   
   comment: {
@@ -112,7 +112,14 @@ export default function ActivityToCorrect (props) {
 
   async function pegarRespostasAluno(atividadeID) {
     const response = await api.listarRAPorAtividadeID(atividadeID);
-    if (response.data.success) setRespostaAluno(response.data.data);
+    if (response.data.success) {
+      response.data.data.sort(function(a,b) {
+        if (a.alunoID.nome > b.alunoID.nome) return 1;
+        else if (a.alunoID.nome < b.alunoID.nome) return -1;
+        return 0;
+      });
+      setRespostaAluno(response.data.data)
+    };
     setWasLoaded(true)
   }
 
@@ -129,19 +136,7 @@ export default function ActivityToCorrect (props) {
       setQuestoes(aux);
     }
   }
-
-  function calcularProgressoGeral () {
-    respostaAluno.forEach((item, index) => {
-      item.respostaQuestaoIDs.map((row, index) => {
-        if (row.corrigido === false) {
-          ++numTasks;
-          aCorrigirQuestao[index] = true;
-        }
-        return;
-      })
-    });
-  }
-
+  
   function listarAlunos() {
     let aux = alunos;
     if (respostaAluno.length !== 0) {
@@ -157,6 +152,17 @@ export default function ActivityToCorrect (props) {
       })
       setAlunos(aux);
     }
+  }
+
+  function calcularProgressoGeral () {
+    respostaAluno.forEach((item, index) => {
+      item.respostaQuestaoIDs.map((row, index) => {
+        if (row.corrigido === false) {
+          ++numTasks;
+          aCorrigirQuestao[index] = true;
+        }
+      })
+    });
   }
   
   useEffect(() => {
@@ -174,8 +180,6 @@ export default function ActivityToCorrect (props) {
       const response = await api.encRespostaQuestaoPorID(id);
       let novaResposta = response.data.data;
       novaResposta.comentario = comment;
-      // console.log(novaResposta);
-      //console.log(id);
       await api.atualizarRespostaQuestao(id, novaResposta);
       setFlag(false);
     }
@@ -210,8 +214,6 @@ export default function ActivityToCorrect (props) {
             : <></>  
           }
         </IconButton>
-        {/* <SimpleFeedback open={openComment} setOpen={setOpenComment} title='Adicionar Comentário' message='addComment' questionID={id}/> */}
-        {/* <SimpleRadio title='Nota' value={notaAluno} setValue={setNotaAluno}/> */}
         <DiscreteSlider respostaQuestaoID={id} defaultValue={defaultValue} setProgresso={setProgresso} progresso={progresso}/>
       </Grid>
     )
@@ -281,7 +283,14 @@ export default function ActivityToCorrect (props) {
                     </Grid>
                     <Grid item sm={6}>
                       <Grid item={true} align="center">
-                      { retornarRespostaDiscursiva(respostaAluno[indice].respostaQuestaoIDs[index].nota , respostaAluno[indice].respostaQuestaoIDs[index].resposta, respostaAluno[indice].respostaQuestaoIDs[index]._id) }
+                        { 
+                          retornarRespostaDiscursiva(
+                            respostaAluno[indice].respostaQuestaoIDs[index].nota, 
+                            respostaAluno[indice].respostaQuestaoIDs[index].resposta, 
+                            respostaAluno[indice].respostaQuestaoIDs[index]._id, 
+                            respostaAluno[indice].respostaQuestaoIDs[index].comentario
+                          ) 
+                        }
                       </Grid>
                     </Grid>
                   </Grid>
@@ -301,11 +310,11 @@ export default function ActivityToCorrect (props) {
         <GeneralTitle className="heading-page">{`Atividade de ${ respostaAluno.length !== 0 ? respostaAluno[0].atividadeID.tipoAtividade : 'Fixação'}`}</GeneralTitle>
       </section>
 
-      <section id="muralDashboard">
+      <section id="areaDeCorrecao">
         <Grid container={true} spacing={2}>
 
           <Grid item={true} xs={12} sm={12}>
-            <WeeklyProgress max={numTasks} progresso={progresso} titulo={progresso === numTasks ? '100%' : ((100*progresso)/numTasks)}/>
+            <LinearProgressBar max={numTasks} progresso={progresso} titulo={progresso === numTasks ? '100%' : ((100*progresso)/numTasks)}/>
           </Grid>
 
           <Grid item={true} xs={12} sm={3}>

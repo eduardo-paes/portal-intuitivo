@@ -7,7 +7,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
+import LinearProgressBar from "../../components/ProgressBar/LinearProgressBar";
 import CircularStatic from "../../components/ProgressBar/CircularStatic";
 import QuestionCircularStatic from "../../components/ProgressBar/QuestionProgress";
 
@@ -66,7 +66,7 @@ export default function Dashboard (props) {
         <Grid container={true} spacing={2}>
 
           <Grid item={true} xs={12} sm={12}>
-            <WeeklyProgress />
+            <LinearProgressBar />
           </Grid>
 
           <Grid item={true} xs={12} sm={3}>

@@ -67,6 +67,7 @@ import RadioAnswer from "./Radio/RadioAnswer"
 import RadioCorrected from "./Radio/RadioCorrected"
 import SimpleRadio from './Radio/SimpleRadio'
 import WirisIframe from './MathDisplay/WirisIframe'
+import LinearProgressBar from "./ProgressBar/LinearProgressBar";
 
 // -- Tabs
 import FullWidthTab from './Tabs/FullWidthTab'
@@ -129,6 +130,7 @@ export {
     RadioCorrected,
     SimpleRadio,
     WirisIframe,
+    LinearProgressBar,
 
     FullWidthTab,
     VerticalTab,

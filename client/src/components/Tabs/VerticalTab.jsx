@@ -59,12 +59,12 @@ export default function VerticalTabs(props) {
             if (aCorrigir[index] === true) return <Tab label={"Questão " + ( index + 1 )} {...a11yProps(0)} />
             return (
               <Tab label={
-                <Grid container justify='center' alignItems='center'>
-                  <Grid sm={3}>
+                <Grid container justify='center' alignItems='center' spacing={2}>
+                  <Grid xs={3}>
                     <CheckIcon className={classes.check}/>
                     {/* <CheckCircleIcon className={classes.check} fontSize='large'/> */}
                   </Grid>
-                  <Grid sm={9}>
+                  <Grid xs={9}>
                     {"Questão " + ( index + 1 )}
                   </Grid>
                 </Grid>
@@ -75,10 +75,10 @@ export default function VerticalTabs(props) {
           alunos.map((row, index) => {
             return ( <Tab label={
               <Grid container justify='center' alignItems='center'>
-                <Grid sm={3}>
+                <Grid xs={3}>
                   <Avatar className={row.corrigido === true ? classes.avatar : ''} sizes="small" src={`http://localhost:5000/uploads/profile/${row._id}.jpeg`} alt="Preview"/>
                 </Grid>
-                <Grid sm={9}>
+                <Grid xs={9}>
                   {row.nome}
                 </Grid>
               </Grid>
