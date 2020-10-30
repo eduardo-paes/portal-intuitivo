@@ -5,6 +5,7 @@ import { SimpleRadio, UploadEssay, SimpleFeedback } from "../";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SaveIcon from '@material-ui/icons/Save';
 import DownloadIcon from '@material-ui/icons/GetApp';
+import axios from "axios";
 
 import api from '../../api';
 
@@ -34,10 +35,12 @@ export default function Accordions(props) {
     const [feedMsg, setFeedMsg] = useState({title: '', message: ''});
     const [feedOpen, setFeedOpen] = useState(false);
     const [essayUploaded, setEssayUploaded] = useState(false);
-    const alunoID = data.alunoID._id;
-    const redacaoID = data.redacaoID;
-    const donwloadLink = `http://localhost:5000/api/upload-redacao/${alunoID}/${redacaoID}`;
+
+    const alunoID = data.alunoID._id, redacaoID = data.redacaoID;
+
+    const donwloadLink = `http://localhost:5000/api/download-redacao/${alunoID}/${redacaoID}`;
     const uploadLink = `http://localhost:5000/api/upload-redacao/corrigida/${alunoID}/${redacaoID}`;
+    const nomeRedacao = `Redação - ${data.alunoID.nome}.pdf`;
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -49,7 +52,27 @@ export default function Accordions(props) {
         // eslint-disable-next-line
     }, [data]);
 
+    // const convertImgToPDF = () => {
+    //     var doc = new jsPDF();
+    //     var type = '';
+    //     if (file.type === 'image/png') {
+    //         type = 'PNG';
+    //     } else if (file.type === 'image/jpeg') {
+    //         type = 'JPEG';
+    //     }
+    //     doc.addImage("examples/images/Octonyan.jpg", type, 10, 10, 190, 190);
+    // }
+
+    // const pdf = new File([doc.output("blob")], "filename.pdf", {  type: "pdf" });
+    //     data = new FormData();
+    //     data.append("file", pdf);
+    //     axios
+    //         .post("/amazing-endpoint", data)
+    //         .then(res => console.log(res))
+    //         .catch(err =>console.log(err));
+
     const fetchRedacaoIMG = async (file) => {
+
         const formData = new FormData();
         formData.append("foto", file);
         return await fetch(uploadLink, {
@@ -75,8 +98,9 @@ export default function Accordions(props) {
 
     const UploadEssayCorrection = async (event) => {
         const file = event.target.files[0];
+        console.log(file);
+
         const value = await fetchRedacaoIMG(file);
-        
         if (value) {
             setFeedOpen(true);
             setEssayUploaded(true);
@@ -85,7 +109,23 @@ export default function Accordions(props) {
 
     const DownloadEssay = (event) => {
         event.preventDefault();
-        // TODO: Download de redação do aluno
+            axios.get(donwloadLink,
+                {
+                    responseType: 'arraybuffer',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/jpg'
+                    }
+                })
+                .then((response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', nomeRedacao);
+                    document.body.appendChild(link);
+                    link.click();
+                })
+                .catch((error) => console.log(error));
     };
 
     const SubmitButton = async (event) => {
@@ -130,12 +170,10 @@ export default function Accordions(props) {
                         <Grid container={true} alignItems='center'spacing={1}>
 
                             <Grid item={true} xs={12} sm={4}>
-                                <a href={donwloadLink} target="_blank" rel="noopener noreferrer" download style={{textDecoration: 'none'}}>
-                                    <Button fullWidth={true} variant="outlined" color="primary" onClick={DownloadEssay} startIcon={<DownloadIcon />}>
-                                        <i className="fas fa-download"/>
-                                        Baixar Redação
-                                    </Button>
-                                </a>
+                                <Button fullWidth={true} variant="outlined" color="primary" onClick={DownloadEssay} startIcon={<DownloadIcon />}>
+                                    <i className="fas fa-download"/>
+                                    Baixar Redação
+                                </Button>
                             </Grid>
 
                             <Grid item={true} xs={12} sm={4}>

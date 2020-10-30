@@ -1,4 +1,3 @@
-import { green } from "@material-ui/core/colors";
 const { makeStyles } = require("@material-ui/core");
 
 export const useStyles = makeStyles((theme) => ({

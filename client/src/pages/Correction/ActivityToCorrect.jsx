@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import { makeStyles } from '@material-ui/core/styles';
-import { MyContainer, MyCard, MyCardContent, GeneralTitle, GreenButton, AddButton } from "../../assets/styles/styledComponents"
-import { Grid, Typography, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField, Button, IconButton } from "@material-ui/core";
-import { DiscreteSlider, FullWidthTab, SimpleFeedback, SimpleRadio } from "../../components";
+import { MyContainer, MyCard, MyCardContent, GeneralTitle } from "../../assets/styles/styledComponents"
+import { Grid, Typography, Accordion, AccordionSummary, AccordionDetails, Avatar, TextField, IconButton } from "@material-ui/core";
+import { DiscreteSlider, FullWidthTab, WirisIframe } from "../../components";
 import api from "../../api";
 import WeeklyProgress from "../../components/ProgressBar/WeeklyProgress";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -15,12 +15,17 @@ const useStyles = makeStyles((theme) => ({
   
   accordion: {
     marginTop: '1rem',
-    minHeight: "15rem"
+    minHeight: "15rem",
+  },
+
+  accordionReturns: {
+    padding: '0.5rem'
   },
 
   card: {
     marginTop: '1rem',
-    minHeight: "15rem"
+    minHeight: "15rem",
+    padding: '0.2rem'
   },
   
   comment: {
@@ -93,7 +98,6 @@ const useStyles = makeStyles((theme) => ({
 export default function ActivityToCorrect (props) {
     
   let numTasks = 0; 
-  let aCorrigirAluno = [];
   let aCorrigirQuestao = [];
   const classes = useStyles();
   const [ wasLoaded, setWasLoaded ] = useState(false);
@@ -103,8 +107,6 @@ export default function ActivityToCorrect (props) {
   const [ alunos, setAlunos ] = useState([]);
   const [ questoes, setQuestoes ] = useState([]);
   const [ indice, setIndice ] = useState(0);
-  const [ aux, setAux ] = useState(0);
-  const [ notaAluno, setNotaAluno ] = useState(0);
   const [ progresso, setProgresso ] = useState(0);
   const [ comment, setComment ] = useState('');
 
@@ -129,13 +131,13 @@ export default function ActivityToCorrect (props) {
   }
 
   function calcularProgressoGeral () {
-    setAux(0);
     respostaAluno.forEach((item, index) => {
       item.respostaQuestaoIDs.map((row, index) => {
         if (row.corrigido === false) {
           ++numTasks;
           aCorrigirQuestao[index] = true;
         }
+        return;
       })
     });
   }
@@ -157,54 +159,13 @@ export default function ActivityToCorrect (props) {
     }
   }
   
-  //#region Comentário
-  // const listarOpcoes = (questao, questaoID) => {
-    
-    //   if (questao.tipoResposta === "multiplaEscolha") {
-      //       return (
-        //           <Grid className={classes.questionGrid} item={true} align="left" xs={12} lg={12} sm={12}>
-        //               <RadioAnswer 
-        //                   idQuestion={questaoID}
-        //                   answered={answered} 
-        //                   gabarito={gabarito.gab._id} 
-        //                   mobile={mobile}
-        //                   respostaMobile={respostaMobile} 
-        //                   resposta={resposta}
-        //                   respostaQuestao={respostaQuestao}
-        //                   setRespostaQuestao={setRespostaQuestao}
-        //               />
-        //           </Grid>
-        //       )
-        //   }
-        
-        //   if (questao.tipoResposta === "discursiva") {
-          //       return (
-            //           <Grid className={classes.questionGrid} item={true} align="center" xs={12} lg={12} sm={12}>
-            //               <TextField
-            //                   className={classes.answerField}
-            //                   id={respostaQuestao.questao ? respostaQuestao.questao : ''}
-            //                   label={answered ? null : "Resposta"}
-            //                   disabled={answered}
-            //                   multiline
-            //                   value={
-              //                       respostaQuestao.resposta && !mobile ?
-              //                       respostaQuestao.resposta : 
-              //                       respostaQuestao.resposta && mobile ?
-              //                       respostaMobile : null
-              //                   }
-  //               />
-  //           </Grid>
-  //       )
-  //   }
-  // }
-  //#endregion
-  
   useEffect(() => {
     pegarRespostasAluno('5f6e088852b44f08881e63f8');
     calcularProgressoGeral();
     console.log(aCorrigirQuestao);
     listarAlunos();
     listarQuestoes();
+    // eslint-disable-next-line
   }, [wasLoaded])
 
   function retornarRespostaDiscursiva(defaultValue, resposta, id, comentario) {
@@ -265,7 +226,7 @@ export default function ActivityToCorrect (props) {
               <MyCardContent className={classes.question}>
                 <h2 className={classes.title}  id="questaoNumeracao">{`Questão ${indice + 1}`}</h2>
                 <Grid item={true} align="center">
-                  <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: questoes[indice].enunciado}} />
+                  <WirisIframe text={questoes[indice].enunciado}/>
                 </Grid>
               </MyCardContent>
             </MyCard>
@@ -276,7 +237,7 @@ export default function ActivityToCorrect (props) {
               respostaAluno.length !== 0 ? 
               respostaAluno.map((row, index) => {
                 return (
-                  <Accordion key={index}>
+                  <Accordion key={index} className={classes.accordionReturns}>
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
                       aria-controls="panel1a-content"
@@ -304,7 +265,7 @@ export default function ActivityToCorrect (props) {
           questoes.length !== 0 ? 
           questoes.map((row, index) => {
             return (
-              <Accordion key={index}>
+              <Accordion key={index} className={classes.accordionReturns}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
@@ -312,10 +273,10 @@ export default function ActivityToCorrect (props) {
                   <Typography>{`Questão ${index+1}`}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Grid container>
+                  <Grid container spacing={5}>
                     <Grid item sm={6}>
                       <Grid item={true} align="center">
-                        <div id="mostrarEnunciadoQuestao" className='ck-content' dangerouslySetInnerHTML={{ __html: questoes[index].enunciado}} />
+                        <WirisIframe text={questoes[index].enunciado}/>
                       </Grid>
                     </Grid>
                     <Grid item sm={6}>

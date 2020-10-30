@@ -8,7 +8,6 @@ import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 
 import { WirisIframe } from "../"
-import { useEffect } from 'react';
 
 const styles = (theme) => ({
   root: {

@@ -4,7 +4,6 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Avatar, Grid } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 function a11yProps(index) {
   return {

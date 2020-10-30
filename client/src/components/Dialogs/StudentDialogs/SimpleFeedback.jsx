@@ -19,11 +19,13 @@ export default function SimpleFeedback(props) {
     const [ comment, setComment ] = useState('');
 
     async function adicionandoComentario() {
-        const response = await apis.encRespostaQuestaoPorID(questionID);
-        let novaResposta = response.data.data;
-        novaResposta.comentario = comment;
-        //console.log(id);
-        await apis.atualizarRespostaQuestao(questionID, novaResposta);
+        if (questionID){
+            const response = await apis.encRespostaQuestaoPorID(questionID);
+            let novaResposta = response.data.data;
+            novaResposta.comentario = comment;
+            //console.log(id);
+            await apis.atualizarRespostaQuestao(questionID, novaResposta);
+        }
         setOpen(false);
     }
 

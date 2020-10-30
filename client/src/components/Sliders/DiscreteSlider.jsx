@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import apis from '../../api';
 
@@ -36,7 +35,7 @@ const marks = [
 ];
 
 export default function DiscreteSlider(props) {
-  const { defaultValue, respostaQuestaoID, setProgresso, progresso } = props;
+  const { defaultValue, respostaQuestaoID } = props;
   const classes = useStyles();
 
   async function valueLabelFormat(value) {

@@ -303,10 +303,13 @@ router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
     });
 });
 
-router.get("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
-    console.log("File to download");
+// Rota para download da redação do aluno
+router.get("/download-redacao/:alunoID/:redacaoID", (req, res) => {
+    const { alunoID, redacaoID } = req.params;
+    const pathEssay = path.resolve(__dirname, "..", "..", "uploads", "redacao");
+    const filePath = pathEssay + '/' + alunoID + redacaoID;
+    res.download(filePath + '.pdf');
 });
-
 
 // Rota para armazenamento da correção redação do aluno
 router.post("/upload-redacao/corrigida/:alunoID/:redacaoID", (req, res) => {
@@ -356,7 +359,7 @@ router.post("/upload-redacao/corrigida/:alunoID/:redacaoID", (req, res) => {
         if (!err) {
             return res.json({ success: true });
         }
-        console.log(err);
+        console.log("Erro aqui: ", err);
     });
 });
 
