@@ -87,7 +87,8 @@ export default function ContentAccordion(props) {
         title: '',
         message: ''
     });
-    
+    const uploadLink = `http://localhost:5000/api/upload-redacao/${alunoID}/${essay._id}`;
+
     // Ajuste de cores do acordeão
     let { color } = props;
     if (!color) {color = '#fdc504'};
@@ -363,43 +364,6 @@ export default function ContentAccordion(props) {
 
     // -- Acordeão de Redação
     const returnRedacao = () => {
-
-        const fetchRedacaoIMG = async (file) => {
-            const formData = new FormData();
-            formData.append("foto", file);
-            return await fetch(`http://localhost:5000/api/upload-redacao/${alunoID}/${essay._id}`, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(res => {
-                    if (res.status !== 200) {
-                        setFeedMsg({
-                            title: 'Ops! Houve um erro ao enviar sua redação.',
-                            message: 'Verifique se o arquivo que nos enviou não está corrompido ou se possui um dos seguintes formatos permitidos: .jpg, .png, .jpeg.'
-                        })
-                        setFeedOpen(true);
-                        return false;
-                    }
-                    setFeedMsg({
-                        title: 'Redação enviada!',
-                        message: 'Aí sim! Agora é só aguardar a correção de nossos professores. Em breve você estará recebendo sua correção!'
-                    })
-                    return true;
-                })
-        }
-
-        const handleUpload = async (event) => {
-            const file = event.target.files[0];
-            const value = await fetchRedacaoIMG(file);
-            
-            if (value) {
-                setFeedOpen(true);
-                setCheck({ redacao: true });
-                setProgresso(progresso + 1);
-                setWasChecked(true);
-            }
-        }
-
         return (
             <>
                 <Grid item={true} align='center' xs={12} sm={3}>
@@ -480,7 +444,18 @@ export default function ContentAccordion(props) {
                 {/* Subir Redação */}
                 <Grid item={true} align='right' xs={12} sm={3}>
                     <Checkbox className={classes.checkbox} hidden={true} disabled={true} checked={check.materialEstudo}/>
-                    <UploadEssay handleUpload={handleUpload} checked={check.redacao} primaryTitle="Subir Redação" secondaryTitle='Reenviar Redação' />
+                    <UploadEssay 
+                        uploadLink={uploadLink} 
+                        checked={check.redacao}
+                        correction={false}
+                        setFeedMsg={setFeedMsg}
+                        setFeedOpen={setFeedOpen}
+                        setCheck={setCheck}
+                        progresso={progresso}
+                        setProgresso={setProgresso}
+                        setWasChecked={setWasChecked}
+                        primaryTitle="Subir Redação" 
+                        secondaryTitle='Reenviar Redação' />
                     <SimpleFeedback
                         open={feedOpen}
                         setOpen={setFeedOpen}
