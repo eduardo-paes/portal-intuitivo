@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
 import api from '../../api'
 
@@ -6,7 +6,6 @@ import api from '../../api'
 import UserForm from "../../components/Form/UserForm"
 // Função de validação dos campos do formulário
 import validate from "../../components/Form/Validation/FormValidateUser"
-import { useEffect } from 'react';
 
 // -- Hook Principal
 export default function UsersUpdate (props) {
@@ -25,6 +24,7 @@ export default function UsersUpdate (props) {
     const [profDisciplinas, setProfDisciplinas] = useState([{
         disciplinaID: ''
     }]);
+    const [senhaAntiga, setSenhaAntiga] = useState('');
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -33,6 +33,7 @@ export default function UsersUpdate (props) {
             const value = response.data;
             
             if (value.success) {
+                setSenhaAntiga(value.data.senha);
                 setUsuario(preValue => ({
                     ...preValue,
                     nome: value.data.nome, 
@@ -53,6 +54,13 @@ export default function UsersUpdate (props) {
 
     // Salva as mudanças no banco
     async function handleUpdateUser () {
+        if (usuario.senha === '') {
+            setUsuario(preValue => ({
+                ...preValue,
+                senha: senhaAntiga
+            }))
+        }
+
         // Recebe os campos coletados
         const error = validate(usuario, true)
         setUsuario(preValue => ({
