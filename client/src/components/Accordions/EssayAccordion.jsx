@@ -57,6 +57,7 @@ export default function Accordions(props) {
     const [alunoID, setAlunoID] = useState('');
     const [redacaoID, setRedacaoID] = useState('');
     const [backdrop, setBackdrop] = useState(false);
+    const uploadLink = `http://localhost:5000/api/upload-redacao/corrigida/${data.alunoID._id}/${data.redacaoID}`;
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -86,38 +87,6 @@ export default function Accordions(props) {
         return abortController.abort();
         // eslint-disable-next-line
     }, [data]);
-
-    const UploadEssayCorrection = (event) => {
-        const file = event.target.files[0];
-        setBackdrop(true);
-        
-        if (file) {
-            const formData = new FormData();
-            formData.append("foto", file);
-
-            fetch(`http://localhost:5000/api/upload-redacao/corrigida/${data.alunoID._id}/${data.redacaoID}`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => {
-                if (res.status !== 200) {
-                    setFeedMsg({
-                        title: 'Houve um erro ao enviar sua correção',
-                        message: 'Verifique se o arquivo que enviou não está corrompido ou se possui um dos seguintes formatos permitidos: .jpg, .png, .jpeg.'
-                    })
-                    setFeedOpen(true);
-                } else {
-                    setFeedMsg({
-                        title: 'Correção enviada',
-                        message: 'Sua correção foi enviada com sucesso e já está disponível para o aluno'
-                    })
-                    setBackdrop(false);
-                    setFeedOpen(true);
-                    setEssayUploaded(true);
-                }
-            })
-        }
-    };
 
     const DownloadEssay = (event) => {
         event.preventDefault();
@@ -210,7 +179,16 @@ export default function Accordions(props) {
                             </Grid>
 
                             <Grid item={true} xs={12} sm={4}>
-                                <UploadEssay handleUpload={UploadEssayCorrection} alunoID={alunoID} checked={false} primaryTitle="Enviar Correção" secondaryTitle='' />
+                                <UploadEssay 
+                                    uploadLink={uploadLink} 
+                                    alunoID={alunoID} 
+                                    checked={false}
+                                    correction={true}
+                                    setFeedMsg={setFeedMsg}
+                                    setFeedOpen={setFeedOpen}
+                                    setEssayUploaded={setEssayUploaded}
+                                    primaryTitle="Enviar Correção" 
+                                    secondaryTitle='' />
 
                                 <SimpleFeedback
                                     open={feedOpen}
