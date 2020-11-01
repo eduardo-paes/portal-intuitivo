@@ -10,9 +10,59 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const messages = [
+  {
+    title: 'Ops! Houve um erro ao enviar sua redação.',
+    message: 'Verifique se o arquivo que nos enviou não está corrompido ou se possui um dos seguintes formatos permitidos: .jpg, .png, .jpeg.'
+  },
+  {
+    title: 'Redação enviada!',
+    message: 'Aí sim! Agora é só aguardar a correção de nossos professores. Em breve você estará recebendo sua correção!'
+  },
+  {
+    title: 'Houve um erro ao enviar sua correção',
+    message: 'Verifique se o arquivo que enviou não está corrompido ou se possui um dos seguintes formatos permitidos: .jpg, .png, .jpeg.'
+  },
+  {
+    title: 'Correção enviada',
+    message: 'Sua correção foi enviada com sucesso e já está disponível para o aluno'
+  }
+]
+
 export default function UploadEssay(props) {
-  const { handleUpload, checked, primaryTitle, secondaryTitle } = props;
+  const { uploadLink, checked, primaryTitle, secondaryTitle, correction } = props;
+  const { setFeedMsg, setFeedOpen, setCheck, progresso, setProgresso, setWasChecked, setEssayUploaded } = props;
+
   const classes = useStyles();
+
+  const handleUpload = async (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("foto", file);
+      
+      await fetch(uploadLink, {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => {
+        if (res.status !== 200) {
+            setFeedMsg(messages[correction ? 2 : 0])
+        } else {
+            setFeedMsg(messages[correction ? 3 : 1])
+            if (correction) {
+              setEssayUploaded(true);
+            } else {
+              setCheck({ redacao: true });
+              setProgresso(progresso + 1);
+              setWasChecked(true);
+            }
+        }
+        setFeedOpen(true);
+      })
+    }
+}
 
   return (
     <>
