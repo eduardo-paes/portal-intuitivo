@@ -324,7 +324,7 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
             }
             
             respostaAlunoEncontrada = respostaAlunoEncontrada.filter(function(item) {
-                if (!array.find(element => element === item.atividadeID._id)) {
+                if (!array.find(element => element === item.atividadeID._id) && item.corrigido !== true) {
                     array.push(item.atividadeID._id);
                     return item.atividadeID.topicoID.disciplinaID;
                 }    

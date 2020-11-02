@@ -46,7 +46,7 @@ export default function LinearProgressBar(props) {
   return (
     <Grid item className={classes.root} justify='center'>
       <GeneralSubtitle className={classes.secondaryHeading} id="linearProgressBar">{titulo}</GeneralSubtitle>
-      <BorderLinearProgress variant="determinate" value={max > 0 ? ((100*progresso)/max) : 100} />
+      <BorderLinearProgress variant="determinate" value={max > 0 ? ((100*progresso)/max) : 0} />
     </Grid>
   );
 }
