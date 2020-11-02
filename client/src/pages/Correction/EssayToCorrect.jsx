@@ -21,11 +21,11 @@ export default function EssayToCorrect (props) {
 
   const [redacoes, setRedacoes] = useState([]);
   const [propostaRedacao, setPropostaRedacao] = useState('');
-  const [imgURL, setImgURL] = useState('');
   
   const [wasLoaded, setWasLoaded] = useState({
     redacoes: false,
-    proposta: false
+    proposta: false,
+    accordion: false
   });
 
   const fetchRedacoes = async () => {
@@ -64,6 +64,17 @@ export default function EssayToCorrect (props) {
     // eslint-disable-next-line
   },[essayID]);
 
+  const loadAccordions = () => {
+    if (redacoes.length) {
+      return redacoes.map((row, index) => {
+        console.log(row)
+        return (
+          <EssayAccordion key={index} data={row} alunoID={row.alunoID._id} redacaoID={essayID}/>
+        )
+      })
+    }
+  }
+
   return (
     <MyContainer id="studentPageContainer">
       <section id="cabecalhoCorrigirRedacao">
@@ -81,14 +92,7 @@ export default function EssayToCorrect (props) {
           </Grid>
 
           <Grid item={true} xs={12} sm={6} align='center'>
-            {
-              redacoes.length !== 0 ? 
-                redacoes.map((row, index) => {
-                  return (
-                    <EssayAccordion key={index} data={row}/>
-                  )
-                }) : null
-            }
+            { loadAccordions() }
           </Grid>
           
         </Grid>

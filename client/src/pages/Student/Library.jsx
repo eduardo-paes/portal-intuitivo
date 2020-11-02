@@ -47,6 +47,7 @@ export default function Library (props) {
   const [numeracao, setNumeracao] = useState([]);
   const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [isLoaded, setIsLoaded] = useState(false);
+  const [filterChanged, setFilterChanged] = useState(false);
 
   // Preenche constante de numeração de acordo com o número de semanas do ano letivo
   async function getCurrentWeek() {
@@ -90,6 +91,7 @@ export default function Library (props) {
   // -- Ao alterar qualquer valor do filtro
   function onFilterChange (event) {
     const { name, value } = event.target;
+    setFilterChanged(true);
     setFilter (preValue => ({
       ...preValue,
       [name]: value
@@ -98,6 +100,7 @@ export default function Library (props) {
 
   // -- Limpa o filtro
   function clearFilter() {
+    setFilterChanged(false);
     setFilter({ topico: 0, disciplina: 0, numeracao: 0 });
   }
 
@@ -147,7 +150,7 @@ export default function Library (props) {
       <section id="libraryFilter">
         <Grid container={true} style={{marginTop: "1rem"}} justify={"center"}>
 
-          <Grid item={true} xs={12} sm={11}>
+          <Grid item={true} xs={12} sm={filterChanged ? 11 : 12}>
             <Grid container={true} justify="flex-start" spacing={1}>
 
               <Grid item={true} xs={12} lg={4} sm={4}>
@@ -205,9 +208,9 @@ export default function Library (props) {
             </Grid>
           </Grid>
 
-          <Grid item={true} xs={12} sm={1} className={smScreen ? classes.smFilterFab : 'none'} align="center">
+          <Grid item={true} xs={12} sm={filterChanged ? 1 : 0} className={smScreen ? classes.smFilterFab : 'none'} hidden={!filterChanged} align="center">
             <Fade
-              in={true}
+              in={filterChanged}
               style={{ transformOrigin: '0 0 0' }}
               {...({ timeout: 1000 })}
             >
