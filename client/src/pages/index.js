@@ -21,7 +21,7 @@ import EssayToCorrect from "./Correction/EssayToCorrect"
 import Home from "./Student/Home"
 import Classroom from "./Student/Classroom"
 import Dashboard from "./Student/Dashboard"
-import Desempenho from "./Student/Desempenho"
+import Analysis from "./Student/Analysis"
 import Library from "./Student/Library"
 import StudyPlan from "./Student/StudyPlan"
 
@@ -53,7 +53,7 @@ export {
     Home,
     Classroom, 
     Dashboard,
-    Desempenho, 
+    Analysis,
     StudyPlan, 
     Library,
     Login, 

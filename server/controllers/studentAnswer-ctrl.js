@@ -342,6 +342,46 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
         })
 }
 
+contarRAsNaoCorrigidas = async (req, res) => {
+    const populateQuery = {
+        path: 'atividadeID',
+        populate: {
+            path: 'topicoID',
+            select: ['topico','numeracao', 'disciplinaID'],
+            populate: {
+                path: 'disciplinaID',
+                select: 'nome',
+                match: {
+                    _id: req.params.disciplina
+                }
+            }
+        }
+    };
+    
+    await RespostaAluno
+            .count()
+            .populate(populateQuery)
+            .exec((err, quantidadeRAs) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            console.log(quantidadeRAs);
+
+            if (quantidadeRAs.length === 0) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Resposta do aluno não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: quantidadeRAs})
+        })
+}
+
 // Exporta os módulos
 module.exports = {
     inserirRespostaAluno,
@@ -352,5 +392,6 @@ module.exports = {
     listarRAPorAtividadeID,
     listarRAPorRespostaQuestaoID,
     listarRAPorAlunoID,
-    listarRespostaAlunoPorDisciplina
+    listarRespostaAlunoPorDisciplina,
+    contarRAsNaoCorrigidas
 }

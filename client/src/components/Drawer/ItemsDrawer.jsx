@@ -1,9 +1,10 @@
 import React, {useEffect, useContext, useState} from 'react'
 import {withRouter} from "react-router-dom";
 import {StoreContext} from "../../utils"
+import api from "../../api";
 
 // -- Material UI: Core
-import {List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/core";
+import {Badge, List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 
 // -- Material UI: Icon
@@ -33,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ListarItens(props) {
-    const {itens, classes} = props;
+    const {itens, classes, numCorrections} = props;
 
     return (
         <> 
@@ -44,8 +45,10 @@ function ListarItens(props) {
                     const {text, icon, onClick} = item;
                     return (
                         <ListItem button={true} key={text} onClick={onClick} className={classes.root}>
-                            <ListItemIcon className={classes.root}>{icon}</ListItemIcon>
-                            <ListItemText className={classes.root} primary={text} disableTypography={true}/>
+                             <Badge badgeContent={numCorrections} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} max={99} invisible={text !== 'Correções'} color="secondary">
+                                <ListItemIcon className={classes.root}>{icon}</ListItemIcon>
+                                <ListItemText className={classes.root} primary={text} disableTypography={true}/>
+                             </Badge>
                         </ListItem>
                     )
                 })
@@ -58,7 +61,9 @@ function ItemsDrawer(props) {
     const {history} = props;
     const classes = useStyles();
     const [access, setAccess] = useState({geral: true});
+    const [numCorrections, setNumCorrections] = useState(0);
     const { token, setToken } = useContext(StoreContext);
+    const disciplinas = token.disciplina;
 
     function handleLogout () {
         setToken(null);
@@ -155,12 +160,27 @@ function ItemsDrawer(props) {
                 admin: true
             }));
         }
+
+        if (disciplinas.length) {
+
+            disciplinas.forEach(async function (item) {
+                const response = await api.contarRAsNaoCorrigidas(item.disciplinaID);
+                const value = response.data;
+                
+                if (value.success) {
+                    console.log(value);
+                    setNumCorrections(value.data);
+                }
+            });
+        }
+
+        // contarRAsNaoCorrigidas
     }, [token]);
 
     return (
         <div>
             {access.aluno && <ListarItens itens={itens.aluno} classes={classes}/>}
-            {access.professor && <ListarItens itens={itens.professor} classes={classes}/>}
+            {access.professor && <ListarItens numCorrections={numCorrections} itens={itens.professor} classes={classes}/>}
             {access.admin && <ListarItens itens={itens.admin} classes={classes}/>}
             {access.geral && <ListarItens itens={itens.geral} classes={classes}/>}
         </div>

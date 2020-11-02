@@ -20,7 +20,7 @@ const RoutesPrivate = ({ component: Component, ...rest }) => {
 }
 
 // Rotas privadas para cada tipo de acesso
-const ConditionalRoute = ({ component: Component, type, ...rest }) => {
+const ConditionalRoute = ({ component: Component, type, from, ...rest }) => {
     const {token} = useContext(StoreContext);
     
     let access = token.accessType;
@@ -58,6 +58,8 @@ const ConditionalRoute = ({ component: Component, type, ...rest }) => {
             validation = false;
         }
     }
+
+    console.log(defaultURL)
 
     return (
         <Route

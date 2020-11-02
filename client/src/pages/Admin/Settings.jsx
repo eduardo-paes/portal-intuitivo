@@ -369,7 +369,7 @@ export default function Settings() {
             <GeneralTitle>Configurações</GeneralTitle>
 
             <section id="gerenciarDisciplina">
-                    <Accordion>
+                    <Accordion style={{borderBottom: `0.2rem solid #eb7120`}}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             onClick={() => initialSubjectLoad()}
@@ -452,7 +452,7 @@ export default function Settings() {
             </section>
             
             <section id="gerenciarTag" className={classes.section}>
-                    <Accordion>
+                    <Accordion style={{borderBottom: `0.2rem solid #94c93d`}}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             onClick={() => initialTagLoad()}
@@ -520,7 +520,7 @@ export default function Settings() {
             </section>
             
             <section id="gerenciarAnoLetivo" className={classes.section}>
-                    <Accordion>
+                    <Accordion style={{borderBottom: `0.2rem solid #a283bc`}}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             onClick={() => initialYearLoad()}
@@ -604,7 +604,7 @@ export default function Settings() {
             </section>
         
             <section id="gerenciarClassroom" className={classes.section}>
-                <Accordion>
+                <Accordion style={{borderBottom: `0.2rem solid #fdc504`}}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         onClick={() => initialClassLinkLoad()}

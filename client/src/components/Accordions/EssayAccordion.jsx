@@ -150,24 +150,25 @@ export default function Accordions(props) {
     
         console.log(data)
         const file = event.target.files[0];
-        const formData = new FormData();
-        formData.append("foto", file);
-    
-        const config = { headers: { 'content-type': 'multipart/form-data' }};
-        
-        await axios.post(uploadLink,formData,config)
-            .then(res => {
-                if (res.status !== 200) {
-                    setFeedMsg(messages[2])
-                } else {
-                    setFeedMsg(messages[3])
-                    setEssayUploaded(true);
-                }
-                setFeedOpen(true);
-            })
-            .catch((error) => {
-                console.log(error)
-            });
+
+        if (file) {
+            const formData = new FormData();
+            formData.append("foto", file);
+            const config = {headers: { 'content-type': 'multipart/form-data' }};
+            await axios.post(uploadLink,formData,config)
+                .then(res => {
+                    if (res.status !== 200) {
+                        setFeedMsg(messages[2])
+                    } else {
+                        setFeedMsg(messages[3])
+                        setEssayUploaded(true);
+                    }
+                    setFeedOpen(true);
+                })
+                .catch((error) => {
+                    console.log(error)
+                });
+        }
     }
 
     return (

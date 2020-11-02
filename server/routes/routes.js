@@ -98,6 +98,8 @@ router.get("/resposta-aluno/respostaquestao/:id", RespostaAlunoCtrl.listarRAPorR
 router.get("/resposta-aluno/user/:id", RespostaAlunoCtrl.listarRAPorAlunoID);
 router.get("/resposta-aluno/atividade/:atividadeID", RespostaAlunoCtrl.listarRAPorAtividadeID);
 router.get("/resposta-aluno/correcoes/:disciplina", RespostaAlunoCtrl.listarRespostaAlunoPorDisciplina);
+router.get("/resposta-aluno/contagem/:disciplina", RespostaAlunoCtrl.contarRAsNaoCorrigidas);
+
 
 // ATIVIDADE -- Definição dos métodos para cada rota de atividade
 router.post("/controle-atividade", AtividadeCtrl.inserirAtividade);
