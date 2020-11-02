@@ -1,4 +1,5 @@
 import React from 'react';
+// import Image from 'material-ui-image';
 
 export default function MathDisplay(props) {
     const {text} = props;

@@ -76,7 +76,7 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     color: '#606161',
     display: 'flex',
-    flexBasis: '33.33%',
+    // flexBasis: '33.33%',
     flexShrink: 0,
     fontSize: theme.typography.pxToRem(15),
     marginLeft: '1rem',

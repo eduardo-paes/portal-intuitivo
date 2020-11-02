@@ -548,6 +548,7 @@ export default function Settings() {
                                                     inputValue={moment(anoLetivo.dataInicio).format("DD/MM/YYYY")}
                                                     onChange={date => handleDateChange(date, "dataInicio")}
                                                     rifmFormatter={dateFormatter}
+                                                    maxDate={anoLetivo.dataFim}
                                                     KeyboardButtonProps={{ 'aria-label': 'change date' }}/>
                                             </MuiPickersUtilsProvider>
                                         </Grid>
@@ -567,6 +568,7 @@ export default function Settings() {
                                                     inputValue={moment(anoLetivo.dataFim).format("DD/MM/YYYY")}
                                                     onChange={date => handleDateChange(date, "dataFim")}
                                                     rifmFormatter={dateFormatter}
+                                                    minDate={anoLetivo.dataInicio}
                                                     KeyboardButtonProps={{ 'aria-label': 'change date' }}/>
                                             </MuiPickersUtilsProvider>
                                         </Grid>

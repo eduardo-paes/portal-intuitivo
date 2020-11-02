@@ -56,14 +56,17 @@ function Login() {
     async function authenticateUser(event) {
         event.preventDefault();
 
-        const response = await api.confirmarUsuario(usuario);
-        const value = response.data;
-
-        if (value.success) {
-            setToken(value.data);
-            return history.push('/');
+        try {
+            const response = await api.confirmarUsuario(usuario);
+            const value = response.data;
+    
+            if (value.success) {
+                setToken(value.data);
+                return history.push('/');
+            }
+        } catch (error) {
+            window.alert('Usuário ou senha inválido');
         }
-        window.alert('Usuário ou senha inválido');
     }
 
     // Função para pegar os valores do formulário

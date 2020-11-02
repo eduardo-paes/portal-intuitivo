@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { GreenButton } from '../../assets/styles/styledComponents'
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -30,39 +31,38 @@ const messages = [
 ]
 
 export default function UploadEssay(props) {
-  const { uploadLink, checked, primaryTitle, secondaryTitle, correction } = props;
+  const { uploadLink, checked, primaryTitle, secondaryTitle, correction, alunoID } = props;
   const { setFeedMsg, setFeedOpen, setCheck, progresso, setProgresso, setWasChecked, setEssayUploaded } = props;
-
   const classes = useStyles();
 
   const handleUpload = async (event) => {
-    const file = event.target.files[0];
+    event.preventDefault();
 
-    if (file) {
-      const formData = new FormData();
-      formData.append("foto", file);
-      
-      await fetch(uploadLink, {
-        method: 'POST',
-        body: formData
-      })
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append("foto", file);
+    const config = {headers: { 'content-type': 'multipart/form-data' }};
+
+    await axios.post(uploadLink, formData, config)
       .then(res => {
         if (res.status !== 200) {
-            setFeedMsg(messages[correction ? 2 : 0])
+          setFeedMsg(messages[correction ? 2 : 0])
         } else {
-            setFeedMsg(messages[correction ? 3 : 1])
-            if (correction) {
-              setEssayUploaded(true);
-            } else {
-              setCheck({ redacao: true });
-              setProgresso(progresso + 1);
-              setWasChecked(true);
-            }
+          setFeedMsg(messages[correction ? 3 : 1])
+          if (correction) {
+            setEssayUploaded(true);
+          } else {
+            setCheck({ redacao: true });
+            setProgresso(progresso + 1);
+            setWasChecked(true);
+          }
         }
         setFeedOpen(true);
       })
-    }
-}
+      .catch((error) => {
+        console.log(error)
+    });
+  }
 
   return (
     <>

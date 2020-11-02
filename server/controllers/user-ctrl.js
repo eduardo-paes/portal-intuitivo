@@ -244,41 +244,55 @@ confirmarUsuario = async (req, res) => {
     }
 
     await Usuario.findOne({
-            email: usuarioRecebido.email
-        }, (err, usuarioEncontrado) => {
+        email: usuarioRecebido.email
+    }, (err, usuarioEncontrado) => {
 
-            if (err) {
+        if (err) {
+            return res.status(404).json({
+                success: false,
+                error: "Usuário não identificado.",
+            })
+        }
+        
+        if (usuarioEncontrado) {
+            console.log('encontrado')
+
+            bcrypt.compare(usuarioRecebido.senha, usuarioEncontrado.senha).then(function(result) {
+                if (result) {
+                    const token = {
+                        userID: usuarioEncontrado._id,
+                        userName: usuarioEncontrado.nome,
+                        accessType: usuarioEncontrado.acesso,
+                        disciplina: usuarioEncontrado.disciplina ? usuarioEncontrado.disciplina : []
+                    }
+
+                    return res.status(200).json({
+                        success: true, 
+                        data: token
+                    });
+                }
+
                 return res.status(404).json({
                     success: false,
-                    error: "Usuário não identificado.",
+                    error: "Usuário ou senha inválido.",
                 })
-            }
-            
-            if (usuarioEncontrado) {
-                bcrypt.compare(usuarioRecebido.senha, usuarioEncontrado.senha).then(function(result) {
-                    if (result) {
-                        const token = {
-                            userID: usuarioEncontrado._id,
-                            userName: usuarioEncontrado.nome,
-                            accessType: usuarioEncontrado.acesso,
-                            disciplina: usuarioEncontrado.disciplina ? usuarioEncontrado.disciplina : []
-                        }
-    
-                        return res.status(200).json({
-                            success: true, 
-                            data: token
-                        });
-                    }
-    
-                    return res.status(404).json({
-                        success: false,
-                        error: "Usuário ou senha inválido.",
-                    })
-                });
+            });
 
-            }
+        } else {
+            console.log('não encontrado')
+            return res.status(404).json({
+                success: false,
+                error: "Usuário ou senha inválido.",
+            })
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        return res.status(404).json({
+            success: false,
+            error: "Usuário ou senha inválido.",
         })
-        .catch(err => console.log(err))
+    })
 }
 
 // Exporta os módulos

@@ -87,7 +87,6 @@ export default function ContentAccordion(props) {
         title: '',
         message: ''
     });
-    const uploadLink = `http://localhost:5000/api/upload-redacao/${alunoID}/${essay._id}`;
 
     // Ajuste de cores do acordeão
     let { color } = props;
@@ -364,6 +363,7 @@ export default function ContentAccordion(props) {
 
     // -- Acordeão de Redação
     const returnRedacao = () => {
+        const uploadLink = `http://localhost:5000/api/upload-redacao/${alunoID}/${essay._id}`;
         return (
             <>
                 <Grid item={true} align='center' xs={12} sm={3}>
