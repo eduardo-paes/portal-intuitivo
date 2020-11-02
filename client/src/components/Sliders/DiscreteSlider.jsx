@@ -41,7 +41,7 @@ const marks = [
 
 export default function DiscreteSlider(props) {
   const { defaultValue, respostaQuestaoID } = props;
-  const [ nota, setNota ] = useState(defaultValue);
+  const [ nota, setNota ] = useState(defaultValue*100);
   const classes = useStyles();
 
   const handleChange = async (event, newValue) => {
@@ -53,7 +53,7 @@ export default function DiscreteSlider(props) {
     setNota(newValue);
     const response = await apis.encRespostaQuestaoPorID(respostaQuestaoID);
     let novaResposta = response.data.data;
-    novaResposta.nota = newValue;
+    novaResposta.nota = newValue/100;
     novaResposta.corrigido = true;
     await apis.atualizarRespostaQuestao(respostaQuestaoID, novaResposta);
   }

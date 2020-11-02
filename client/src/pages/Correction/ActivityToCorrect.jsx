@@ -96,9 +96,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ActivityToCorrect (props) {
-    
-  let numTasks = 0; 
-  let aCorrigirQuestao = [];
+  
+  const activityID = props.match.params.atividadeID;
   const classes = useStyles();
   const [ wasLoaded, setWasLoaded ] = useState(false);
   const [ flag, setFlag ] = useState(false);
@@ -106,8 +105,10 @@ export default function ActivityToCorrect (props) {
   const [ respostaAluno, setRespostaAluno ] = useState([]);
   const [ alunos, setAlunos ] = useState([]);
   const [ questoes, setQuestoes ] = useState([]);
+  const [ aCorrigirQuestao, setACorrigirQuestao ] = useState([]);
   const [ indice, setIndice ] = useState(0);
   const [ progresso, setProgresso ] = useState(0);
+  const [ numTasks, setNumTasks ] = useState(0);
   const [ comment, setComment ] = useState('');
 
   async function pegarRespostasAluno(atividadeID) {
@@ -143,7 +144,7 @@ export default function ActivityToCorrect (props) {
       respostaAluno.map( async (row, index) => {
         const { _id, nome } = row.alunoID;
         const { corrigido } = row;
-        if(!row.respostaQuestaoIDs.find(element => element.corrigido === false)) {
+        if(!row.respostaQuestaoIDs.find(element => element.corrigido !== true)) {
           let novaResposta = row;
           novaResposta.corrigido = true;
           await api.atualizarRespostaAluno(row._id, novaResposta);
@@ -157,18 +158,19 @@ export default function ActivityToCorrect (props) {
   function calcularProgressoGeral () {
     respostaAluno.forEach((item, index) => {
       item.respostaQuestaoIDs.map((row, index) => {
-        if (row.corrigido === false) {
-          ++numTasks;
-          aCorrigirQuestao[index] = true;
+        if (row.corrigido !== true) {
+          setNumTasks(numTasks + 1);
+          let aux = aCorrigirQuestao;
+          aux.push(true);
+          setACorrigirQuestao(aux);
         }
       })
     });
   }
   
   useEffect(() => {
-    pegarRespostasAluno('5f6e088852b44f08881e63f8');
+    pegarRespostasAluno(activityID);
     calcularProgressoGeral();
-    console.log(aCorrigirQuestao);
     listarAlunos();
     listarQuestoes();
     // eslint-disable-next-line
@@ -314,7 +316,17 @@ export default function ActivityToCorrect (props) {
         <Grid container={true} spacing={2}>
 
           <Grid item={true} xs={12} sm={12}>
-            <LinearProgressBar max={numTasks} progresso={progresso} titulo={progresso === numTasks ? '100%' : ((100*progresso)/numTasks)}/>
+            <LinearProgressBar 
+              max={numTasks} 
+              progresso={progresso} 
+              titulo={
+                progresso === numTasks && numTasks !== 0 
+                ? '100%' 
+                : numTasks === 0 
+                  ? '0%' 
+                  : ((100*progresso)/numTasks) + '%'
+              }
+            />
           </Grid>
 
           <Grid item={true} xs={12} sm={3}>
