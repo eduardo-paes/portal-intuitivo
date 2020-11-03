@@ -255,7 +255,6 @@ confirmarUsuario = async (req, res) => {
         }
         
         if (usuarioEncontrado) {
-            console.log('encontrado')
 
             bcrypt.compare(usuarioRecebido.senha, usuarioEncontrado.senha).then(function(result) {
                 if (result) {
@@ -279,7 +278,6 @@ confirmarUsuario = async (req, res) => {
             });
 
         } else {
-            console.log('não encontrado')
             return res.status(404).json({
                 success: false,
                 error: "Usuário ou senha inválido.",

@@ -123,6 +123,7 @@ export const encProgressoRedacaoPorID = id => api.get(`/progresso-redacao/${id}`
 export const encProgressoPorRedacaoID = (alunoID, redacaoID) => api.get(`/progresso-redacao/lista/${alunoID}/${redacaoID}`);
 export const listarRedacoesNaoCorrigidas = disParams => api.get(`/progresso-redacao/correcoes/${disParams}`);
 export const listarRedacoesNaoCorrigidasPorRedacaoID = disParams => api.get(`/progresso-redacao/redacaoID/${disParams}`);
+export const contarRedacoesNaoCorrigidas = disParams => api.get(`/progresso-redacao/contagem/${disParams}`);
 
 // -- Funções relacionadas à Progresso da Revisão
 export const inserirProgressoRevisao = novoProgresso => api.post("/progresso-revisao", novoProgresso);
@@ -241,6 +242,7 @@ const apis = {
     encProgressoPorRedacaoID,
     listarRedacoesNaoCorrigidas,
     listarRedacoesNaoCorrigidasPorRedacaoID,
+    contarRedacoesNaoCorrigidas,
     // ProgressoRevisao
     inserirProgressoRevisao,
     atualizarProgressoRevisao,

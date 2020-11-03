@@ -397,10 +397,16 @@ export default function QuestionForm (props) {
             </section>
 
             <section className="grupoBotoes">
-                <AddButton onClick={saveQuestion}>Salvar</AddButton>
-                <Link to="/controle-questoes/list" style={{ textDecoration: 'none' }}>
-                    <DeleteButton>Cancelar</DeleteButton>
-                </Link>
+                <Grid container={true} spacing={2} justify='center'>
+                    <Grid item={true} xs={6} sm={3}>
+                        <AddButton fullWidth={true} onClick={saveQuestion}>Salvar</AddButton>
+                    </Grid>
+                    <Grid item={true} xs={6} sm={3}>
+                        <Link to="/controle-questoes/list" style={{ textDecoration: 'none' }}>
+                            <DeleteButton fullWidth={true}>Voltar</DeleteButton>
+                        </Link>
+                    </Grid>
+                </Grid>
             </section>
         </MyContainer> 
     )

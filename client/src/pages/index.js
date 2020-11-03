@@ -29,6 +29,9 @@ import Login from "./Login"
 import GeneralPage from "./General"
 import Settings from "./Admin/Settings"
 
+import AdminAnalysis from "./Analysis/AdminAnalysis"
+import TeacherAnalysis from "./Analysis/TeacherAnalysis"
+
 export { 
     UsersList, 
     UsersInsert, 
@@ -59,4 +62,7 @@ export {
     Login, 
     GeneralPage,
     Settings,
+
+    AdminAnalysis,
+    TeacherAnalysis
 }

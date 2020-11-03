@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from '../../../node_modules/react-router-dom'
+
 import { AddButton, DeleteButton, MyAvatar, MyTextField, MyContainer, GeneralTitle } from "../../assets/styles/styledComponents"
 import { MenuItem, Grid, Fab, makeStyles } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
@@ -7,8 +8,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 // Upload da Imagem do Perfil
 import Upload from "../Upload/Upload";
-import "./Styles/styleUserForm.css"
+import "./Styles/styleUserForm.css";
 import api from '../../api';
+
+import {StoreContext} from '../../utils'
+
 
 const useStyles = makeStyles((theme) => ({
     fabButton: {
@@ -28,10 +32,13 @@ const useStyles = makeStyles((theme) => ({
 export default function UserForm (props) {
     const { data, setUsuario, onSubmit, typeForm, edit, profDisciplinas, setProfDisciplinas } = props;
     const { nome, email, acesso, senha, erros, url } = data;
-
-    const classes = useStyles();
     const [listaDisciplina, setListaDisciplina] = useState([]);
     const [subjectLoading, setSubjectLoading] = useState(true);
+    const classes = useStyles();
+
+    const {token} = useContext(StoreContext);
+    const adminUser = token.accessType === "Administrador" ? true : false;
+
     
     // Guarda o dado vindo do input
     const handleChange = (event) => {
@@ -169,13 +176,14 @@ export default function UserForm (props) {
                                 let tam = profDisciplinas.length;
                                 return (
                                     <Grid key={index} container={true}>
-                                        <Grid item={true} xs={10} sm={11}>
+                                        <Grid item={true} xs={adminUser ? 10 : 12} sm={adminUser ? 11 : 12}>
                                             <MyTextField
                                                 select={true}
                                                 label="Disciplina"
                                                 name="disciplina"
                                                 value={item.disciplinaID}
                                                 hidden={acesso !== "Professor" ? true : false}
+                                                disabled={!adminUser}
                                                 variant="outlined"
                                                 onChange={e => handleSubjectChange(index, e.target.value)}
                                                 fullWidth={true}
@@ -189,7 +197,7 @@ export default function UserForm (props) {
                                             {erros.disciplina && <p className={classes.errorMessage}>{erros.disciplina}</p>}
                                         </Grid>
 
-                                        <Grid item={true} xs={2} sm={1}>
+                                        <Grid item={true} hidden={!adminUser} xs={adminUser ? 2 : 0} sm={adminUser ? 1 : 0}>
                                             {index === tam-1 
                                                 ?   <Fab className={classes.fabButton} onClick={addNewSubject} size="small" color="primary" aria-label="add">
                                                         <AddIcon />
@@ -219,11 +227,17 @@ export default function UserForm (props) {
                 </Grid>
             </section>
 
-            <section id="footerUserForm" className="group-buttons">
-                <AddButton onClick={onSubmit}>{typeForm}</AddButton>
-                <Link to="/controle-usuario/list" style={{ textDecoration: 'none' }}>
-                    <DeleteButton>Cancelar</DeleteButton>
-                </Link>
+            <section id="footerUserForm">
+                <Grid container={true} spacing={2} justify='center'>
+                    <Grid item={true} xs={6} sm={3}>
+                        <AddButton fullWidth={true} onClick={onSubmit}>{typeForm}</AddButton>
+                    </Grid>
+                    <Grid item={true} xs={6} sm={3}>
+                        <Link to="/controle-usuario/list" style={{ textDecoration: 'none' }}>
+                            <DeleteButton fullWidth={true}>Voltar</DeleteButton>
+                        </Link>
+                    </Grid>
+                </Grid>
             </section>
         </MyContainer>
     )

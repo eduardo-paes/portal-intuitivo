@@ -45,7 +45,7 @@ function ListarItens(props) {
                     const {text, icon, onClick} = item;
                     return (
                         <ListItem button={true} key={text} onClick={onClick} className={classes.root}>
-                             <Badge badgeContent={numCorrections} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} max={99} invisible={text !== 'Correções'} color="secondary">
+                             <Badge badgeContent={numCorrections} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} max={99} invisible={text !== 'Correções' || numCorrections === 0} color="secondary">
                                 <ListItemIcon className={classes.root}>{icon}</ListItemIcon>
                                 <ListItemText className={classes.root} primary={text} disableTypography={true}/>
                              </Badge>
@@ -62,10 +62,11 @@ function ItemsDrawer(props) {
     const classes = useStyles();
     const [access, setAccess] = useState({geral: true});
     const [numCorrections, setNumCorrections] = useState(0);
+    const [wasLoaded, setWasLoaded] = useState(false);
     const { token, setToken } = useContext(StoreContext);
     const disciplinas = token.disciplina;
 
-    function handleLogout () {
+    const handleLogout = () => {
         setToken(null);
         history.push('/login');
     };
@@ -136,9 +137,11 @@ function ItemsDrawer(props) {
                 onClick: () => handleLogout()
             }
         ]
-    }
+    };
 
     useEffect(() => {
+        const abortController = new AbortController();
+    
         if (token.accessType === "Aluno") {
             setAccess(preValue => ({
                 ...preValue,
@@ -161,21 +164,38 @@ function ItemsDrawer(props) {
             }));
         }
 
-        if (disciplinas.length) {
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [token]);
 
-            disciplinas.forEach(async function (item) {
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (disciplinas.length && !wasLoaded) {
+            var count = 0;
+            disciplinas.forEach(async item => {
                 const response = await api.contarRAsNaoCorrigidas(item.disciplinaID);
                 const value = response.data;
                 
                 if (value.success) {
-                    console.log(value);
-                    setNumCorrections(value.data);
+                    count += value.data; 
                 }
             });
-        }
 
-        // contarRAsNaoCorrigidas
-    }, [token]);
+            disciplinas.forEach(async item => {
+                const response = await api.contarRedacoesNaoCorrigidas(item.disciplinaID);
+                const value = response.data;
+                
+                if (value.success) {
+                    console.log(value.data);
+                    count += value.data; 
+                }
+            });
+            setNumCorrections(count);
+            setWasLoaded(true);
+        }
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [disciplinas])
 
     return (
         <div>

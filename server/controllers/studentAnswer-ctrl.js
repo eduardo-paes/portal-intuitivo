@@ -297,6 +297,8 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
     const { disciplina } = req.params;
     let array = [];
 
+    // console.log(disciplina);
+
     const populateQuery = {
         path: 'atividadeID',
         populate: {
@@ -313,7 +315,7 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
     };
     
     await RespostaAluno
-            .find({  })
+            .find()
             .populate('respostaQuestaoIDs')
             .populate(populateQuery)
             .exec((err, respostaAlunoEncontrada) => {
@@ -324,10 +326,12 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
             }
             
             respostaAlunoEncontrada = respostaAlunoEncontrada.filter(function(item) {
-                if (!array.find(element => element === item.atividadeID._id) && item.corrigido !== true) {
-                    array.push(item.atividadeID._id);
-                    return item.atividadeID.topicoID.disciplinaID;
-                }    
+                if (item.atividadeID.topicoID.disciplinaID) {
+                    if (!array.find(element => element === item.atividadeID._id) && item.corrigido !== true) {
+                        array.push(item.atividadeID._id);
+                        return item.atividadeID.topicoID.disciplinaID;
+                    }    
+                }
             });
 
             if (respostaAlunoEncontrada.length === 0) {
@@ -347,10 +351,8 @@ contarRAsNaoCorrigidas = async (req, res) => {
         path: 'atividadeID',
         populate: {
             path: 'topicoID',
-            select: ['topico','numeracao', 'disciplinaID'],
             populate: {
                 path: 'disciplinaID',
-                select: 'nome',
                 match: {
                     _id: req.params.disciplina
                 }
@@ -359,7 +361,7 @@ contarRAsNaoCorrigidas = async (req, res) => {
     };
     
     await RespostaAluno
-            .count()
+            .find()
             .populate(populateQuery)
             .exec((err, quantidadeRAs) => {
             if (err) {
@@ -368,17 +370,13 @@ contarRAsNaoCorrigidas = async (req, res) => {
                     .json({success: false, error: err})
             }
 
-            console.log(quantidadeRAs);
-
-            if (quantidadeRAs.length === 0) {
-                return res
-                    .status(404)
-                    .json({success: false, error: "Resposta do aluno não encontrada."})
-            }
+            quantidadeRAs = quantidadeRAs.filter(item => {
+                return item.atividadeID.topicoID.disciplinaID && !item.corrigido;
+            });
 
             return res
                 .status(200)
-                .json({success: true, data: quantidadeRAs})
+                .json({success: true, data: quantidadeRAs.length})
         })
 }
 

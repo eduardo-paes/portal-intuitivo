@@ -59,13 +59,11 @@ const ConditionalRoute = ({ component: Component, type, from, ...rest }) => {
         }
     }
 
-    console.log(defaultURL)
-
     return (
         <Route
             {...rest}
             render={
-                (props) => (access === type && validation)
+                (props) => (access === type && validation && from !== '*')
                     ? <Component {...props}/>
                     : <Redirect to={defaultURL}/>
             }

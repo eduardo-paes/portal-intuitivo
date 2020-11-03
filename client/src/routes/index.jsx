@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useContext} from "react";
 import {Route, Switch} from 'react-router-dom'
-import {StorageProvider} from '../utils'
+import {StorageProvider, StoreContext} from '../utils'
 import {RoutesPrivate, ConditionalRoute} from "./PrivateRoutes"
 
 // -- Páginas
@@ -28,7 +28,9 @@ import {
     Settings,
     Correction,
     ActivityToCorrect,
-    EssayToCorrect
+    EssayToCorrect,
+    TeacherAnalysis,
+    // AdminAnalysis,
 } from '../pages'
 
 // -- Main Routes
@@ -45,6 +47,8 @@ function Routes() {
 
 // -- Private Routes
 function PrivateRoutes() {
+    const {token} = useContext(StoreContext);
+    const access = token.accessType;
 
     return (
         <Switch>
@@ -58,6 +62,7 @@ function PrivateRoutes() {
             <ConditionalRoute exact={true} type="Aluno" from="/perfil/:id" component={UsersUpdate}/>
             
             {/* --- Rotas do Professor */}
+            <ConditionalRoute exact={true} type="Professor" from="/" component={ContentList}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo" component={ContentList}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo/create" component={ContentInsert}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-conteudo/update/:id" component={ContentUpdate}/>
@@ -73,6 +78,8 @@ function PrivateRoutes() {
             <ConditionalRoute exact={true} type="Professor" from="/controle-correcoes" component={Correction}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-correcoes/atividades/:atividadeID" component={ActivityToCorrect}/>
             <ConditionalRoute exact={true} type="Professor" from="/controle-correcoes/redacao/:atividadeID" component={EssayToCorrect}/>
+            <ConditionalRoute exact={true} type="Professor" from="/analisar-desempenho/" component={TeacherAnalysis}/>
+
 
             {/* --- Rotas do Administrador */}
             <ConditionalRoute exact={true} type="Administrador" from="/" component={UsersList}/>
@@ -82,6 +89,8 @@ function PrivateRoutes() {
             <ConditionalRoute exact={true} type="Administrador" from="/controle-usuario/update/:id" component={UsersUpdate}/>
             <ConditionalRoute exact={true} type="Administrador" from="/configuracoes" component={Settings}/>
 
+            {/* Rotas gerais para caminhos inválidos */}
+            <ConditionalRoute exact={true} type={access} from="*" component={null}/>
         </Switch>
     );
 }

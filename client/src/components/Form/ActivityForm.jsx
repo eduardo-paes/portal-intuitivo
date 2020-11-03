@@ -344,10 +344,16 @@ export default function ActivityForm (props) {
             </section>
 
             <section id="submitButtons" className={classes.group}>
-                <AddButton onClick={revisao ? saveRevision : saveActivity}>Salvar</AddButton>
-                <Link to="/controle-atividade/list" style={{ textDecoration: 'none' }}>
-                    <DeleteButton>Cancelar</DeleteButton>
-                </Link>
+                <Grid container={true} spacing={2} justify='center'>
+                    <Grid item={true} xs={6} sm={3}>
+                        <AddButton fullWidth={true} onClick={revisao ? saveRevision : saveActivity}>Salvar</AddButton>
+                    </Grid>
+                    <Grid item={true} xs={6} sm={3}>
+                        <Link to="/controle-atividade/list" style={{ textDecoration: 'none' }}>
+                            <DeleteButton fullWidth={true}>Voltar</DeleteButton>
+                        </Link>
+                    </Grid>
+                </Grid>
             </section>
 
         </MyContainer>

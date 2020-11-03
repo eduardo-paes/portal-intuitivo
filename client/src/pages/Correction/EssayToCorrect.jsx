@@ -67,9 +67,10 @@ export default function EssayToCorrect (props) {
   const loadAccordions = () => {
     if (redacoes.length) {
       return redacoes.map((row, index) => {
+        const {_id, alunoID} = row;
         console.log(row)
         return (
-          <EssayAccordion key={index} data={row} alunoID={row.alunoID._id} redacaoID={essayID}/>
+          <EssayAccordion key={index} data={row} alunoID={alunoID._id} progressID={_id} redacaoID={essayID}/>
         )
       })
     }

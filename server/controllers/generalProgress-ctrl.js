@@ -439,7 +439,8 @@ listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
 
     await ProgressoRedacao
         .find({
-            corrigido: false
+            corrigido: false,
+            redacaoID: redacaoID
         })
         .populate(populateQuery)
         .exec((err, listaRedacoes) => {
@@ -455,15 +456,35 @@ listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
                     .json({success: false, error: "Redações não encontrada."})
             }
 
-            listaRedacoes.filter(item => {
-                return item._id == redacaoID;
-            });
-
             return res
                 .status(200)
                 .json({success: true, data: listaRedacoes})
         });
 }
+
+contarRedacoesNaoCorrigidas = async (req, res) => {
+    const { redacaoID } = req.params;
+
+    await ProgressoRedacao
+        .find({
+            corrigido: false,
+            redacaoID: redacaoID
+        })
+        .exec((err, listaRedacoes) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            console.log(listaRedacoes.length);
+
+            return res
+                .status(200)
+                .json({success: true, data: listaRedacoes.length})
+        });
+}
+
 
 // ================================================
 // PROGRESSO RELACIONADO À REVISÃO
@@ -663,6 +684,7 @@ module.exports = {
     encProgressoPorRedacaoID,
     listarRedacoesNaoCorrigidas,
     listarRedacoesNaoCorrigidasPorRedacaoID,
+    contarRedacoesNaoCorrigidas,
     // Revisão
     inserirProgressoRevisao,
     atualizarProgressoRevisao,

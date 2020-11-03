@@ -19,7 +19,6 @@ const AddButton = withStyles((theme) => ({
         '&:hover': {
             backgroundColor: cyan[700]
         },
-        margin: theme.spacing(1)
     }
 }))(Button);
   
@@ -32,7 +31,6 @@ const DeleteButton = withStyles((theme) => ({
         '&:hover': {
             backgroundColor: red[700]
         },
-        margin: theme.spacing(1)
     }
 }))(Button);
 
