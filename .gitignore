@@ -45,7 +45,6 @@ node_modules/
 files/
 uploads/
 jspm_packages/
-.vs
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -113,6 +112,7 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+.vscode
 
 # yarn v2
 .yarn/cache
