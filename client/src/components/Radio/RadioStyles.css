@@ -1,0 +1,19 @@
+.ck-content.gabarito {
+    color: #4caf50;
+}
+
+.ck-content.respostaErrada {
+    color: #f44336;
+}
+
+.gabarito.MuiRadio-colorPrimary.Mui-disabled {
+    color: #388e3c;
+}
+
+.respostaErrada.MuiRadio-colorPrimary.Mui-disabled {
+    color: #d32f2f;
+}
+
+.MuiIcon-colorAction {
+    color: #fdc504;
+}
