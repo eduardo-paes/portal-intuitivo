@@ -37,6 +37,7 @@ import SlideDialog from "./Dialogs/SlideDialog"
 import ExerciseDialog from "./Dialogs/StudentDialogs/ExerciseDialog"
 import StudyContentDialog from "./Dialogs/StudentDialogs/StudyContentDialog"
 import SimpleFeedback from "./Dialogs/StudentDialogs/SimpleFeedback"
+import CorrectionDialog from "./Dialogs/CorrectionDialog"
 
 // -- Editor
 import TextEditor from "./Editor/Editor"
@@ -73,6 +74,9 @@ import LinearProgressBar from "./ProgressBar/LinearProgressBar";
 import FullWidthTab from './Tabs/FullWidthTab'
 import VerticalTab from './Tabs/VerticalTab'
 
+// -- Snackbars
+import SimpleSnackMessage from './Snackbars/SimpleSnackMessage'
+
 export { 
     UserTable,
     ContentTable,
@@ -100,6 +104,7 @@ export {
     ActivityDialog,
     ActivityDialogFilter,
     ContentDialogForm,
+    CorrectionDialog,
     CorrectionDialogFilter,
     QuestionDialog,
     QuestionDialogFilter,
@@ -134,4 +139,6 @@ export {
 
     FullWidthTab,
     VerticalTab,
+
+    SimpleSnackMessage,
 }

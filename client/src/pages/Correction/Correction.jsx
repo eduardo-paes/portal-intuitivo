@@ -5,7 +5,7 @@ import api from '../../api'
 
 import { GeneralSubtitle, GeneralTitle, MyContainer } from "../../assets/styles/styledComponents"
 import { makeStyles, ButtonGroup, Tooltip, Button, Grid } from "@material-ui/core";
-import { CorrectionTable } from '../../components'
+import { CorrectionTable, CorrectionDialog } from '../../components'
 
 // -- Local Styles
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +30,6 @@ export default function Correction(props) {
 
     const [atividade, setAtividade] = useState([]);
     const [redacao, setRedacao] = useState([]);
-    
     const [filterDialog, setFilterDialog] = useState(false);
     const [isEssay, setIsEssay] = useState(false);
     const [wasLoaded, setWasLoaded] = useState({
@@ -41,6 +40,9 @@ export default function Correction(props) {
         atividade: true,
         redacao: false,
     })
+
+    const [selectedRow, setSelectedRow] = useState(null)
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     function fetchAtividades() {
         var arrayAux = [];
@@ -77,8 +79,6 @@ export default function Correction(props) {
             var value = response.data;
 
             if (value.success) {
-                value.data[0].quantidadeAlunos = value.num;
-
                 if (arrayAux.length) {
                     arrayAux = arrayAux.concat(value.data);
                 } else {
@@ -140,6 +140,8 @@ export default function Correction(props) {
                     essay={isEssay} 
                     filterDialog={filterDialog}
                     setFilterDialog={setFilterDialog}
+                    setSelectedRow={setSelectedRow}
+                    setDialogOpen={setDialogOpen}
                 />
             )
         } else {
@@ -175,6 +177,19 @@ export default function Correction(props) {
 
             <section id="tabelaCorrecoes">
                 {ReturnCorrectionTable()}
+            </section>
+
+            <section id="correctionDialogs">
+                {
+                    selectedRow && 
+                        <CorrectionDialog 
+                            redacaoID={selectedRow.redacaoID._id}
+                            data={selectedRow} 
+                            aluno={selectedRow.alunoID} 
+                            open={dialogOpen} 
+                            setOpen={setDialogOpen}
+                        /> 
+                }
             </section>
 
         </MyContainer>

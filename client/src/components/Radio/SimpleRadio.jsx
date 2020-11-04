@@ -1,9 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Slider from '@material-ui/core/Slider';
-import Input from '@material-ui/core/Input';
+import { Grid, Typography, Slider, Input } from '@material-ui/core';
 import GradeIcon from '@material-ui/icons/Grade';
 import "./RadioStyles.css";
 
@@ -15,8 +12,11 @@ const useStyles = makeStyles((theme) => ({
   },
   slider: {
     [theme.breakpoints.down('sm')]: {
-      width: "95%"
+      width: "85%",
     }
+  },
+  sliderGrid: {
+    textAlign: 'center',
   },
   grade: {
     textAlign: 'right',
@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function InputSlider(props) {
     const {title, value, setValue} = props;
+
     const classes = useStyles();
     const marks = [
       {
@@ -73,12 +74,13 @@ export default function InputSlider(props) {
     };
 
     return (
-      <Grid container={true} spacing={2} alignItems="center" className={classes.container}>
+      <Grid container={true} spacing={1} alignItems="center" className={classes.container}>
 
-        <Grid item={true} xs={1}>
+        <Grid item={true} xs={1} className={classes.sliderGrid}>
           <GradeIcon className={classes.colorAction} />
         </Grid>
-        <Grid item={true} xs={10}>
+
+        <Grid item={true} xs={10} className={classes.sliderGrid}>
           <Typography id="input-slider" gutterBottom>{title}</Typography>
           <Slider
             value={typeof value === 'number' ? value : 0}
@@ -88,6 +90,7 @@ export default function InputSlider(props) {
             marks={marks}
           />
         </Grid>
+
         <Grid item={true} className={classes.grade} xs={1}>
             <Input
               className={classes.input}

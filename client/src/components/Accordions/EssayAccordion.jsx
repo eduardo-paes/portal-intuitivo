@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 // -- Componentes
 import { makeStyles, Grid, Button, Accordion, AccordionSummary, AccordionDetails, Typography, Avatar, Badge } from '@material-ui/core';
@@ -36,11 +36,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#fafafa',
     borderRadius: '50%',
     margin: '0.5rem 0 0 0.5rem'
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
+  }
 }));
 
 export default function Accordions(props) {
@@ -124,12 +120,12 @@ export default function Accordions(props) {
             </AccordionSummary>
 
             <AccordionDetails>
-                <Grid container={true} spacing={1}>
+                <Grid id="correctionEssayRadio" container={true} spacing={1}>
                     <Grid item={true} xs={12}>
                         <SimpleRadio title='Nota' value={notaAluno} setValue={setNotaAluno}/>
                     </Grid>
 
-                    <Grid item={true} xs={12}>
+                    <Grid id="correctionEssayButons" item={true} xs={12}>
                         <Grid container={true} alignItems='center'spacing={1}>
 
                             <Grid item={true} xs={12} sm={4}>

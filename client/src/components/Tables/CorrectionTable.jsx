@@ -29,55 +29,81 @@ import ClearAllIcon from '@material-ui/icons/ClearAll';
 
 // Botão de Atualização
 function CorrigirRespostas(props) {
-    const { essay, atividadeID } = props;
-    const url = essay ? "/controle-correcoes/redacao/" : "/controle-correcoes/atividades/";
+    const { essay, atividadeID, row, setSelectedRow, setDialogOpen } = props;
 
-    return (
-        <RouterLink to={url + atividadeID}>
-            <IconButton aria-label="corrigir" color="primary" size="small">
+    if (essay) {
+        const openDialog = () => {
+            setSelectedRow(row);
+            setDialogOpen(true);
+        }
+        return (
+            <IconButton aria-label="corrigir" color="primary" size="small" onClick={() => openDialog()}>
                 <EditIcon/>
             </IconButton>
-        </RouterLink>
-    )
+        )
+    } else {
+        return (
+            <RouterLink to={"/controle-correcoes/atividades/" + atividadeID}>
+                <IconButton aria-label="corrigir" color="primary" size="small">
+                    <EditIcon/>
+                </IconButton>
+            </RouterLink>
+        )
+    }
+
 }
 
 // -- Funções auxiliares para Ordenação
 function descendingComparator(a, b, orderBy) {
+    var aux = a.atividadeID ? 'atividadeID' : 'redacaoID'; 
+
     if (orderBy === 'topico') {
-        if (b.atividadeID.topicoID.topico < a.atividadeID.topicoID.topico) {
+        if (b.[aux].topicoID.topico < a.[aux].topicoID.topico) {
             return -1;
         }
-        if (b.atividadeID.topicoID.topico > a.atividadeID.topicoID.topico) {
+        if (b.[aux].topicoID.topico > a.[aux].topicoID.topico) {
             return 1;
         }
         return 0;
     } 
     
     else if (orderBy === 'disciplina') {
-        if (b.atividadeID.topicoID.disciplinaID.nome < a.atividadeID.topicoID.disciplinaID.nome) {
+        var aux = a.atividadeID ? 'atividadeID' : 'redacaoID';
+
+        if (b.[aux].topicoID.disciplinaID.nome < a.[aux].topicoID.disciplinaID.nome) {
             return -1;
         }
-        if (b.atividadeID.topicoID.disciplinaID.nome > a.atividadeID.topicoID.disciplinaID.nome) {
+        if (b.[aux].topicoID.disciplinaID.nome > a.[aux].topicoID.disciplinaID.nome) {
             return 1;
         }
         return 0;
     }
 
     else if (orderBy === 'numeracao') {
-        if (b.atividadeID.topicoID.numeracao < a.atividadeID.topicoID.numeracao) {
+        if (b.[aux].topicoID.numeracao < a.[aux].topicoID.numeracao) {
             return -1;
         }
-        if (b.atividadeID.topicoID.numeracao > a.atividadeID.topicoID.numeracao) {
+        if (b.[aux].topicoID.numeracao > a.[aux].topicoID.numeracao) {
             return 1;
         }
         return 0;
     }
 
     else if (orderBy === 'tipoAtividade') {
-        if (b.atividadeID.tipoAtividade < a.atividadeID.tipoAtividade) {
+        if (b.[aux].tipoAtividade < a.[aux].tipoAtividade) {
             return -1;
         }
-        if (b.atividadeID.tipoAtividade > a.atividadeID.tipoAtividade) {
+        if (b.[aux].tipoAtividade > a.[aux].tipoAtividade) {
+            return 1;
+        }
+        return 0;
+    }
+
+    else if (orderBy === 'aluno') {
+        if (b.alunoID.nome < a.alunoID.nome) {
+            return -1;
+        }
+        if (b.alunoID.nome > a.alunoID.nome) {
             return 1;
         }
         return 0;
@@ -136,11 +162,14 @@ const headEssayCells = [
         id: 'numeracao',
         label: 'Numeração'
     }, {
-        id: 'disciplinaID.nome',
+        id: 'disciplina',
         label: 'Disciplina'
     }, {
-        id: 'topicoID.topico',
+        id: 'topico',
         label: 'Tópico'
+    }, {
+        id: 'aluno',
+        label: 'Aluno'
     }, {
         id: 'funcoes',
         label: ''
@@ -332,8 +361,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CorrectionTable(props) {
-    const {data, filterDialog, setFilterDialog, essay} = props;
-    
+    const {data, filterDialog, setFilterDialog, essay, setSelectedRow, setDialogOpen} = props;
+
     const classes = useStyles();
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -408,11 +437,9 @@ export default function CorrectionTable(props) {
                                     )
                                     .map(row => {
                                         const task = essay ? row.redacaoID : row.atividadeID;
-                                        const { quantidadeAlunos } = row;
+                                        const { alunoID } = essay ? row : '';
                                         const { tipoAtividade, topicoID } = task;
                                         const { numeracao, topico, disciplinaID } = topicoID;
-
-                                        // console.log(quantidadeAlunos);
 
                                         // let auxStudent = (alunoID.nome.includes(filter.aluno) || filter.aluno === '') ? true : false;
                                         let auxType = (tipoAtividade === filter.tipo || filter.tipo === '' || essay) ? true : false;
@@ -428,9 +455,15 @@ export default function CorrectionTable(props) {
                                                     {!essay && !smScreen && <TableCell className={classes.row} align="left">{tipoAtividade}</TableCell>}
                                                     <TableCell className={classes.row} align="left">{disciplinaID.nome}</TableCell>
                                                     {!smScreen && <TableCell className={classes.row} align="left">{topico}</TableCell>}
+                                                    {essay && !smScreen && <TableCell className={classes.row} align="left">{alunoID.nome}</TableCell>}
 
                                                     <TableCell align={smScreen ? "left" : "right"}>
-                                                        <CorrigirRespostas essay={essay} atividadeID={row.redacaoID ? row.redacaoID._id : row.atividadeID._id}/>
+                                                        <CorrigirRespostas 
+                                                            essay={essay} 
+                                                            setSelectedRow={setSelectedRow} 
+                                                            setDialogOpen={setDialogOpen}
+                                                            atividadeID={row.redacaoID ? row.redacaoID._id : row.atividadeID._id} 
+                                                            row={row}/>
                                                     </TableCell>
                                                 </TableRow>
                                             );

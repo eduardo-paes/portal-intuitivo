@@ -401,6 +401,7 @@ listarRedacoesNaoCorrigidas = async (req, res) => {
 
     await ProgressoRedacao
         .find({corrigido: false})
+        .populate({path: 'alunoID', select: 'nome'})
         .populate(populateQuery)
         .exec((err, listaRedacoes) => {
             if (err) {
@@ -408,15 +409,9 @@ listarRedacoesNaoCorrigidas = async (req, res) => {
                     .status(400)
                     .json({success: false, error: err})
             }
-            
-            let array = [];
-            const count = listaRedacoes.length;
 
             listaRedacoes = listaRedacoes.filter(function(item) {
-                if (!array.find(element => element === item.redacaoID._id)) {
-                    array.push(item.redacaoID._id);
-                    return item.redacaoID.topicoID.disciplinaID;
-                }    
+                return item.redacaoID.topicoID.disciplinaID;
             });
 
             if (listaRedacoes.length === 0) {
@@ -427,7 +422,7 @@ listarRedacoesNaoCorrigidas = async (req, res) => {
 
             return res
                 .status(200)
-                .json({success: true, data: listaRedacoes, num: count})
+                .json({success: true, data: listaRedacoes})
         });
 }
 

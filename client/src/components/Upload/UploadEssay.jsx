@@ -20,11 +20,11 @@ const messages = [
     message: 'Aí sim! Agora é só aguardar a correção de nossos professores. Em breve você estará recebendo sua correção!'
   },
   {
-    title: 'Houve um erro ao enviar sua correção',
+    title: 'Houve um erro ao enviar sua correção!',
     message: 'Verifique se o arquivo que enviou não está corrompido ou se possui um dos seguintes formatos permitidos: .jpg, .png, .jpeg.'
   },
   {
-    title: 'Correção enviada',
+    title: 'Correção enviada com sucesso!',
     message: 'Sua correção foi enviada com sucesso e já está disponível para o aluno'
   }
 ]
@@ -32,7 +32,7 @@ const messages = [
 export default function UploadEssay(props) {
   const classes = useStyles();
   const { uploadLink, checked, primaryTitle, secondaryTitle, correction } = props;
-  const { setFeedMsg, setFeedOpen, setCheck, progresso, setProgresso, setWasChecked, setEssayUploaded } = props;
+  const { setFeedMsg, setFeedOpen, setCheck, progresso, setProgresso, setWasChecked, setEssayUploaded, setUploadError } = props;
 
   const handleUpload = async (event) => {
     const file = event.target.files[0];
@@ -50,6 +50,7 @@ export default function UploadEssay(props) {
             setFeedMsg(messages[correction ? 3 : 1])
             if (correction) {
               setEssayUploaded(true);
+              setUploadError(true);
             } else {
               setCheck({ redacao: true });
               setProgresso(progresso + 1);
