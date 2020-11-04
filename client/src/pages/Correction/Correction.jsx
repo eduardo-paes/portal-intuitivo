@@ -4,7 +4,7 @@ import { StoreContext } from "../../utils";
 import api from '../../api'
 
 import { GeneralSubtitle, GeneralTitle, MyContainer } from "../../assets/styles/styledComponents"
-import { makeStyles, ButtonGroup, Tooltip, Button, Grid } from "@material-ui/core";
+import { makeStyles, ButtonGroup, Tooltip, Button, Grid, Typography } from "@material-ui/core";
 import { CorrectionTable, CorrectionDialog } from '../../components'
 
 // -- Local Styles
@@ -26,8 +26,6 @@ export default function Correction(props) {
     const classes = useStyles();
     const { token } = useContext(StoreContext);
     const disciplinas = token.disciplina;
-    // const professorID = token.userID;
-
     const [atividade, setAtividade] = useState([]);
     const [redacao, setRedacao] = useState([]);
     const [filterDialog, setFilterDialog] = useState(false);
@@ -40,7 +38,6 @@ export default function Correction(props) {
         atividade: true,
         redacao: false,
     })
-
     const [selectedRow, setSelectedRow] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -149,12 +146,34 @@ export default function Correction(props) {
         }
     }
 
+    useEffect(() => {
+        const abortController = new AbortController();
+        (!wasLoaded.redacao && !toLoad.redacao && redacao.length) && fetchRedacoes();
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [wasLoaded.redacao])
+
+    const returnCountingPendencies = () => {
+        if (isEssay) {
+            if (redacao.length > 0) {
+                return (<Typography variant="h6">Correções pendentes: {redacao.length}</Typography>)
+            }
+            return;
+        }
+
+        if (atividade.length > 0) {
+            return (<Typography variant="h6">Correções pendentes: {atividade.length}</Typography>)
+        }
+        return;
+    }
+
     return (
         <MyContainer>
             <section id="correctionHeader">
                 <Grid container={true} spacing={1}>
                     <Grid item={true} xs={12} sm={12}>
                         <GeneralTitle id="correctionTitle">Correções Pendentes</GeneralTitle>
+                        { returnCountingPendencies() }
                     </Grid>
 
                     <Grid align="right" item={true} xs={12} sm={12} className={classes.groupButtons}>
@@ -188,6 +207,7 @@ export default function Correction(props) {
                             aluno={selectedRow.alunoID} 
                             open={dialogOpen} 
                             setOpen={setDialogOpen}
+                            setWasChanged={setWasLoaded}
                         /> 
                 }
             </section>

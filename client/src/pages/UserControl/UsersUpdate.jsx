@@ -54,31 +54,24 @@ export default function UsersUpdate (props) {
 
     // Salva as mudanças no banco
     async function handleUpdateUser () {
-        if (usuario.senha === '') {
-            setUsuario(preValue => ({
-                ...preValue,
-                senha: senhaAntiga
-            }))
+        // Cria usuário atualizado
+        const usuarioAtualizado = {
+            nome: usuario.nome,
+            email: usuario.email,
+            acesso: usuario.acesso,
+            senha: usuario.senha === '' ? senhaAntiga : usuario.senha,
+            disciplina: usuario.disciplina,
         }
 
         // Recebe os campos coletados
-        const error = validate(usuario, true)
+        const error = validate(usuarioAtualizado, true)
         setUsuario(preValue => ({
             ...preValue,
             erros: error
         }));
 
         if (error.validated) {
-            const {id, nome, email, acesso, senha, disciplina, foto} = usuario;
-
-            // Cria usuário atualizado
-            const usuarioAtualizado = {
-                nome,
-                email,
-                acesso,
-                senha,
-                disciplina
-            }
+            const {id, foto} = usuario;
 
             // Guarda usuário atualizado no banco
             await api

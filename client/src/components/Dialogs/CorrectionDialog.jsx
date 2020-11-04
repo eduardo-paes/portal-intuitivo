@@ -10,9 +10,7 @@ import {
     Avatar, 
     Badge,
     Dialog,
-    Divider,
-    useMediaQuery,
-    useTheme
+    Divider
 } from '@material-ui/core';
 
 import { SimpleRadio, UploadEssay, SimpleSnackMessage } from "../";
@@ -60,8 +58,12 @@ const useStyles = makeStyles((theme) => ({
       marginRight: '1rem'
     },
     userName: {
-      paddingTop: '0.6rem',
-      paddingLeft: '1rem'
+      paddingTop: '0.5rem',
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: '-1.5rem',
+      },
+      color: "#606161",
+      fontWeight: 'semi-bold'
     },
     success: {
       backgroundColor: green[500],
@@ -133,7 +135,7 @@ const DialogActions = withStyles((theme) => ({
 }))(MuiDialogActions);
 
 export default function CorrectionEssayDialog(props) {
-    const {redacaoID, data, aluno, open, setOpen} = props;
+    const {redacaoID, data, aluno, open, setOpen, setWasChanged} = props;
 
     const classes = useStyles();
     const [notaAluno, setNotaAluno] = useState(0);
@@ -143,9 +145,6 @@ export default function CorrectionEssayDialog(props) {
     const [propostaRedacao, setPropostaRedacao] = useState('');
     const [wasLoaded, setWasLoaded] = useState({ proposta: false });
     const [uploadError, setUploadError] = useState(false);
-
-    const theme = useTheme();
-    const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const downloadLink = `http://localhost:5000/api/download-redacao/${aluno._id}/${redacaoID}`;
     const srcImg = `http://localhost:5000/uploads/profile/${aluno._id}.jpeg`;
@@ -222,7 +221,11 @@ export default function CorrectionEssayDialog(props) {
             setFeedOpen(true)
             setUploadError(true);
             setFeedMsg({title: 'Correção finalizada com sucesso!'})
-            setOpen(false)
+            setWasChanged(preValue => ({
+                ...preValue,
+                redacao: false
+            }));
+            closeDialog();
         } else {
             setFeedOpen(true)
             setUploadError(false);
@@ -233,6 +236,8 @@ export default function CorrectionEssayDialog(props) {
     const closeDialog = () => {
         setOpen(false);
         setNotaAluno(0);
+        setEssayUploaded(false);
+        setFeedOpen(false);
     }
 
     useEffect(() => {
@@ -253,7 +258,7 @@ export default function CorrectionEssayDialog(props) {
                         </Badge>
                     </Grid>
                     <Grid item={true} xs={10} sm={11}>
-                        <Typography className={classes.userName}>{aluno.nome}</Typography>
+                        <Typography variant="h6" className={classes.userName}>{aluno.nome}</Typography>
                     </Grid>
                 </Grid>
             </DialogTitle>
