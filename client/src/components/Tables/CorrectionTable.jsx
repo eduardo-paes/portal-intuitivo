@@ -408,8 +408,11 @@ export default function CorrectionTable(props) {
                                     )
                                     .map(row => {
                                         const task = essay ? row.redacaoID : row.atividadeID;
+                                        const { quantidadeAlunos } = row;
                                         const { tipoAtividade, topicoID } = task;
                                         const { numeracao, topico, disciplinaID } = topicoID;
+
+                                        // console.log(quantidadeAlunos);
 
                                         // let auxStudent = (alunoID.nome.includes(filter.aluno) || filter.aluno === '') ? true : false;
                                         let auxType = (tipoAtividade === filter.tipo || filter.tipo === '' || essay) ? true : false;

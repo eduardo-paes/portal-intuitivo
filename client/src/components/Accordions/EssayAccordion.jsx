@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 
+// -- Componentes
 import { makeStyles, Grid, Button, Accordion, AccordionSummary, AccordionDetails, Typography, Avatar, Badge } from '@material-ui/core';
 import { SimpleRadio, UploadEssay, SimpleFeedback } from "../";
+
+// -- Ícones Material UI
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SaveIcon from '@material-ui/icons/Save';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import CheckCircleIcon from '@material-ui/icons/Check';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 import { green } from "@material-ui/core/colors";
 import { jsPDF } from "jspdf";
 
 import api from '../../api';
 import axios from "axios";
-
 
 const useStyles = makeStyles((theme) => ({
   myCard: {
@@ -42,52 +43,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const messages = [
-    {
-      title: 'Ops! Houve um erro ao enviar sua redação.',
-      message: 'Verifique se o arquivo que nos enviou não está corrompido ou se possui um dos seguintes formatos permitidos: .jpg, .png, .jpeg.'
-    },
-    {
-      title: 'Redação enviada!',
-      message: 'Aí sim! Agora é só aguardar a correção de nossos professores. Em breve você estará recebendo sua correção!'
-    },
-    {
-      title: 'Houve um erro ao enviar sua correção',
-      message: 'Verifique se o arquivo que enviou não está corrompido ou se possui um dos seguintes formatos permitidos: .jpg, .png, .jpeg.'
-    },
-    {
-      title: 'Correção enviada',
-      message: 'Sua correção foi enviada com sucesso e já está disponível para o aluno'
-    }
-]
-
 export default function Accordions(props) {
-    const { data, alunoID, redacaoID } = props;
+    const { data } = props;
     const classes = useStyles();
     const [notaAluno, setNotaAluno] = useState(0);
     const [feedMsg, setFeedMsg] = useState({title: '', message: ''});
     const [feedOpen, setFeedOpen] = useState(false);
     const [essayUploaded, setEssayUploaded] = useState(false);
 
-    const [srcImg, setSrcImg] = useState('');
-    const [uploadLink, setUploadLink] = useState('');
-    const [downloadLink, setDownloadLink] = useState('');
-    const [wasLoaded, setWasLoaded] = useState(false);
-    
-    useEffect(() => {
-        if (alunoID && redacaoID && !wasLoaded) {
-            console.log(alunoID)
-            setUploadLink(`http://localhost:5000/api/upload-redacao/corrigida/${alunoID}/${redacaoID}`);
-            setSrcImg(`http://localhost:5000/uploads/profile/${alunoID}.jpeg`);
-            setDownloadLink(`http://localhost:5000/api/download-redacao/${alunoID}/${redacaoID}`);
-            setWasLoaded(true);
-        }
-    // eslint-disable-next-line
-    }, [alunoID, redacaoID]);
-
-    const DownloadEssay = (event) => {
-        event.preventDefault();
-
+    const downloadLink = `http://localhost:5000/api/download-redacao/${data.alunoID._id}/${data.redacaoID}`;
+    const srcImg = `http://localhost:5000/uploads/profile/${data.alunoID._id}.jpeg`;
+    const uploadLink = `http://localhost:5000/api/upload-redacao/corrigida/${data.alunoID._id}/${data.redacaoID}`;
+   
+    const DownloadEssay = () => {
         axios.get(downloadLink,
             {
                 responseType: 'arraybuffer',
@@ -123,12 +91,10 @@ export default function Accordions(props) {
             .catch((error) => console.log(error));
     };
 
-    const SubmitButton = async (event) => {
-        event.preventDefault();
-
+    const SubmitButton = async () => {
         const progressoRedacao = {
-            redacaoID: redacaoID,
-            alunoID: alunoID,
+            redacaoID: data.redacaoID,
+            alunoID: data.alunoID._id,
             progresso: data.progresso,
             dataConclusao: data.dataConclusao,
             corrigido: true,
@@ -145,32 +111,6 @@ export default function Accordions(props) {
         }
     };
 
-    const handleUpload = async (event) => {
-        event.preventDefault();
-    
-        console.log(data)
-        const file = event.target.files[0];
-
-        if (file) {
-            const formData = new FormData();
-            formData.append("foto", file);
-            const config = {headers: { 'content-type': 'multipart/form-data' }};
-            await axios.post(uploadLink,formData,config)
-                .then(res => {
-                    if (res.status !== 200) {
-                        setFeedMsg(messages[2])
-                    } else {
-                        setFeedMsg(messages[3])
-                        setEssayUploaded(true);
-                    }
-                    setFeedOpen(true);
-                })
-                .catch((error) => {
-                    console.log(error)
-                });
-        }
-    }
-
     return (
         <Accordion>
             <AccordionSummary
@@ -181,7 +121,6 @@ export default function Accordions(props) {
                     <Avatar sizes="small" src={srcImg} alt="Preview"/>
                 </Badge>
                 <Typography className={classes.userName}>{data.alunoID.nome}</Typography>
-                
             </AccordionSummary>
 
             <AccordionDetails>
@@ -201,24 +140,14 @@ export default function Accordions(props) {
                             </Grid>
 
                             <Grid item={true} xs={12} sm={4}>
-                                <input
-                                    accept="image/*, application/*"
-                                    className={classes.input}
-                                    name="foto"
-                                    id="contained-button-essay"
-                                    single="true"
-                                    type="file"
-                                    hidden={true}
-                                    onChange={handleUpload}
-                                    />
-                                <label htmlFor="contained-button-essay">
-                                    <Button 
-                                        fullWidth={true} 
-                                        variant="outlined" 
-                                        color="primary" 
-                                        component="span"
-                                        startIcon={<CloudUploadIcon />}>Enviar Correção</Button>
-                                </label>
+                                <UploadEssay 
+                                    uploadLink={uploadLink} 
+                                    checked={false} 
+                                    primaryTitle="Enviar Correção" 
+                                    correction={true} 
+                                    setFeedMsg={setFeedMsg} 
+                                    setEssayUploaded={setEssayUploaded}
+                                    setFeedOpen={setFeedOpen}/>
 
                                 <SimpleFeedback
                                     open={feedOpen}

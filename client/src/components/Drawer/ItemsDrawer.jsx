@@ -169,31 +169,26 @@ function ItemsDrawer(props) {
     }, [token]);
 
     useEffect(() => {
-        const abortController = new AbortController();
+        // const abortController = new AbortController();
         if (disciplinas.length && !wasLoaded) {
             var count = 0;
             disciplinas.forEach(async item => {
-                const response = await api.contarRAsNaoCorrigidas(item.disciplinaID);
-                const value = response.data;
-                
-                if (value.success) {
-                    count += value.data; 
-                }
-            });
+                if (item.disciplinaID) {
+                    const resRA = await api.contarRAsNaoCorrigidas(item.disciplinaID);
+                    const resRED = await api.contarRedacoesNaoCorrigidas(item.disciplinaID);
 
-            disciplinas.forEach(async item => {
-                const response = await api.contarRedacoesNaoCorrigidas(item.disciplinaID);
-                const value = response.data;
-                
-                if (value.success) {
-                    console.log(value.data);
-                    count += value.data; 
+                    const valRA = resRA.data;
+                    const valRED = resRED.data;
+
+                    count = valRA.success ? valRA.data : 0;
+                    count = valRED.success ? valRED.data : 0;
+
+                    setNumCorrections(numCorrections + count);
                 }
             });
-            setNumCorrections(count);
             setWasLoaded(true);
         }
-        return abortController.abort();
+        // return abortController.abort();
         // eslint-disable-next-line
     }, [disciplinas])
 

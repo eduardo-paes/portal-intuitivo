@@ -45,7 +45,7 @@ export default function Correction(props) {
     function fetchAtividades() {
         var arrayAux = [];
 
-        disciplinas.forEach(async function (item) {
+        disciplinas.forEach(async item => {
             const response = await api.listarRespostaAlunoPorDisciplina(item.disciplinaID);
             const value = response.data;
 
@@ -72,11 +72,13 @@ export default function Correction(props) {
     async function fetchRedacoes() {
         var arrayAux = [];
 
-        disciplinas.forEach(async function (item) {
+        disciplinas.forEach(async item => {
             const response = await api.listarRedacoesNaoCorrigidas(item.disciplinaID);
-            const value = response.data;
+            var value = response.data;
 
             if (value.success) {
+                value.data[0].quantidadeAlunos = value.num;
+
                 if (arrayAux.length) {
                     arrayAux = arrayAux.concat(value.data);
                 } else {

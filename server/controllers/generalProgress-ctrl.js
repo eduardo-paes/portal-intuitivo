@@ -410,6 +410,7 @@ listarRedacoesNaoCorrigidas = async (req, res) => {
             }
             
             let array = [];
+            const count = listaRedacoes.length;
 
             listaRedacoes = listaRedacoes.filter(function(item) {
                 if (!array.find(element => element === item.redacaoID._id)) {
@@ -426,21 +427,20 @@ listarRedacoesNaoCorrigidas = async (req, res) => {
 
             return res
                 .status(200)
-                .json({success: true, data: listaRedacoes})
+                .json({success: true, data: listaRedacoes, num: count})
         });
 }
 
 listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
     const { redacaoID } = req.params;
 
-    populateQuery = {
+    const populateQuery = {
         path: 'alunoID', select: 'nome'
     }
 
     await ProgressoRedacao
         .find({
-            corrigido: false,
-            redacaoID: redacaoID
+            corrigido: false
         })
         .populate(populateQuery)
         .exec((err, listaRedacoes) => {
@@ -456,6 +456,10 @@ listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
                     .json({success: false, error: "Redações não encontrada."})
             }
 
+            listaRedacoes.filter(item => {
+                return item._id === redacaoID;
+            });
+
             return res
                 .status(200)
                 .json({success: true, data: listaRedacoes})
@@ -463,25 +467,36 @@ listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
 }
 
 contarRedacoesNaoCorrigidas = async (req, res) => {
-    const { redacaoID } = req.params;
+    const { disciplina } = req.params;
+
+    const populateQuery = {
+        path: 'redacaoID',
+        populate: {
+            path: 'topicoID',
+            select: ['topico','numeracao', 'disciplinaID'],
+            populate: {
+                path: 'disciplinaID',
+                select: 'nome',
+                match: {
+                    _id: disciplina
+                }
+            }
+        },
+    };
 
     await ProgressoRedacao
-        .find({
-            corrigido: false,
-            redacaoID: redacaoID
-        })
-        .exec((err, listaRedacoes) => {
+        .countDocuments({ corrigido: false })
+        .populate(populateQuery)
+        .exec((err, contagem) => {
             if (err) {
                 return res
                     .status(400)
                     .json({success: false, error: err})
             }
 
-            console.log(listaRedacoes.length);
-
             return res
                 .status(200)
-                .json({success: true, data: listaRedacoes.length})
+                .json({success: true, data: contagem})
         });
 }
 

@@ -297,8 +297,6 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
     const { disciplina } = req.params;
     let array = [];
 
-    // console.log(disciplina);
-
     const populateQuery = {
         path: 'atividadeID',
         populate: {
@@ -315,7 +313,7 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
     };
     
     await RespostaAluno
-            .find()
+            .find({ corrigido: false })
             .populate('respostaQuestaoIDs')
             .populate(populateQuery)
             .exec((err, respostaAlunoEncontrada) => {
@@ -326,14 +324,12 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
             }
             
             respostaAlunoEncontrada = respostaAlunoEncontrada.filter(function(item) {
-                if (item.atividadeID.topicoID.disciplinaID) {
-                    if (!array.find(element => element === item.atividadeID._id) && item.corrigido !== true) {
-                        array.push(item.atividadeID._id);
-                        return item.atividadeID.topicoID.disciplinaID;
-                    }    
-                }
+                if (!array.find(element => element === item.atividadeID._id)) {
+                    array.push(item.atividadeID._id);
+                    return item.atividadeID.topicoID.disciplinaID;
+                }    
             });
-
+            
             if (respostaAlunoEncontrada.length === 0) {
                 return res
                     .status(404)
@@ -361,22 +357,18 @@ contarRAsNaoCorrigidas = async (req, res) => {
     };
     
     await RespostaAluno
-            .find()
+            .countDocuments({ corrigido: false })
             .populate(populateQuery)
-            .exec((err, quantidadeRAs) => {
+            .exec((err, contagem) => {
             if (err) {
                 return res
                     .status(400)
                     .json({success: false, error: err})
             }
 
-            quantidadeRAs = quantidadeRAs.filter(item => {
-                return item.atividadeID.topicoID.disciplinaID && !item.corrigido;
-            });
-
             return res
                 .status(200)
-                .json({success: true, data: quantidadeRAs.length})
+                .json({success: true, data: contagem})
         })
 }
 

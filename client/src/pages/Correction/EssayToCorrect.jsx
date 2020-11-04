@@ -18,14 +18,11 @@ const useStyles = makeStyles((theme) => ({
 export default function EssayToCorrect (props) {
   const essayID = props.match.params.atividadeID;
   const classes = useStyles();
-
   const [redacoes, setRedacoes] = useState([]);
   const [propostaRedacao, setPropostaRedacao] = useState('');
-  
   const [wasLoaded, setWasLoaded] = useState({
     redacoes: false,
     proposta: false,
-    accordion: false
   });
 
   const fetchRedacoes = async () => {
@@ -58,23 +55,11 @@ export default function EssayToCorrect (props) {
 
   useEffect(() => {
     const abortController = new AbortController();
-    if (!wasLoaded.proposta) fetchPropostaRedacao();
-    if (!wasLoaded.redacoes) fetchRedacoes();
+    !wasLoaded.proposta && fetchPropostaRedacao();
+    !wasLoaded.redacoes && fetchRedacoes();
     return abortController.abort();
     // eslint-disable-next-line
   },[essayID]);
-
-  const loadAccordions = () => {
-    if (redacoes.length) {
-      return redacoes.map((row, index) => {
-        const {_id, alunoID} = row;
-        console.log(row)
-        return (
-          <EssayAccordion key={index} data={row} alunoID={alunoID._id} progressID={_id} redacaoID={essayID}/>
-        )
-      })
-    }
-  }
 
   return (
     <MyContainer id="studentPageContainer">
@@ -93,7 +78,14 @@ export default function EssayToCorrect (props) {
           </Grid>
 
           <Grid item={true} xs={12} sm={6} align='center'>
-            { loadAccordions() }
+            { 
+              redacoes.length &&
+                redacoes.map((row, index) => {
+                  return (
+                    <EssayAccordion key={index} data={row}/>
+                  )
+                })
+            }
           </Grid>
           
         </Grid>
