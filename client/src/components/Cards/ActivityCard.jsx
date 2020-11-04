@@ -13,11 +13,14 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import api from '../../api';
+import { arrayIncludes } from '@material-ui/pickers/_helpers/utils';
 
 export default function ActivityCard(props) {
     const { handleClose, handleFinalized, question, atividadeID, revisaoID, name, answered, respostas } = props;
     const token = useContext(StoreContext);
     const [value, setValue] = useState(1);
+    const [nota, setNota] = useState(1);
+    const [flag, setFlag] = useState(false);
     const [respostaQuestaoIDs, setRespostaQuestaoIDs] = useState([]);
     const [respostaQuestao, setRespostaQuestao] = useState([]);
     const isEssay = (name === 'redacao') ? true : false;
@@ -30,6 +33,7 @@ export default function ActivityCard(props) {
     let gabarito = [];
 
     question.forEach((row, index) => {
+        if (row.tipoResposta !== 'multiplaEscolha') setFlag(true);
         let gab = row.resposta.find(element => element.gabarito === true);
         let quest = row._id;
         return gabarito[index] = { gab, quest }
@@ -54,21 +58,36 @@ export default function ActivityCard(props) {
         setValue(value+1);
     }
 
-    // Passa para volta pra questão anterior e salva a resposta do aluno na questão passada;
+    // Volta pra questão anterior e salva a resposta do aluno na questão passada;
     async function decrementValue () {
 
         await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         setValue(value-1);
     }
 
+    async function correctActivity() {
+        var resultado = 0;
+
+        for (let index = 0; index < respostaQuestaoIDs.length; index++) {
+            const response = await api.encRespostaQuestaoPorID(respostaQuestaoIDs[index]);
+            resultado += response.data.data.nota;
+        }
+        
+        return resultado*100/respostaQuestaoIDs.length;
+    }
+    
     const handleSubmit = async () => {
         await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         const alunoID = token.token.userID;
+        if (!flag) {
+            var nota = await correctActivity();
+        }
         const respostaAluno = {
             alunoID,
             atividadeID,
             revisaoID,
-            respostaQuestaoIDs
+            respostaQuestaoIDs,
+            nota
         }
         await api.inserirRespostaAluno(respostaAluno);
         handleFinalized();

@@ -36,7 +36,10 @@ export default function QuestionCard (props) {
                 atividadeID,
                 revisaoID,
                 questaoID: idQuestion,
-                resposta: ''
+                resposta: '',
+                corrigido: false,
+                nota: 0,
+                comentario: ''
             }).then((res) => {
                 setRespostaQuestao(res.data.data);
 
@@ -98,10 +101,12 @@ export default function QuestionCard (props) {
                         disabled={answered}
                         multiline
                         value={
-                            respostaQuestao.resposta && !mobile ?
-                            respostaQuestao.resposta : 
-                            respostaQuestao.resposta && mobile ?
-                            respostaMobile : null
+                            respostaQuestao.questaoID === idQuestion ?
+                                respostaQuestao.resposta && !mobile ?
+                                respostaQuestao.resposta : 
+                                respostaQuestao.resposta && mobile ?
+                                respostaMobile : null
+                            : null    
                         }
                         onChange={pegarRespostaDiscursiva}
                     />

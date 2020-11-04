@@ -13,14 +13,14 @@ export default function RadioAnswer(props) {
 
   const handleChange = (event) => {
     const {value} = event.target;
-    let nota;
-    if (value === gabarito) nota = 1;
-    else nota = 0;
+    let valor;
+    if (value === gabarito) valor = 1;
+    else valor = 0;
 
     setRespostaQuestao(prevValue => ({
       ...prevValue,
       resposta: value,
-      nota,
+      nota: valor,
       corrigido: true
     }));
   };
