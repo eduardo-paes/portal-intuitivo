@@ -313,10 +313,11 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
     };
     
     await RespostaAluno
-            .find({ corrigido: false })
+            .find({ corrigido: { $ne: true }  })
             .populate('respostaQuestaoIDs')
             .populate(populateQuery)
             .exec((err, respostaAlunoEncontrada) => {
+                console.log(respostaAlunoEncontrada);
             if (err) {
                 return res
                     .status(400)

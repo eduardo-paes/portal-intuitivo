@@ -87,7 +87,8 @@ export default function ActivityCard(props) {
             atividadeID,
             revisaoID,
             respostaQuestaoIDs,
-            nota
+            nota,
+            corrigido: !flag
         }
         await api.inserirRespostaAluno(respostaAluno);
         handleFinalized();
