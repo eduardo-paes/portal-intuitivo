@@ -273,7 +273,7 @@ listarRAPorAtividadeID = async (req, res) => {
         .find({ atividadeID: req.params.atividadeID })
         .populate({path: 'alunoID', select: 'nome'})
         .populate(populateQuery)
-        .populate({path: 'respostaQuestaoIDs', select: ['nota', 'resposta', 'comentario', 'corrigido']})
+        .populate({path: 'respostaQuestaoIDs', select: ['nota', 'resposta', 'questaoID', 'comentario', 'corrigido']})
         .exec((err, respostaAlunoEncontrada) => {
             if (err) {
                 return res
@@ -317,7 +317,6 @@ listarRespostaAlunoPorDisciplina = async (req, res) => {
             .populate('respostaQuestaoIDs')
             .populate(populateQuery)
             .exec((err, respostaAlunoEncontrada) => {
-                console.log(respostaAlunoEncontrada);
             if (err) {
                 return res
                     .status(400)
