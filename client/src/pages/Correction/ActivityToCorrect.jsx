@@ -115,13 +115,14 @@ export default function ActivityToCorrect (props) {
 
   async function pegarRespostasAluno(atividadeID) {
     const response = await api.listarRAPorAtividadeID(atividadeID);
+    
     if (response.data.success) {
       response.data.data.sort(function(a,b) {
         if (a.alunoID.nome > b.alunoID.nome) return 1;
         else if (a.alunoID.nome < b.alunoID.nome) return -1;
         return 0;
       });
-      setRespostaAluno(response.data.data)
+      setRespostaAluno(response.data.data);
     };
     setWasLoaded(true)
   }
@@ -131,8 +132,8 @@ export default function ActivityToCorrect (props) {
     if (respostaAluno.length !== 0) {
       respostaAluno[0].atividadeID.questoes.map( async (row, index) => {
         if (row.questaoID.tipoResposta === 'discursiva') {
-          const { enunciado, resposta, padraoResposta, tipoResposta } = row.questaoID;
-          aux.push({ enunciado, resposta, padraoResposta, tipoResposta });
+          const { _id, enunciado, resposta, padraoResposta, tipoResposta, corrigido } = row.questaoID;
+          aux.push({ _id, enunciado, resposta, padraoResposta, tipoResposta, corrigido });
         }
         
       })
@@ -162,23 +163,20 @@ export default function ActivityToCorrect (props) {
       item.respostaQuestaoIDs.map((row, index) => {
         if (row.corrigido !== true) {
           setNumTasks(numTasks + 1);
-          let aux = aCorrigirQuestao;
+          let aux = [];
           aux.push(true);
           setACorrigirQuestao(aux);
-        } else {
-          setProgresso(progresso + 1);
         }
       })
+      setProgresso(questoes.length - aCorrigirQuestao);
     });
   }
   
   useEffect(() => {
     pegarRespostasAluno(activityID);
-    calcularProgressoGeral();
     listarAlunos();
     listarQuestoes();
-    console.log(progresso);
-    console.log(numTasks);
+    calcularProgressoGeral();
     // eslint-disable-next-line
   }, [wasLoaded])
 
