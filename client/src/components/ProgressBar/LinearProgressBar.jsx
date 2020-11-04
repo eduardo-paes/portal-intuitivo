@@ -41,12 +41,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LinearProgressBar(props) {
   const classes = useStyles();
-  const { max, progresso, titulo } = props;
+  const { max, progresso, titulo, wasLoaded } = props;
 
   return (
     <Grid item className={classes.root} justify='center'>
       <GeneralSubtitle className={classes.secondaryHeading} id="linearProgressBar">{titulo}</GeneralSubtitle>
-      <BorderLinearProgress variant="determinate" value={max > 0 ? ((100*progresso)/max) : 0} />
+      <BorderLinearProgress variant="determinate" value={max > 0 ? ((100*progresso)/max) : wasLoaded ? 100 : 0} />
     </Grid>
   );
 }

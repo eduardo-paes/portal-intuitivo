@@ -30,11 +30,13 @@ const useStyles = makeStyles((theme) => ({
   
   comment: {
     marginTop: '1rem',
+    marginBottom: '2rem',
     width: '100%'
   },
   
   commentChanged: {
     marginTop: '1rem',
+    marginBottom: '2rem',
     width: '90%'
   },
 
@@ -139,7 +141,7 @@ export default function ActivityToCorrect (props) {
   }
   
   function listarAlunos() {
-    let aux = alunos;
+    let aux = [];
     if (respostaAluno.length !== 0) {
       respostaAluno.map( async (row, index) => {
         const { _id, nome } = row.alunoID;
@@ -163,6 +165,8 @@ export default function ActivityToCorrect (props) {
           let aux = aCorrigirQuestao;
           aux.push(true);
           setACorrigirQuestao(aux);
+        } else {
+          setProgresso(progresso + 1);
         }
       })
     });
@@ -173,6 +177,8 @@ export default function ActivityToCorrect (props) {
     calcularProgressoGeral();
     listarAlunos();
     listarQuestoes();
+    console.log(progresso);
+    console.log(numTasks);
     // eslint-disable-next-line
   }, [wasLoaded])
 
@@ -193,31 +199,41 @@ export default function ActivityToCorrect (props) {
     }
 
     return (
-      <Grid item={true} align="center" xs={12} lg={12} sm={12}>
-        <TextField
-          className={classes.discursiveAnswer}
-          disabled={true}
-          multiline
-          value={resposta}
-        />
-        <TextField 
-          className={flag ? classes.commentChanged : classes.comment}
-          multiline
-          label='Comentário'
-          onChange={handleChange}
-          defaultValue={comentario ? comentario : ''}
-        />
-        <IconButton size='medium' className={classes.commentIcon} color='primary' onClick={adicionandoComentario}>
+      <Grid container> 
+        <Grid item={true} align="center" xs={12} lg={12} sm={12}>
+          <TextField
+            className={classes.discursiveAnswer}
+            disabled={true}
+            multiline
+            value={resposta}
+          />
+        </Grid>
+        <Grid item align='left' xs={flag ? 11 : 12} lg={flag ? 11 : 12} sm={flag ? 11 : 12}>
+          <TextField 
+            className={flag ? classes.commentChanged : classes.comment}
+            multiline
+            label='Comentário'
+            onChange={handleChange}
+            defaultValue={comentario ? comentario : ''}
+          />
+        </Grid>
+        <Grid item align='left' xs={1} lg={1} sm={1}>
           {
             flag ?
-              comentario 
-              ? <RateReviewIcon />
-              : <AddCommentIcon />
-            : <></>  
+              <IconButton size='medium' className={classes.commentIcon} color='primary' onClick={adicionandoComentario}>
+                {
+                  comentario 
+                  ? <RateReviewIcon />
+                  : <AddCommentIcon />
+                }
+              </IconButton>
+            : null  
           }
-        </IconButton>
-        <DiscreteSlider respostaQuestaoID={id} defaultValue={defaultValue} setProgresso={setProgresso} progresso={progresso}/>
-      </Grid>
+        </Grid>  
+        <Grid item align='center' xs={12} lg={12} sm={12}>
+          <DiscreteSlider respostaQuestaoID={id} defaultValue={defaultValue} setProgresso={setProgresso} progresso={progresso} setWasLoaded={setWasLoaded}/>
+        </Grid>
+      </Grid>  
     )
   }
 
@@ -318,14 +334,17 @@ export default function ActivityToCorrect (props) {
           <Grid item={true} xs={12} sm={12}>
             <LinearProgressBar 
               max={numTasks} 
-              progresso={progresso} 
+              progresso={100} 
               titulo={
-                progresso === numTasks && numTasks !== 0 
-                ? '100%' 
-                : numTasks === 0 
-                  ? '0%' 
-                  : ((100*progresso)/numTasks) + '%'
+                wasLoaded ?
+                  progresso === numTasks
+                  ? '100%' 
+                  : numTasks === 0 
+                    ? '0%' 
+                    : ((100*progresso)/numTasks) + '%'
+                : '0%'  
               }
+              wasLoaded={wasLoaded}
             />
           </Grid>
 
