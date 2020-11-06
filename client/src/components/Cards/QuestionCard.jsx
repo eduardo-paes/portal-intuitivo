@@ -12,7 +12,7 @@ import api from "../../api";
 export default function QuestionCard (props) {
     const classes = useStyles();
     const { idQuestion, answered, enunciado, tipoResposta, gabarito, resposta, respostaQuestao, setRespostaQuestao, respostaQuestaoIDs, setRespostaQuestaoIDs, atividadeID, revisaoID, alunoID, name, mobile, respostaMobile } = props;
-    
+    console.log("Não entra aqui?!")
     async function pegarResposta() {
         
         let response;
@@ -54,6 +54,7 @@ export default function QuestionCard (props) {
     
     useEffect(() => {
         const abortController = new AbortController();
+        console.log(idQuestion)
         pegarResposta();
         return abortController.abort();
         // eslint-disable-next-line

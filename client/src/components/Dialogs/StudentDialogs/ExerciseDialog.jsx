@@ -32,7 +32,6 @@ export default function ExerciseDialog(props) {
     const [respostas, setRespostas] = useState([]);
     const token = useContext(StoreContext);
     const alunoID = token.token.userID;
-
     // -- Fetch das questões
     async function fetchQuestaoAPI(atividadeID) {
         const response = await api.encQuestoesDaAtividadeID(atividadeID);
@@ -40,7 +39,7 @@ export default function ExerciseDialog(props) {
         let questao = value.map(item => { return item.questaoID });
         setQuestion(questao);
     }
-
+    
     // -- Fetch da resposta das questões
     async function fetchRespostasQuestaoAPI(atividadeID, tipo) {
         let response;
@@ -49,7 +48,7 @@ export default function ExerciseDialog(props) {
         let Respostas = response.data.data.map(item => { return item.resposta });
         setRespostas(Respostas);
     }
-
+    
     // -- Carrega as questões da atividade
     useEffect(() => {
         const abortController = new AbortController();
@@ -67,7 +66,7 @@ export default function ExerciseDialog(props) {
         setRespostaAluno(respostaAluno);
         return abortController.abort();
         // eslint-disable-next-line
-    }, [respostaAluno])
+    }, [])
 
     // -- Fechamento do card
     const handleClose = (event) => {

@@ -13,13 +13,13 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Button, Grid, IconButton, Typography } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import api from '../../api';
-import { arrayIncludes } from '@material-ui/pickers/_helpers/utils';
+import { useEffect } from 'react';
 
 export default function ActivityCard(props) {
     const { handleClose, handleFinalized, question, atividadeID, revisaoID, name, answered, respostas } = props;
     const token = useContext(StoreContext);
+    const [wasLoaded, setWasLoaded] = useState(false);
     const [value, setValue] = useState(1);
-    const [nota, setNota] = useState(1);
     const [flag, setFlag] = useState(false);
     const [respostaQuestaoIDs, setRespostaQuestaoIDs] = useState([]);
     const [respostaQuestao, setRespostaQuestao] = useState([]);
@@ -31,16 +31,17 @@ export default function ActivityCard(props) {
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
     
     let gabarito = [];
-
+    
     question.forEach((row, index) => {
         if (row.tipoResposta !== 'multiplaEscolha') setFlag(true);
         let gab = row.resposta.find(element => element.gabarito === true);
         let quest = row._id;
         return gabarito[index] = { gab, quest }
     });
-
+    
     // Função para verificar se a atividade já foi respondida pelo aluno ou não
     function verificaProgresso() {
+       
         if (revisaoID) {
             return answered.progresso;
         } if (atividadeID && answered.progresso) {
@@ -50,24 +51,24 @@ export default function ActivityCard(props) {
         }
         return false;
     }
-
+    
     // Passa para a próxima questão e salva a resposta do aluno na questão anterior;
     async function incrementValue () {
         
         await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         setValue(value+1);
     }
-
+    
     // Volta pra questão anterior e salva a resposta do aluno na questão passada;
     async function decrementValue () {
-
+        
         await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         setValue(value-1);
     }
-
+    
     async function correctActivity() {
         var resultado = 0;
-
+        
         for (let index = 0; index < respostaQuestaoIDs.length; index++) {
             const response = await api.encRespostaQuestaoPorID(respostaQuestaoIDs[index]);
             resultado += response.data.data.nota;
@@ -93,15 +94,14 @@ export default function ActivityCard(props) {
         await api.inserirRespostaAluno(respostaAluno);
         handleFinalized();
     };
-
+    
     const voltar = async () => {
         await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         handleClose();
     }
-
+    
     // Retorna card com as questões na versão desktop
-    function retDesktopQuestionCard() {
-        
+    function retDesktopQuestionCard() {   
         return (
             <div key={value}>                        
                 <Typography variant="h6" className={classes.title}>{isEssay ? "Enunciado" : "Questão " + (value)}</Typography>
@@ -139,7 +139,7 @@ export default function ActivityCard(props) {
             
             <Grid className={classes.question} align="center" item={true} xs={isEssay ? 11 : 10} lg={isEssay ? 11 : 10} sm={isEssay ? 11 : 10}>
                 { 
-                    !smScreen 
+                    !smScreen
                         ? retDesktopQuestionCard()
                         : <SwipeableViews animateHeight={true} className={classes.swipeableViews} enableMouseEvents> 
                             {

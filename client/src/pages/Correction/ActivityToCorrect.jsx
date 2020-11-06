@@ -101,17 +101,21 @@ export default function ActivityToCorrect (props) {
   
   const activityID = props.match.params.atividadeID;
   const classes = useStyles();
+  
   const [ wasLoaded, setWasLoaded ] = useState(false);
   const [ flag, setFlag ] = useState(false);
+  const [ indice, setIndice ] = useState(0);
+
   const [ listarPorAluno, setListarPorAluno ] = useState(false);
   const [ respostaAluno, setRespostaAluno ] = useState([]);
   const [ alunos, setAlunos ] = useState([]);
   const [ questoes, setQuestoes ] = useState([]);
-  const [ aCorrigirQuestao, setACorrigirQuestao ] = useState([]);
-  const [ indice, setIndice ] = useState(0);
-  const [ progresso, setProgresso ] = useState(0);
-  const [ numTasks, setNumTasks ] = useState(0);
   const [ comment, setComment ] = useState('');
+
+  const [ progresso, setProgresso ] = useState(0);
+  const [ progressoAluno, setProgressoAluno ] = useState([]);
+  const [ numTasks, setNumTasks ] = useState(0);
+  const [ aCorrigirQuestao, setACorrigirQuestao ] = useState([]);
 
   async function pegarRespostasAluno(atividadeID) {
     const response = await api.listarRAPorAtividadeID(atividadeID);
@@ -158,27 +162,64 @@ export default function ActivityToCorrect (props) {
     }
   }
 
-  function calcularProgressoGeral () {
-    respostaAluno.forEach((item, index) => {
-      item.respostaQuestaoIDs.map((row, index) => {
-        if (row.corrigido !== true) {
-          setNumTasks(numTasks + 1);
-          let aux = [];
-          aux.push(true);
-          setACorrigirQuestao(aux);
-        }
+  function calcularProgressoAluno () {
+    let aux = respostaAluno.map(row => {
+      return row.respostaQuestaoIDs.filter(item => {
+        return item.corrigido === false;
       })
-      setProgresso(questoes.length - aCorrigirQuestao);
     });
+    console.log(aux);
+    setProgressoAluno(aux);
+
   }
-  
+
+  function calcularProgressoGeral (progressoAluno) {
+    
+    let aux = 0;
+    let corrigidos = 0;
+    for (let index = 0; index < progressoAluno.length; ++index) {
+      aux = aux + progressoAluno[index].length;
+      console.log(aux);
+      console.log(corrigidos);
+      for (let i = 0; i < progressoAluno[index].length; ++i) {
+        if(progressoAluno[index][i].corrigido === true) corrigidos = corrigidos + 1;
+      }
+    }
+
+
+    // progressoAluno.map((row) => {
+    //   setNumTasks(numTasks + row.length);
+    //   row.forEach(element => {
+    //     if (element.corrigido === true) setProgresso(progresso + 1);
+    //   });
+    //   return null;
+    // })
+    
+    // respostaAluno.forEach((item, index) => {
+    //   item.respostaQuestaoIDs.map((row, index) => {
+      //     if (row.corrigido !== true) {
+        //       setNumTasks(numTasks + 1);
+        //       let aux = [];
+        //       aux.push(true);
+        //       setACorrigirQuestao(aux);
+        //     }
+        //   })
+        //   setProgresso(questoes.length - aCorrigirQuestao);
+        // });
+      }
+      
   useEffect(() => {
     pegarRespostasAluno(activityID);
     listarAlunos();
     listarQuestoes();
-    calcularProgressoGeral();
     // eslint-disable-next-line
   }, [wasLoaded])
+  
+  useEffect(() => {
+    calcularProgressoAluno();
+    calcularProgressoGeral(progressoAluno);
+    // eslint-disable-next-line
+  }, [])
 
   function retornarRespostaDiscursiva(defaultValue, resposta, id, comentario) {
     
@@ -358,6 +399,7 @@ export default function ActivityToCorrect (props) {
                 listarPorAluno={listarPorAluno}
                 setListarPorAluno={setListarPorAluno}
                 setIndice={setIndice}
+                progressoAluno={progressoAluno}
               />
             </MyCard>
           </Grid>

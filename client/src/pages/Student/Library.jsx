@@ -208,7 +208,7 @@ export default function Library (props) {
             </Grid>
           </Grid>
 
-          <Grid item={true} xs={12} sm={filterChanged ? 1 : 0} className={smScreen ? classes.smFilterFab : 'none'} hidden={!filterChanged} align="center">
+          <Grid item={true} xs={12} sm={filterChanged ? 1 : false} className={smScreen ? classes.smFilterFab : 'none'} hidden={!filterChanged} align="center">
             <Fade
               in={filterChanged}
               style={{ transformOrigin: '0 0 0' }}

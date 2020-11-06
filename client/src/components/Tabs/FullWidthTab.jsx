@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FullWidthTabs(props) {
-  const { alunos, questoes, listarPorAluno, setListarPorAluno, setIndice, questaoACorrigir } = props;
+  const { alunos, questoes, listarPorAluno, setListarPorAluno, setIndice, progressoAluno, questaoACorrigir } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -85,7 +85,7 @@ export default function FullWidthTabs(props) {
           <VerticalTab aCorrigir={questaoACorrigir} questoes={questoes} listarPorAluno={listarPorAluno} setIndice={setIndice}/>
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction} align="center">
-          <VerticalTab alunos={alunos} listarPorAluno={listarPorAluno} setIndice={setIndice}/>
+          <VerticalTab alunos={alunos} listarPorAluno={listarPorAluno} progressoAluno={progressoAluno} setIndice={setIndice}/>
         </TabPanel>
       </SwipeableViews>
     </div>

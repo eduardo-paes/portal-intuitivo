@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { Avatar, Grid } from '@material-ui/core';
+import { Avatar, Grid, Typography } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 
 function a11yProps(index) {
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function VerticalTabs(props) {
-  const { aCorrigir, alunos, questoes, setIndice } = props;
+  const { aCorrigir, alunos, questoes, setIndice, progressoAluno } = props;
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -79,7 +79,8 @@ export default function VerticalTabs(props) {
                   <Avatar className={row.corrigido === true ? classes.avatar : ''} sizes="small" src={`http://localhost:5000/uploads/profile/${row._id}.jpeg`} alt="Preview"/>
                 </Grid>
                 <Grid xs={9}>
-                  {row.nome}
+                  <Typography>{row.nome}</Typography>
+                  <Typography>{`${progressoAluno[index].filter(element => { return element.corrigido === true }).length} de ${progressoAluno[index].length}`}</Typography>
                 </Grid>
               </Grid>
             } {...a11yProps(index)}/> )

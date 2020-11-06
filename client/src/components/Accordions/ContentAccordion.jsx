@@ -332,6 +332,7 @@ export default function ContentAccordion(props) {
 
     // -- Atualiza os checks de cada atividade após cada alteração em atividade
     useEffect(() => {
+        
         if (disciplinaNome !== 'Redação') {
             let fixTam = activity.fixacao.length;
             let retTam = activity.retomada.length;
