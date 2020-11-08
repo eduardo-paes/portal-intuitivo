@@ -22,15 +22,22 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '300%'
   },
 
+  progressText: {
+    fontSize: '0.7rem',
+    fontWeight: "lighter"
+  },
+
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
   },
+
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
     width: '100%'
   },
+
 }));
 
 export default function VerticalTabs(props) {
@@ -42,6 +49,16 @@ export default function VerticalTabs(props) {
     setValue(newValue);
     setIndice(newValue);
   };
+
+  const calcularPendentes = (array, indice) => {
+    var total = 0;
+    var corrigidos = 0;
+    for (let index = 0; index < array.length; index++) {
+      ++total;
+      if (array[index][indice] === false) ++corrigidos;
+    }
+    return `${corrigidos} de ${total}`
+  }
 
   return (
     <div className={classes.root}>
@@ -56,16 +73,25 @@ export default function VerticalTabs(props) {
         {
           questoes !== 0 && questoes !== undefined ?
           questoes.map((row, index) => {
-            if (aCorrigir[index] === true) return <Tab label={"Questão " + ( index + 1 )} {...a11yProps(0)} />
             return (
               <Tab label={
                 <Grid container justify='center' alignItems='center' spacing={2}>
-                  <Grid xs={3}>
-                    <CheckIcon className={classes.check}/>
-                    {/* <CheckCircleIcon className={classes.check} fontSize='large'/> */}
-                  </Grid>
+                  { 
+                    aCorrigir.length !== 0
+                    ?
+                      aCorrigir[value][index] === false
+                      ? <Grid xs={3}>
+                          <CheckIcon className={classes.check}/>
+                        </Grid>
+                      : null
+                    : null
+                  }
                   <Grid xs={9}>
                     {"Questão " + ( index + 1 )}
+                    <Typography 
+                      className={classes.progressText}
+                    > {calcularPendentes(aCorrigir, index)}
+                    </Typography>
                   </Grid>
                 </Grid>
               } {...a11yProps(index)}/>
@@ -76,11 +102,11 @@ export default function VerticalTabs(props) {
             return ( <Tab label={
               <Grid container justify='center' alignItems='center'>
                 <Grid xs={3}>
-                  <Avatar className={row.corrigido === true ? classes.avatar : ''} sizes="small" src={`http://localhost:5000/uploads/profile/${row._id}.jpeg`} alt="Preview"/>
+                  <Avatar sizes="small" src={`http://localhost:5000/uploads/profile/${row._id}.jpeg`} alt="Preview"/>
                 </Grid>
                 <Grid xs={9}>
                   <Typography>{row.nome}</Typography>
-                  <Typography>{`${progressoAluno[index].filter(element => { return element.corrigido === true }).length} de ${progressoAluno[index].length}`}</Typography>
+                  <Typography className={classes.progressText}>{`${progressoAluno[index].filter(element => { return element.corrigido === true }).length} de ${progressoAluno[index].length}`}</Typography>
                 </Grid>
               </Grid>
             } {...a11yProps(index)}/> )
