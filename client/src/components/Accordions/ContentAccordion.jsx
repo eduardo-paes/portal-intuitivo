@@ -439,6 +439,7 @@ export default function ContentAccordion(props) {
                             progresso={progresso}
                             setProgresso={setProgresso}
                             setWasChecked={setWasChecked}
+                            answered={topicProgress}
                         />
                 </Grid>
 

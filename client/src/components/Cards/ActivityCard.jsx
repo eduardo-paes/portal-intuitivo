@@ -41,39 +41,34 @@ export default function ActivityCard(props) {
     
     // Função para verificar se a atividade já foi respondida pelo aluno ou não
     function verificaProgresso() {
-       
-        if (revisaoID) {
-            return answered.progresso;
-        } if (atividadeID && answered.progresso) {
-            if (name === 'exercicioFixacao') return  answered.progresso.exercicioFixacao;
-            if (name === 'exercicioRetomada') return  answered.progresso.exercicioRetomada;
-            if (name === 'exercicioAprofundamento') return  answered.progresso.exercicioAprofundamento;
-        }
+        if (revisaoID) return answered.progresso;
+        if (isEssay)  return answered.progresso;
+        if (atividadeID && answered.progresso) {
+            if (name === 'exercicioFixacao') return answered.progresso.exercicioFixacao;
+            if (name === 'exercicioRetomada') return answered.progresso.exercicioRetomada;
+            if (name === 'exercicioAprofundamento') return answered.progresso.exercicioAprofundamento;
+        } 
         return false;
     }
     
     // Passa para a próxima questão e salva a resposta do aluno na questão anterior;
     async function incrementValue () {
-        
         await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         setValue(value+1);
     }
     
     // Volta pra questão anterior e salva a resposta do aluno na questão passada;
     async function decrementValue () {
-        
         await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         setValue(value-1);
     }
     
     async function correctActivity() {
         var resultado = 0;
-        
         for (let index = 0; index < respostaQuestaoIDs.length; index++) {
             const response = await api.encRespostaQuestaoPorID(respostaQuestaoIDs[index]);
             resultado += response.data.data.nota;
         }
-        
         return resultado*100/respostaQuestaoIDs.length;
     }
     

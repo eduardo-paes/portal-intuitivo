@@ -99,7 +99,10 @@ atualizarUsuario = async (req, res) => {
     
             bcrypt.hash(usuario.senha, salt, function(errHash, hash) {
                 if (!errHash) { 
-                    usuarioEncontrado.senha = hash;
+                    
+                    if (usuarioEncontrado.senha !== usuario.senha) {
+                        usuarioEncontrado.senha = hash;
+                    }
 
                     // Salva alterações
                     usuarioEncontrado

@@ -32,6 +32,7 @@ export default function ExerciseDialog(props) {
     const [respostas, setRespostas] = useState([]);
     const token = useContext(StoreContext);
     const alunoID = token.token.userID;
+    
     // -- Fetch das questões
     async function fetchQuestaoAPI(atividadeID) {
         const response = await api.encQuestoesDaAtividadeID(atividadeID);
