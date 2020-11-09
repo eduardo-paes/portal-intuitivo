@@ -40,7 +40,7 @@ const marks = [
 ];
 
 export default function DiscreteSlider(props) {
-  const { defaultValue, respostaQuestaoID, setWasLoaded } = props;
+  const { defaultValue, respostaQuestaoID, setWasLoaded, respostaAluno, setRespostaAluno, indice, index } = props;
   const [ nota, setNota ] = useState(defaultValue);
   const classes = useStyles();
 
@@ -54,6 +54,10 @@ export default function DiscreteSlider(props) {
     let novaResposta = response.data.data;
     novaResposta.nota = newValue;
     novaResposta.corrigido = true;
+    let novaRespostaAluno = respostaAluno;
+    novaRespostaAluno[indice].respostaQuestaoIDs[index].nota = nota;
+    novaRespostaAluno[indice].respostaQuestaoIDs[index].corrigido = true;
+    setRespostaAluno(novaRespostaAluno);
     setWasLoaded(false);
     await apis.atualizarRespostaQuestao(respostaQuestaoID, novaResposta);
   }

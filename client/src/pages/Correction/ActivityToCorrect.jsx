@@ -163,28 +163,53 @@ export default function ActivityToCorrect (props) {
   }
 
   function calcularProgressoAluno () {
-    let aux = respostaAluno.map(row => {
-      return row.respostaQuestaoIDs.filter(item => {
-        return item.corrigido === false;
-      })
-    });
-    console.log(aux);
-    setProgressoAluno(aux);
+    
+    var total = 0, corrigidos = 0;
+    var auxiliar = [];
+    var aCorrigir = [];
+    var aux = [];
+    var array;
+    var questao;
 
+    for (let i = 0; i < respostaAluno.length; i++) {
+      array = [];
+      for (let j = 0; j < respostaAluno[i].respostaQuestaoIDs.length; j++) {
+        questao = questoes.find(element => { return element._id === respostaAluno[i].respostaQuestaoIDs[j].questaoID })
+        console.log(questao);
+        if (questao && questao.tipoResposta === 'discursiva') {
+          total = total + 1;
+          array.push(respostaAluno[i].respostaQuestaoIDs[j])
+          if (respostaAluno[i].respostaQuestaoIDs[j].corrigido === false) {
+            auxiliar.push(true);
+          } else {
+            auxiliar.push(false);
+            corrigidos = corrigidos + 1;
+          }
+        } 
+      }
+      aux.push(array);
+      aCorrigir.push(auxiliar); 
+    }
+    console.log(aCorrigir);
+    console.log(aux);
+    setACorrigirQuestao(aCorrigir);
+    setProgressoAluno(aux);
+    setNumTasks(total);
+    setProgresso(corrigidos);
+    
   }
 
   function calcularProgressoGeral (progressoAluno) {
     
-    let aux = 0;
-    let corrigidos = 0;
-    for (let index = 0; index < progressoAluno.length; ++index) {
-      aux = aux + progressoAluno[index].length;
-      console.log(aux);
-      console.log(corrigidos);
-      for (let i = 0; i < progressoAluno[index].length; ++i) {
-        if(progressoAluno[index][i].corrigido === true) corrigidos = corrigidos + 1;
-      }
-    }
+    // let aux = 0;
+    // let corrigidos = 0;
+    // for (let index = 0; index < progressoAluno.length; ++index) {
+    //   aux = aux + progressoAluno[index].length;
+    //   for (let i = 0; i < progressoAluno[index].length; ++i) {
+    //     if(progressoAluno[index][i].corrigido === true) corrigidos = corrigidos + 1;
+    //   }
+    // }
+    
 
 
     // progressoAluno.map((row) => {
@@ -217,11 +242,12 @@ export default function ActivityToCorrect (props) {
   
   useEffect(() => {
     calcularProgressoAluno();
-    calcularProgressoGeral(progressoAluno);
+    // if (progressoAluno.length !== 0) calcularProgressoGeral(progressoAluno);
+    // console.log(numTasks, progresso); 
     // eslint-disable-next-line
-  }, [])
+  }, [respostaAluno])
 
-  function retornarRespostaDiscursiva(defaultValue, resposta, id, comentario) {
+  function retornarRespostaDiscursiva(defaultValue, resposta, id, comentario, index) {
     
     async function adicionandoComentario() {
       const response = await api.encRespostaQuestaoPorID(id);
@@ -270,7 +296,17 @@ export default function ActivityToCorrect (props) {
           }
         </Grid>  
         <Grid item align='center' xs={12} lg={12} sm={12}>
-          <DiscreteSlider respostaQuestaoID={id} defaultValue={defaultValue} setProgresso={setProgresso} progresso={progresso} setWasLoaded={setWasLoaded}/>
+          <DiscreteSlider 
+            progresso={progresso} 
+            setProgresso={setProgresso}
+            respostaQuestaoID={id} 
+            defaultValue={defaultValue} 
+            setRespostaAluno={setRespostaAluno} 
+            respostaAluno={respostaAluno} 
+            indice={indice} 
+            index={index}
+            setWasLoaded={setWasLoaded}
+          />
         </Grid>
       </Grid>  
     )
@@ -305,7 +341,7 @@ export default function ActivityToCorrect (props) {
                       <Typography className={classes.student}>{row.alunoID.nome}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      { retornarRespostaDiscursiva(row.respostaQuestaoIDs[indice].nota, row.respostaQuestaoIDs[indice].resposta, row.respostaQuestaoIDs[indice]._id, row.respostaQuestaoIDs[indice].comentario) }
+                      { retornarRespostaDiscursiva(row.respostaQuestaoIDs[indice].nota, row.respostaQuestaoIDs[indice].resposta, row.respostaQuestaoIDs[indice]._id, row.respostaQuestaoIDs[indice].comentario, index) }
                     </AccordionDetails>
                   </Accordion>
                 )
@@ -373,16 +409,16 @@ export default function ActivityToCorrect (props) {
           <Grid item={true} xs={12} sm={12}>
             <LinearProgressBar 
               max={numTasks} 
-              progresso={100} 
+              progresso={progresso} 
               titulo={
                 wasLoaded ?
-                  progresso === numTasks
-                  ? '100%' 
-                  : numTasks === 0 
-                    ? '0%' 
+                  numTasks === 0   
+                  ? '0%' 
+                  : progresso === numTasks
+                    ? '100%' 
                     : ((100*progresso)/numTasks) + '%'
                 : '0%'  
-              }
+              }   
               wasLoaded={wasLoaded}
             />
           </Grid>
