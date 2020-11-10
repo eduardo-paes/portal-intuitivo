@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EssayToCorrect (props) {
   const essayID = props.match.params.atividadeID;
+  const {history} = props;
   const classes = useStyles();
   const [redacoes, setRedacoes] = useState([]);
   const [propostaRedacao, setPropostaRedacao] = useState('');
@@ -60,6 +61,15 @@ export default function EssayToCorrect (props) {
     return abortController.abort();
     // eslint-disable-next-line
   },[essayID]);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    if (wasLoaded.redacoes && !redacoes.length) {
+      history.push("/controle-correcoes")
+    }
+    return abortController.abort();
+    // eslint-disable-next-line
+  }, [redacoes])
 
   return (
     <MyContainer id="studentPageContainer">

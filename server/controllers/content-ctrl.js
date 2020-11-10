@@ -159,28 +159,33 @@ encConteudoPorID = async (req, res) => {
 // Função para buscar conteúdo por ID da Disciplina
 listarConteudoPorDisciplina = async (req, res) => {
     // Encontra conteúdo pela ID da Disciplina fornecido pela rota
-    await Conteudo
-        .find({
-            disciplinaID: req.params.id,
-        }, (err, conteudoEncontrado) => {
+    var populateQuery = {
+        path: 'disciplinaID',
+        match: { _id: req.params.id }
+    };
 
+    await Conteudo.find({})
+        .populate(populateQuery)
+        .exec((err, listaConteudos) => {
+            // Verifica se os dados foram encontrados
             if (err) {
-                return res
-                    .status(400)
-                    .json({success: false, error: err})
+                return res.status(400).json({ success: false, error: err })
             }
 
-            if (!conteudoEncontrado) {
+            listaConteudos = listaConteudos.filter(function(item) {
+                return item.disciplinaID;
+            });
+
+            // Verifica se há dados na lista
+            if (!listaConteudos.length) {
                 return res
                     .status(404)
-                    .json({success: false, error: "Conteúdo não encontrado."})
+                    .json({ success: false, error: "Dados não encontrados." })
             }
 
-            return res
-                .status(200)
-                .json({success: true, data: conteudoEncontrado})
+            // Caso não haja erros, retorna lista de conteúdos
+            return res.status(200).json({ success: true, data: listaConteudos })
         })
-        .catch(err => console.log(err))
 }
 
 // Função para listar conteúdo utilizando filtro

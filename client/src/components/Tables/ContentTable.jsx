@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
-import { ContentDialogForm } from "../"
+import { ContentDialogFilter } from "../"
 
 // -- Material UI - Table
 import clsx from 'clsx';
@@ -250,7 +250,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 // -- Toolbar
 const EnhancedTableToolbar = (props) => {
-    const { filter, setFilter, filterDialog, setFilterDialog } = props;
+    const { filter, setFilter, filterDialog, setFilterDialog, isCleaned, setIsCleaned } = props;
     const classes = useToolbarStyles();
 
     // -- Limpa o filtro
@@ -260,6 +260,7 @@ const EnhancedTableToolbar = (props) => {
             disciplinaID: "",
             numeracao: ""
         });
+        setIsCleaned(true);
     }
 
     return (
@@ -268,11 +269,13 @@ const EnhancedTableToolbar = (props) => {
             Lista de Tópicos
         </Typography>
 
-        <Tooltip title="Limpar filtro">
-            <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
-                <ClearAllIcon />
-            </IconButton>
-        </Tooltip>
+        <div hidden={isCleaned} >
+            <Tooltip title="Limpar filtro">
+                <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
+                    <ClearAllIcon />
+                </IconButton>
+            </Tooltip>
+        </div>
 
         <Tooltip title="Filtrar lista">
             <IconButton aria-label="filter list" onClick={() => setFilterDialog(true)}>
@@ -280,11 +283,12 @@ const EnhancedTableToolbar = (props) => {
             </IconButton>
         </Tooltip>
 
-        <ContentDialogForm 
+        <ContentDialogFilter 
             filter={filter}
             setFilter={setFilter}
             open={filterDialog}
             setOpen={setFilterDialog}
+            setIsCleaned={setIsCleaned}
         />
     </Toolbar>
     );
@@ -321,18 +325,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EnhancedTable(props) {
-    const { data, filterDialog, setFilterDialog, setMount } = props;
+    const { data, filterDialog, setFilterDialog, setMount, filter, setFilter } = props;
     const classes = useStyles();
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('nome');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [filter, setFilter] = useState({
-        area: "",
-        disciplinaID: "",
-        numeracao: ""
-    });
-    
+    const [isCleaned, setIsCleaned] = useState(true);
+
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -367,7 +367,13 @@ export default function EnhancedTable(props) {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar filter={filter} setFilter={setFilter} filterDialog={filterDialog} setFilterDialog={setFilterDialog}/>
+                <EnhancedTableToolbar 
+                    filter={filter} 
+                    setFilter={setFilter} 
+                    isCleaned={isCleaned}
+                    setIsCleaned={setIsCleaned}
+                    filterDialog={filterDialog} 
+                    setFilterDialog={setFilterDialog}/>
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -391,10 +397,10 @@ export default function EnhancedTable(props) {
                                         const {disciplinaID, numeracao} = conteudo;
 
                                         let auxArea = (disciplinaID.areaConhecimento === filter.area || filter.area === '') ? true : false;
-                                        let auxSubject = (disciplinaID === filter.disciplinaID || filter.disciplinaID === '') ? true : false;
+                                        // let auxSubject = (disciplinaID === filter.disciplinaID || filter.disciplinaID === '') ? true : false;
                                         let auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
                                         
-                                        if (auxArea && auxSubject && auxWeek) {
+                                        if (auxArea && auxWeek) {
                                             return (
                                                 <TableRow hover={true} tabIndex={-1} key={conteudo._id}>
                                                     

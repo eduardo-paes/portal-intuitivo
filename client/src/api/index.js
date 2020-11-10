@@ -80,6 +80,7 @@ export const encQuestaoPorID = id => api.get(`/controle-questao/${id}`);
 export const listarQuestaoPorTopico = id => api.get(`/controle-questao/topico/${id}`);
 export const listarQuestaoPorArea = area => api.get(`/controle-questao/area/${area}`);
 export const listarTQPorQuestaoID = questaoID => api.get(`/controle-questao/tags/${questaoID}`);
+export const listarQuestaoPorDisciplina = id => api.get(`/controle-questao/disciplina/${id}`);
 
 // -- Funções relacionadas à Atividade
 export const inserirAtividade = novaAtividade => api.post("/controle-atividade", novaAtividade);
@@ -90,6 +91,7 @@ export const encAtividadePorID = id => api.get(`/controle-atividade/${id}`);
 export const encQuestoesDaAtividadeID = id => api.get(`/controle-atividade/questoes/${id}`);
 export const encRedacaoDaSemana = numeracao => api.get(`/controle-atividade/redacao/${numeracao}`);
 export const listarAtividadesPorTopico = (id) => api.get(`/controle-atividade/topico/${id}`);
+export const listarAtividadePorDisciplina = (id) => api.get(`/controle-atividade/disciplina/${id}`);
 export const encPropostaRedacao = (id) => api.get(`/controle-atividade/proposta-redacao/${id}`);
 
 // -- Funções relacionadas à Revisao
@@ -204,6 +206,7 @@ const apis = {
     listarQuestaoPorTopico,
     listarQuestaoPorArea,
     listarTQPorQuestaoID,
+    listarQuestaoPorDisciplina,
     // Atividade
     inserirAtividade,
     listarAtividades,
@@ -213,6 +216,7 @@ const apis = {
     encQuestoesDaAtividadeID,
     encRedacaoDaSemana,
     listarAtividadesPorTopico,
+    listarAtividadePorDisciplina,
     encPropostaRedacao,
     // Revisão
     inserirRevisao,

@@ -154,8 +154,6 @@ export default function CorrectionEssayDialog(props) {
         const response = await api.encPropostaRedacao(redacaoID);
         const value = response.data;
 
-        console.log(value);
-    
         if (value.success) {
           setPropostaRedacao(value.data.questaoID.enunciado);
           setWasLoaded(preValue => ({

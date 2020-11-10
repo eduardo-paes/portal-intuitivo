@@ -72,6 +72,7 @@ router.delete("/controle-questao/:id", QuestaoCtrl.removerQuestao);
 router.get("/controle-questao/:id", QuestaoCtrl.encQuestaoPorID);
 router.get("/controle-questao", QuestaoCtrl.listarQuestao);
 router.get("/controle-questao/topico/:id", QuestaoCtrl.listarQuestaoPorTopico);
+router.get("/controle-questao/disciplina/:id", QuestaoCtrl.listarQuestaoPorDisciplina);
 router.get("/controle-questao/area/:area", QuestaoCtrl.listarQuestaoPorArea);
 router.get("/controle-questao/tags/:id", QuestaoCtrl.listarTQPorQuestaoID);
 
@@ -108,6 +109,7 @@ router.get("/controle-atividade/:id", AtividadeCtrl.encAtividadePorID);
 router.get("/controle-atividade/questoes/:id", AtividadeCtrl.encQuestoesDaAtividadeID);
 router.get("/controle-atividade", AtividadeCtrl.listarAtividade);
 router.get("/controle-atividade/topico/:id", AtividadeCtrl.listarAtividadesPorTopico);
+router.get("/controle-atividade/disciplina/:id", AtividadeCtrl.listarAtividadePorDisciplina);
 router.get("/controle-atividade/redacao/:numeracao", AtividadeCtrl.encRedacaoDaSemana);
 router.get("/controle-atividade/proposta-redacao/:id", AtividadeCtrl.encPropostaRedacao);
 

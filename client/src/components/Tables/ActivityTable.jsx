@@ -313,7 +313,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 // -- Toolbar
 const EnhancedTableToolbar = (props) => {
-    const { filter, setFilter, filterDialog, setFilterDialog, revision } = props;
+    const { filter, setFilter, filterDialog, setFilterDialog, revision, isCleaned, setIsCleaned } = props;
     const classes = useToolbarStyles();
 
     // -- Limpa o filtro
@@ -325,6 +325,7 @@ const EnhancedTableToolbar = (props) => {
             numeracao: "",
             area: ""
         });
+        setIsCleaned(true);
     }
 
     return (
@@ -333,11 +334,13 @@ const EnhancedTableToolbar = (props) => {
             {revision ? "Lista de Avaliações Diagnósticas" : "Lista de Atividades"}
         </Typography>
 
-        <Tooltip title="Limpar filtro">
-            <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
-                <ClearAllIcon />
-            </IconButton>
-        </Tooltip>
+        <div hidden={isCleaned} >
+            <Tooltip title="Limpar filtro">
+                <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
+                    <ClearAllIcon />
+                </IconButton>
+            </Tooltip>
+        </div>
 
         <Tooltip title="Filtrar lista">
             <IconButton aria-label="filter list" onClick={() => setFilterDialog(true)}>
@@ -351,6 +354,7 @@ const EnhancedTableToolbar = (props) => {
             open={filterDialog}
             setOpen={setFilterDialog}
             revision={revision}
+            setIsCleaned={setIsCleaned}
         />
     </Toolbar>
     );
@@ -387,7 +391,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ActivityTable(props) {
-    const {data, setActivity, filterDialog, setFilterDialog, setHidden, revision, setMount} = props;
+    const {data, setActivity, filterDialog, setFilterDialog, setHidden, revision, setMount, filter, setFilter} = props;
     
     const classes = useStyles();
     const theme = useTheme();
@@ -397,13 +401,7 @@ export default function ActivityTable(props) {
     const [orderBy, setOrderBy] = useState('nome');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [filter, setFilter] = useState({
-        tipo: "",
-        disciplinaID: "",
-        topico: "",
-        numeracao: "",
-        area: ""
-    });
+    const [isCleaned, setIsCleaned] = useState(true);
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -438,6 +436,8 @@ export default function ActivityTable(props) {
                     setFilter={setFilter} 
                     filterDialog={filterDialog} 
                     setFilterDialog={setFilterDialog} 
+                    isCleaned={isCleaned}
+                    setIsCleaned={setIsCleaned}
                     revision={revision}/>
                 <TableContainer>
                     <Table
@@ -462,24 +462,23 @@ export default function ActivityTable(props) {
                                     .map(row => {
                                         const {tipoAtividade, disciplinaID, topicoID, areaConhecimento, numeracao, questoes} = row;
 
+                                        // console.log(filter);
+
                                         let auxArea = (areaConhecimento === filter.area || filter.area === '') ? true : false;
                                         let auxType = (tipoAtividade === filter.tipo || filter.tipo === '') ? true : false;
 
-                                        let auxSubject = true;
                                         let auxTopic = true;
                                         let auxWeek = true;
 
                                         if (revision) {
                                             auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
-                                            auxSubject = true;
                                             auxTopic = true;
                                         } else {
-                                            auxSubject = (disciplinaID._id === filter.disciplinaID || filter.disciplinaID === '') ? true : false;
                                             auxTopic = (topicoID.topico.includes(filter.topico) || filter.topico === '') ? true : false;
                                             auxWeek = true;
                                         }                                        
                                         
-                                        if (auxArea && auxType && auxSubject && auxTopic && auxWeek) {
+                                        if (auxArea && auxType && auxTopic && auxWeek) {
                                             return (
                                                 <TableRow hover={true} tabIndex={-1} key={row._id}>
                                                     

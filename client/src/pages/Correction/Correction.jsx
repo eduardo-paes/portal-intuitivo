@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-
 import { StoreContext } from "../../utils";
 import api from '../../api'
 
@@ -22,8 +21,9 @@ const useStyles = makeStyles((theme) => ({
     }
 })); 
 
-export default function Correction(props) {
+export default function Correction() {
     const classes = useStyles();
+
     const { token } = useContext(StoreContext);
     const disciplinas = token.disciplina;
     const [atividade, setAtividade] = useState([]);

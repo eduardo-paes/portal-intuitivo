@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { StoreContext } from "../../utils";
 import api from '../../api'
 
 // -- Estilos
@@ -24,11 +25,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ActivityList() {
     const classes = useStyles();
-    const [atividades, setAtividades] = useState([]);
-    const [revisoes, setRevisoes] = useState([]);
+    const { token } = useContext(StoreContext);
+    const disciplinas = token.disciplina;
 
+    const [atividades, setAtividades] = useState([]);
+    const [auxAtividade, setAuxAtividade] = useState('');
+    const [revisoes, setRevisoes] = useState([]);
     const [isRevision, setIsRevision] = useState(false);
-    const [filterDialog, setFilterDialog] = useState(false);
 
     const [mount, setMount] = useState({
         activity: {
@@ -40,14 +43,43 @@ export default function ActivityList() {
             wasChanged: false
         }
     })
-
     const [atividadeSelecionda, setAtividadeSelecionda] = useState('');
     const [hiddenDialog, setHiddenDialog] = useState(false);
 
+    const [filterDialog, setFilterDialog] = useState(false);
+    const [filter, setFilter] = useState({
+        tipo: "",
+        disciplinaID: "",
+        topico: "",
+        numeracao: "",
+        area: ""
+    });
+
     async function fetchAtividadesAPI() {
-        const response = await api.listarAtividades();
-        if (response.data.success) {
-            setAtividades(response.data.data);
+        if (disciplinas.length) {
+            var arrayAux = [];
+    
+            disciplinas.forEach(async item => {
+                const response = await api.listarAtividadePorDisciplina(item.disciplinaID);
+                const value = response.data;
+    
+                if (value.success) {
+                    if (arrayAux.length) {
+                        arrayAux = arrayAux.concat(value.data);
+                    } else {
+                        arrayAux = value.data;
+                    }
+                    setAtividades(arrayAux);
+                }
+            });
+        } else {
+            var firstSubject = await api.listarDisciplinas();
+            firstSubject = firstSubject.data.data[0];
+            setAuxAtividade(firstSubject._id);
+            const response = await api.listarAtividadePorDisciplina(firstSubject._id);
+            if (response.data.success) {
+                setAtividades(response.data.data);
+            }
         }
     }
 
@@ -63,6 +95,7 @@ export default function ActivityList() {
         const abortController = new AbortController();
         fetchAtividadesAPI()
         return abortController.abort();
+    // eslint-disable-next-line
     }, []);
 
     // -- Atualização a partir de montagem
@@ -89,7 +122,30 @@ export default function ActivityList() {
             }));
         } 
         return abortController.abort();
+    // eslint-disable-next-line
     }, [mount]);
+
+    // -- Carrega tabela conforme disciplina selecionada no filtro
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        async function fetchActivitiesByFilter(disciplinaID) {
+            const response = await api.listarAtividadePorDisciplina(disciplinaID);
+            const value = response.data;
+            setAtividades(value.data);
+        }
+
+        if (!isRevision) {
+            if (filter.disciplinaID !== '') {
+                fetchActivitiesByFilter(filter.disciplinaID);
+            } 
+            else if (auxAtividade !== '') {
+                fetchActivitiesByFilter(auxAtividade);
+            }
+        }
+        return abortController.abort();
+    // eslint-disable-next-line
+    }, [filter])
 
     // -- Lista as revisões do banco
     const initialRevisionLoad = () => {
@@ -136,6 +192,8 @@ export default function ActivityList() {
                     setActivity={setAtividadeSelecionda} 
                     setHidden={setHiddenDialog} 
                     setMount={setMount}
+                    filter={filter}
+                    setFilter={setFilter}
                 />
 
                 <ActivityDialog 

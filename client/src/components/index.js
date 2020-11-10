@@ -28,7 +28,7 @@ import TopBar from "./Drawer/TopBar"
 // -- Dialogs
 import ActivityDialog from "./Dialogs/ActivityDialog"
 import ActivityDialogFilter from "./Dialogs/ActivityDialogFilter"
-import ContentDialogForm from "./Dialogs/ContentDialogForm"
+import ContentDialogFilter from "./Dialogs/ContentDialogFilter"
 import CorrectionDialogFilter from "./Dialogs/CorrectionDialogFilter"
 import QuestionDialog from "./Dialogs/QuestionDialog"
 import QuestionDialogFilter from "./Dialogs/QuestionDialogFilter"
@@ -103,7 +103,7 @@ export {
     
     ActivityDialog,
     ActivityDialogFilter,
-    ContentDialogForm,
+    ContentDialogFilter,
     CorrectionDialog,
     CorrectionDialogFilter,
     QuestionDialog,

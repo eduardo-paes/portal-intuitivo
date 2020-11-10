@@ -11,7 +11,7 @@ const initialFilter = {
 }
 
 export default function ActivityDialogFilter(props) {
-  const { filter, setFilter, open, setOpen, activity } = props;
+  const { filter, setFilter, open, setOpen, activity, setIsCleaned } = props;
 
   const [listaDisciplina, setListaDisciplina] = useState([]);
   const [listaTopico, setListaTopico] = useState([]);
@@ -102,6 +102,8 @@ export default function ActivityDialogFilter(props) {
       } else {
         setRevision(false);
       }
+    } else {
+      setRevision(true);
     }
 
     return abortController.abort();
@@ -115,6 +117,7 @@ export default function ActivityDialogFilter(props) {
       ...preValue,
       [name]: value
     }))
+    setIsCleaned(false);
   }
 
   // Salva modificações no filtro permanentemente
@@ -164,7 +167,7 @@ export default function ActivityDialogFilter(props) {
 
           <Grid item={true} hidden={!isRevision} xs={12}>
             <MyTextField
-              id="campoDisciplina"
+              id="campoTopico"
               variant="outlined"
               select={true}
               disabled={tempFilter.disciplinaID === '' ? true : false}
@@ -182,7 +185,7 @@ export default function ActivityDialogFilter(props) {
 
           <Grid item={true} xs={12}>
             <MyTextField
-              id="campoDisciplina"
+              id="campoTag"
               variant="outlined"
               select={true}
               disabled={tempFilter.disciplinaID === '' ? true : false}

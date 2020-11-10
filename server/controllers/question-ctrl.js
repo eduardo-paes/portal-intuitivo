@@ -402,6 +402,39 @@ listarTQPorQuestaoID = async (req, res) => {
         .catch(err => console.log(err))
 }
 
+// Função para listar questões por disciplina
+listarQuestaoPorDisciplina = async (req, res) => {
+    var populateQuery = {
+        path: 'disciplinaID',
+        select: 'nome',
+        match: { _id: req.params.id }
+    };
+
+    await Questao.find()
+    .populate(populateQuery)
+    .populate('topicoID', 'topico')
+    .populate({ path: 'tags', select: 'tagID', populate: { path: 'tagID' } })
+    .sort({ 'disciplinaID.nome': 1 })
+    .exec(function (err, listaQuestao) {
+        // Verificação de erros
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        listaQuestao = listaQuestao.filter(function(item) {
+            return item.disciplinaID;
+        });
+
+        // Verifica se há dados na lista
+        if (!listaQuestao.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: "Dados não encontrados." })
+        }
+        // Caso não haja erros, retorna lista de questaos
+        return res.status(200).json({ success: true, data: listaQuestao })
+    });
+}
 
 // Exporta os módulos
 module.exports = {
@@ -412,5 +445,6 @@ module.exports = {
     listarQuestao,
     listarQuestaoPorTopico,
     listarQuestaoPorArea,
-    listarTQPorQuestaoID
+    listarTQPorQuestaoID,
+    listarQuestaoPorDisciplina
 }

@@ -12,7 +12,7 @@ const initialFilter = {
 }
 
 export default function ActivityDialogFilter(props) {
-  const { filter, setFilter, open, setOpen, revision } = props;
+  const { filter, setFilter, open, setOpen, revision, setIsCleaned } = props;
   const [listaDisciplina, setListaDisciplina] = useState([]);
   const [semanasAno, setSemanasAno] = useState(32);
   const [mount, setMount] = useState(true);
@@ -60,6 +60,7 @@ export default function ActivityDialogFilter(props) {
       ...preValue,
       [name]: value
     }))
+    setIsCleaned(false);
   }
 
   // Salva modificações no filtro permanentemente

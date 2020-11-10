@@ -187,16 +187,21 @@ export default function ActivityForm (props) {
 
     // -- Observa mudanças em questão selecionada
     useEffect(() => { 
+        const abortController = new AbortController();
         setQuestaoSelecionada(questaoSelecionada) 
+        return abortController.abort();
+        // eslint-disable-next-line
     }, [questaoSelecionada]);
 
     // -- Limpa os campos do formulário
     useEffect(() => {
+        const abortController = new AbortController();
         if (clear) {
             setAtividade(initialState)
             setQuestoes([])
             setQuestaoSelecionada('')
         }
+        return abortController.abort();
         // eslint-disable-next-line
     }, [clear]);
 

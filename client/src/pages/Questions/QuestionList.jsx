@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { StoreContext } from "../../utils";
 import api from '../../api'
 
 // -- Components
@@ -9,27 +10,61 @@ import { QuestionTable, QuestionDialog } from "../../components"
 import "./ListStyles.css"
 
 function QuestionInsert() {
+    const { token } = useContext(StoreContext);
+    const disciplinas = token.disciplina;
     const [questoes, setQuestoes] = useState([]);
+    const [auxQuestion, setAuxQuestion] = useState('');
     const [questaoSelecionada, setQuestaoSelecionada] = useState('');
     const [filterDialog, setFilterDialog] = useState(false);
+    const [filter, setFilter] = useState({
+        disciplinaID: "",
+        topicoID: "",
+        tipo: "",
+        tags: "",
+    });
     const [hiddenDialog, setHiddenDialog] = useState(false);
     const [mount, setMount] = useState({
-        isMounted: true,
+        isMounting: true,
         wasChanged: false
     })
 
     async function fetchQuestoesAPI() {
-        const response = await api.listarQuestao();
-        const value = response.data.data;
-        setQuestoes(value);
+        if (disciplinas.length) {
+            var arrayAux = [];
+            
+            disciplinas.forEach(async item => {
+                const response = await api.listarQuestaoPorDisciplina(item.disciplinaID);
+                const value = response.data;
+      
+                if (value.success) {
+                  if (arrayAux.length) {
+                    arrayAux = arrayAux.concat(value.data);
+                  } else {
+                    arrayAux = value.data;
+                  }
+                  setQuestoes(arrayAux);
+                }
+            });
+          } 
+          
+          else {
+              var firstSubject = await api.listarDisciplinas();
+              firstSubject = firstSubject.data.data[0];
+              setAuxQuestion(firstSubject._id);
+      
+              const response = await api.listarQuestaoPorDisciplina(firstSubject._id);
+              if (response.data.success) {
+                setQuestoes(response.data.data);
+              }
+          }
     }
 
     // -- Lista as questões do banco
     useEffect(() => {
         const abortController = new AbortController();
-        if (mount.isMounted) {
+        if (mount.isMounting) {
             fetchQuestoesAPI()
-            setMount(preValue => ({ ...preValue, isMounted:false }));
+            setMount(preValue => ({ ...preValue, isMounting:false }));
         }
         return abortController.abort();
     // eslint-disable-next-line
@@ -50,6 +85,28 @@ function QuestionInsert() {
         setQuestaoSelecionada(questaoSelecionada)
     }, [questaoSelecionada]);
 
+    // -- Carrega tabela conforme disciplina selecionada no filtro
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (!mount.isMounting) {
+            async function fetchQuestionByFilter(disciplinaID) {
+                const response = await api.listarQuestaoPorDisciplina(disciplinaID);
+                const value = response.data;
+                setQuestoes(value.data);
+            }
+        
+            if (filter.disciplinaID !== '') {
+                fetchQuestionByFilter(filter.disciplinaID);
+            }
+
+            else if (auxQuestion !== '') {
+                fetchQuestionByFilter(auxQuestion);
+            }
+        }
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [filter])
+
         return (
         <MyContainer>
             <section id="cabecalhoQuestao">
@@ -65,6 +122,8 @@ function QuestionInsert() {
                     setFilterDialog={setFilterDialog}
                     setHidden={setHiddenDialog} 
                     activity={false}
+                    filter={filter}
+                    setFilter={setFilter}
                     tableSelection={false}/>
 
                 <QuestionDialog 

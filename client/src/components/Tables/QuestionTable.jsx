@@ -260,7 +260,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 // -- Toolbar
 const EnhancedTableToolbar = (props) => {
-    const { filter, setFilter, filterDialog, setFilterDialog, activity } = props;
+    const { filter, setFilter, filterDialog, setFilterDialog, isCleaned, setIsCleaned, activity } = props;
     const classes = useToolbarStyles();
 
     // -- Limpa o filtro
@@ -271,6 +271,7 @@ const EnhancedTableToolbar = (props) => {
             tipo: "",
             tags: "",
         });
+        setIsCleaned(true);
     }
 
     return (
@@ -279,11 +280,13 @@ const EnhancedTableToolbar = (props) => {
             Lista de Questões
         </Typography>
 
-        <Tooltip title="Limpar filtro">
-            <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
-                <ClearAllIcon />
-            </IconButton>
-        </Tooltip>
+        <div hidden={isCleaned} >
+            <Tooltip title="Limpar filtro">
+                <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
+                    <ClearAllIcon />
+                </IconButton>
+            </Tooltip>
+        </div>
 
         <Tooltip title="Filtrar lista">
             <IconButton aria-label="filter list" onClick={() => setFilterDialog(true)}>
@@ -297,6 +300,7 @@ const EnhancedTableToolbar = (props) => {
             setFilter={setFilter}
             open={filterDialog}
             setOpen={setFilterDialog}
+            setIsCleaned={setIsCleaned}
         />
     </Toolbar>
     );
@@ -333,7 +337,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function QuestionTable(props) {
-    const {data, setData, setQuestion, setHidden, tableSelection, filterDialog, setFilterDialog, selectedQuestions, setMount, activity} = props;
+    const {data, setData, setQuestion, setHidden, tableSelection, filterDialog, setFilterDialog, filter, setFilter, selectedQuestions, setMount, activity} = props;
 
     const classes = useStyles();
     const [order, setOrder] = useState('asc');
@@ -343,13 +347,7 @@ export default function QuestionTable(props) {
     const [selected, setSelected] = useState([]);
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    
-    const [filter, setFilter] = useState({
-        disciplinaID: "",
-        topicoID: "",
-        tipo: "",
-        tags: "",
-    });
+    const [isCleaned, setIsCleaned] = useState(true);
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -429,18 +427,20 @@ export default function QuestionTable(props) {
 
     // -- Vigilantes
     useEffect(() => {
+        const abortController = new AbortController();
         tableSelection && setData(preValue => ({
             ...preValue,
             questoes: selected
         }))
-    // eslint-disable-next-line
+        return abortController.abort();
+        // eslint-disable-next-line
     }, [selected])
 
     useEffect(() => {
-        if (tableSelection) {
-            setSelected(selectedQuestions);
-        }
-    // eslint-disable-next-line
+        const abortController = new AbortController();
+        if (tableSelection) setSelected(selectedQuestions);
+        return abortController.abort();
+        // eslint-disable-next-line
     }, [data])
 
     // -- Rows vazias para complementação
@@ -456,6 +456,8 @@ export default function QuestionTable(props) {
                     activity={activity}
                     filter={filter} 
                     setFilter={setFilter} 
+                    isCleaned={isCleaned}
+                    setIsCleaned={setIsCleaned}
                     filterDialog={filterDialog} 
                     setFilterDialog={setFilterDialog}/>
                 <TableContainer>
@@ -493,9 +495,8 @@ export default function QuestionTable(props) {
                                         
                                         let auxType = (tipoResposta === filter.tipo || filter.tipo === '') ? true : false;
                                         let auxTopic = (topicoID._id === filter.topicoID || filter.topicoID === '') ? true : false;
-                                        let auxSubject = (disciplinaID._id === filter.disciplinaID || filter.disciplinaID === '') ? true : false;
                                         
-                                        if ( auxTags && auxType && auxSubject && auxTopic ) {
+                                        if (auxTags && auxType && auxTopic) {
                                             return (
                                                 <TableRow
                                                     hover={true}

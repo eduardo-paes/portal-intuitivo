@@ -4,7 +4,7 @@ import { MyTextField } from "../../assets/styles/styledComponents";
 import api from '../../api';
 
 export default function FormDialog(props) {
-  const { filter, setFilter, open, setOpen } = props;
+  const { filter, setFilter, open, setOpen, setIsCleaned } = props;
   const [listaDisciplina, setListaDisciplina] = useState([]);
   const [tempFilter, setTempFilter] = useState({
     area: "",
@@ -37,6 +37,7 @@ export default function FormDialog(props) {
       ...preValue,
       [name]: value
     }))
+    setIsCleaned(false);
   }
 
   const onSubmit = () => {
