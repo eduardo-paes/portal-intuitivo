@@ -397,7 +397,6 @@ export default function EnhancedTable(props) {
                                         const {disciplinaID, numeracao} = conteudo;
 
                                         let auxArea = (disciplinaID.areaConhecimento === filter.area || filter.area === '') ? true : false;
-                                        // let auxSubject = (disciplinaID === filter.disciplinaID || filter.disciplinaID === '') ? true : false;
                                         let auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
                                         
                                         if (auxArea && auxWeek) {

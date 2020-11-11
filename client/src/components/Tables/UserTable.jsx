@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import {Link as RouterLink} from 'react-router-dom';
 import api from '../../api'
 
 // -- Material UI - Table
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { lighten, makeStyles, useTheme } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
@@ -15,11 +16,18 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 // -- Material UI - Icons
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
+import DeleteIcon from '@material-ui/icons/Delete';
+import UserDialogFilter from "../Dialogs/UserDialogFilter";
+import { useEffect } from "react";
 
 // Botão de Atualização
 function UpdateUser (props) {
@@ -174,6 +182,74 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired
 };
 
+// -- Toolbar Styles
+const useToolbarStyles = makeStyles((theme) => ({
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    title: {
+      flex: '1 1 100%',
+      color: "#606161",
+    },
+  }));
+
+// -- Toolbar
+const EnhancedTableToolbar = (props) => {
+    const { filter, setFilter, filterDialog, setFilterDialog, isCleaned, setIsCleaned } = props;
+    const classes = useToolbarStyles();
+
+    // -- Limpa o filtro
+    function clearFilter() {
+        setFilter({ 
+            nome: '',
+            email: '',
+            acesso: '',
+        });
+        setIsCleaned(true);
+    }
+
+    return (
+    <Toolbar className={clsx(classes.root)}>
+        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+            Listagem Total de Usuários
+        </Typography>
+
+        <div hidden={isCleaned} >
+            <Tooltip title="Limpar filtro" hidden={isCleaned}>
+                <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
+                    <ClearAllIcon />
+                </IconButton>
+            </Tooltip>
+        </div>
+
+        <Tooltip title="Filtrar lista">
+            <IconButton aria-label="filter list" onClick={() => setFilterDialog(true)}>
+                <FilterListIcon />
+            </IconButton>
+        </Tooltip>
+    
+        <UserDialogFilter 
+            filter={filter}
+            setFilter={setFilter}
+            open={filterDialog}
+            setOpen={setFilterDialog}
+            setIsCleaned={setIsCleaned}
+        />
+    </Toolbar>
+    );
+};
+
 // -- Styles: Tabela-Body
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -205,15 +281,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EnhancedTable(props) {
-    const {usuarios, setMount} = props;
-    const classes = useStyles();
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('nome');
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const {data, setMount, filterDialog, setFilterDialog, filter, setFilter} = props;
 
     const theme = useTheme();
+    const classes = useStyles();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isCleaned, setIsCleaned] = useState(true);
+
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('topicoID.topico');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -237,15 +315,19 @@ export default function EnhancedTable(props) {
     };
 
     // -- Rows vazias para complementação
-    const emptyRows = rowsPerPage - Math.min(
-        rowsPerPage,
-        usuarios.length - page * rowsPerPage
-    );
+    const emptyRows = rowsPerPage - Math.min( rowsPerPage, data.length - page * rowsPerPage );
 
     // -- Tabela: Body
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
+                <EnhancedTableToolbar 
+                    filter={filter} 
+                    setFilter={setFilter} 
+                    isCleaned={isCleaned}
+                    setIsCleaned={setIsCleaned}
+                    filterDialog={filterDialog} 
+                    setFilterDialog={setFilterDialog}/>
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -260,26 +342,34 @@ export default function EnhancedTable(props) {
                             width={smScreen}/>
                         <TableBody>
                             {
-                                stableSort(usuarios, getComparator(order, orderBy))
+                                (data.length > 0) && stableSort(data, getComparator(order, orderBy))
                                     .slice(
                                         page * rowsPerPage,
                                         page * rowsPerPage + rowsPerPage
                                     )
-                                    .map((usuario, index) => {
+                                    .map(row => {
+                                        let auxName = (row.nome.toLowerCase().includes(filter.nome.toLowerCase()) || filter.nome === '') ? true : false;
+                                        let auxEmail = (row.email.toLowerCase().includes(filter.email.toLowerCase()) || filter.email === '') ? true : false;
+                                        let auxAccess = (row.acesso === filter.acesso || filter.acesso === '') ? true : false;
 
-                                        return (
-                                            <TableRow hover={true} tabIndex={-1} key={usuario._id}>
-                                                <TableCell className={classes.row} align="left">{usuario.nome}</TableCell>
+                                        if (auxName && auxEmail && auxAccess) {
+                                            return (
+                                                <TableRow hover={true} tabIndex={-1} key={row._id}>
 
-                                                {!smScreen && <TableCell className={classes.row} align="left">{usuario.email}</TableCell>}
-                                                {!smScreen && <TableCell className={classes.row} align="left">{usuario.acesso}</TableCell>}
+                                                    <TableCell className={classes.row} align="left">{row.nome}</TableCell>
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{row.email}</TableCell>}
+                                                    {!smScreen && <TableCell className={classes.row} align="left">{row.acesso}</TableCell>}
+                                                    <TableCell align="left">
+                                                        <UpdateUser id={row._id}/>
+                                                        <DeleteUser id={row._id} nome={row.nome} setMount={setMount}/>
+                                                    </TableCell>
 
-                                                <TableCell align="left">
-                                                    <UpdateUser id={usuario._id}/>
-                                                    <DeleteUser id={usuario._id} nome={usuario.nome} setMount={setMount}/>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
+                                                </TableRow>
+                                            );
+                                        }
+
+                                        // eslint-disable-next-line
+                                        return;
                                     })
                             }
                             {
@@ -301,7 +391,7 @@ export default function EnhancedTable(props) {
                     className={classes.row}
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={usuarios.length}
+                    count={data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}

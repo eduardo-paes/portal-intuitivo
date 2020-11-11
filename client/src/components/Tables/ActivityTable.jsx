@@ -462,8 +462,6 @@ export default function ActivityTable(props) {
                                     .map(row => {
                                         const {tipoAtividade, disciplinaID, topicoID, areaConhecimento, numeracao, questoes} = row;
 
-                                        // console.log(filter);
-
                                         let auxArea = (areaConhecimento === filter.area || filter.area === '') ? true : false;
                                         let auxType = (tipoAtividade === filter.tipo || filter.tipo === '') ? true : false;
 
@@ -474,7 +472,7 @@ export default function ActivityTable(props) {
                                             auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
                                             auxTopic = true;
                                         } else {
-                                            auxTopic = (topicoID.topico.includes(filter.topico) || filter.topico === '') ? true : false;
+                                            auxTopic = (topicoID.topico.toLowerCase().includes(filter.topico.toLowerCase()) || filter.topico === '') ? true : false;
                                             auxWeek = true;
                                         }                                        
                                         

@@ -38,6 +38,7 @@ import ExerciseDialog from "./Dialogs/StudentDialogs/ExerciseDialog"
 import StudyContentDialog from "./Dialogs/StudentDialogs/StudyContentDialog"
 import SimpleFeedback from "./Dialogs/StudentDialogs/SimpleFeedback"
 import CorrectionDialog from "./Dialogs/CorrectionDialog"
+import UserDialogFilter from "./Dialogs/UserDialogFilter"
 
 // -- Editor
 import TextEditor from "./Editor/Editor"
@@ -108,6 +109,7 @@ export {
     CorrectionDialogFilter,
     QuestionDialog,
     QuestionDialogFilter,
+    UserDialogFilter,
     PDFPreviewDialog,
     SlideDialog,
     ExerciseDialog,

@@ -489,13 +489,13 @@ export default function QuestionTable(props) {
                                         
                                         const isItemSelected = isSelected(row._id);
                                         const labelId = `enhanced-table-checkbox-${row._id}`;
-                                        
+
                                         let tagNames = handleTags(tags, filter.tags);
                                         let auxTags = tagNames.flag ? true : false;
                                         
                                         let auxType = (tipoResposta === filter.tipo || filter.tipo === '') ? true : false;
                                         let auxTopic = (topicoID._id === filter.topicoID || filter.topicoID === '') ? true : false;
-                                        
+
                                         if (auxTags && auxType && auxTopic) {
                                             return (
                                                 <TableRow

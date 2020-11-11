@@ -23,12 +23,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Correction() {
     const classes = useStyles();
-
     const { token } = useContext(StoreContext);
     const disciplinas = token.disciplina;
     const [atividade, setAtividade] = useState([]);
     const [redacao, setRedacao] = useState([]);
-    const [filterDialog, setFilterDialog] = useState(false);
     const [isEssay, setIsEssay] = useState(false);
     const [wasLoaded, setWasLoaded] = useState({
         atividade: false,
@@ -40,7 +38,16 @@ export default function Correction() {
     })
     const [selectedRow, setSelectedRow] = useState(null)
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [filterDialog, setFilterDialog] = useState(false);
+    const [filter, setFilter] = useState({
+        numeracao: '',
+        disciplina: '',
+        topico: '',
+        tipo: '',
+        aluno:'',
+    });
 
+    // -- Carrega Atividades
     function fetchAtividades() {
         var arrayAux = [];
 
@@ -68,6 +75,7 @@ export default function Correction() {
         }));
     }
 
+    // -- Carrega Redacoes
     async function fetchRedacoes() {
         var arrayAux = [];
 
@@ -95,6 +103,7 @@ export default function Correction() {
         }));
     }
 
+    // -- Carregamento inicial dos dados para preenchimento das tabelas
     useEffect(() => {
         const abortController = new AbortController();
 
@@ -118,6 +127,43 @@ export default function Correction() {
         // eslint-disable-next-line
     }, [toLoad])
 
+    // -- Carregamento inicial das redações
+    useEffect(() => {
+        const abortController = new AbortController();
+        (!wasLoaded.redacao && !toLoad.redacao && redacao.length) && fetchRedacoes();
+        return abortController.abort();
+        // eslint-disable-next-line
+    }, [wasLoaded.redacao])
+
+    // -- Carrega tabela conforme disciplina selecionada no filtro
+    useEffect(() => {
+        const abortController = new AbortController();
+
+        async function fetchActivitiesByFilter(disciplinaID) {
+            const response = await api.listarRespostaAlunoPorDisciplina(disciplinaID);
+            const value = response.data;
+            setAtividade(value.data);
+        }
+
+        async function fetchEssaysByFilter(disciplinaID) {
+            const response = await api.listarRedacoesNaoCorrigidas(disciplinaID);
+            const value = response.data;
+            setRedacao(value.data);
+        }
+
+        if (isEssay) {
+            if (filter.disciplina !== '') {
+                isEssay ? fetchEssaysByFilter(filter.disciplina) : fetchActivitiesByFilter(filter.disciplina);
+            } 
+            else {
+                isEssay ? fetchRedacoes() : fetchAtividades();
+            }
+        }
+        return abortController.abort();
+    // eslint-disable-next-line
+    }, [filter])
+
+    // -- Carrega tabela com dados ou mensagem caso não haja dados
     const ReturnCorrectionTable = () => {
         var data = [];
         var title = "";
@@ -139,6 +185,8 @@ export default function Correction() {
                     setFilterDialog={setFilterDialog}
                     setSelectedRow={setSelectedRow}
                     setDialogOpen={setDialogOpen}
+                    filter={filter}
+                    setFilter={setFilter}
                 />
             )
         } else {
@@ -146,13 +194,7 @@ export default function Correction() {
         }
     }
 
-    useEffect(() => {
-        const abortController = new AbortController();
-        (!wasLoaded.redacao && !toLoad.redacao && redacao.length) && fetchRedacoes();
-        return abortController.abort();
-        // eslint-disable-next-line
-    }, [wasLoaded.redacao])
-
+    // -- Retorna mensagem informando quantidade de correções pendentes
     const returnCountingPendencies = () => {
         if (isEssay) {
             if (redacao.length > 0) {
@@ -211,7 +253,6 @@ export default function Correction() {
                         /> 
                 }
             </section>
-
         </MyContainer>
     )
 }

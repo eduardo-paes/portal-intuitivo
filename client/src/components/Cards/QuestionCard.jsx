@@ -12,11 +12,9 @@ import api from "../../api";
 export default function QuestionCard (props) {
     const classes = useStyles();
     const { idQuestion, answered, enunciado, tipoResposta, gabarito, resposta, respostaQuestao, setRespostaQuestao, respostaQuestaoIDs, setRespostaQuestaoIDs, atividadeID, revisaoID, alunoID, name, mobile, respostaMobile } = props;
-    console.log("Não entra aqui?!")
+    
     async function pegarResposta() {
-        
         let response;
-        
         if (atividadeID) {
             response = await api.encRespostaQuestaoPorAtividade(atividadeID, alunoID, idQuestion);
         } else {
@@ -54,7 +52,6 @@ export default function QuestionCard (props) {
     
     useEffect(() => {
         const abortController = new AbortController();
-        console.log(idQuestion)
         pegarResposta();
         return abortController.abort();
         // eslint-disable-next-line
@@ -71,9 +68,7 @@ export default function QuestionCard (props) {
     }
 
     const returnAnswerOption = () => {
-        if (name === 'redacao') {
-            return null;
-        }
+        if (name === 'redacao') return null;
         
         if (tipoResposta === "multiplaEscolha") {
             return (
@@ -81,7 +76,7 @@ export default function QuestionCard (props) {
                     <RadioAnswer 
                         idQuestion={idQuestion}
                         answered={answered} 
-                        gabarito={gabarito.gab._id} 
+                        gabarito={gabarito ? gabarito.gab._id : false} 
                         mobile={mobile}
                         respostaMobile={respostaMobile} 
                         resposta={resposta}

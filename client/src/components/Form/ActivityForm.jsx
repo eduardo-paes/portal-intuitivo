@@ -41,6 +41,12 @@ export default function ActivityForm (props) {
     const [hiddenDialog, setHiddenDialog] = useState(false);
     const indexNumeracao = [1, 2, 3, 4]
     const [count, setCount] = useState(6);
+    const [filter, setFilter] = useState({
+        disciplinaID: "",
+        topicoID: "",
+        tipo: "",
+        tags: "",
+    });
 
     // --- Funções de Carregamento da API
     // =================================
@@ -336,12 +342,15 @@ export default function ActivityForm (props) {
                     tableSelection={true}
                     selectedQuestions={questaoSelecionada}
                     activity={atividade}
+                    filter={filter}
+                    setFilter={setFilter}
                 />
                 { atividade.erros.questoes && <p className={classes.errorMessage}>{atividade.erros.questoes}</p> }
 
                 <QuestionDialog 
                     enunciado={questaoSelecionada.enunciado}
                     tipoResposta={questaoSelecionada.tipoResposta}
+                    padraoResposta={questaoSelecionada.padraoResposta && questaoSelecionada.padraoResposta}
                     resposta={questaoSelecionada.resposta}
                     open={hiddenDialog}
                     setOpen={setHiddenDialog}

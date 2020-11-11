@@ -298,8 +298,20 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 // -- Toolbar
 const EnhancedTableToolbar = (props) => {
-    const { filter, setFilter, filterDialog, setFilterDialog, essay, cleanFilter } = props;
+    const { filter, setFilter, filterDialog, setFilterDialog, essay, isCleaned, setIsCleaned } = props;
     const classes = useToolbarStyles();
+
+    // -- Limpa o filtro
+    function clearFilter() {
+        setFilter({ 
+            numeracao: '',
+            disciplina: '',
+            topico: '',
+            tipo: '',
+            aluno:'',
+        });
+        setIsCleaned(true);
+    }
 
     return (
     <Toolbar className={clsx(classes.root)}>
@@ -307,11 +319,13 @@ const EnhancedTableToolbar = (props) => {
             {essay ? "Lista de Redações" : "Lista de Atividades"}
         </Typography>
 
-        <Tooltip title="Limpar filtro">
-            <IconButton aria-label="filter list" color="secondary" onClick={() => setFilter(cleanFilter)}>
-                <ClearAllIcon />
-            </IconButton>
-        </Tooltip>
+        <div hidden={isCleaned} >
+            <Tooltip title="Limpar filtro" hidden={isCleaned}>
+                <IconButton aria-label="filter list" color="secondary" onClick={() => clearFilter()}>
+                    <ClearAllIcon />
+                </IconButton>
+            </Tooltip>
+        </div>
 
         <Tooltip title="Filtrar lista">
             <IconButton aria-label="filter list" onClick={() => setFilterDialog(true)}>
@@ -319,13 +333,14 @@ const EnhancedTableToolbar = (props) => {
             </IconButton>
         </Tooltip>
 
-        {/* <CorrectionDialogFilter 
+        <CorrectionDialogFilter 
             filter={filter}
             setFilter={setFilter}
             open={filterDialog}
             setOpen={setFilterDialog}
+            setIsCleaned={setIsCleaned}
             essay={essay}
-        /> */}
+        />
     </Toolbar>
     );
 };
@@ -361,24 +376,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CorrectionTable(props) {
-    const {data, filterDialog, setFilterDialog, essay, setSelectedRow, setDialogOpen} = props;
+    const {data, filterDialog, setFilterDialog, essay, setSelectedRow, setDialogOpen, filter, setFilter} = props;
 
     const classes = useStyles();
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isCleaned, setIsCleaned] = useState(true);
 
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('topicoID.topico');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const cleanFilter = {
-        numeracao: '',
-        tipo: '',
-        disciplina: '',
-        topico: '',
-        aluno: ''
-    }
-    const [filter, setFilter] = useState(cleanFilter);
 
     // -- Solicita Ordenação
     const handleRequestSort = (event, property) => {
@@ -411,9 +419,10 @@ export default function CorrectionTable(props) {
                 <EnhancedTableToolbar 
                     filter={filter} 
                     setFilter={setFilter} 
+                    isCleaned={isCleaned}
+                    setIsCleaned={setIsCleaned}
                     filterDialog={filterDialog} 
                     setFilterDialog={setFilterDialog}
-                    cleanFilter={cleanFilter}
                     essay={essay}/>
                 <TableContainer>
                     <Table
@@ -441,13 +450,20 @@ export default function CorrectionTable(props) {
                                         const { tipoAtividade, topicoID } = task;
                                         const { numeracao, topico, disciplinaID } = topicoID;
 
-                                        // let auxStudent = (alunoID.nome.includes(filter.aluno) || filter.aluno === '') ? true : false;
-                                        let auxType = (tipoAtividade === filter.tipo || filter.tipo === '' || essay) ? true : false;
+                                        let auxStudent = true;
+                                        let auxType = true;
+
+                                        if (essay) {
+                                            auxStudent = (alunoID.nome.toLowerCase().includes(filter.aluno.toLowerCase()) || filter.aluno === '') ? true : false;
+                                        } else {
+                                            auxType = (tipoAtividade === filter.tipo || filter.tipo === '' || essay) ? true : false;
+                                        }
+
                                         let auxSubject = (disciplinaID._id === filter.disciplina || filter.disciplina === '') ? true : false;
-                                        let auxTopic = (topicoID._id === filter.topico || filter.topico === '') ? true : false;
+                                        let auxTopic = (topicoID.topico.toLowerCase().includes(filter.topico.toLowerCase()) || filter.topico === '') ? true : false;
                                         let auxWeek = (numeracao === filter.numeracao || filter.numeracao === '') ? true : false;
 
-                                        if (auxType && auxSubject && auxTopic && auxWeek) {
+                                        if (auxType && auxStudent && auxSubject && auxTopic && auxWeek) {
                                             return (
                                                 <TableRow hover={true} tabIndex={-1} key={row._id}>
                                                     

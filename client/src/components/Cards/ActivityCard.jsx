@@ -23,21 +23,30 @@ export default function ActivityCard(props) {
     const [flag, setFlag] = useState(false);
     const [respostaQuestaoIDs, setRespostaQuestaoIDs] = useState([]);
     const [respostaQuestao, setRespostaQuestao] = useState([]);
+    const [gabarito, setGabarito] = useState([]);
     const isEssay = (name === 'redacao') ? true : false;
     
     // MediaQuery / Styles
     const classes = useStyles();
     const theme = useTheme();
     const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    
-    let gabarito = [];
-    
-    question.forEach((row, index) => {
-        if (row.tipoResposta !== 'multiplaEscolha') setFlag(true);
-        let gab = row.resposta.find(element => element.gabarito === true);
-        let quest = row._id;
-        return gabarito[index] = { gab, quest }
-    });
+
+    // Guarda informação das respostas da questão (quest: ID da resposta / gab: Gabarito da Questão)
+    useEffect(() => {
+        const abortController = new AbortController();
+        if (question) {
+            let gabAux = [];
+            question.forEach((row, index) => {
+                if (row.tipoResposta !== 'multiplaEscolha') setFlag(true);
+                let gab = row.resposta.find(element => element.gabarito === true);
+                let quest = row._id;
+                return gabAux[index] = { gab, quest }
+            });
+            setGabarito(gabAux);
+        }
+        return abortController.abort();
+        // eslint-disable-next-line
+    },[question])
     
     // Função para verificar se a atividade já foi respondida pelo aluno ou não
     function verificaProgresso() {
@@ -75,9 +84,8 @@ export default function ActivityCard(props) {
     const handleSubmit = async () => {
         await api.atualizarRespostaQuestao(respostaQuestao._id, respostaQuestao);
         const alunoID = token.token.userID;
-        if (!flag) {
-            var nota = await correctActivity();
-        }
+
+        if (!flag) var nota = await correctActivity();
         const respostaAluno = {
             alunoID,
             atividadeID,
@@ -100,23 +108,26 @@ export default function ActivityCard(props) {
         return (
             <div key={value}>                        
                 <Typography variant="h6" className={classes.title}>{isEssay ? "Enunciado" : "Questão " + (value)}</Typography>
-                <QuestionCard 
-                    idQuestion={question[value-1]._id}
-                    enunciado={question[value-1].enunciado} 
-                    tipoResposta={question[value-1].tipoResposta} 
-                    padraoResposta={question[value-1].padraoResposta} 
-                    resposta={question[value-1].resposta}
-                    gabarito={gabarito[value-1]}
-                    setRespostaQuestaoIDs={setRespostaQuestaoIDs}
-                    respostaQuestaoIDs={respostaQuestaoIDs}
-                    atividadeID={atividadeID}
-                    revisaoID={revisaoID}
-                    respostaQuestao={respostaQuestao}
-                    setRespostaQuestao={setRespostaQuestao}
-                    alunoID={token.token.userID}
-                    name={name}
-                    answered={verificaProgresso()}
-                />
+                {
+                    (gabarito.length > 0) &&
+                    <QuestionCard 
+                        idQuestion={question[value-1]._id}
+                        enunciado={question[value-1].enunciado} 
+                        tipoResposta={question[value-1].tipoResposta} 
+                        padraoResposta={question[value-1].padraoResposta} 
+                        resposta={question[value-1].resposta}
+                        gabarito={gabarito[value-1]}
+                        setRespostaQuestaoIDs={setRespostaQuestaoIDs}
+                        respostaQuestaoIDs={respostaQuestaoIDs}
+                        atividadeID={atividadeID}
+                        revisaoID={revisaoID}
+                        respostaQuestao={respostaQuestao}
+                        setRespostaQuestao={setRespostaQuestao}
+                        alunoID={token.token.userID}
+                        name={name}
+                        answered={verificaProgresso()}
+                        />
+                }
             </div>
         );
     }

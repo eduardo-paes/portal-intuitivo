@@ -120,6 +120,7 @@ function Login() {
                                         size="large"
                                         variant="contained"
                                         color="primary"
+                                        type="submit"
                                         onClick={authenticateUser}>Entrar</AddButton>
                                 </section>
                             </form>

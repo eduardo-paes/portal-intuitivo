@@ -208,7 +208,7 @@ export default function ActivityDialogFilter(props) {
         <Button onClick={() => setOpen(false)} color="primary">
           Voltar
         </Button>
-        <Button onClick={onSubmit} color="primary">
+        <Button type="submit" onClick={onSubmit} color="primary">
           Filtrar
         </Button>
       </DialogActions>

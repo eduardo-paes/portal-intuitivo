@@ -101,8 +101,8 @@ export default function ContentAccordion(props) {
     })(MuiAccordion);
 
     // Função de abertura dos diálogos
-    const handleClickOpen = async (event) => {
-        const name = await event.target.offsetParent.id;
+    const handleClickOpen = (event) => {
+        const name = event.target.offsetParent.id;
         setOpen(preValue => ({
             ...preValue,
             [name]: true

@@ -30,6 +30,7 @@ export default function ExerciseDialog(props) {
     const [question, setQuestion] = useState([]); 
     const [respostaAluno, setRespostaAluno] = useState(initialState);
     const [respostas, setRespostas] = useState([]);
+    const [wasLoaded, setWasLoaded] = useState(false);
     const token = useContext(StoreContext);
     const alunoID = token.token.userID;
     
@@ -37,7 +38,10 @@ export default function ExerciseDialog(props) {
     async function fetchQuestaoAPI(atividadeID) {
         const response = await api.encQuestoesDaAtividadeID(atividadeID);
         const value = response.data.data;
-        let questao = value.map(item => { return item.questaoID });
+        let questao = value.map(item => { 
+            return item.questaoID
+        });
+        setWasLoaded(true);
         setQuestion(questao);
     }
     
@@ -53,7 +57,7 @@ export default function ExerciseDialog(props) {
     // -- Carrega as questões da atividade
     useEffect(() => {
         const abortController = new AbortController();
-        if (open && activity) {
+        if (open && activity && !wasLoaded) {
             fetchQuestaoAPI(activity._id);
             fetchRespostasQuestaoAPI(activity._id, activity.tipoAtividade);
         }
