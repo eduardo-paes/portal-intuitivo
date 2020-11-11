@@ -5,9 +5,23 @@
 const router = require('./routes');
 const path = require("path");
 const multer = require("multer");
-const fs = require('fs')
-const { promisify } = require('util')
-const unlinkAsync = promisify(fs.unlink)
+const multerS3 = require("multer-s3");
+const aws = require("aws-sdk"); 
+const fs = require('fs');
+const { promisify } = require('util');
+const unlinkAsync = promisify(fs.unlink);
+
+const storageType = {
+    s3: multerS3({
+        s3: new aws.S3(),
+        bucket: 'testeintuitivo',
+        contentType: multerS3.AUTO_CONTENT_TYPE,
+        acl: 'public-read',
+        key: (req, file, cb) => {
+            
+        }
+    })
+}
 
 // Verifica qual o nome correto do arquivo no diretório
 function checkCorrectFileName (fileName) {
@@ -85,6 +99,14 @@ router.post("/upload-conteudo/:id", (req, res) => {
 // Rota para armazenamento da foto de perfil
 router.post("/upload-profile/:id", (req, res) => {
     let id = req.params.id;
+    const storageType = {
+        s3: multerS3({
+            s3: new aws.S3(),
+            bucket: 'testeintuitivo',
+            contentType: multerS3.AUTO_CONTENT_TYPE,
+            acl: 'public-read'
+        })
+    }
     let fotoStorage = multer.diskStorage({
         destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, "..", "..", "uploads", "profile"));
@@ -102,14 +124,15 @@ router.post("/upload-profile/:id", (req, res) => {
             cb(null, true)
         }
     });
-
-    const upload = multer({ storage: fotoStorage }).single("foto");
     
+    const upload = multer({ storage: storageType["s3"] }).single("foto");
+
     upload(req, res, err => {
         if (err) {
             console.log(err);
             return res.json({ success: false, err });
         }
+        
         return res.json({ success: true });
     });
 });

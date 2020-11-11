@@ -85,6 +85,7 @@ export default function UsersUpdate (props) {
                         body: data
                     })
                     .then(res => {
+                        console.log(res)
                         history.push('/controle-usuario/list');
                         window.location.reload();
                         res.json();
