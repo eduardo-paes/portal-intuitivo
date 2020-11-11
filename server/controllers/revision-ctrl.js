@@ -1,5 +1,5 @@
 const Revisao = require('../models/revision-model');
-const AtividadeQuestao = require('../models/activity&question-model');
+const AtividadeQuestao = require('../models/activityQuestion-model');
 const mongoose = require('mongoose');
 
 // ======================================

@@ -1,4 +1,4 @@
-const ClassLink = require('../models/class-link-model');
+const ClassLink = require('../models/classLink-model');
 
 // Função para inserir classLink no banco
 inserirClassLink = (req, res) => {

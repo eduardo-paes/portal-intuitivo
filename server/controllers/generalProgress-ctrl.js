@@ -505,8 +505,6 @@ inserirProgressoRevisao = (req, res) => {
     // Recebe dados do formulário
     const body = req.body;
 
-    console.log(body);
-
     if (!body) {
         return res.status(400).json({
             success: false,
@@ -515,7 +513,6 @@ inserirProgressoRevisao = (req, res) => {
     }
 
     const novoProgresso = new ProgressoRevisao(body);
-    console.log(novoProgresso)
 
     // Verifica se dados não são nulos
     if (!novoProgresso) {
@@ -667,8 +664,6 @@ encProgressoPorRevisaoID = async (req, res) => {
                     .status(404)
                     .json({success: false, error: "Progresso não encontrado."})
             }
-
-            console.log(progressoEncontrado);
 
             return res
                 .status(200)

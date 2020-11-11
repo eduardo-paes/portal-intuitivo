@@ -1,4 +1,4 @@
-const AnoLetivo = require('../models/school-year-model');
+const AnoLetivo = require('../models/schoolYear-model');
 
 // Função para inserir anoLetivo no banco
 inserirAnoLetivo = (req, res) => {

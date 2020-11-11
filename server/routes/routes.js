@@ -13,13 +13,13 @@ const UsuarioCtrl = require("../controllers/user-ctrl");
 const ConteudoCtrl = require("../controllers/content-ctrl");
 const DisciplinaCtrl = require("../controllers/subject-ctrl");
 const TagCtrl = require("../controllers/tag-ctrl");
-const AnoLetivoCtrl = require("../controllers/school-year-ctrl");
+const AnoLetivoCtrl = require("../controllers/schoolYear-ctrl");
 const QuestaoCtrl = require("../controllers/question-ctrl");
 const RespostaQuestaoCtrl = require("../controllers/answerQuestion-ctrl");
 const RespostaAlunoCtrl = require("../controllers/studentAnswer-ctrl");
 const AtividadeCtrl = require("../controllers/activity-ctrl");
 const RevisaoCtrl = require("../controllers/revision-ctrl");
-const ClassLinkCtrl = require("../controllers/class-link-ctrl");
+const ClassLinkCtrl = require("../controllers/classLink-ctrl");
 const ProgressoCtrl = require("../controllers/generalProgress-ctrl");
 
 // USUÁRIO -- Definição dos métodos para cada rota do usuário

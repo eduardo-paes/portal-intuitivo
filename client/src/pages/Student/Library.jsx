@@ -35,6 +35,12 @@ const useStyles = makeStyles((theme) => ({
   },
   libraryMain: {
     marginTop: "1rem",
+  }, 
+  notFoundMsg1: {
+    fontSize: '1.5rem',
+  },
+  notFoundMsg2: {
+    fontSize: '1rem',
   }
 }));
 
@@ -53,6 +59,10 @@ export default function Library (props) {
   async function getCurrentWeek() {
     const numSemanas = await currentWeek();
     for (let i = 1; i <= numSemanas; ++i) { setNumeracao(preValue => ([ ...preValue, i ])) }
+    setFilter(preValue => ({
+      ...preValue,
+      numeracao: numSemanas
+    }));
   }
 
   // Lista Disciplina
@@ -110,7 +120,8 @@ export default function Library (props) {
       if (!listaConteudo.length) {
         return (
           <Grid item={true}>
-            <Typography id="secondaryHeading" className={classes.secondaryHeading}>Nenhum conteúdo encontrado!</Typography>
+            <Typography className={classes.notFoundMsg1}>Nenhum conteúdo encontrado.</Typography>
+            <Typography className={classes.notFoundMsg2}>Tente reajustar o filtro acima para mais conteúdo.</Typography>
           </Grid>
         )
       }

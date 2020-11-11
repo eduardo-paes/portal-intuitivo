@@ -1,5 +1,5 @@
 const Questao = require('../models/question-model');
-const TagQuestao = require('../models/tag&question-model');
+const TagQuestao = require('../models/tagQuestion-model');
 const mongoose = require('mongoose');
 
 // ======================================
