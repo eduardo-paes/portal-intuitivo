@@ -1,3 +1,4 @@
+import Axios from 'axios';
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
 import api from '../../api'
@@ -31,7 +32,7 @@ export default function UsersUpdate (props) {
         async function fetchUsuarioAPI () {
             const response = await api.encUsuarioPorID(props.match.params.id);
             const value = response.data;
-            
+
             if (value.success) {
                 setSenhaAntiga(value.data.senha);
                 setUsuario(preValue => ({
@@ -40,7 +41,7 @@ export default function UsersUpdate (props) {
                     email: value.data.email, 
                     acesso: value.data.acesso, 
                     senha: '', 
-                    url: `http://localhost:5000/uploads/profile/${props.match.params.id}.jpeg`
+                    url: value.data.url
                 }));
             }
     
@@ -55,12 +56,13 @@ export default function UsersUpdate (props) {
     // Salva as mudanças no banco
     async function handleUpdateUser () {
         // Cria usuário atualizado
-        const usuarioAtualizado = {
+        var usuarioAtualizado = {
             nome: usuario.nome,
             email: usuario.email,
             acesso: usuario.acesso,
             senha: usuario.senha === '' ? senhaAntiga : usuario.senha,
             disciplina: usuario.disciplina,
+            url: ''
         }
 
         // Recebe os campos coletados
@@ -73,23 +75,22 @@ export default function UsersUpdate (props) {
         if (error.validated) {
             const {id, foto} = usuario;
 
+            const data = new FormData();
+            data.append("foto", foto);
+
+            await Axios
+                .post(`http://localhost:5000/api/upload-profile/`, data)
+                .then( (res) => {
+                    usuarioAtualizado.url = res.data.url;
+                });
+
             // Guarda usuário atualizado no banco
             await api
                 .atualizarUsuario(id, usuarioAtualizado)
                 .then(res => {
                     window.alert("Usuário atualizado com sucesso.")
-                    const data = new FormData();
-                    data.append("foto", foto);
-                    fetch(`http://localhost:5000/api/upload-profile/${res.data.id}`, {
-                        method: 'POST',
-                        body: data
-                    })
-                    .then(res => {
-                        console.log(res)
-                        history.push('/controle-usuario/list');
-                        window.location.reload();
-                        res.json();
-                    })    
+                    history.push('/controle-usuario/list');
+                    window.location.reload();
                 })
         }
     }

@@ -12,15 +12,30 @@ const { promisify } = require('util');
 const unlinkAsync = promisify(fs.unlink);
 
 const storageType = {
-    s3: multerS3({
+    questao: multerS3({
         s3: new aws.S3(),
-        bucket: 'testeintuitivo',
+        bucket: 'testeintuitivo/Questao',
         contentType: multerS3.AUTO_CONTENT_TYPE,
-        acl: 'public-read',
-        key: (req, file, cb) => {
-            
-        }
-    })
+        acl: 'public-read'
+    }),
+    redacao: multerS3({
+        s3: new aws.S3(),
+        bucket: 'testeintuitivo/Redacao',
+        contentType: multerS3.AUTO_CONTENT_TYPE,
+        acl: 'public-read'
+    }),
+    conteudo: multerS3({
+        s3: new aws.S3(),
+        bucket: 'testeintuitivo/Conteudo',
+        contentType: multerS3.AUTO_CONTENT_TYPE,
+        acl: 'public-read'
+    }),
+    foto: multerS3({
+        s3: new aws.S3(),
+        bucket: 'testeintuitivo/Profile',
+        contentType: multerS3.AUTO_CONTENT_TYPE,
+        acl: 'public-read'
+    }),
 }
 
 // Verifica qual o nome correto do arquivo no diretório
@@ -38,23 +53,9 @@ function checkCorrectFileName (fileName) {
 
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {
-    const crypto = require("crypto");
-    var fileName;
-    let questaoStorage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, path.resolve(__dirname, "..", "..", "uploads", "question"));
-        },
-        filename: (req, file, cb) => {
-            crypto.randomBytes(16, (err, hash) => {
-                if (err) cb(err);
-                fileName = `${hash.toString('hex')}-${file.originalname}`
-                cb(null, fileName);
-            });
-        }
-    });
 
     const upload = multer({ 
-        storage: questaoStorage,
+        storage: storageType["questao"],
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname)
             if (ext !== '.jpg' && ext !== '.png' && ext !== '.mp4') {
@@ -69,92 +70,32 @@ router.post("/upload-questao", (req, res) => {
             console.log(err);
             return res.json({ uploaded: false, err });
         }
-        return res.json({ uploaded: true, url: res.req.file.path , name: fileName});
+        
+        return res.json({ uploaded: true, url: req.file.location , name: fileName});
     });
 });
 
 // Rota para armazenamento de conteúdo pdf
 router.post("/upload-conteudo/:id", (req, res) => {
-    let conteudoStorage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, path.resolve(__dirname, "..", "..", "uploads", "content"));
-        },
-        filename: (req, file, cb) => {
-            const fileName = `${req.params.id}.pdf`
-            cb(null, fileName);
-        }
-    });
 
-    const upload = multer({ storage: conteudoStorage }).single("conteudo");
+    const upload = multer({ storage: storageType["conteudo"] }).single("conteudo");
     
     upload(req, res, err => {
         if (err) {
             console.log(err);
             return res.json({ success: false, err });
         }
-        return res.json({ success: true });
+        return res.json({ success: true, url: req.file.location });
     });
 });
 
 // Rota para armazenamento da foto de perfil
-router.post("/upload-profile/:id", (req, res) => {
-    let id = req.params.id;
-    const storageType = {
-        s3: multerS3({
-            s3: new aws.S3(),
-            bucket: 'testeintuitivo',
-            contentType: multerS3.AUTO_CONTENT_TYPE,
-            acl: 'public-read'
-        })
-    }
-    let fotoStorage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, path.resolve(__dirname, "..", "..", "uploads", "profile"));
-        },
-        filename: (req, file, cb) => {
-            const ext = path.extname(file.originalname);
-            file.key = { id }
-            cb(null, `${ req.params.id + ".jpeg" }`);
-        },
-        fileFilter: (req, file, cb) => {
-            const ext = path.extname(file.originalname);
-            if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg') {
-                return cb(res.status(400).end('only jpg, png, jpeg is allowed'), false);
-            }
-            cb(null, true)
-        }
-    });
-    
-    const upload = multer({ storage: storageType["s3"] }).single("foto");
-
-    upload(req, res, err => {
-        if (err) {
-            console.log(err);
-            return res.json({ success: false, err });
-        }
-        
-        return res.json({ success: true });
-    });
+router.post("/upload-profile/", multer({ storage: storageType["foto"] }).single("foto"), async (req, res) => {
+    return res.json({url: req.file.location})
 });
 
 // Rota para armazenamento da redação do aluno
 router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
-    let alunoID = req.params.alunoID;
-    let redacaoID = req.params.redacaoID;
-
-    let redacaoStorage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, path.resolve(__dirname, "..", "..", "uploads", "redacao"));
-        },
-        filename: (req, file, cb) => {
-            var ext = path.extname(file.originalname);
-            if (ext !== '.pdf') {
-                ext = '.jpg';
-            }
-            file.key = { alunoID, redacaoID }
-            cb(null, `${ alunoID + redacaoID + ext }`);
-        }
-    });
 
     const removeCopyFile = async () => {
         const pathEssay = path.resolve(__dirname, "..", "..", "uploads", "redacao");
@@ -174,7 +115,7 @@ router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
     }
 
     const upload = multer({ 
-        storage: redacaoStorage,
+        storage: storageType["redacao"],
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname);
             removeCopyFile();
@@ -190,7 +131,7 @@ router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
     
     upload(req, res, err => {
         if (!err) {
-            return res.json({ success: true });
+            return res.json({ success: true, url: req.file.location });
         }
         console.log(err);
     });

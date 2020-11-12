@@ -27,6 +27,10 @@ const Usuario = new Schema({
             }
         }
     ],
+    url: {
+        type: String,
+        required: false
+    }
 });
 
 module.exports = mongoose.model("usuario", Usuario);

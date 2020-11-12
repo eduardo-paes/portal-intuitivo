@@ -1,3 +1,4 @@
+import Axios from 'axios'
 import React, { useState} from 'react'
 import api from '../../api'
 
@@ -33,34 +34,36 @@ export default function UsersInsert() {
 
         if (error.validated) {
             const { nome, email, acesso, senha, disciplina, foto } = usuario;
-
-            // Cria usuário atualizado
+            
+            const data = new FormData();
+            data.append("foto", foto);
+            let url = "";
+            
+            if (foto) {
+                await Axios
+                .post(`http://localhost:5000/api/upload-profile/`, data)
+                .then( (res) => {
+                    url = res.data.url;
+                });
+            }
+            
+            // Cria novo usuário
             const novoUsuario = {
                 nome,
                 email,
                 acesso,
                 senha,
-                disciplina
+                disciplina,
+                url
             };
-
+            
             // Guarda novo usuário no banco
             await api
                 .inserirUsuario(novoUsuario)
                 .then(res => {
                     window.alert("Usuário inserido com sucesso.");
-
-                    if (foto) {
-                        const formData = new FormData();
-                        formData.append("foto", foto);
-                        fetch(`http://localhost:5000/api/upload-profile/${res.data.id}`, {
-                                method: 'POST',
-                                body: formData
-                            })
-                            .then(res => res.json())
-                            
-                        // Limpa os campos
-                        setUsuario(initialState);
-                    }
+                    // Limpa os campos
+                    setUsuario(initialState);
                 })
         }
     }  

@@ -38,7 +38,6 @@ export default function UserForm (props) {
 
     const {token} = useContext(StoreContext);
     const adminUser = token.accessType === "Administrador" ? true : false;
-
     
     // Guarda o dado vindo do input
     const handleChange = (event) => {

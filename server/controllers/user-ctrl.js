@@ -91,6 +91,7 @@ atualizarUsuario = async (req, res) => {
         usuarioEncontrado.email = usuario.email
         usuarioEncontrado.acesso = usuario.acesso
         usuarioEncontrado.disciplina = usuario.disciplina
+        usuarioEncontrado.url = usuario.url
 
         bcrypt.genSalt(saltLake, function(errSalt, salt) {
             if (errSalt) {
@@ -265,7 +266,8 @@ confirmarUsuario = async (req, res) => {
                         userID: usuarioEncontrado._id,
                         userName: usuarioEncontrado.nome,
                         accessType: usuarioEncontrado.acesso,
-                        disciplina: usuarioEncontrado.disciplina ? usuarioEncontrado.disciplina : []
+                        disciplina: usuarioEncontrado.disciplina ? usuarioEncontrado.disciplina : [],
+                        url: usuarioEncontrado.url
                     }
 
                     return res.status(200).json({

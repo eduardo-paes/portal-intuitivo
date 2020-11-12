@@ -27,6 +27,7 @@ export default function ProfileMenu(props) {
     const { token, setToken } = useContext(StoreContext)
     const [anchorEl, setAnchorEl] = useState(null);
     const [srcImg, setSrcImg] = useState('');
+    console.log(token);
     
     const profileOpen = Boolean(anchorEl);
     const history = useHistory();
@@ -47,7 +48,7 @@ export default function ProfileMenu(props) {
     };
 
     useEffect(() => {
-        setSrcImg(`http://localhost:5000/uploads/profile/${token.userID}.jpeg`)
+        setSrcImg(token.url)
     }, [token])
 
     return (
