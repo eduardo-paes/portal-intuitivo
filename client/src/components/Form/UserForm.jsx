@@ -10,9 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Upload from "../Upload/Upload";
 import "./Styles/styleUserForm.css";
 import api from '../../api';
-
 import {StoreContext} from '../../utils'
-
 
 const useStyles = makeStyles((theme) => ({
     fabButton: {
@@ -64,7 +62,6 @@ export default function UserForm (props) {
           if (index === position) {
             return { ...item, disciplinaID: value };
           }
-          
           return item;
         });
         setProfDisciplinas(updatedSubjectItems);
@@ -88,7 +85,7 @@ export default function UserForm (props) {
     // -- Caso o usuário seja do tipo professor, permite que sejam escolhidas disciplinas
     useEffect(() => {
         const abortController = new AbortController();
-        if (acesso === 'Professor' && subjectLoading) {
+        if (acesso !== 'Aluno' && subjectLoading) {
             async function fetchDisciplinaAPI() {
                 const response = await api.listarDisciplinas();
                 const value = response.data;
@@ -171,8 +168,11 @@ export default function UserForm (props) {
                         {erros.acesso && <p className={classes.errorMessage}>{erros.acesso}</p>}
 
                         {
-                            (acesso === "Professor") && profDisciplinas.map((item, index) => {
+                            (acesso !== "Aluno") && profDisciplinas.map((item, index) => {
                                 let tam = profDisciplinas.length;
+
+                                console.log(item);
+                                
                                 return (
                                     <Grid key={index} container={true}>
                                         <Grid item={true} xs={adminUser ? 10 : 12} sm={adminUser ? 11 : 12}>
@@ -181,7 +181,7 @@ export default function UserForm (props) {
                                                 label="Disciplina"
                                                 name="disciplina"
                                                 value={item.disciplinaID}
-                                                hidden={acesso !== "Professor" ? true : false}
+                                                hidden={acesso === "Aluno" ? true : false}
                                                 disabled={!adminUser}
                                                 variant="outlined"
                                                 onChange={e => handleSubjectChange(index, e.target.value)}

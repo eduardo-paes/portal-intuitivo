@@ -48,7 +48,6 @@ export default function UsersList() {
 
     useEffect(() => {
         const abortController = new AbortController();
-
         if (filter !== initialFilter) {
             setTempData(usuario.filter(row => {
                 let auxName = (row.nome.toLowerCase().includes(filter.nome.toLowerCase()) || filter.nome === '') ? true : false;
@@ -60,9 +59,6 @@ export default function UsersList() {
         } else {
             setTempData(usuario);
         }
-
-        console.log("Here");
-
         return abortController.abort();
         // eslint-disable-next-line
     }, [filter])

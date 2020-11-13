@@ -11,6 +11,7 @@ export default function FormDialog(props) {
     disciplinaID: "",
     numeracao: ""
   });
+  const [array, setArray] = useState([]);
 
   // -- Carrega as Disciplinas existentes no banco
   useEffect(() => {
@@ -25,6 +26,10 @@ export default function FormDialog(props) {
       const value = response.data.data;
       setListaDisciplina(value);
     }
+
+    const aux = [];
+    for (let i = 1; i < 33; ++i) aux[i-1] = i;
+    setArray(aux);
 
     fetchDisciplinaAPI()
     return abortController.abort();
@@ -44,9 +49,6 @@ export default function FormDialog(props) {
     setFilter(tempFilter);
     setOpen(false);
   };
-
-  const array = [];
-  for (let i = 1; i < 33; ++i) array[i-1] = i;
 
   return (
     <Dialog open={open} fullWidth={true} onClose={() => setOpen(false)} aria-labelledby="form-dialog-title">

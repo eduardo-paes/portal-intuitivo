@@ -68,7 +68,7 @@ function descendingComparator(a, b, orderBy) {
     } 
     
     else if (orderBy === 'disciplina') {
-        var aux = a.atividadeID ? 'atividadeID' : 'redacaoID';
+        aux = a.atividadeID ? 'atividadeID' : 'redacaoID';
 
         if (b.[aux].topicoID.disciplinaID.nome < a.[aux].topicoID.disciplinaID.nome) {
             return -1;

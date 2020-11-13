@@ -163,7 +163,6 @@ export default function ActivityToCorrect (props) {
   }
 
   function calcularProgressoAluno () {
-    
     var total = 0, corrigidos = 0;
     var auxiliar = [];
     var aCorrigir = [];
@@ -198,57 +197,24 @@ export default function ActivityToCorrect (props) {
     setProgresso(corrigidos);
     
   }
-
-  function calcularProgressoGeral (progressoAluno) {
-    
-    // let aux = 0;
-    // let corrigidos = 0;
-    // for (let index = 0; index < progressoAluno.length; ++index) {
-    //   aux = aux + progressoAluno[index].length;
-    //   for (let i = 0; i < progressoAluno[index].length; ++i) {
-    //     if(progressoAluno[index][i].corrigido === true) corrigidos = corrigidos + 1;
-    //   }
-    // }
-    
-
-
-    // progressoAluno.map((row) => {
-    //   setNumTasks(numTasks + row.length);
-    //   row.forEach(element => {
-    //     if (element.corrigido === true) setProgresso(progresso + 1);
-    //   });
-    //   return null;
-    // })
-    
-    // respostaAluno.forEach((item, index) => {
-    //   item.respostaQuestaoIDs.map((row, index) => {
-      //     if (row.corrigido !== true) {
-        //       setNumTasks(numTasks + 1);
-        //       let aux = [];
-        //       aux.push(true);
-        //       setACorrigirQuestao(aux);
-        //     }
-        //   })
-        //   setProgresso(questoes.length - aCorrigirQuestao);
-        // });
-      }
       
   useEffect(() => {
+    const abortController = new AbortController();
     pegarRespostasAluno(activityID);
     listarAlunos();
     listarQuestoes();
+    return abortController.abort();
     // eslint-disable-next-line
   }, [wasLoaded])
   
   useEffect(() => {
+    const abortController = new AbortController();
     calcularProgressoAluno();
-    // if (progressoAluno.length !== 0) calcularProgressoGeral(progressoAluno);
-    // console.log(numTasks, progresso); 
+    return abortController.abort();
     // eslint-disable-next-line
   }, [respostaAluno])
 
   function retornarRespostaDiscursiva(defaultValue, resposta, id, comentario, index) {
-    
     async function adicionandoComentario() {
       const response = await api.encRespostaQuestaoPorID(id);
       let novaResposta = response.data.data;

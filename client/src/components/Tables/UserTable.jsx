@@ -27,7 +27,6 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UserDialogFilter from "../Dialogs/UserDialogFilter";
-import { useEffect } from "react";
 
 // Botão de Atualização
 function UpdateUser (props) {

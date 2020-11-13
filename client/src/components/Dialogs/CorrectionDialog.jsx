@@ -1,3 +1,4 @@
+//#region Importações Iniciais
 import React, { useState, useEffect } from "react";
 
 // -- Componentes
@@ -5,8 +6,7 @@ import {
     withStyles, 
     makeStyles, 
     Grid, 
-    Button,  
-    Typography, 
+    Button,
     Avatar, 
     Badge,
     Dialog,
@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 
 import { SimpleRadio, UploadEssay, SimpleSnackMessage } from "../";
-import { GeneralSubtitle } from "../../assets/styles/styledComponents"
+import { GeneralSubtitle, GeneralText } from "../../assets/styles/styledComponents"
 
 // -- Ícones Material UI
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -35,7 +35,11 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import api from '../../api';
 import axios from "axios";
 import { WirisIframe } from "../"
+import SimpleList from "./Utils/SimpleList";
+import { eixo1, eixo2, eixo3 } from "../../utils"
+//#endregion
 
+//#region Componentes e Estilos
 const styles = (theme) => ({
     root: {
         margin: 0,
@@ -52,7 +56,10 @@ const useStyles = makeStyles((theme) => ({
       padding: '1rem'
     },
     buttonGroup: {
-      textAlign: 'center'
+      textAlign: 'center',
+      alignItems: 'center',
+      marginBottom: '1rem',
+      padding: '0 1rem 0'
     },
     divider: {
       marginRight: '1rem'
@@ -133,6 +140,45 @@ const DialogActions = withStyles((theme) => ({
         alignContent: "flex-end",
     },
 }))(MuiDialogActions);
+//#endregion
+
+const eixos = {
+    eixo1: {
+        a1: 0,
+        a2: 0,
+        a3: 0,
+        a4: 0,
+        a5: 0,
+        a6: 0,
+        a7: 0,
+        a8: 0,
+        a9: 0,
+    },
+    eixo2: {
+        b1: 0,
+        b2: 0,
+        b3: 0,
+        b4: 0,
+        b5: 0,
+        b6: 0,
+        b7: 0,
+        b8: 0,
+        b9: 0,
+        b10: 0,
+        b11: 0,
+        b12: 0,
+    },
+    eixo3: {
+        c1: 0,
+        c2: 0,
+        c3: 0,
+        c4: 0,
+        c5: 0,
+        c6: 0,
+        c7: 0,
+        c8: 0,
+    },
+}
 
 export default function CorrectionEssayDialog(props) {
     const {redacaoID, data, aluno, open, setOpen, setWasChanged} = props;
@@ -145,6 +191,9 @@ export default function CorrectionEssayDialog(props) {
     const [propostaRedacao, setPropostaRedacao] = useState('');
     const [wasLoaded, setWasLoaded] = useState({ proposta: false });
     const [uploadError, setUploadError] = useState(false);
+    const [eixo1Aluno, setEixo1Aluno] = useState(eixos.eixo1);
+    const [eixo2Aluno, setEixo2Aluno] = useState(eixos.eixo2);
+    const [eixo3Aluno, setEixo3Aluno] = useState(eixos.eixo3);
 
     const downloadLink = `http://localhost:5000/api/download-redacao/${aluno._id}/${redacaoID}`;
     const srcImg = `http://localhost:5000/uploads/profile/${aluno._id}.jpeg`;
@@ -206,7 +255,10 @@ export default function CorrectionEssayDialog(props) {
             progresso: data.progresso,
             dataConclusao: data.dataConclusao,
             corrigido: true,
-            nota: notaAluno
+            nota: notaAluno,
+            eixo1: eixo1Aluno,
+            eixo2: eixo2Aluno,
+            eixo3: eixo3Aluno,
         }
 
         if (essayUploaded) {
@@ -236,6 +288,9 @@ export default function CorrectionEssayDialog(props) {
         setNotaAluno(0);
         setEssayUploaded(false);
         setFeedOpen(false);
+        setEixo1Aluno(eixos.eixo1);
+        setEixo2Aluno(eixos.eixo2);
+        setEixo3Aluno(eixos.eixo3);
     }
 
     useEffect(() => {
@@ -256,14 +311,14 @@ export default function CorrectionEssayDialog(props) {
                         </Badge>
                     </Grid>
                     <Grid item={true} xs={10} sm={11}>
-                        <Typography variant="h6" className={classes.userName}>{aluno.nome}</Typography>
+                        <GeneralText variant="h6" className={classes.userName}>{aluno.nome}</GeneralText>
                     </Grid>
                 </Grid>
             </DialogTitle>
 
             <DialogContent dividers>
-                <Grid id="correctionEssayPropose" container={true} spacing={2}>
-                    <Grid item={true} xs={12}>
+                <Grid container={true} spacing={2}>
+                    <Grid id="correctionEssayPropose" item={true} xs={12}>
                         <Accordion square >
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
                                 <Grid container>
@@ -279,17 +334,60 @@ export default function CorrectionEssayDialog(props) {
                                 <WirisIframe text={propostaRedacao}/>
                             </AccordionDetails>
                         </Accordion>
+                        <Divider style={{ margin: '1rem 0 1rem 0' }}/>
                     </Grid>
 
                     <Grid id="correctionEssayRadio" item={true} xs={12}>
-                        <Divider style={{ marginBottom: '1rem',  }}/>
                         <GeneralSubtitle className={classes.subtitle}>Correção</GeneralSubtitle>
                         <p className={classes.subtitle}>Ao concluir a correção da redação, defina uma nota para o aluno e faça o upload da correção em pdf.</p>
                         <SimpleRadio title='Nota' value={notaAluno} setValue={setNotaAluno}/>
+                        <Divider style={{ margin: '1rem 0 1rem 0' }}/>
                     </Grid>
 
-                    <Grid id="correctionEssayButons" item={true} xs={12}>
-                        <Grid container={true} alignItems='center'spacing={1}>
+                    <Grid id="correctionEssayEixo1" item={true} xs={12}>
+                        <Accordion square >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
+                                <Grid container>
+                                    <GeneralSubtitle>Eixo 1</GeneralSubtitle>
+                                </Grid>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <SimpleList array={eixo1} value={eixo1Aluno} setValue={setEixo1Aluno} word="A"/>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider style={{ margin: '1rem 0 1rem 0' }}/>
+                    </Grid>
+
+                    <Grid id="correctionEssayEixo2" item={true} xs={12}>
+                        <Accordion square >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
+                                <Grid container>
+                                    <GeneralSubtitle>Eixo 2</GeneralSubtitle>
+                                </Grid>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <SimpleList array={eixo2} value={eixo2Aluno} setValue={setEixo2Aluno} word="B"/>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider style={{ margin: '1rem 0 1rem 0' }}/>
+                    </Grid>
+
+                    <Grid id="correctionEssayEixo3" item={true} xs={12}>
+                        <Accordion square >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
+                                <Grid container>
+                                    <GeneralSubtitle>Eixo 3</GeneralSubtitle>
+                                </Grid>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <SimpleList array={eixo3} value={eixo3Aluno} setValue={setEixo3Aluno} word="C"/>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider style={{ margin: '1rem 0 1rem 0' }}/>
+                    </Grid>
+
+                    <Grid id="correctionEssayButtons" item={true} xs={12}>
+                        <Grid container={true} className={classes.buttonGroup} spacing={1}>
 
                             <Grid item={true} xs={12} sm={4}>
                                 <Button fullWidth={true} variant="outlined" color="primary" onClick={DownloadEssay} startIcon={<DownloadIcon />}>

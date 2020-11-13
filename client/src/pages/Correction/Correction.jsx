@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { StoreContext } from "../../utils";
 import api from '../../api'
 
-import { GeneralSubtitle, GeneralTitle, MyContainer } from "../../assets/styles/styledComponents"
-import { makeStyles, ButtonGroup, Tooltip, Button, Grid, Typography } from "@material-ui/core";
+import { GeneralSubtitle, GeneralText, GeneralTitle, MyContainer } from "../../assets/styles/styledComponents"
+import { makeStyles, ButtonGroup, Tooltip, Button, Grid, Fade } from "@material-ui/core";
 import { CorrectionTable, CorrectionDialog } from '../../components'
 
 // -- Local Styles
@@ -93,6 +93,10 @@ export default function Correction() {
             }
         });
 
+        if (!arrayAux.length) {
+            setRedacao([]);
+        }
+
         setWasLoaded(preValue => ({
             ...preValue,
             redacao: true
@@ -130,7 +134,9 @@ export default function Correction() {
     // -- Carregamento inicial das redações
     useEffect(() => {
         const abortController = new AbortController();
-        (!wasLoaded.redacao && !toLoad.redacao && redacao.length) && fetchRedacoes();
+        if (isEssay && !wasLoaded.redacao && !toLoad.redacao) {
+            fetchRedacoes();
+        }
         return abortController.abort();
         // eslint-disable-next-line
     }, [wasLoaded.redacao])
@@ -178,33 +184,46 @@ export default function Correction() {
 
         if (data.length > 0) {
             return (
-                <CorrectionTable 
-                    data={data} 
-                    essay={isEssay} 
-                    filterDialog={filterDialog}
-                    setFilterDialog={setFilterDialog}
-                    setSelectedRow={setSelectedRow}
-                    setDialogOpen={setDialogOpen}
-                    filter={filter}
-                    setFilter={setFilter}
-                />
+                <Fade in={true} style={{transitionDelay: '100ms'}}>
+                    <CorrectionTable 
+                        data={data} 
+                        essay={isEssay} 
+                        filterDialog={filterDialog}
+                        setFilterDialog={setFilterDialog}
+                        setSelectedRow={setSelectedRow}
+                        setDialogOpen={setDialogOpen}
+                        filter={filter}
+                        setFilter={setFilter}/>
+                </Fade>
             )
         } else {
-            return <GeneralSubtitle>Pode relaxar que não há {title} pendentes para correção aqui!</GeneralSubtitle>
+            return (
+                <Fade in={true} style={{transitionDelay: '250ms'}}>
+                    <GeneralSubtitle>Pode relaxar que não há {title} pendentes para correção aqui!</GeneralSubtitle>
+                </Fade>
+            )
         }
     }
 
     // -- Retorna mensagem informando quantidade de correções pendentes
-    const returnCountingPendencies = () => {
+    const ReturnCountingPendencies = () => {
         if (isEssay) {
             if (redacao.length > 0) {
-                return (<Typography variant="h6">Correções pendentes: {redacao.length}</Typography>)
+                return (
+                    <Fade in={true} style={{transitionDelay: '100ms'}}>
+                        <GeneralText variant="h6">Correções pendentes: {redacao.length}</GeneralText>
+                    </Fade>
+                )
             }
             return;
         }
 
         if (atividade.length > 0) {
-            return (<Typography variant="h6">Correções pendentes: {atividade.length}</Typography>)
+            return (
+                <Fade in={true} style={{transitionDelay: '100ms'}}>
+                    <GeneralText variant="h6">Correções pendentes: {atividade.length}</GeneralText>
+                </Fade>
+            )
         }
         return;
     }
@@ -214,30 +233,30 @@ export default function Correction() {
             <section id="correctionHeader">
                 <Grid container={true} spacing={1}>
                     <Grid item={true} xs={12} sm={12}>
-                        <GeneralTitle id="correctionTitle">Correções Pendentes</GeneralTitle>
-                        { returnCountingPendencies() }
+                        <Fade in={true} style={{transitionDelay: '100ms'}}>
+                            <GeneralTitle id="correctionTitle">Correções Pendentes</GeneralTitle>
+                        </Fade>
+                        { ReturnCountingPendencies() }
                     </Grid>
 
                     <Grid align="right" item={true} xs={12} sm={12} className={classes.groupButtons}>
-                        <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-                            <Tooltip title="Visualizar Redações">
-                                <Button onClick={() => setToLoad(preValue => ({ ...preValue, redacao: true}))}>Redações</Button>
-                            </Tooltip>
+                        <Fade in={true} style={{transitionDelay: '100ms'}}>
+                            <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
+                                <Tooltip title="Visualizar Redações">
+                                    <Button onClick={() => setToLoad(preValue => ({ ...preValue, redacao: true}))}>Redações</Button>
+                                </Tooltip>
 
-                            <Tooltip title="Visualizar Atividades">
-                                <Button onClick={() => setToLoad(preValue => ({ ...preValue, atividade: true}))}>Atividades</Button>
-                            </Tooltip>
-
-                            {/* <Tooltip title="Visualizar Avaliações Diagnósticas">
-                                <Button onClick={() => setToLoad(preValue => ({ ...preValue, atividade: true}))}>ADs</Button>
-                            </Tooltip> */}
-                        </ButtonGroup>
+                                <Tooltip title="Visualizar Atividades">
+                                    <Button onClick={() => setToLoad(preValue => ({ ...preValue, atividade: true}))}>Atividades</Button>
+                                </Tooltip>
+                            </ButtonGroup>
+                        </Fade>
                     </Grid>
                 </Grid>
             </section>
 
             <section id="tabelaCorrecoes">
-                {ReturnCorrectionTable()}
+                { ReturnCorrectionTable() }
             </section>
 
             <section id="correctionDialogs">

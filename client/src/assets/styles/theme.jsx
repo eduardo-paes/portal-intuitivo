@@ -16,12 +16,11 @@ const theme = createMuiTheme({
         main: red[500],
         dark: red[700],
         contrastText: '#fff',
-        // contrastText: getContrastText(red[500]),
       },
     },
     typography: {
-        color: "#606161",
-        fontFamily: 'Apertura, sans-serif',
+      color: "#606161",
+      fontFamily: 'Apertura, sans-serif',
     },
     button: {
       textDecoration: "none",

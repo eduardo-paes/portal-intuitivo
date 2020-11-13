@@ -41,10 +41,10 @@ export default function UsersInsert() {
             
             if (foto) {
                 await Axios
-                .post(`http://localhost:5000/api/upload-profile/`, data)
-                .then( (res) => {
-                    url = res.data.url;
-                });
+                    .post(`http://localhost:5000/api/upload-profile/`, data)
+                    .then( (res) => {
+                        url = res.data.url;
+                    });
             }
             
             // Cria novo usuário

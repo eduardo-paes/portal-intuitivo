@@ -64,25 +64,25 @@ export default function UsersUpdate (props) {
             disciplina: usuario.disciplina,
             url: ''
         }
-
+        
         // Recebe os campos coletados
         const error = validate(usuarioAtualizado, true)
         setUsuario(preValue => ({
             ...preValue,
             erros: error
         }));
-
+        
         if (error.validated) {
             const {id, foto} = usuario;
-
+            
             const data = new FormData();
             data.append("foto", foto);
-
+            
             await Axios
-                .post(`http://localhost:5000/api/upload-profile/`, data)
-                .then( (res) => {
-                    usuarioAtualizado.url = res.data.url;
-                });
+            .post(`http://localhost:5000/api/upload-profile/`, data)
+            .then( (res) => {
+                usuarioAtualizado.url = res.data.url;
+            });
 
             // Guarda usuário atualizado no banco
             await api

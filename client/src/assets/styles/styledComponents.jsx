@@ -86,6 +86,12 @@ const GeneralSubtitle = withStyles((theme) => ({
     },
 }))(Typography);
 
+const GeneralText = withStyles((theme) => ({
+    root: {
+        color: "#606161",
+    },
+}))(Typography);
+
 // -- Others
 const MyTextField = styled(TextField)({
     marginBottom: "0.625rem", 
@@ -157,5 +163,6 @@ export {
     MyAvatar,
     GeneralTitle,
     GeneralSubtitle,
+    GeneralText,
     QuestionNumeration
 }

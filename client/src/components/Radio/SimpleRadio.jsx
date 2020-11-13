@@ -1,8 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography, Slider, Input } from '@material-ui/core';
+import { Grid, Slider, Input } from '@material-ui/core';
 import GradeIcon from '@material-ui/icons/Grade';
 import "./RadioStyles.css";
+import { GeneralText } from '../../assets/styles/styledComponents';
 
 const useStyles = makeStyles((theme) => ({
   colorAction: {
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
   grade: {
-    textAlign: 'right',
+    textAlign: 'center',
     marginTop: '1.5rem'
   },
   container: {
@@ -52,8 +53,8 @@ export default function InputSlider(props) {
         label: '',
       },
       {
-      value: 100,
-      label: '',
+        value: 100,
+        label: '',
       },
     ];
 
@@ -81,7 +82,7 @@ export default function InputSlider(props) {
         </Grid>
 
         <Grid item={true} xs={10} className={classes.sliderGrid}>
-          <Typography id="input-slider" gutterBottom>{title}</Typography>
+          <GeneralText id="input-slider" gutterBottom>{title}</GeneralText>
           <Slider
             value={typeof value === 'number' ? value : 0}
             className={classes.slider}
@@ -105,6 +106,7 @@ export default function InputSlider(props) {
                 max: 100,
                 type: 'number',
                 'aria-labelledby': 'input-slider',
+                style: { textAlign: 'center' }
               }}
             />
         </Grid>

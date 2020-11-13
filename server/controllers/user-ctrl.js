@@ -205,23 +205,22 @@ encUsuarioPorEmail = async (req, res) => {
 }
 
 // Função para listar os usuários contidos no banco
-listarUsuarios = async (req, res) => {
-    await Usuario.find({}, (err, listaUsuarios) => {
-        // Verificação de erros
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-        // Verifica se há dados na lista
-        if (!listaUsuarios.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: "Dados não encontrados." })
-        }
-        // Caso não haja erros, retorna lista de usuários
-        return res.status(200).json({ success: true, data: listaUsuarios })
-    })
-    // Havendo erro, retorna o erro
-    .catch(err => console.log(err))
+listarUsuarios = async (req, res) => {   
+    await Usuario.find({}).sort({nome: 1})
+        .then((listaUsuarios, err) => {
+            // Verificação de erros
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            // Verifica se há dados na lista
+            if (!listaUsuarios.length) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: "Dados não encontrados." })
+            }
+            // Caso não haja erros, retorna dados
+            return res.status(200).json({ success: true, data: listaUsuarios })
+        }).catch(err => console.log(err));
 }
 
 // Função para validar usuário e senha fornecidos durante autenticação
