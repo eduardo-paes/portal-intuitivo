@@ -30,12 +30,6 @@ const storageType = {
         contentType: multerS3.AUTO_CONTENT_TYPE,
         acl: 'public-read'
     }),
-    foto: multerS3({
-        s3: new aws.S3(),
-        bucket: 'testeintuitivo/Profile',
-        contentType: multerS3.AUTO_CONTENT_TYPE,
-        acl: 'public-read'
-    }),
 }
 
 // Verifica qual o nome correto do arquivo no diretório
@@ -90,8 +84,31 @@ router.post("/upload-conteudo/:id", (req, res) => {
 });
 
 // Rota para armazenamento da foto de perfil
-router.post("/upload-profile/", multer({ storage: storageType["foto"] }).single("foto"), async (req, res) => {
-    return res.json({url: req.file.location})
+router.post("/upload-profile/:id", async (req, res) => {
+    const id = req.params.id;
+
+    console.log(id);
+
+    storage = { 
+        foto: multerS3({
+            s3: new aws.S3(),
+            bucket: 'testeintuitivo/Profile',
+            contentType: multerS3.AUTO_CONTENT_TYPE,
+            acl: 'public-read',
+            key: function (req, file, cb) {
+                cb(null, id)
+            }
+        })
+    }
+
+    const upload = multer({ storage: storage["foto"] }).single("foto");
+    
+    upload(req, res, err => {
+        if (!err) {
+            return res.json({ success: true, url: req.file.location });
+        }
+        console.log(err);
+    });
 });
 
 // Rota para armazenamento da redação do aluno

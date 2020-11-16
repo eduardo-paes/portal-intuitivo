@@ -79,7 +79,7 @@ export default function UsersUpdate (props) {
             data.append("foto", foto);
             
             await Axios
-            .post(`http://localhost:5000/api/upload-profile/`, data)
+            .post(`http://localhost:5000/api/upload-profile/${id}`, data)
             .then( (res) => {
                 usuarioAtualizado.url = res.data.url;
             });
@@ -88,6 +88,7 @@ export default function UsersUpdate (props) {
             await api
                 .atualizarUsuario(id, usuarioAtualizado)
                 .then(res => {
+                    
                     window.alert("Usuário atualizado com sucesso.")
                     history.push('/controle-usuario/list');
                     window.location.reload();

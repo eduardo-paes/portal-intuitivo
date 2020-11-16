@@ -39,16 +39,8 @@ export default function UsersInsert() {
             data.append("foto", foto);
             let url = "";
             
-            if (foto) {
-                await Axios
-                    .post(`http://localhost:5000/api/upload-profile/`, data)
-                    .then( (res) => {
-                        url = res.data.url;
-                    });
-            }
-            
             // Cria novo usuário
-            const novoUsuario = {
+            let novoUsuario = {
                 nome,
                 email,
                 acesso,
@@ -60,8 +52,14 @@ export default function UsersInsert() {
             // Guarda novo usuário no banco
             await api
                 .inserirUsuario(novoUsuario)
-                .then(res => {
+                .then(async res => {
+                    Axios
+                        .post(`http://localhost:5000/api/upload-profile/${res.data.id}`, data)
+                        .then( (res) => {
+                            novoUsuario.url = res.data.url;
+                        });
                     window.alert("Usuário inserido com sucesso.");
+                    await api.atualizarUsuario(res.data.id, novoUsuario);
                     // Limpa os campos
                     setUsuario(initialState);
                 })
