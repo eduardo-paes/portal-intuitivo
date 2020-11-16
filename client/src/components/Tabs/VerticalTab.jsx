@@ -47,7 +47,11 @@ export default function VerticalTabs(props) {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    setIndice(newValue);
+    if (questoes !== 0 && questoes !== undefined) {
+      setIndice(questoes[newValue].index);
+    } else {
+      setIndice(newValue);
+    }
   };
 
   const calcularPendentes = (array, indice) => {
@@ -79,7 +83,7 @@ export default function VerticalTabs(props) {
                   { 
                     aCorrigir.length !== 0
                     ?
-                      aCorrigir[value][index] === false
+                      aCorrigir[row.index] === false
                       ? <Grid xs={3}>
                           <CheckIcon className={classes.check}/>
                         </Grid>
@@ -87,10 +91,10 @@ export default function VerticalTabs(props) {
                     : null
                   }
                   <Grid xs={9}>
-                    {"Questão " + ( index + 1 )}
+                    {"Questão " + ( questoes[index].index + 1 )}
                     <Typography 
                       className={classes.progressText}
-                    > {calcularPendentes(aCorrigir, index)}
+                    > {calcularPendentes(aCorrigir, questoes[index].index)}
                     </Typography>
                   </Grid>
                 </Grid>

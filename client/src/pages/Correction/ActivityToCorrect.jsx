@@ -105,6 +105,7 @@ export default function ActivityToCorrect (props) {
   const [ wasLoaded, setWasLoaded ] = useState(false);
   const [ flag, setFlag ] = useState(false);
   const [ indice, setIndice ] = useState(0);
+  const [ value, setValue ] = useState(0);
 
   const [ listarPorAluno, setListarPorAluno ] = useState(false);
   const [ respostaAluno, setRespostaAluno ] = useState([]);
@@ -137,9 +138,8 @@ export default function ActivityToCorrect (props) {
       respostaAluno[0].atividadeID.questoes.map( async (row, index) => {
         if (row.questaoID.tipoResposta === 'discursiva') {
           const { _id, enunciado, resposta, padraoResposta, tipoResposta, corrigido } = row.questaoID;
-          aux.push({ _id, enunciado, resposta, padraoResposta, tipoResposta, corrigido });
+          aux.push({ _id, enunciado, resposta, padraoResposta, tipoResposta, corrigido, index });
         }
-        
       })
       setQuestoes(aux);
     }
@@ -152,16 +152,31 @@ export default function ActivityToCorrect (props) {
         const { _id, nome } = row.alunoID;
         const { corrigido } = row;
         if(!row.respostaQuestaoIDs.find(element => element.corrigido !== true)) {
-          let novaResposta = row;
-          novaResposta.corrigido = true;
-          await api.atualizarRespostaAluno(row._id, novaResposta);
+          corrigirAtividade(row);
         };
         aux.push({_id, nome, corrigido});
       })
       setAlunos(aux);
     }
   }
+  
+  async function corrigirAtividade (respostaAluno) {
+    
+    var nota = 0;
+    for (let index = 0; index < respostaAluno.respostaQuestaoIDs.length; index++) {
+      nota = nota + respostaAluno.respostaQuestaoIDs[index].nota;
+    }
 
+    nota = (nota) / respostaAluno.respostaQuestaoIDs.length;
+
+    if (nota === respostaAluno.nota) return null;
+
+    let novaResposta = respostaAluno;
+    novaResposta.nota = nota;
+    novaResposta.corrigido = true;
+    await api.atualizarRespostaAluno(respostaAluno._id, novaResposta);
+  }
+  
   function calcularProgressoAluno () {
     var total = 0, corrigidos = 0;
     var auxiliar = [];
@@ -174,7 +189,6 @@ export default function ActivityToCorrect (props) {
       array = [];
       for (let j = 0; j < respostaAluno[i].respostaQuestaoIDs.length; j++) {
         questao = questoes.find(element => { return element._id === respostaAluno[i].respostaQuestaoIDs[j].questaoID })
-        console.log(questao);
         if (questao && questao.tipoResposta === 'discursiva') {
           total = total + 1;
           array.push(respostaAluno[i].respostaQuestaoIDs[j])
@@ -184,13 +198,11 @@ export default function ActivityToCorrect (props) {
             auxiliar.push(false);
             corrigidos = corrigidos + 1;
           }
-        } 
+        } else auxiliar.push(false);
       }
       aux.push(array);
       aCorrigir.push(auxiliar); 
     }
-    console.log(aCorrigir);
-    console.log(aux);
     setACorrigirQuestao(aCorrigir);
     setProgressoAluno(aux);
     setNumTasks(total);
@@ -215,6 +227,9 @@ export default function ActivityToCorrect (props) {
   }, [respostaAluno])
 
   function retornarRespostaDiscursiva(defaultValue, resposta, id, comentario, index) {
+
+    console.log(defaultValue, resposta, id, comentario, index)
+    
     async function adicionandoComentario() {
       const response = await api.encRespostaQuestaoPorID(id);
       let novaResposta = response.data.data;
@@ -245,7 +260,7 @@ export default function ActivityToCorrect (props) {
             multiline
             label='Comentário'
             onChange={handleChange}
-            defaultValue={comentario ? comentario : ''}
+            value={comentario ? comentario : ''}
           />
         </Grid>
         <Grid item align='left' xs={1} lg={1} sm={1}>
@@ -266,10 +281,10 @@ export default function ActivityToCorrect (props) {
             progresso={progresso} 
             setProgresso={setProgresso}
             respostaQuestaoID={id} 
-            defaultValue={defaultValue} 
+            value={defaultValue} 
             setRespostaAluno={setRespostaAluno} 
             respostaAluno={respostaAluno} 
-            indice={indice} 
+            indice={value} 
             index={index}
             setWasLoaded={setWasLoaded}
           />
@@ -285,9 +300,9 @@ export default function ActivityToCorrect (props) {
           <Grid item={true} xs={12} sm={4}>
             <MyCard className={classes.card}>
               <MyCardContent className={classes.question}>
-                <h2 className={classes.title}  id="questaoNumeracao">{`Questão ${indice + 1}`}</h2>
+                <h2 className={classes.title}  id="questaoNumeracao">{`Questão ${indice+1}`}</h2>
                 <Grid item={true} align="center">
-                  <WirisIframe text={questoes[indice].enunciado}/>
+                  <WirisIframe text={respostaAluno[0].atividadeID.questoes[indice].questaoID.enunciado}/>
                 </Grid>
               </MyCardContent>
             </MyCard>
@@ -307,7 +322,14 @@ export default function ActivityToCorrect (props) {
                       <Typography className={classes.student}>{row.alunoID.nome}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      { retornarRespostaDiscursiva(row.respostaQuestaoIDs[indice].nota, row.respostaQuestaoIDs[indice].resposta, row.respostaQuestaoIDs[indice]._id, row.respostaQuestaoIDs[indice].comentario, index) }
+                      { retornarRespostaDiscursiva(
+                          row.respostaQuestaoIDs[indice].nota, 
+                          row.respostaQuestaoIDs[indice].resposta, 
+                          row.respostaQuestaoIDs[indice]._id,
+                          row.respostaQuestaoIDs[indice].comentario, 
+                          indice
+                        ) 
+                      }
                     </AccordionDetails>
                   </Accordion>
                 )
@@ -331,7 +353,7 @@ export default function ActivityToCorrect (props) {
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
                 >
-                  <Typography>{`Questão ${index+1}`}</Typography>
+                  <Typography>{`Questão ${row.index+1}`}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <Grid container spacing={5}>
@@ -344,10 +366,11 @@ export default function ActivityToCorrect (props) {
                       <Grid item={true} align="center">
                         { 
                           retornarRespostaDiscursiva(
-                            respostaAluno[indice].respostaQuestaoIDs[index].nota, 
-                            respostaAluno[indice].respostaQuestaoIDs[index].resposta, 
-                            respostaAluno[indice].respostaQuestaoIDs[index]._id, 
-                            respostaAluno[indice].respostaQuestaoIDs[index].comentario
+                            respostaAluno[indice].respostaQuestaoIDs[row.index].nota, 
+                            respostaAluno[indice].respostaQuestaoIDs[row.index].resposta, 
+                            respostaAluno[indice].respostaQuestaoIDs[row.index]._id, 
+                            respostaAluno[indice].respostaQuestaoIDs[row.index].comentario,
+                            row.index
                           ) 
                         }
                       </Grid>
@@ -400,6 +423,8 @@ export default function ActivityToCorrect (props) {
                 alunos={ alunos }
                 listarPorAluno={listarPorAluno}
                 setListarPorAluno={setListarPorAluno}
+                value={value}
+                setValue={setValue}
                 setIndice={setIndice}
                 progressoAluno={progressoAluno}
               />

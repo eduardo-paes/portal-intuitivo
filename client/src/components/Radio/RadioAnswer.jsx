@@ -14,7 +14,7 @@ export default function RadioAnswer(props) {
   const handleChange = (event) => {
     const {value} = event.target;
     let valor;
-    if (value === gabarito) valor = 1;
+    if (value === gabarito) valor = 100;
     else valor = 0;
 
     setRespostaQuestao(prevValue => ({

@@ -40,9 +40,10 @@ const marks = [
 ];
 
 export default function DiscreteSlider(props) {
-  const { defaultValue, respostaQuestaoID, setWasLoaded, respostaAluno, setRespostaAluno, indice, index } = props;
-  const [ nota, setNota ] = useState(defaultValue);
+  const { value, respostaQuestaoID, setWasLoaded, respostaAluno, setRespostaAluno, indice, index } = props;
+  const [ nota, setNota ] = useState(value);
   const classes = useStyles();
+  console.log(value);
 
   const handleChange = async (event, newValue) => {
 
@@ -78,9 +79,8 @@ export default function DiscreteSlider(props) {
     <Grid container spacing={2} alignItems="center" className={classes.container}>
       <Grid item xs={10}>
         <Slider
-          defaultValue={nota}
           className={classes.slider}
-          value={typeof nota === 'number' ? nota : 0}
+          value={nota}
           aria-labelledby="input-slider"
           step={1}
           valueLabelDisplay="off"
