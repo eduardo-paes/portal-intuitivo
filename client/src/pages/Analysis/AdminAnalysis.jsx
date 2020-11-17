@@ -44,7 +44,7 @@ export default function AdminAnalysis() {
               console.log(item)
               return (
                 <Grid item key={index} xs={12} sm={3}>
-                  <AreaCard title={item.label}/>
+                  <AreaCard areaConhecimento={item.label}/>
                 </Grid>
               );
             })
