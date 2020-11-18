@@ -87,28 +87,30 @@ router.post("/upload-conteudo/:id", (req, res) => {
 router.post("/upload-profile/:id", async (req, res) => {
     const id = req.params.id;
 
-    console.log(id);
-
-    storage = { 
-        foto: multerS3({
-            s3: new aws.S3(),
-            bucket: 'testeintuitivo/Profile',
-            contentType: multerS3.AUTO_CONTENT_TYPE,
-            acl: 'public-read',
-            key: function (req, file, cb) {
-                cb(null, id)
+    if (req.file !== undefined) {
+        storage = { 
+            foto: multerS3({
+                s3: new aws.S3(),
+                bucket: 'testeintuitivo/Profile',
+                contentType: multerS3.AUTO_CONTENT_TYPE,
+                acl: 'public-read',
+                key: function (req, file, cb) {
+                    cb(null, id)
+                }
+            })
+        }
+    
+        const upload = multer({ storage: storage["foto"] }).single("foto");
+        
+        upload(req, res, err => {
+            if (!err) {
+                return res.json({ success: true, url: req.file.location });
             }
-        })
+            console.log(err);
+        });
     }
 
-    const upload = multer({ storage: storage["foto"] }).single("foto");
-    
-    upload(req, res, err => {
-        if (!err) {
-            return res.json({ success: true, url: req.file.location });
-        }
-        console.log(err);
-    });
+    return res.json({ success: false, url: "" });
 });
 
 // Rota para armazenamento da redação do aluno

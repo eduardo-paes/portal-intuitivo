@@ -80,15 +80,12 @@ export default function UsersUpdate (props) {
             
             await Axios
             .post(`http://localhost:5000/api/upload-profile/${id}`, data)
-            .then( (res) => {
-                usuarioAtualizado.url = res.data.url;
-            });
+            .then(res => usuarioAtualizado.url = res.data.url);
 
             // Guarda usuário atualizado no banco
             await api
                 .atualizarUsuario(id, usuarioAtualizado)
                 .then(res => {
-                    
                     window.alert("Usuário atualizado com sucesso.")
                     history.push('/controle-usuario/list');
                     window.location.reload();

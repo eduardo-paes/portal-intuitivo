@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { GeneralText } from '../../assets/styles/styledComponents';
+import { GeneralText } from '../../../assets/styles/styledComponents';
 import { makeStyles, Card, Grid, Divider } from '@material-ui/core';
-import CircularStatic from '../ProgressBar/CircularStatic';
+import CircularStatic from '../../ProgressBar/CircularStatic';
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
@@ -11,19 +11,16 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center"
   },
   areaTitle: {
-    fontSize: '1.5rem',
-    fontWeight: '500',
+    fontSize: '1.3rem',
     marginBottom: "1rem"
   },
   areaSubtitle: {
     fontSize: '0.9rem',
-    fontWeight: '500',
     textAlign: "left",
     marginTop: "0.1rem"
   },
   areaLeft: {
     fontSize: '1.3rem',
-    fontWeight: '500',
     textAlign: "left",
     marginTop: "0.6rem"
   },
@@ -31,9 +28,23 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1.2rem',
     fontWeight: '500'
   },
+  avgGrade: {
+    fontSize: '1.8rem',
+    marginTop: '0.5rem',
+    marginRight: "1rem"
+  },
+  avgGradeTitle: {
+    textAlign: "left",
+    marginTop: "0.1rem",
+  },
   dataGridContainer:{
     marginBottom: "1rem",
     padding: "0 0.6rem 0 0.6rem"
+  },
+  divider: {
+    color: "#606161",
+    marginTop: "0.7rem",
+    textAlign: "center"
   },
   gridProgress: {
     textAlign: "right",
@@ -41,23 +52,6 @@ const useStyles = makeStyles((theme) => ({
   gridLabel: {
     paddingTop: "-1rem"
   },
-  divider: {
-    color: "#606161",
-    marginTop: "0.7rem",
-    textAlign: "center"
-  },
-  avgGrade: {
-    fontSize: '1.8rem',
-    fontWeight: '500',
-    marginTop: '0.5rem',
-    marginRight: "1rem"
-  },
-  avgGradeTitle: {
-    fontSize: '1rem',
-    fontWeight: '500',
-    textAlign: "left",
-    marginTop: "0.1rem",
-  }
 }));
 
 const DataGrid = (props) => {
@@ -146,6 +140,7 @@ export default function AreaCard(props) {
             }
             return (
               <DataGrid 
+                key={index}
                 classes={classes}
                 total={58}
                 parte={37}

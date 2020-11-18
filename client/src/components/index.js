@@ -54,11 +54,14 @@ import UploadEssay from './Upload/UploadEssay'
 // -- Cards
 import ActivityCard from './Cards/ActivityCard'
 import QuestionCard from './Cards/QuestionCard'
+import SubjectCard from './Cards/AdminCards/SubjectCard'
+import AreaCard from './Cards/AdminCards/AreaCard'
 
 // -- Accorddions
 import ContentAccordion from './Accordions/ContentAccordion'
 import AccordionSkeleton from './Accordions/SkeletonAccordion'
 import EssayAccordion from './Accordions/EssayAccordion'
+import SubjectAccordion from './Accordions/Teacher/AnalysisAccordion'
 
 // -- Sliders
 import DiscreteSlider from './Sliders/DiscreteSlider'
@@ -125,10 +128,13 @@ export {
 
     ActivityCard,
     QuestionCard,
+    SubjectCard,
+    AreaCard,
 
     ContentAccordion,
     AccordionSkeleton,
     EssayAccordion,
+    SubjectAccordion,
 
     DiscreteSlider,
 

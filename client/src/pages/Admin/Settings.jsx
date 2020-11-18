@@ -520,87 +520,87 @@ export default function Settings() {
             </section>
             
             <section id="gerenciarAnoLetivo" className={classes.section}>
-                    <Accordion style={{borderBottom: `0.2rem solid #a283bc`}}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            onClick={() => initialYearLoad()}
-                            aria-controls="panel1a-content"
-                            id="panel3-settings">
-                            <h2 className="heading-page">Gerenciar Ano Letivo</h2>
-                        </AccordionSummary>
+                <Accordion style={{borderBottom: `0.2rem solid #a283bc`}}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        onClick={() => initialYearLoad()}
+                        aria-controls="panel1a-content"
+                        id="panel3-settings">
+                        <h2 className="heading-page">Gerenciar Ano Letivo</h2>
+                    </AccordionSummary>
 
-                        <AccordionDetails>
-                            <Grid container={true} className={classes.root} spacing={2}>
-                                <Grid item={true} xs={12} sm={8}>
-                                    <Grid container={true} className={classes.dateGrid} spacing={1}>
-                                        <Grid item={true} xs={12} sm={6}>
-                                            <MuiPickersUtilsProvider locale="pt-br" libInstance={moment} utils={MomentUtils}>
-                                                <KeyboardDatePicker
-                                                    id="picker-data-inicio"
-                                                    autoOk={true}
-                                                    disableToolbar={true}
-                                                    variant="inline"
-                                                    format="DD/MM/YYYY"
-                                                    margin="normal"
-                                                    label="Data de Início" 
-                                                    name="dataInicio"
-                                                    value={anoLetivo.dataInicio}
-                                                    inputValue={moment(anoLetivo.dataInicio).format("DD/MM/YYYY")}
-                                                    onChange={date => handleDateChange(date, "dataInicio")}
-                                                    rifmFormatter={dateFormatter}
-                                                    maxDate={anoLetivo.dataFim}
-                                                    KeyboardButtonProps={{ 'aria-label': 'change date' }}/>
-                                            </MuiPickersUtilsProvider>
-                                        </Grid>
-
-                                        <Grid item={true} xs={12} sm={6}>
-                                            <MuiPickersUtilsProvider locale="pt-br" libInstance={moment} utils={MomentUtils}>
-                                                <KeyboardDatePicker
-                                                    id="picker-data-fim"
-                                                    autoOk={true}
-                                                    disableToolbar={true}
-                                                    variant="inline"
-                                                    format="DD/MM/YYYY"
-                                                    margin="normal"
-                                                    label="Data de Fim"
-                                                    name="dataFim"
-                                                    value={anoLetivo.dataFim}
-                                                    inputValue={moment(anoLetivo.dataFim).format("DD/MM/YYYY")}
-                                                    onChange={date => handleDateChange(date, "dataFim")}
-                                                    rifmFormatter={dateFormatter}
-                                                    minDate={anoLetivo.dataInicio}
-                                                    KeyboardButtonProps={{ 'aria-label': 'change date' }}/>
-                                            </MuiPickersUtilsProvider>
-                                        </Grid>
+                    <AccordionDetails>
+                        <Grid container={true} className={classes.root} spacing={2}>
+                            <Grid item={true} xs={12} sm={8}>
+                                <Grid container={true} className={classes.dateGrid} spacing={1}>
+                                    <Grid item={true} xs={12} sm={6}>
+                                        <MuiPickersUtilsProvider locale="pt-br" libInstance={moment} utils={MomentUtils}>
+                                            <KeyboardDatePicker
+                                                id="picker-data-inicio"
+                                                autoOk={true}
+                                                disableToolbar={true}
+                                                variant="inline"
+                                                format="DD/MM/YYYY"
+                                                margin="normal"
+                                                label="Data de Início" 
+                                                name="dataInicio"
+                                                value={anoLetivo.dataInicio}
+                                                inputValue={moment(anoLetivo.dataInicio).format("DD/MM/YYYY")}
+                                                onChange={date => handleDateChange(date, "dataInicio")}
+                                                rifmFormatter={dateFormatter}
+                                                maxDate={anoLetivo.dataFim}
+                                                KeyboardButtonProps={{ 'aria-label': 'change date' }}/>
+                                        </MuiPickersUtilsProvider>
                                     </Grid>
 
-                                    <div className={classes.group}>
-                                        <Button
-                                            className={classes.buttons}
-                                            variant="outlined"
-                                            type="submit"
-                                            color="secondary"
-                                            onClick={() => setAnoLetivo(initialYearState)}>
-                                            Limpar
-                                        </Button>
-                                        <Button
-                                            className={classes.buttons}
-                                            variant="outlined"
-                                            type="submit"
-                                            color="primary"
-                                            onClick={anoLetivo._id ? editYearChange : saveYearChange}>
-                                            Salvar
-                                        </Button>
-                                    </div>
+                                    <Grid item={true} xs={12} sm={6}>
+                                        <MuiPickersUtilsProvider locale="pt-br" libInstance={moment} utils={MomentUtils}>
+                                            <KeyboardDatePicker
+                                                id="picker-data-fim"
+                                                autoOk={true}
+                                                disableToolbar={true}
+                                                variant="inline"
+                                                format="DD/MM/YYYY"
+                                                margin="normal"
+                                                label="Data de Fim"
+                                                name="dataFim"
+                                                value={anoLetivo.dataFim}
+                                                inputValue={moment(anoLetivo.dataFim).format("DD/MM/YYYY")}
+                                                onChange={date => handleDateChange(date, "dataFim")}
+                                                rifmFormatter={dateFormatter}
+                                                minDate={anoLetivo.dataInicio}
+                                                KeyboardButtonProps={{ 'aria-label': 'change date' }}/>
+                                        </MuiPickersUtilsProvider>
+                                    </Grid>
                                 </Grid>
 
-                                <Grid className={classes.dateGrid} item={true} xs={12} sm={4}>
-                                    <MyTypography id="yearTitle" variant="h6">Número de Semanas</MyTypography>
-                                    <MyTypography id="weekTitle" variant="h4">{anoLetivo.numSemanas}</MyTypography>
-                                </Grid>
+                                <div className={classes.group}>
+                                    <Button
+                                        className={classes.buttons}
+                                        variant="outlined"
+                                        type="submit"
+                                        color="secondary"
+                                        onClick={() => setAnoLetivo(initialYearState)}>
+                                        Limpar
+                                    </Button>
+                                    <Button
+                                        className={classes.buttons}
+                                        variant="outlined"
+                                        type="submit"
+                                        color="primary"
+                                        onClick={anoLetivo._id ? editYearChange : saveYearChange}>
+                                        Salvar
+                                    </Button>
+                                </div>
                             </Grid>
-                        </AccordionDetails>
-                    </Accordion>
+
+                            <Grid className={classes.dateGrid} item={true} xs={12} sm={4}>
+                                <MyTypography id="yearTitle" variant="h6">Número de Semanas</MyTypography>
+                                <MyTypography id="weekTitle" variant="h4">{anoLetivo.numSemanas}</MyTypography>
+                            </Grid>
+                        </Grid>
+                    </AccordionDetails>
+                </Accordion>
             </section>
         
             <section id="gerenciarClassroom" className={classes.section}>

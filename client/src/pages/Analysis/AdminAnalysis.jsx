@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { GeneralSubtitle, GeneralText, GeneralTitle, MyContainer } from '../../assets/styles/styledComponents';
-import { makeStyles, Card, Grid } from '@material-ui/core';
-import AreaCard from '../../components/Cards/AreaCard';
+import { GeneralSubtitle, GeneralTitle, MyContainer } from '../../assets/styles/styledComponents';
+import { makeStyles, Grid } from '@material-ui/core';
+import { AreaCard, SubjectCard } from '../../components';
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
@@ -27,7 +27,6 @@ const desempenhoArea = [
 
 export default function AdminAnalysis() {
   const classes = useStyles();
-  const [desPrior, setDesPrior] = useState(desempenhoArea)
 
   return (
     <MyContainer>
@@ -40,10 +39,9 @@ export default function AdminAnalysis() {
         <GeneralSubtitle>Desempenho por Área</GeneralSubtitle>
         <Grid container spacing={2}>
           {
-            desPrior.map((item, index) => {
-              console.log(item)
+            desempenhoArea.map((item, index) => {
               return (
-                <Grid item key={index} xs={12} sm={3}>
+                <Grid item key={index} xs={12} sm={4} md={3} style={{minWidth: "16rem"}}>
                   <AreaCard areaConhecimento={item.label}/>
                 </Grid>
               );
@@ -52,12 +50,19 @@ export default function AdminAnalysis() {
         </Grid>
       </section>
 
-      <section id="desempenhoSecundario">
-        <GeneralSubtitle className={classes.generalSubtitle}>Engajamento por Área</GeneralSubtitle>
-      </section>
-
       <section id="desempenhoExtra">
         <GeneralSubtitle className={classes.generalSubtitle}>Disciplinas em Destaque</GeneralSubtitle>
+        <Grid container spacing={2}>
+          {
+            desempenhoArea.map((item, index) => {
+              return (
+                <Grid item key={index} xs={12} sm={4} md={3}>
+                  <SubjectCard areaConhecimento={item.label}/>
+                </Grid>
+              );
+            })
+          }
+        </Grid>
       </section>
 
     </MyContainer>
