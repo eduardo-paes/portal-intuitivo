@@ -228,7 +228,7 @@ export default function ActivityToCorrect (props) {
 
   function retornarRespostaDiscursiva(defaultValue, resposta, id, comentario, index) {
 
-    console.log(defaultValue, resposta, id, comentario, index)
+    //console.log(defaultValue, resposta, id, comentario, index)
     
     async function adicionandoComentario() {
       const response = await api.encRespostaQuestaoPorID(id);

@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import apis from '../../api';
+import { StoreContext } from "../../utils";
 
 import { MyContainer, MyCard, MyCardContent, GeneralTitle, GeneralSubtitle } from "../../assets/styles/styledComponents"
 import { makeStyles } from '@material-ui/core/styles';
@@ -54,6 +56,20 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard (props) {
   const classes = useStyles();
   const [wasLoaded, setWasLoaded] = useState(false);
+  const { token } = useContext(StoreContext)
+  const alunoID = token.userID;
+  console.log("Entrou")
+
+  async function gerarAnalise() {
+    const res = await apis.gerarAnaliseAluno(alunoID);
+    console.log(res);
+  }
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    gerarAnalise();
+    return abortController.abort();
+  }, [])
 
   return (
     <MyContainer id="studentPageContainer">

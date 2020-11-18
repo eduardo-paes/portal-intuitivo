@@ -134,6 +134,9 @@ export const removerProgressoRevisao = id => api.delete(`/progresso-revisao/${id
 export const encProgressoRevisaoPorID = id => api.get(`/progresso-revisao/${id}`);
 export const encProgressoPorRevisaoID = (alunoID, revisaoID) => api.get(`/progresso-revisao/${alunoID}/${revisaoID}`);
 
+// -- Funções relacionadas à Análises
+export const gerarAnaliseAluno = id => api.get(`analises/${id}`);
+
 const apis = {
     // Usuário
     inserirUsuario,
@@ -253,6 +256,8 @@ const apis = {
     removerProgressoRevisao,
     encProgressoRevisaoPorID,
     encProgressoPorRevisaoID,
+    //Analise
+    gerarAnaliseAluno
 }
 
 export default apis;

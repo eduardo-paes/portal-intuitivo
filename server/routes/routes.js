@@ -21,6 +21,7 @@ const AtividadeCtrl = require("../controllers/activity-ctrl");
 const RevisaoCtrl = require("../controllers/revision-ctrl");
 const ClassLinkCtrl = require("../controllers/classLink-ctrl");
 const ProgressoCtrl = require("../controllers/generalProgress-ctrl");
+const AnaliseCtrl = require("../controllers/analisys-ctrl");
 
 // USUÁRIO -- Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
@@ -152,5 +153,7 @@ router.put("/progresso-revisao/:id", ProgressoCtrl.atualizarProgressoRevisao);
 router.delete("/progresso-revisao/:id", ProgressoCtrl.removerProgressoRevisao);
 router.get("/progresso-revisao/:id", ProgressoCtrl.encProgressoRevisaoPorID);
 router.get("/progresso-revisao/:alunoID/:revisaoID", ProgressoCtrl.encProgressoPorRevisaoID);
+
+router.get("/analises/:id", AnaliseCtrl.gerarAnaliseAluno);
 
 module.exports = router;
