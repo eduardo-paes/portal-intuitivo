@@ -27,10 +27,6 @@ function CircularProgressWithLabel(props) {
 }
 
 CircularProgressWithLabel.propTypes = {
-  /**
-   * The value of the progress indicator for the determinate and static variants.
-   * Value between 0 and 100.
-   */
   value: PropTypes.number.isRequired,
 };
 
@@ -39,7 +35,7 @@ export default function QuestionCircularStatic(props) {
   const { progresso, size } = props;
 
   React.useEffect(() => {
-    setProgress(progresso*25);
+    setProgress(progresso*100);
   }, [progresso]);
 
   return <CircularProgressWithLabel size={size} value={progress} />;
