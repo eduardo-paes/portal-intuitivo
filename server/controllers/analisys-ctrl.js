@@ -1,7 +1,14 @@
+const { get } = require('mongoose');
 const RespostaAluno = require('../models/studentAnswer-model');
+const Disciplina = require('../models/subject-model');
+const Topico = require('../models/content-model');
+const Progresso = require('../models/progressTopic-model');
+const auxFunctions = require('../../server/utils/auxFunctions');
+const AnoLetivoCtrl = require("../controllers/schoolYear-ctrl");
+const AnoLetivo = require('../models/schoolYear-model');
 
 // Função para gerar análise geral do aluno
-gerarAnaliseAluno = async (req, res) => {
+const gerarAnaliseAluno = async (req, res) => {
 
     let resultadoDisciplinas = [
         { disciplina: 'Matemática', nota: 0, atividades: 0, acertos: 0, questoes: 0},
@@ -34,7 +41,7 @@ gerarAnaliseAluno = async (req, res) => {
         }]
     }
 
-    respostaAluno = await RespostaAluno.find({ alunoID: req.params.id }).populate(populateQuery)
+    let respostaAluno = await RespostaAluno.find({ alunoID: req.params.id }).populate(populateQuery)
 
     // Armazena o resultado em cada disciplina;
     respostaAluno.map(row => {
@@ -102,6 +109,66 @@ gerarAnaliseAluno = async (req, res) => {
     })
 
     return res.json({piorDesempenho, melhorDesempenho, piorTopico});
+
+}
+
+const gerarProgressoDiario = async (req, res) => {  
+    
+    const { alunoID, dia, semana } = req.params;
+    let topicos = [];
+
+    let progressos = await Disciplina.find({diaSemana: dia}, '_id nome');
+
+    for (let i = 0; i < progressos.length; ++i) {
+        let res = await Topico.findOne({disciplinaID: progressos[i]._id, numeracao: semana}, '_id topico');
+        if (res) {
+            progressos[i] = {
+                _id: progressos[i]._id,
+                nome: progressos[i].nome,
+                topicoID: res._id,
+                topico: res.topico
+            }
+        }
+    }
+
+    for (let i = 0; i < progressos.length; ++i) {
+        let res = await (await Progresso.findOne({alunoID: alunoID, topicoID: progressos[i].topicoID}, 'progresso'))
+        let numTask = 0, progresso = 0;
+        if (res) {
+
+            if (res.progresso.materialEstudo !== undefined) {
+                numTask += 1;
+                if (res.progresso.materialEstudo === true) progresso += 1;
+            }
+            if (res.progresso.videoaula !== undefined) {
+                numTask += 1;
+                if (res.progresso.videoaula === true) progresso += 1;
+            }
+            if (res.progresso.exercicioFixacao !== undefined) {
+                numTask += 1;
+                if (res.progresso.exercicioFixacao === true) progresso += 1;
+            }
+            if (res.progresso.exercicioRetomada !== undefined) {
+                numTask += 1;
+                if (res.progresso.exercicioRetomada === true) progresso += 1;
+            }
+            if (res.progresso.exercicioAprofundamento !== undefined) {
+                numTask += 1;
+                if (res.progresso.exercicioAprofundamento === true) progresso += 1;
+            }
+
+            progressos[i] = {
+                _id: progressos[i]._id,
+                nome: progressos[i].nome,
+                topicoID: progressos[i].topicoID,
+                topico: progressos[i].topico,
+                numTask,
+                progresso
+            }
+        }
+    }
+    
+    return res.json({progressos});
 
 }
 
@@ -418,5 +485,6 @@ gerarAnaliseAluno = async (req, res) => {
 
 // Exporta os módulos
 module.exports = {
-    gerarAnaliseAluno
+    gerarAnaliseAluno,
+    gerarProgressoDiario
 }

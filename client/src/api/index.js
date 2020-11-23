@@ -136,6 +136,7 @@ export const encProgressoPorRevisaoID = (alunoID, revisaoID) => api.get(`/progre
 
 // -- Funções relacionadas à Análises
 export const gerarAnaliseAluno = id => api.get(`analises/${id}`);
+export const gerarProgressoDiario = (alunoID, dia, semana) => api.get(`analises/${alunoID}/${dia}/${semana}`);
 
 const apis = {
     // Usuário
@@ -257,7 +258,8 @@ const apis = {
     encProgressoRevisaoPorID,
     encProgressoPorRevisaoID,
     //Analise
-    gerarAnaliseAluno
+    gerarAnaliseAluno,
+    gerarProgressoDiario
 }
 
 export default apis;
