@@ -1,132 +1,55 @@
 import React, {useState} from 'react';
 import { GeneralSubtitle, GeneralText } from '../../../assets/styles/styledComponents';
-import { makeStyles, Accordion, AccordionSummary, AccordionDetails, Grid, Divider } from '@material-ui/core'
+import { Accordion, AccordionSummary, AccordionDetails, Grid, useTheme, useMediaQuery } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CircularStatic from '../../ProgressBar/CircularStatic';
 
-// -- Estilos locais
-const useStyles = makeStyles((theme) => ({
-    accordionContainer: {
-        padding: '0 0.5rem',
-        textAlign: "center",
-    },
-    areaName: {
-        fontSize: '0.9rem',
-        textAlign: "center",
-        marginTop: "0.1rem"
-    },
-    avgGrade: {
-        fontSize: '1.5rem',
-    },
-    avgGradeGrid: {
-        textAlign: "center",
-    },
-    container: {
-        margin: "0.7rem 0",
-    },
-    divider: {
-        color: "#606161",
-        margin: "0.7rem 0",
-        textAlign: "center"
-    },
-    gridTitle: {
-        fontSize: '1.3rem',
-        marginBottom: "1rem",
-        [theme.breakpoints.down('sm')]: {
-            marginTop: "1rem",
-        }
-    },
-    gridSubtitle: {
-        fontSize: '0.9rem',
-        textAlign: "left",
-        marginTop: "0.1rem",
-    },
-    itemGridRank: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-    leftTitle: {
-        fontSize: '1.3rem',
-        textAlign: "left",
-        marginTop: "0.6rem"
-    },
-    rightTitle: {
-        fontSize: '1.2rem',
-        fontWeight: '500'
-    },
-    rankContainer: {
-        "&:hover": {
-            background: "#eeeeee"
-        },
-        padding: "0 0.2rem",
-    },
-    subjectResults: {
-        paddingLeft: "1.2rem",
-        [theme.breakpoints.down('sm')]: {
-            marginTop: "0",
-        }
-    }
-}));
+import { GradeCard, StudentRank, ContentRank, FrequencyCard } from "./ContentContainers"
+import { useStyles } from "./Styles"
+import clsx from 'clsx';
 
-const StudentRank = (props) => {
-    const {aluno, best, classes, nota, isLast} = props;
-    var title = best ? 'Melhor Desempenho' : 'Pior Desempenho';
+const frequencyMessages = [
+    {
+        title: "Material de Estudo",
+        message: "Relação entre a quantidade de tópicos completamente estudados pelos alunos e o total de materiais disponibilizados."
+    },
+    {
+        title: "Videoaula",
+        message: "Relação entre a quantidade de videoaulas completamente assistidas de cada tópico e total de videoaulas disponibilizadas."
+    },
+    {
+        title: "Atividades",
+        message: "Relação entre a quantidade de atividades concluídas de cada tópico e total de atividades programadas."
+    },
+]
 
-    return (
-        <div className={classes.rankContainer}>
-            <Grid container className={classes.container}>
-                <Grid item xs={8}className={classes.itemGridRank}>
-                    <div>
-                        <GeneralText className={classes.leftTitle}>{title}</GeneralText>
-                        <GeneralText className={classes.gridSubtitle}>{aluno}</GeneralText>
-                    </div>
-                </Grid>
-                <Grid item xs={4} className={classes.itemGridRank}>
-                    <div style={{ paddingLeft: "1rem" }}>
-                        <GeneralText className={classes.avgGrade}>{nota}</GeneralText>
-                        <GeneralText>Nota Média</GeneralText>
-                    </div>
-                </Grid>
-            </Grid>
-            {/* <Divider hidden={isLast} variant="fullWidth" className={classes.divider} /> */}
-        </div>
-    )
-}
-
-const ContentRank = (props) => {
-    const {best, classes, conteudo, isLast, nota, parte, total, setWasLoaded, wasLoaded} = props;
-    var title = best ? 'Melhor Desempenho' : 'Pior Desempenho';
-
-    return (
-        <div className={classes.rankContainer}>
-            <Grid container className={classes.container}>
-                <Grid item xs={12} sm={6}>
-                    <GeneralText className={classes.leftTitle}>{title}</GeneralText>
-                    <GeneralText className={classes.gridSubtitle}>{conteudo}</GeneralText>
-                </Grid>
-                <Grid item xs={6} sm={3} className={classes.itemGridRank}>
-                    <div style={{ paddingLeft: "1rem" }}>
-                        <GeneralText className={classes.avgGrade}>{nota}</GeneralText>
-                        <GeneralText>Nota Média</GeneralText>
-                    </div>
-                </Grid>
-                <Grid item xs={6} sm={3} className={classes.itemGridRank}>
-                    <div className={classes.subjectResults}>
-                        <CircularStatic wasLoaded={wasLoaded} setWasLoaded={setWasLoaded} numTasks={total} progresso={parte}/>
-                        <GeneralText style={{fontSize: "0.8rem"}}>{parte}/{total}</GeneralText>
-                        <GeneralText style={{fontSize: "0.8rem"}}>Estudado/Total</GeneralText>
-                    </div>
-                </Grid>
-            </Grid>
-            {/* <Divider hidden={isLast} variant="fullWidth" className={classes.divider} /> */}
-        </div>
-    )
-}
+const dataFrequency = [
+    {
+        parte: 17,
+        total: 19,
+        tooltip: "Estudados/Total",
+        tip: "E/T"
+    },
+    {
+        parte: 18,
+        total: 19,
+        tooltip: "Assistidos/Total",
+        tip: "A/T"
+    },
+    {
+        parte: 42,
+        total: 50,
+        tooltip: "Feitos/Total",
+        tip: "F/T"
+    },
+]
 
 export default function SubjectAccordion (props) {
     const classes = useStyles();
-    const { color, disciplina, media, melhorAluno, piorAluno, melhorTopico, piorTopico } = props;
+    const { color, disciplina, melhorAluno, piorAluno, melhorTopico, piorTopico } = props;
     const [wasLoaded, setWasLoaded] = useState(false);
+
+    const theme = useTheme();
+    const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
   
     return (
       <Accordion style={{borderBottom: `0.2rem solid ${color}`}}>
@@ -135,26 +58,31 @@ export default function SubjectAccordion (props) {
           // onClick={() => initialYearLoad()}
           aria-controls="panel1a-content"
           id="panel3-settings">
-          <GeneralSubtitle>{disciplina}</GeneralSubtitle>
+          <GeneralSubtitle style={{paddingLeft: "0.4rem"}}>{disciplina}</GeneralSubtitle>
         </AccordionSummary>
   
         <AccordionDetails>
-            <Grid container spacing={1} className={classes.accordionContainer}>
-                <Grid item xs={12} sm={2} className={classes.avgGradeGrid}>
-                    <GeneralText className={classes.avgGrade}>{media}</GeneralText>
-                    <GeneralText>Média Geral</GeneralText>
-                </Grid>
-                {/* <Grid item xs={1}>
-                    <Divider variant="middle" orientation="vertical" className={classes.divider} />
-                </Grid> */}
+            <Grid container className={classes.accordionContainer}>
+                <Grid item xs={12} md={4} className={classes.avgGradeGrid}>
+                    <GeneralText className={classes.gridTitle}>Resultados</GeneralText>
+                    <GradeCard 
+                        classes={classes}
+                        media="79.1"
+                        parte="101"    
+                        total="132"   
+                        setWasLoaded={setWasLoaded} 
+                        wasLoaded={wasLoaded} 
+                    />
+                </Grid>               
                 
-                <Grid item xs={12} sm={5}>
+                <Grid item xs={12} md={4} className={smScreen ? classes.topDivider : classes.helper}>
                     <GeneralText className={classes.gridTitle}>Aluno em Destaque</GeneralText>
                     <StudentRank aluno={melhorAluno} best={true} classes={classes} isLast={false} nota='91.0'/>
                     <StudentRank aluno={piorAluno} best={false} classes={classes} isLast={true} nota='67'/>
+                    <GeneralText className={clsx(classes.gradeText, classes.container)} style={{textAlign: "left", padding: "0 0.5rem"}}>Valores encontrado através de média simples, (soma das notas / número de atividades realizadas).</GeneralText>
                 </Grid>
                 
-                <Grid item xs={12} sm={5}>
+                <Grid item xs={12} md={4} className={smScreen ? classes.topDivider : classes.helper}>
                     <GeneralText className={classes.gridTitle}>Conteúdo em Destaque</GeneralText>
                     <ContentRank 
                         best={true}
@@ -181,16 +109,15 @@ export default function SubjectAccordion (props) {
                     
                 </Grid>
                 
-                <Grid item xs={12} sm={4}>
-                
-                </Grid>
-                
-                <Grid item xs={12} sm={4}>
-                
-                </Grid>
-                
-                <Grid item xs={12} sm={4}>
-                
+                <Grid item xs={12} className={classes.topDivider} style={{marginTop: "1rem"}}>
+                    <GeneralText className={classes.gridTitle} style={{marginTop: "1rem"}}>Engajamento da Turma</GeneralText>
+                    <FrequencyCard 
+                        classes={classes} 
+                        messages={frequencyMessages}
+                        setWasLoaded={setWasLoaded} 
+                        wasLoaded={wasLoaded}
+                        dataFrequency={dataFrequency}
+                    />
                 </Grid>
             </Grid>
         </AccordionDetails>

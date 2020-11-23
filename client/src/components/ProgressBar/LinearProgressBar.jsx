@@ -44,7 +44,7 @@ export default function LinearProgressBar(props) {
   const { max, progresso, titulo } = props;
 
   return (
-    <Grid item className={classes.root} justify='center'>
+    <Grid item className={classes.root}>
       <GeneralSubtitle className={classes.secondaryHeading} id="linearProgressBar">{titulo}</GeneralSubtitle>
       <BorderLinearProgress 
         variant="determinate" 
