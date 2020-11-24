@@ -155,5 +155,6 @@ router.get("/progresso-revisao/:id", ProgressoCtrl.encProgressoRevisaoPorID);
 router.get("/progresso-revisao/:alunoID/:revisaoID", ProgressoCtrl.encProgressoPorRevisaoID);
 
 router.get("/analises/:id", AnaliseCtrl.gerarAnaliseAluno);
+router.get("/analises/:alunoID/:dia/:semana", AnaliseCtrl.gerarProgressoDiario);
 
 module.exports = router;

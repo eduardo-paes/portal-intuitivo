@@ -9,6 +9,7 @@ import { Grid, List, ListItem, ListItemText, ListItemAvatar } from '@material-ui
 import LinearProgressBar from "../../components/ProgressBar/LinearProgressBar";
 import CircularStatic from "../../components/ProgressBar/CircularStatic";
 import QuestionCircularStatic from "../../components/ProgressBar/QuestionProgress";
+import { set } from "mongoose";
 
 // -- Estilos locais
 const useStyles = makeStyles(theme => ({
@@ -47,12 +48,17 @@ const useStyles = makeStyles(theme => ({
 export default function Dashboard (props) {
   const classes = useStyles();
   const [wasLoaded, setWasLoaded] = useState(false);
+  const [analiseAluno, setAnaliseAluno] = useState();
+  const [progressoDiario, setProgressoDiario] = useState([]);
   const { token } = useContext(StoreContext)
   const alunoID = token.userID;
 
   async function gerarAnalise() {
     const res = await apis.gerarAnaliseAluno(alunoID);
     console.log(res);
+    if (res) setAnaliseAluno(res.data);
+    const dis = await apis.gerarProgressoDiario(alunoID, 5, 2);
+    if (dis) setProgressoDiario(dis.data.progressos);
   }
 
   useEffect(() => {
@@ -81,24 +87,25 @@ export default function Dashboard (props) {
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
                 <List className={classes.root}>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <CircularStatic wasLoaded={wasLoaded} setWasLoaded={setWasLoaded} numTasks={1} progresso={4}/>
-                    </ListItemAvatar>
-                    <ListItemText primary="Introdução à História" secondary="História" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <CircularStatic wasLoaded={wasLoaded} setWasLoaded={setWasLoaded} numTasks={1} progresso={2}/>
-                    </ListItemAvatar>
-                    <ListItemText primary="Introdução à Física" secondary="Física" />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <CircularStatic wasLoaded={wasLoaded} setWasLoaded={setWasLoaded} numTasks={1} progresso={0}/>
-                    </ListItemAvatar>
-                    <ListItemText primary="Redação" secondary="Semana 17" />
-                  </ListItem>
+                  {
+                    progressoDiario.length !== 0 ? 
+                    progressoDiario.map(row => {
+                      
+                      return row.numTask ? (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <CircularStatic 
+                              wasLoaded={wasLoaded} 
+                              setWasLoaded={setWasLoaded} 
+                              numTasks={row.numTask} 
+                              progresso={row.progresso}/>
+                          </ListItemAvatar>
+                          <ListItemText primary={row.topico} secondary={row.nome} />
+                        </ListItem>
+                      ) : null
+                    })
+                    : null
+                  }
                 </List>
               </MyCardContent>
             </MyCard>
@@ -109,10 +116,10 @@ export default function Dashboard (props) {
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
                 <Grid item={true} align="center">
-                  <GeneralSubtitle className={classes.title}>História</GeneralSubtitle>
+                  <GeneralSubtitle className={classes.title}>{analiseAluno ? analiseAluno.melhorDesempenho.disciplina : null}</GeneralSubtitle>
                   <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
-                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={111/119}/>
-                  <GeneralSubtitle className={classes.subTitle}>111 / 119</GeneralSubtitle>
+                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={analiseAluno ? analiseAluno.melhorDesempenho.acertos * (100/analiseAluno.melhorDesempenho.questoes): 0}/>
+                  <GeneralSubtitle className={classes.subTitle}>{`${analiseAluno ? analiseAluno.melhorDesempenho.acertos : 0} / ${analiseAluno ? analiseAluno.melhorDesempenho.questoes : 0}`}</GeneralSubtitle>
                 </Grid>
               </MyCardContent>
             </MyCard>
@@ -123,10 +130,10 @@ export default function Dashboard (props) {
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
                 <Grid item={true} align="center">
-                  <GeneralSubtitle className={classes.title}>Matemática</GeneralSubtitle>
+                  <GeneralSubtitle className={classes.title}>{analiseAluno ? analiseAluno.piorDesempenho.disciplina : null}</GeneralSubtitle>
                   <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
-                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={67/107}/>
-                  <GeneralSubtitle className={classes.subTitle}>67 / 107</GeneralSubtitle>
+                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={analiseAluno ? analiseAluno.piorDesempenho.acertos * (100/analiseAluno.piorDesempenho.questoes): 0}/>
+                  <GeneralSubtitle className={classes.subTitle}>{`${analiseAluno ? analiseAluno.piorDesempenho.acertos : 0} / ${analiseAluno ? analiseAluno.piorDesempenho.questoes : 0}`}</GeneralSubtitle>
                 </Grid>
               </MyCardContent>
             </MyCard>
@@ -137,10 +144,10 @@ export default function Dashboard (props) {
             <MyCard>
               <MyCardContent className={classes.exampleCard}>
                 <Grid item={true} align="center">
-                  <GeneralSubtitle className={classes.title}>Álgebra Linear</GeneralSubtitle>
+                  <GeneralSubtitle className={classes.title}>{analiseAluno ? analiseAluno.piorTopico.topico : null}</GeneralSubtitle>
                   <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
-                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={12/57}/>
-                  <GeneralSubtitle className={classes.subTitle}>12 / 57</GeneralSubtitle>
+                  <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={analiseAluno ? analiseAluno.piorTopico.acertos * (100/analiseAluno.piorTopico.questoes): 0}/>
+                  <GeneralSubtitle className={classes.subTitle}>{`${analiseAluno ? analiseAluno.piorTopico.acertos : 0} / ${analiseAluno ? analiseAluno.piorTopico.questoes : 0}`}</GeneralSubtitle>
                 </Grid>
               </MyCardContent>
             </MyCard>

@@ -35,7 +35,7 @@ export default function QuestionCircularStatic(props) {
   const { progresso, size } = props;
 
   React.useEffect(() => {
-    setProgress(progresso*100);
+    setProgress(progresso);
   }, [progresso]);
 
   return <CircularProgressWithLabel size={size} value={progress} />;

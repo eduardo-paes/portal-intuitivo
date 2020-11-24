@@ -218,6 +218,7 @@ encConteudoPersonalizado = async (req, res) => {
 
 // Função para listar conteúdo de acordo com filtro
 listarConteudoPorFiltro = async (req, res) => {
+    
     let { numeracao, disciplinaID, topicoID } = req.params;
     var query = {};
 
