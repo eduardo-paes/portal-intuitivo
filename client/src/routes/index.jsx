@@ -58,7 +58,7 @@ function PrivateRoutes() {
             <ConditionalRoute exact={true} type="Aluno" from="/plano-estudo" component={StudyPlan}/>
             <ConditionalRoute exact={true} type="Aluno" from="/dashboard" component={Dashboard}/>
             <ConditionalRoute exact={true} type="Aluno" from="/biblioteca" component={Library}/>
-            <ConditionalRoute exact={true} type="Aluno" from="/desempenho" component={Analysis}/>
+            <ConditionalRoute exact={true} type="Aluno" from="/resultados" component={Analysis}/>
             <ConditionalRoute exact={true} type="Aluno" from="/classroom" component={Classroom}/> 
             <ConditionalRoute exact={true} type="Aluno" from="/perfil/:id" component={UsersUpdate}/>
             

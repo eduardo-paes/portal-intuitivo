@@ -2,13 +2,9 @@ import React, { useState, useContext, useEffect } from "react";
 import apis from '../../api';
 import { StoreContext } from "../../utils";
 
-import { MyContainer, MyCard, MyCardContent, GeneralTitle, GeneralSubtitle, GeneralText } from "../../assets/styles/styledComponents"
+import { MyContainer, MyCard, MyCardContent, GeneralTitle, GeneralSubtitle } from "../../assets/styles/styledComponents"
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid } from "@material-ui/core";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import { Grid, List, ListItem, ListItemText, ListItemAvatar } from '@material-ui/core';
 
 import LinearProgressBar from "../../components/ProgressBar/LinearProgressBar";
 import CircularStatic from "../../components/ProgressBar/CircularStatic";

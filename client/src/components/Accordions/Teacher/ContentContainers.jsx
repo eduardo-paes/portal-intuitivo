@@ -43,7 +43,7 @@ const GradeCard = (props) => {
 }
 
 const StudentRank = (props) => {
-  const {aluno, best, classes, nota, isLast} = props;
+  const {aluno, best, classes, nota} = props;
   var title = best ? 'Melhor Desempenho' : 'Pior Desempenho';
 
   return (
@@ -65,7 +65,7 @@ const StudentRank = (props) => {
 }
 
 const ContentRank = (props) => {
-  const {best, classes, conteudo, isLast, nota, parte, total, setWasLoaded, wasLoaded} = props;
+  const {best, classes, conteudo, nota, parte, total, setWasLoaded, wasLoaded} = props;
   var title = best ? 'Melhor Desempenho' : 'Pior Desempenho';
 
   return (
@@ -103,8 +103,9 @@ const FrequencyCard = (props) => {
     <Grid container className={classes.container}>
       {
         dataFrequency.map((item, index) => {
+          const {tooltip} = item;
           return (
-            <Grid item xs={12} sm={12} md={4} style={{ marginTop: (index > 0 && smScreen) && "1rem"}}>
+            <Grid item key={index} xs={12} sm={12} md={4} style={{ marginTop: (index > 0 && smScreen) && "1rem"}}>
               <Grid container className={classes.rankContainer}>
                 <Grid item xs={8} style={{paddingRight: "0.2rem"}}>
                   <GeneralText className={classes.leftTitle}>{messages[index].title}</GeneralText>
@@ -114,7 +115,7 @@ const FrequencyCard = (props) => {
                   <div className={clsx(classes.helper, classes.resultFrequency)}>
                     <CircularStatic wasLoaded={wasLoaded} setWasLoaded={setWasLoaded} numTasks={item.total} progresso={item.parte}/>
                     <GeneralText className={classes.gradeText}>{item.parte}/{item.total}</GeneralText>
-                    <Tooltip title={item.tootip} >
+                    <Tooltip title={tooltip} >
                       <GeneralText className={classes.avgLabel}>{item.tip}</GeneralText>
                     </Tooltip>
                   </div>

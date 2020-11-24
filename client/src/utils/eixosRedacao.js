@@ -123,8 +123,32 @@ const eixo3 = [
   }
 ]
 
+const competencia = [
+  {
+    label: 'd1',
+    item: ''
+  },
+  {
+    label: 'd2',
+    item: ''
+  },
+  {
+    label: 'd3',
+    item: ''
+  },
+  {
+    label: 'd4',
+    item: ''
+  },
+  {
+    label: 'd5',
+    item: ''
+  }
+]
+
 export {
   eixo1,
   eixo2,
-  eixo3
+  eixo3,
+  competencia
 }

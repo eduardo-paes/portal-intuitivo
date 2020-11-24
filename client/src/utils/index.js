@@ -5,7 +5,7 @@ import StorageProvider from "./Store/Provider"
 // -- Dia da Semana
 import { getTheWeek, currentWeek } from "./auxFunctions"
 
-import { eixo1, eixo2, eixo3 } from "./eixosRedacao"
+import { eixo1, eixo2, eixo3, competencia } from "./eixosRedacao"
 
 export {
     currentWeek,
@@ -14,5 +14,6 @@ export {
     StorageProvider,
     eixo1,
     eixo2,
-    eixo3
+    eixo3,
+    competencia
 }

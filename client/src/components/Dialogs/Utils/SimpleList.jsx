@@ -9,10 +9,12 @@ const useStyles = makeStyles((theme) => ({
       background: "#eeeeee"
     },
     margin: '0.5rem 0 0.5rem 0',
+    padding: "0.3rem 0.3rem 0 0.3rem",
     color: '#606161'
   },
   itemGrid: {
-    textAlign: 'center'
+    display: 'flex',
+    alignItems: 'center',
   },
   label: {
     fontWeight: 'bold'
@@ -46,7 +48,7 @@ export default function SimpleList(props) {
                   <GeneralText>{element.item}</GeneralText>
                 </Grid>
 
-                <Grid item xs={2} sm={2} className={classes.itemGrid}>
+                <Grid item xs={2} sm={2} className={classes.itemGrid} style={{justifyContent: "flex-end"}}>
                   <Input
                     value={value.[element.label]}
                     name={element.label}
