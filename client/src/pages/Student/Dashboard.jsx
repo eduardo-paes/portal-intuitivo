@@ -9,7 +9,6 @@ import { Grid, List, ListItem, ListItemText, ListItemAvatar } from '@material-ui
 import LinearProgressBar from "../../components/ProgressBar/LinearProgressBar";
 import CircularStatic from "../../components/ProgressBar/CircularStatic";
 import QuestionCircularStatic from "../../components/ProgressBar/QuestionProgress";
-import { set } from "mongoose";
 
 // -- Estilos locais
 const useStyles = makeStyles(theme => ({
