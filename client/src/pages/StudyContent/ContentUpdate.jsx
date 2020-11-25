@@ -1,3 +1,4 @@
+import Axios from "axios";
 import React, { useState, useEffect } from "react";
 import api from '../../api';
 import ContentForm from "../../components/Form/ContentForm";
@@ -14,6 +15,7 @@ function initialState(props) {
     videoAulaURL:  "",
     autor: "",
     conteudo: {},
+    conteudoURL: "",
     erros: []
   }
 }
@@ -37,7 +39,8 @@ export default function ContentUpdate(props) {
         numeracao: value.numeracao, 
         videoAulaURL: value.videoAulaURL, 
         topico: value.topico,
-        autor: value.autor
+        autor: value.autor,
+        conteudoURL: value.conteudoURL
       }));
       setConteudo(`http://localhost:5000/uploads/content/${material.id}.pdf`)
     }
@@ -47,7 +50,7 @@ export default function ContentUpdate(props) {
   }, []);
 
   const onSubmit = async event => {
-    const { autor, disciplinaID, topico, numeracao, videoAulaURL } = material;
+    const { autor, disciplinaID, topico, numeracao, videoAulaURL, conteudoURL } = material;
     const error = validate(material);
 
     setMaterial(preValue => ({
@@ -56,32 +59,29 @@ export default function ContentUpdate(props) {
     }))
 
     if (error.validated) {
-      const conteudoAtualizado = {
+      var conteudoAtualizado = {
         autor,
         disciplinaID, 
         topico, 
         numeracao,
-        videoAulaURL
+        videoAulaURL,
+        conteudoURL
       };  
   
+      // Verifica se o usuário subiu algum conteúdo pdf
+      if (conteudo !== '') {
+        // Salva o pdf na pasta local
+        const formData = new FormData();
+        formData.append("conteudo", material.conteudo);
+        
+        Axios.post(`http://localhost:5000/api/upload-conteudo/${material.id}`, formData)
+          .then(res => conteudoAtualizado.conteudoURL = res.data.url);
+      }
+
       // Guarda novo usuário no banco
       await api
         .atualizarConteudo(material.id, conteudoAtualizado)
-        .then(res => {
-
-        // Verifica se o usuário subiu algum conteúdo pdf
-        if (conteudo) {
-          // Salva o pdf na pasta local
-          const formData = new FormData();
-          formData.append("conteudo", material.conteudo);
-          fetch(`http://localhost:5000/api/upload-conteudo/${res.data.id}`, {
-                method: 'POST',
-                body: formData
-              })
-            .then(res => res.json())
-        }
-            window.alert("Conteúdo atualizado com sucesso.")
-        })
+        .then(async res => window.alert("Conteúdo atualizado com sucesso."));
   
       if (conteudo) {
         const formData = new FormData();

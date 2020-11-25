@@ -24,6 +24,10 @@ const Conteudo = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'usuario'
     },
+    conteudoURL: {
+        type: String,
+        required: true
+    }
 });
 
 module.exports = mongoose.model("conteudo", Conteudo);

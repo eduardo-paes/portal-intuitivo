@@ -29,6 +29,14 @@ const ProgressoRedacao = new Schema({
         type: Number,
         required: false
     },
+    redacaoURL: {
+        type: String,
+        required: false
+    },
+    correcaoURL: {
+        type: String,
+        required: false
+    },
     eixo1: {
         a1: { type: Number },
         a2: { type: Number },

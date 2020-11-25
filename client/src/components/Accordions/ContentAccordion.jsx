@@ -80,6 +80,7 @@ export default function ContentAccordion(props) {
     });
     const [numTasks, setNumTasks] = useState((essay || revision) ? 0 : 2);      // Número de tarefas do tópico
     const [wasChecked, setWasChecked] = useState(false);                        // Flag de salvamento do Progresso                      
+    const [redacaoURL, setRedacaoURL] = useState("");
 
     const [wasLoaded, setWasLoaded] = useState(false);                          // Flag de carregamento da animação do Acordeão
     const [feedOpen, setFeedOpen] = useState(false);                            // Abre dialogo de inserção da redação
@@ -146,6 +147,7 @@ export default function ContentAccordion(props) {
             redacaoID: essay._id,
             progresso: check.redacao,
             corrigido: false,
+            redacaoURL,
             eixo1: {
                 a1: 0,
                 a2: 0,
@@ -182,7 +184,7 @@ export default function ContentAccordion(props) {
                 c8: 0,
             },
         }
-
+        
         if (!topicProgress._id) {
             await api
                 .inserirProgressoRedacao(novoProgresso)
@@ -491,6 +493,7 @@ export default function ContentAccordion(props) {
                         progresso={progresso}
                         setProgresso={setProgresso}
                         setWasChecked={setWasChecked}
+                        setRedacaoURL={setRedacaoURL}
                         primaryTitle="Subir Redação" 
                         secondaryTitle='Reenviar Redação' />
                     <SimpleFeedback

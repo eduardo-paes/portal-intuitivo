@@ -201,9 +201,10 @@ export default function CorrectionEssayDialog(props) {
     const [eixo2Aluno, setEixo2Aluno] = useState(eixos.eixo2);
     const [eixo3Aluno, setEixo3Aluno] = useState(eixos.eixo3);
     const [competenciaAluno, setCompetenciaAluno] = useState(eixos.competencia);
+    const [correcaoURL, setCorrecaoURL] = useState("");
 
     const downloadLink = `http://localhost:5000/api/download-redacao/${aluno._id}/${redacaoID}`;
-    const srcImg = `http://localhost:5000/uploads/profile/${aluno._id}.jpeg`;
+    const srcImg = aluno.url;
     const uploadLink = `http://localhost:5000/api/upload-redacao/corrigida/${aluno._id}/${redacaoID}`;
 
     const fetchPropostaRedacao = async () => {
@@ -220,39 +221,53 @@ export default function CorrectionEssayDialog(props) {
     }
 
     const DownloadEssay = () => {
-        axios.get(downloadLink,
-            {
-                responseType: 'arraybuffer',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': ['application/jpg', 'application/jpeg', 'application/png', 'application/pdf',]
-                }
-            })
-            .then((response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                const content = response.headers['content-type'];
+        try {
+            // const url = window.URL.createObjectURL(new Blob([data.redacaoURL]));
+            var aux = 'pdf';
+            var nomeRedacao = `Redação - ${data.alunoID.nome}.${aux}`;
+            var doc = new jsPDF();
+            var width = doc.internal.pageSize.getWidth();
+            var height = doc.internal.pageSize.getHeight();
+            
+            doc.addImage(data.redacaoURL, aux, 0, 2, width, height);
+            doc.save(nomeRedacao);
+        } catch (error) {
+            window.open(data.redacaoURL);
+        }
 
-                var aux = 'pdf';
-                var nomeRedacao = `Redação - ${data.alunoID.nome}.${aux}`;
-                if (content.includes('image/')) {
-                    aux = content.split('image/').filter(ext => {
-                        return ext !== '';
-                    });
-                    var doc = new jsPDF();
-                    var width = doc.internal.pageSize.getWidth();
-                    var height = doc.internal.pageSize.getHeight();
-
-                    doc.addImage(url, aux, 0, 2, width, height);
-                    doc.save(nomeRedacao);
-                } else {
-                    link.href = url;
-                    link.setAttribute('download', nomeRedacao);
-                    document.body.appendChild(link);
-                    link.click();
-                }
-            })
-            .catch((error) => console.log(error));
+        //#region Método de Download - Ajustar
+        // axios.get(downloadLink,
+        //     {
+        //         responseType: 'arraybuffer',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Accept': ['application/jpg', 'application/jpeg', 'application/png', 'application/pdf',]
+        //         }
+        //     })
+        //     .then((response) => {
+        //         const url = window.URL.createObjectURL(new Blob([data.redacaoURL]));
+        //         const link = document.createElement('a');
+        //         const content = response.headers['content-type'];
+        //         var aux = 'pdf';
+        //         var nomeRedacao = `Redação - ${data.alunoID.nome}.${aux}`;
+        //         if (content.includes('image/')) {
+        //             aux = content.split('image/').filter(ext => {
+        //                 return ext !== '';
+        //             });
+        //             var doc = new jsPDF();
+        //             var width = doc.internal.pageSize.getWidth();
+        //             var height = doc.internal.pageSize.getHeight();
+        //             doc.addImage(url, aux, 0, 2, width, height);
+        //             doc.save(nomeRedacao);
+        //         } else {
+        //             link.href = url;
+        //             link.setAttribute('download', nomeRedacao);
+        //             document.body.appendChild(link);
+        //             link.click();
+        //         }
+        //     })
+        //     .catch((error) => console.log(error));
+        //#endregion
     };
 
     const SubmitButton = async () => {
@@ -269,7 +284,9 @@ export default function CorrectionEssayDialog(props) {
             eixo1: eixo1Aluno,
             eixo2: eixo2Aluno,
             eixo3: eixo3Aluno,
-            competencia: competenciaAluno
+            competencia: competenciaAluno,
+            redacaoURL: data.redacaoURL,
+            correcaoURL,
         }
 
         if (essayUploaded) {
@@ -423,6 +440,7 @@ export default function CorrectionEssayDialog(props) {
                                     setFeedMsg={setFeedMsg} 
                                     setEssayUploaded={setEssayUploaded}
                                     setUploadError={setUploadError}
+                                    setRedacaoURL={setCorrecaoURL}
                                     setFeedOpen={setFeedOpen}/>
                             </Grid>
 

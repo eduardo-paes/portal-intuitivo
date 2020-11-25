@@ -4,6 +4,7 @@ import { StoreContext } from "../../utils";
 import ContentForm from "../../components/Form/ContentForm";
 // Função de validação dos campos do formulário
 import validate from "../../components/Form/Validation/FormValidateContent";
+import Axios from "axios";
 
 const initialState = {
   disciplinaID: "", 
@@ -13,6 +14,7 @@ const initialState = {
   autor: "",
   videoAulaURL: '',
   conteudo: {},
+  conteudoURL: '',
   erros: []
 }
 
@@ -24,7 +26,7 @@ export default function ContentInsert(props) {
   const [conteudo, setConteudo] = useState("");
 
   const onSubmit = async event => {
-    const { disciplinaID, topico, numeracao, videoAulaURL } = material;
+    const { disciplinaID, topico, numeracao, videoAulaURL, conteudoURL } = material;
     const error = validate(material);
 
     setMaterial(preValue => ({
@@ -33,31 +35,32 @@ export default function ContentInsert(props) {
     }))
 
     if (error.validated) {
-      const novoConteudo = {
+      var novoConteudo = {
         autor: token.userID,
         disciplinaID,
         topico, 
         numeracao,
-        videoAulaURL
+        videoAulaURL,
+        conteudoURL
       };
   
-      // Guarda novo usuário no banco
+      // Guarda novo conteúdo no banco
       await api
         .inserirConteudo(novoConteudo)
-        .then(res => {
+        .then(async res => {
           window.alert("Conteúdo inserido com sucesso.")
 
           // Verifica se o usuário subiu algum conteúdo pdf
-          if (conteudo) {
-            // Salva o pdf na pasta local
+          if (conteudo !== '') {
+
+            // Salva o pdf na núvem
             const formData = new FormData();
             formData.append("conteudo", material.conteudo);
-            fetch(`http://localhost:5000/api/upload-conteudo/${res.data.id}`, {
-                  method: 'POST',
-                  body: formData
-                })
-              .then(res => res.json())
+            
+            Axios.post(`http://localhost:5000/api/upload-conteudo/${res.data.id}`, formData)
+              .then(res => novoConteudo.conteudoURL = res.data.url);
           }
+          await api.inserirConteudo(novoConteudo)
 
           // Limpa os campos
           setMaterial(initialState)

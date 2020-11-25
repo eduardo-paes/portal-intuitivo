@@ -171,8 +171,6 @@ export default function UserForm (props) {
                             (acesso !== "Aluno") && profDisciplinas.map((item, index) => {
                                 let tam = profDisciplinas.length;
 
-                                console.log(item);
-                                
                                 return (
                                     <Grid key={index} container={true}>
                                         <Grid item={true} xs={adminUser ? 10 : 12} sm={adminUser ? 11 : 12}>
