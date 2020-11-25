@@ -13,7 +13,7 @@ import {
     Divider
 } from '@material-ui/core';
 
-import { SimpleRadio, UploadEssay, SimpleSnackMessage } from "../";
+import { UploadEssay, SimpleSnackMessage } from "../";
 import { GeneralSubtitle, GeneralText } from "../../assets/styles/styledComponents"
 
 // -- Ícones Material UI
@@ -36,7 +36,7 @@ import api from '../../api';
 import axios from "axios";
 import { WirisIframe } from "../"
 import SimpleList from "./Utils/SimpleList";
-import { eixo1, eixo2, eixo3 } from "../../utils"
+import { eixo1, eixo2, eixo3, competencia } from "../../utils"
 //#endregion
 
 //#region Componentes e Estilos
@@ -178,13 +178,19 @@ const eixos = {
         c7: 0,
         c8: 0,
     },
+    competencia: {
+        d1: 0,
+        d2: 0,
+        d3: 0,
+        d4: 0,
+        d5: 0,
+    }
 }
 
 export default function CorrectionEssayDialog(props) {
     const {redacaoID, data, aluno, open, setOpen, setWasChanged} = props;
 
     const classes = useStyles();
-    const [notaAluno, setNotaAluno] = useState(0);
     const [feedMsg, setFeedMsg] = useState({title: '', message: ''});
     const [feedOpen, setFeedOpen] = useState(false);
     const [essayUploaded, setEssayUploaded] = useState(false);
@@ -194,6 +200,7 @@ export default function CorrectionEssayDialog(props) {
     const [eixo1Aluno, setEixo1Aluno] = useState(eixos.eixo1);
     const [eixo2Aluno, setEixo2Aluno] = useState(eixos.eixo2);
     const [eixo3Aluno, setEixo3Aluno] = useState(eixos.eixo3);
+    const [competenciaAluno, setCompetenciaAluno] = useState(eixos.competencia);
 
     const downloadLink = `http://localhost:5000/api/download-redacao/${aluno._id}/${redacaoID}`;
     const srcImg = `http://localhost:5000/uploads/profile/${aluno._id}.jpeg`;
@@ -249,6 +256,9 @@ export default function CorrectionEssayDialog(props) {
     };
 
     const SubmitButton = async () => {
+        const { d1, d2, d3, d4, d5  } = competenciaAluno;
+        const notaAluno = d1 + d2 + d3 + d4 + d5;
+
         const progressoRedacao = {
             redacaoID: redacaoID,
             alunoID: aluno._id,
@@ -259,6 +269,7 @@ export default function CorrectionEssayDialog(props) {
             eixo1: eixo1Aluno,
             eixo2: eixo2Aluno,
             eixo3: eixo3Aluno,
+            competencia: competenciaAluno
         }
 
         if (essayUploaded) {
@@ -285,12 +296,12 @@ export default function CorrectionEssayDialog(props) {
 
     const closeDialog = () => {
         setOpen(false);
-        setNotaAluno(0);
         setEssayUploaded(false);
         setFeedOpen(false);
         setEixo1Aluno(eixos.eixo1);
         setEixo2Aluno(eixos.eixo2);
         setEixo3Aluno(eixos.eixo3);
+        setCompetenciaAluno(eixos.competencia);
     }
 
     useEffect(() => {
@@ -337,13 +348,6 @@ export default function CorrectionEssayDialog(props) {
                         <Divider style={{ margin: '1rem 0 1rem 0' }}/>
                     </Grid>
 
-                    <Grid id="correctionEssayRadio" item={true} xs={12}>
-                        <GeneralSubtitle className={classes.subtitle}>Correção</GeneralSubtitle>
-                        <p className={classes.subtitle}>Ao concluir a correção da redação, defina uma nota para o aluno e faça o upload da correção em pdf.</p>
-                        <SimpleRadio title='Nota' value={notaAluno} setValue={setNotaAluno}/>
-                        <Divider style={{ margin: '1rem 0 1rem 0' }}/>
-                    </Grid>
-
                     <Grid id="correctionEssayEixo1" item={true} xs={12}>
                         <Accordion square >
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
@@ -381,6 +385,20 @@ export default function CorrectionEssayDialog(props) {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <SimpleList array={eixo3} value={eixo3Aluno} setValue={setEixo3Aluno} word="C"/>
+                            </AccordionDetails>
+                        </Accordion>
+                        <Divider style={{ margin: '1rem 0 1rem 0' }}/>
+                    </Grid>
+
+                    <Grid id="correctionEssayCompetencias" item={true} xs={12}>
+                        <Accordion square >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
+                                <Grid container>
+                                    <GeneralSubtitle>Competências</GeneralSubtitle>
+                                </Grid>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <SimpleList array={competencia} value={competenciaAluno} setValue={setCompetenciaAluno} word="C"/>
                             </AccordionDetails>
                         </Accordion>
                         <Divider style={{ margin: '1rem 0 1rem 0' }}/>

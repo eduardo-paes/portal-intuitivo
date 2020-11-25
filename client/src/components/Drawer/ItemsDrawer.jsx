@@ -12,6 +12,7 @@ import Dashboard from '@material-ui/icons/Dashboard';
 import StudyPlan from '@material-ui/icons/LibraryBooks';
 import Library from '@material-ui/icons/MenuBook';
 import Classroom from '@material-ui/icons/Class';
+import Resultados from '@material-ui/icons/InsertChart';
 // --
 import Analize from '@material-ui/icons/Timeline';
 import Exercises from '@material-ui/icons/Ballot';
@@ -77,8 +78,7 @@ function ItemsDrawer(props) {
                 text: "Dashboard",
                 icon: <Dashboard/>,
                 onClick: () => history.push("/dashboard")
-            },
-            {
+            }, {
                 text: "Plano de Estudos",
                 icon: <StudyPlan/>,
                 onClick: () => history.push("/plano-estudo")
@@ -86,10 +86,14 @@ function ItemsDrawer(props) {
                 text: "Biblioteca",
                 icon: <Library/>,
                 onClick: () => history.push("/biblioteca")
-            },{
+            }, {
                 text: "Classroom",
                 icon: <Classroom/>,
                 onClick: () => history.push("/classroom")
+            }, {
+                text: "Resultados",
+                icon: <Resultados/>,
+                onClick: () => history.push("/resultados")
             },
         ],
         professor: [

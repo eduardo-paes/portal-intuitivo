@@ -37,6 +37,7 @@
     "react-swipe-component": "^3.0.0",
     "react-swipeable": "^5.5.1",
     "react-swipeable-views": "^0.13.9",
+    "react-window": "^1.8.6",
     "styled-components": "^5.1.1"
   },
   "scripts": {

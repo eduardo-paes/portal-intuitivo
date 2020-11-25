@@ -64,6 +64,13 @@ const ProgressoRedacao = new Schema({
         c7: { type: Number },
         c8: { type: Number },
     },
+    competencia: {
+        d1: { type: Number },
+        d2: { type: Number },
+        d3: { type: Number },
+        d4: { type: Number },
+        d5: { type: Number },
+    },
 });
 
 module.exports = mongoose.model("progressoRedacao", ProgressoRedacao);

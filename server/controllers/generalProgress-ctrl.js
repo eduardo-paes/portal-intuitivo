@@ -286,6 +286,7 @@ atualizarProgressoRedacao = async (req, res) => {
         progressoEncontrado.eixo1 = progresso.eixo1
         progressoEncontrado.eixo2 = progresso.eixo2
         progressoEncontrado.eixo3 = progresso.eixo3
+        progressoEncontrado.competencia = progresso.competencia
 
         // Salva alterações
         progressoEncontrado
@@ -497,7 +498,6 @@ contarRedacoesNaoCorrigidas = async (req, res) => {
                 .json({success: true, data: contagem})
         });
 }
-
 
 // ================================================
 // PROGRESSO RELACIONADO À REVISÃO
