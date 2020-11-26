@@ -7,13 +7,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { FixedSizeList } from 'react-window';
-import { Grid } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import CircularStatic from '../../components/ProgressBar/CircularStatic';
+import DescriptionIcon from '@material-ui/icons/Description';
+import InfoIcon from '@material-ui/icons/Info';
+import clsx from 'clsx';
+import { StudentResults } from '../../components';
 
 const useStyles = makeStyles((theme) => ({
   contentCard: {
     width: '100%',
-    minHeight: 300,
+    minHeight: 284,
     padding: '1rem',
     backgroundColor: theme.palette.background.paper,
   },
@@ -32,15 +36,42 @@ const useStyles = makeStyles((theme) => ({
     flex: 6,
     flexDirection: "flex-end",
   },
+  caixaNota: {
+    flex: 6,
+    flexDirection: "flex-end",
+    borderRight: "1px solid #ddd"
+  },
+  caixaRedacoes: {
+    borderLeft: "1px solid #ddd",
+    paddingLeft: "0.5rem"
+  },
   legenda: {
     fontSize: "0.8rem"
   },
   resultado: {
     fontSize: "1.3rem"
   },
+  resultadoNota: {
+    padding: "1rem 0 0.8rem 0",
+    fontSize: "2rem"
+  },
+  rightSubtitle: {
+    textAlign: "right",
+    fontSize: "0.8rem",
+    [theme.breakpoints.down('sm')]: {
+      fontSize: "0.7rem",
+    }
+  },
+  rightText: {
+    fontSize: "1.2rem",
+    textAlign: "right",
+  },
+  subtitle: {
+    fontSize: "0.8rem",
+  },
   observacao: {
     fontSize: "0.8rem",
-    paddingTop: "1rem"
+    padding: "2rem 0.5rem 0 0.5rem"
   }
 }));
 
@@ -63,72 +94,115 @@ renderRow.propTypes = {
   style: PropTypes.object.isRequired,
 };
 
+const listagemRedacoes = [
+  {
+    title: "Redação 1",
+    id: 11
+  },
+  {
+    title: "Redação 2",
+    id: 22
+  },
+  {
+    title: "Redação 3",
+    id: 33
+  },
+  {
+    title: "Redação 4",
+    id: 44
+  },
+  {
+    title: "Redação 5",
+    id: 55
+  },
+  {
+    title: "Redação 6",
+    id: 66
+  },
+  {
+    title: "Redação 7",
+    id: 77
+  },
+  {
+    title: "Redação 8",
+    id: 88
+  }
+]
+
+const listagemADs = [
+  {
+    title: "AD 1",
+    id: 11
+  },
+  {
+    title: "AD 2",
+    id: 22
+  },
+  {
+    title: "AD 3",
+    id: 33
+  },
+  {
+    title: "AD 4",
+    id: 44
+  },
+  {
+    title: "AD 5",
+    id: 55
+  },
+  {
+    title: "AD 6",
+    id: 66
+  },
+  {
+    title: "AD 7",
+    id: 77
+  },
+  {
+    title: "AD 8",
+    id: 88
+  }
+]
+
 export default function StudentAnalysis() {
   const classes = useStyles();
   const { token } = useContext(StoreContext)
   const [wasLoaded, setWasLoaded] = useState(false);
   const alunoID = token.userID;
   const dataRealizacao = new Intl.DateTimeFormat('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(Date.now());
-  const notaAluno = 78.1;
-  const numTotal = 5, numRealizado = 4;
+  const notaRedacaoo = 78.1;
+  const notaAD = 81.1;
 
   return (
     <MyContainer>
       <GeneralTitle>Meus Resultados</GeneralTitle>
 
       <section id="resultadoRedacoes">
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
-            <MyCard className={classes.contentCard}>
-              <GeneralSubtitle>Redações</GeneralSubtitle>
-              <GeneralText>{`Data Realização: ${dataRealizacao}`}</GeneralText>
-              <GeneralText>{`Nota: ${notaAluno}`}</GeneralText>
-            </MyCard>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <MyCard className={classes.contentCard}>
-              <GeneralSubtitle>Média Acumulada</GeneralSubtitle>
-              <Grid container spacing={1} justify="center">
-                <Grid id='nota' item xs={12} sm={6} className={classes.sumario}>
-                  <div className={classes.caixa}>
-                    <GeneralText className={classes.resultado}>{notaAluno}</GeneralText>
-                    <GeneralText className={classes.legenda}>Resultado Médio</GeneralText>
-                  </div>
-                </Grid>
-                
-                <Grid id='progresso' item xs={12} sm={6} className={classes.sumario}>
-                  <div className={classes.caixa}>
-                    <CircularStatic 
-                      wasLoaded={wasLoaded} 
-                      setWasLoaded={setWasLoaded} 
-                      numTasks={numTotal} 
-                      progresso={numRealizado}/>
-                    <GeneralText className={classes.resultado}>{`${numRealizado}/${numTotal}`}</GeneralText>
-                    <GeneralText className={classes.legenda}>Realizadas/Total</GeneralText>
-                  </div>
-                </Grid>
-                
-                <Grid id='observacao' item xs={12}>
-                  <GeneralText className={classes.observacao}>Média calculada com base nos resultados obtidos em todas as redações realizadas.</GeneralText>
-                </Grid>
-              </Grid>
-            </MyCard>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <MyCard className={classes.listCard}>
-              <GeneralSubtitle className={classes.subtitleList}>Redações Feitas</GeneralSubtitle>
-              <FixedSizeList height={215} itemSize={46} itemCount={8} itemData={{ data: "dados serão enviados por aqui" }}>
-                { renderRow }
-              </FixedSizeList>
-            </MyCard>
-          </Grid>
-        </Grid>
+        <StudentResults 
+          title1="Redações"
+          title2="Média Acumulada"
+          title3="Redações Feitas"
+          msg1="Acesso o link abaixo a fim de visualizar mais informações sobre seus erros e acertos nesta redação."
+          msg2="Caso tenha alguma dúvida, contate o seu professor."
+          msg3="Média calculada com base nos resultados obtidos em todas as redações realizadas até o momento."
+          dataRealizacao={dataRealizacao}
+          notaAluno={notaRedacaoo}
+          listagem={listagemRedacoes}
+        />
       </section>
 
-      <section id="resultadoADs">
-
+      <section id="resultadoADs" style={{marginTop: "2rem"}}>
+        <StudentResults 
+          title1="Avaliações Diagnóstica"
+          title2="Média Acumulada"
+          title3="ADs Feitas"
+          msg1="Acesso o link abaixo a fim de visualizar mais informações sobre seus erros e acertos nesta avaliação diagnóstica."
+          msg2="Caso tenha alguma dúvida, contate seus professores."
+          msg3="Média calculada com base nos resultados obtidos em todas as avaliações realizadas até o momento."
+          dataRealizacao={dataRealizacao}
+          notaAluno={notaAD}
+          listagem={listagemADs}
+        />
       </section>
     </MyContainer>
   );

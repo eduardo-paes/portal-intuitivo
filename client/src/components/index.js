@@ -56,6 +56,7 @@ import ActivityCard from './Cards/ActivityCard'
 import QuestionCard from './Cards/QuestionCard'
 import SubjectCard from './Cards/AdminCards/SubjectCard'
 import AreaCard from './Cards/AdminCards/AreaCard'
+import StudentResults from './Cards/StudentResults'
 
 // -- Accorddions
 import ContentAccordion from './Accordions/ContentAccordion'
@@ -133,6 +134,7 @@ export {
     QuestionCard,
     SubjectCard,
     AreaCard,
+    StudentResults,
 
     ContentAccordion,
     AccordionSkeleton,
