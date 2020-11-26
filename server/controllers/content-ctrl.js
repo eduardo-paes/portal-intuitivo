@@ -79,6 +79,7 @@ atualizarConteudo = async (req, res) => {
         conteudoEncontrado.numeracao = conteudo.numeracao
         conteudoEncontrado.videoAulaURL = conteudo.videoAulaURL
         conteudoEncontrado.autor = conteudo.autor
+        conteudoEncontrado.conteudoURL = conteudo.conteudoURL
 
         // Salva alterações
         conteudoEncontrado

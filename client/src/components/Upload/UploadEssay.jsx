@@ -31,7 +31,7 @@ const messages = [
 
 export default function UploadEssay(props) {
   const classes = useStyles();
-  const { uploadLink, checked, primaryTitle, secondaryTitle, correction } = props;
+  const { uploadLink, checked, primaryTitle, secondaryTitle, correction, setRedacaoURL } = props;
   const { setFeedMsg, setFeedOpen, setCheck, progresso, setProgresso, setWasChecked, setEssayUploaded, setUploadError } = props;
 
   const handleUpload = async (event) => {
@@ -39,15 +39,14 @@ export default function UploadEssay(props) {
 
     if (file && uploadLink) {
       const formData = new FormData();
-      formData.append("foto", file);
-      const config = { headers: { 'content-type': 'multipart/form-data' } };
+      formData.append("redacao", file);
 
-      await axios.post(uploadLink, formData, config)
+      await axios.post(uploadLink, formData)
         .then(res => {
-          if (res.status !== 200) {
-            setFeedMsg(messages[correction ? 2 : 0])
-          } else {
-            setFeedMsg(messages[correction ? 3 : 1])
+          if (res.data.success) {
+            setFeedMsg(messages[correction ? 3 : 1]);
+            setRedacaoURL(res.data.url);
+            console.log(res.data.url);
             if (correction) {
               setEssayUploaded(true);
               setUploadError(true);
@@ -56,6 +55,8 @@ export default function UploadEssay(props) {
               setProgresso(progresso + 1);
               setWasChecked(true);
             }
+          } else {
+            setFeedMsg(messages[correction ? 2 : 0]);
           }
           setFeedOpen(true);
         })

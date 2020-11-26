@@ -55,7 +55,7 @@ export default function UsersInsert() {
                 .then(async res => {
                     Axios
                         .post(`http://localhost:5000/api/upload-profile/${res.data.id}`, data)
-                        .then( (res) => {
+                        .then((res) => {
                             novoUsuario.url = res.data.url;
                         });
                     window.alert("Usuário inserido com sucesso.");

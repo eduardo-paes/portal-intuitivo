@@ -287,6 +287,8 @@ atualizarProgressoRedacao = async (req, res) => {
         progressoEncontrado.eixo2 = progresso.eixo2
         progressoEncontrado.eixo3 = progresso.eixo3
         progressoEncontrado.competencia = progresso.competencia
+        progressoEncontrado.redacaoURL = progresso.redacaoURL
+        progressoEncontrado.correcaoURL = progresso.correcaoURL
 
         // Salva alterações
         progressoEncontrado
@@ -405,7 +407,7 @@ listarRedacoesNaoCorrigidas = async (req, res) => {
 
     await ProgressoRedacao
         .find({corrigido: false})
-        .populate({path: 'alunoID', select: 'nome'})
+        .populate({path: 'alunoID', select: ['nome', 'url']})
         .populate(populateQuery)
         .exec((err, listaRedacoes) => {
             if (err) {
@@ -434,7 +436,7 @@ listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
     const { redacaoID } = req.params;
 
     const populateQuery = {
-        path: 'alunoID', select: 'nome'
+        path: 'alunoID', select: ['nome', 'url', 'redacaoURL']
     }
 
     await ProgressoRedacao

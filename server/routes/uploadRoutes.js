@@ -47,7 +47,6 @@ function checkCorrectFileName (fileName) {
 
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {
-
     const upload = multer({ 
         storage: storageType["questao"],
         fileFilter: (req, file, cb) => {
@@ -70,10 +69,23 @@ router.post("/upload-questao", (req, res) => {
 });
 
 // Rota para armazenamento de conteúdo pdf
-router.post("/upload-conteudo/:id", (req, res) => {
+router.post("/upload-conteudo/:id", (req, res) => {  
+    const { id } = req.params;
 
-    const upload = multer({ storage: storageType["conteudo"] }).single("conteudo");
+    storage = { 
+        conteudo: multerS3({
+            s3: new aws.S3(),
+            bucket: 'testeintuitivo/Conteudo',
+            contentType: multerS3.AUTO_CONTENT_TYPE,
+            acl: 'public-read',
+            key: function (req, file, cb) {
+                cb(null, id)
+            }
+        })
+    }
     
+    const upload = multer({ storage: storage["conteudo"] }).single("conteudo");
+
     upload(req, res, err => {
         if (err) {
             console.log(err);
@@ -85,74 +97,54 @@ router.post("/upload-conteudo/:id", (req, res) => {
 
 // Rota para armazenamento da foto de perfil
 router.post("/upload-profile/:id", async (req, res) => {
-    const id = req.params.id;
-
-    if (req.file !== undefined) {
-        storage = { 
-            foto: multerS3({
-                s3: new aws.S3(),
-                bucket: 'testeintuitivo/Profile',
-                contentType: multerS3.AUTO_CONTENT_TYPE,
-                acl: 'public-read',
-                key: function (req, file, cb) {
-                    cb(null, id)
-                }
-            })
-        }
-    
-        const upload = multer({ storage: storage["foto"] }).single("foto");
-        
-        upload(req, res, err => {
-            if (!err) {
-                return res.json({ success: true, url: req.file.location });
+    const { id } = req.params;
+    storage = { 
+        foto: multerS3({
+            s3: new aws.S3(),
+            bucket: 'testeintuitivo/Profile',
+            contentType: multerS3.AUTO_CONTENT_TYPE,
+            acl: 'public-read',
+            key: function (req, file, cb) {
+                cb(null, id)
             }
-            console.log(err);
-        });
+        })
     }
 
-    return res.json({ success: false, url: "" });
+    const upload = multer({ storage: storage["foto"] }).single("foto");
+    
+    upload(req, res, err => {
+        if (err) {
+            console.log(err);
+            return res.json({ success: false, err });
+        }
+        return res.json({ success: true, url: req.file.location });
+    });
 });
 
 // Rota para armazenamento da redação do aluno
 router.post("/upload-redacao/:alunoID/:redacaoID", (req, res) => {
+    const { alunoID, redacaoID } = req.params;
 
-    const removeCopyFile = async () => {
-        const pathEssay = path.resolve(__dirname, "..", "..", "uploads", "redacao");
-        const files = fs.readdirSync(pathEssay);
-        
-        var correctPath = '';
-        files.toString().split(',').forEach(file => {
-            if (file.includes(fileName)) {
-                correctPath = file;
+    storage = { 
+        redacao: multerS3({
+            s3: new aws.S3(),
+            bucket: 'testeintuitivo/Redacao',
+            contentType: multerS3.AUTO_CONTENT_TYPE,
+            acl: 'public-read',
+            key: function (req, file, cb) {
+                cb(null, alunoID + redacaoID)
             }
         })
-
-        if (correctPath !== '') {
-            var filePath = path.resolve(__dirname, "..", "..", "uploads", "redacao", correctPath);
-            await unlinkAsync(filePath);
-        }
     }
 
-    const upload = multer({ 
-        storage: storageType["redacao"],
-        fileFilter: (req, file, cb) => {
-            const ext = path.extname(file.originalname);
-            removeCopyFile();
-            if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== '.pdf') {
-                return cb(res.status(400).end('Somente jpg, png, jpeg e pdf são permitidos.'), false);
-            }
-            cb(null, true)
-        },
-        limits: {
-            // fileSize: 1024 * 1024
-        }
-    }).single("foto");
-    
+    const upload = multer({storage: storage["redacao"]}).single("redacao");
+
     upload(req, res, err => {
-        if (!err) {
-            return res.json({ success: true, url: req.file.location });
+        if (err) {
+            console.log(err);
+            return res.json({ success: false, err });
         }
-        console.log(err);
+        return res.json({ success: true, url: req.file.location });
     });
 });
 
@@ -166,61 +158,28 @@ router.get("/download-redacao/:alunoID/:redacaoID", (req, res) => {
 
 // Rota para armazenamento da correção redação do aluno
 router.post("/upload-redacao/corrigida/:alunoID/:redacaoID", (req, res) => {
-    let alunoID = req.params.alunoID;
-    let redacaoID = req.params.redacaoID;
-    let fileName = alunoID + redacaoID;
+    const { alunoID, redacaoID } = req.params;
 
-    let redacaoStorage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, path.resolve(__dirname, "..", "..", "uploads", "correcao"));
-        },
-        filename: (req, file, cb) => {
-            var ext = path.extname(file.originalname);
-            if (ext !== '.pdf') {
-                ext = '.jpg';
-            }
-            file.key = { alunoID, redacaoID }
-            cb(null, `corrigida-${ alunoID + redacaoID + ext }`);
-        }
-    });
-
-    const removeCopyFile = async () => {
-        const pathEssay = path.resolve(__dirname, "..", "..", "uploads", "correcao");
-        const files = fs.readdirSync(pathEssay);
-        
-        var correctPath = '';
-        files.toString().split(',').forEach(file => {
-            if (file.includes(fileName)) {
-                correctPath = file;
+    storage = { 
+        redacao: multerS3({
+            s3: new aws.S3(),
+            bucket: 'testeintuitivo/Correcao',
+            contentType: multerS3.AUTO_CONTENT_TYPE,
+            acl: 'public-read',
+            key: function (req, file, cb) {
+                cb(null, alunoID + redacaoID)
             }
         })
-
-        if (correctPath !== '') {
-            var filePath = path.resolve(__dirname, "..", "..", "uploads", "correcao", correctPath);
-            await unlinkAsync(filePath);
-        }
     }
 
-    const upload = multer({ 
-        storage: redacaoStorage,
-        fileFilter: (req, file, cb) => {
-            const ext = path.extname(file.originalname);
-            removeCopyFile();
-            if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== '.pdf') {
-                return cb(res.status(400).end('Somente jpg, png, jpeg e pdf são permitidos.'), false);
-            }
-            cb(null, true)
-        },
-        limits:{
-            // fileSize: 1024 * 1024
-        }
-    }).single("foto");
-    
+    const upload = multer({storage: storage["redacao"]}).single("redacao");
+
     upload(req, res, err => {
-        if (!err) {
-            return res.json({ success: true });
+        if (err) {
+            console.log(err);
+            return res.json({ success: false, err });
         }
-        console.log("Erro de Upload: ", err);
+        return res.json({ success: true, url: req.file.location });
     });
 });
 

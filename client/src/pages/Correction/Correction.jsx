@@ -83,6 +83,8 @@ export default function Correction() {
             const response = await api.listarRedacoesNaoCorrigidas(item.disciplinaID);
             var value = response.data;
 
+            console.log(value.data);
+
             if (value.success) {
                 if (arrayAux.length) {
                     arrayAux = arrayAux.concat(value.data);
