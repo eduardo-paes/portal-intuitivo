@@ -9,7 +9,7 @@ export class UploadAdapter {
   async upload() {
     return this.loader.file.then((file) => {
       const data = new FormData()
-      data.append("file", file)
+      data.append("questao", file)
       const genericError = `Não foi possível fazer o upload do arquivo: ${file.name}.`
 
       return axios({
@@ -22,7 +22,9 @@ export class UploadAdapter {
           this.loader.uploaded = progressEvent.loaded
         },
       })
-        .then(({ data }) => ({ default: `http://localhost:5000/uploads/question/${data.name}` }))
+        .then(res => {
+          return ({ default: res.data.url });
+        })
         .catch(error => Promise.reject(error?.message ?? genericError))
     })
   }

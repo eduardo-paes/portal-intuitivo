@@ -61,7 +61,6 @@ atualizarConteudo = async (req, res) => {
             .status(400)
             .json({success: false, error: "Os dados são nulos ou incompatíveis."})
     }
-
     
     // Busca conteúdo pelo id (id da rota)
     Conteudo.findOne({

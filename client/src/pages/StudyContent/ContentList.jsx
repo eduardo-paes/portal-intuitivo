@@ -122,7 +122,7 @@ export default function ContentList () {
         />
 
         <PDFPreviewDialog 
-          conteudo={`http://localhost:5000/uploads/content/${id}.pdf`}
+          conteudo={id}
           topico={titulo}
           open={open}
           setOpen={setOpen}

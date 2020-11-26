@@ -32,7 +32,7 @@ import ClearAllIcon from '@material-ui/icons/ClearAll';
 
 // Botão para visualização do conteúdo
 function ContentVisualization (props) {
-    const { open, setOpen, setId, setTitulo, ID, nome } = props;
+    const { open, setOpen, setId, setTitulo, conteudoURL, nome } = props;
     return (
         <IconButton 
             aria-label="visualization" 
@@ -40,7 +40,7 @@ function ContentVisualization (props) {
             size="small"
             onClick={() => {
                 setOpen(!open);
-                setId(ID);
+                setId(conteudoURL);
                 setTitulo(nome);
             }}> 
             <VisibilityIcon/> 
@@ -410,7 +410,7 @@ export default function EnhancedTable(props) {
 
                                                     <TableCell align={smScreen ? "right" : "left"}>
                                                         <ContentVisualization 
-                                                            ID={conteudo._id} 
+                                                            conteudoURL={conteudo.conteudoURL} 
                                                             nome={conteudo.topico} 
                                                             open={props.open} 
                                                             setOpen={props.setOpen}

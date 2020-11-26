@@ -42,10 +42,14 @@ export default function ContentForm (props) {
     const handleUpload = async event => {
         const file = event.target.files[0];
         setMaterial(preValue => ({
-        ...preValue,
-        conteudo: file
+            ...preValue,
+            conteudo: file
         }));
-        setConteudo(URL.createObjectURL(file));
+
+        setConteudo({
+            file: file,
+            url: URL.createObjectURL(file)
+        });
     }
 
     const handleSubject = (disciplina, area) => {

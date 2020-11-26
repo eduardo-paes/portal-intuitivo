@@ -14,7 +14,10 @@ function initialState(props) {
     numeracao: "",
     videoAulaURL:  "",
     autor: "",
-    conteudo: {},
+    conteudo: {
+      file: {},
+      url: ''
+    },
     conteudoURL: "",
     erros: []
   }
@@ -42,7 +45,11 @@ export default function ContentUpdate(props) {
         autor: value.autor,
         conteudoURL: value.conteudoURL
       }));
-      setConteudo(`http://localhost:5000/uploads/content/${material.id}.pdf`)
+
+      setConteudo({
+        file: {},
+        url: value.conteudoURL
+      })
     }
     fetchConteudoAPI();
     return abortController.abort();
@@ -66,32 +73,32 @@ export default function ContentUpdate(props) {
         numeracao,
         videoAulaURL,
         conteudoURL
-      };  
-  
+      };
+      
       // Verifica se o usuário subiu algum conteúdo pdf
-      if (conteudo !== '') {
+      if (conteudo.file !== {}) {
         // Salva o pdf na pasta local
         const formData = new FormData();
         formData.append("conteudo", material.conteudo);
         
-        Axios.post(`http://localhost:5000/api/upload-conteudo/${material.id}`, formData)
-          .then(res => conteudoAtualizado.conteudoURL = res.data.url);
+        await Axios.post(`http://localhost:5000/api/upload-conteudo/${material.id}`, formData)
+        .then(res => {
+          conteudoAtualizado.conteudoURL = res.data.url
+        })
+        .catch(err => {
+          console.log(err);
+        });
       }
 
       // Guarda novo usuário no banco
       await api
         .atualizarConteudo(material.id, conteudoAtualizado)
-        .then(async res => window.alert("Conteúdo atualizado com sucesso."));
-  
-      if (conteudo) {
-        const formData = new FormData();
-        formData.append("conteudo", conteudo);
-        fetch('http://localhost:5000/api/upload-conteudo', {
-            method: 'POST',
-            body: formData
-          })
-          .then(res => res.json())
-      }  
+        .then(res => {
+          window.alert("Conteúdo atualizado com sucesso.");
+        })
+        .catch(err => {
+          window.alert("Houve um erro com a atualização do conteúdo, verifique se todas as informações estão corretas. Se o erro persistir, informe à equipe técnica.");
+        }); 
     }
   }
   
