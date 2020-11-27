@@ -13,7 +13,10 @@ const initialState = {
   numeracao: '',
   autor: "",
   videoAulaURL: '',
-  conteudo: {},
+  conteudo: {
+    file: {},
+    url: ''
+  },
   conteudoURL: '',
   erros: []
 }
@@ -23,7 +26,7 @@ export default function ContentInsert(props) {
   
   // -- Define principais constantes
   const [material, setMaterial] = useState(initialState);
-  const [conteudo, setConteudo] = useState("");
+  const [conteudo, setConteudo] = useState(initialState.conteudo);
 
   const onSubmit = async event => {
     const { disciplinaID, topico, numeracao, videoAulaURL, conteudoURL } = material;
@@ -43,24 +46,34 @@ export default function ContentInsert(props) {
         videoAulaURL,
         conteudoURL
       };
-  
+
       // Guarda novo conteúdo no banco
       await api
         .inserirConteudo(novoConteudo)
         .then(async res => {
-          window.alert("Conteúdo inserido com sucesso.")
 
           // Verifica se o usuário subiu algum conteúdo pdf
-          if (conteudo !== '') {
+          if (conteudo.file !== {}) {
 
             // Salva o pdf na núvem
             const formData = new FormData();
             formData.append("conteudo", material.conteudo);
             
-            Axios.post(`http://localhost:5000/api/upload-conteudo/${res.data.id}`, formData)
-              .then(res => novoConteudo.conteudoURL = res.data.url);
+            await Axios.post(`http://localhost:5000/api/upload-conteudo/${res.data.id}`, formData)
+              .then(res => novoConteudo.conteudoURL = res.data.url)
+              .catch(err => {
+                console.log(err);
+              });
           }
-          await api.inserirConteudo(novoConteudo)
+
+          await api
+            .atualizarConteudo(res.data.id, novoConteudo)
+            .then(res => {
+              window.alert("Conteúdo atualizado com sucesso.");
+            })
+            .catch(err => {
+              window.alert("Houve um erro com a atualização do conteúdo, verifique se todas as informações estão corretas. Se o erro persistir, informe à equipe técnica.");
+            });
 
           // Limpa os campos
           setMaterial(initialState)

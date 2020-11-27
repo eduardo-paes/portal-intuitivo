@@ -26,7 +26,7 @@ const Conteudo = new Schema({
     },
     conteudoURL: {
         type: String,
-        required: true
+        required: false
     }
 });
 

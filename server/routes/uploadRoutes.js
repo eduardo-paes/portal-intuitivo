@@ -47,24 +47,31 @@ function checkCorrectFileName (fileName) {
 
 // Rota para armazenamento de arquivos
 router.post("/upload-questao", (req, res) => {
-    const upload = multer({ 
-        storage: storageType["questao"],
+    storage = { 
+        questao: multerS3({
+            s3: new aws.S3(),
+            bucket: 'testeintuitivo/Questao',
+            contentType: multerS3.AUTO_CONTENT_TYPE,
+            acl: 'public-read'
+        })
+    }
+
+    const upload = multer({ storage: storage["questao"], 
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname)
             if (ext !== '.jpg' && ext !== '.png' && ext !== '.mp4') {
-                return cb(res.status(400).end('only jpg, png, mp4 is allowed'), false);
+                return cb(res.status(400).end('Only jpg, png, mp4 is allowed'), false);
             }
-            cb(null, true)
+            cb(null, true);
         }
-     }).single("file");
-    
+    }).single("file");
+
     upload(req, res, err => {
         if (err) {
             console.log(err);
-            return res.json({ uploaded: false, err });
+            return res.json({ success: false, err });
         }
-        
-        return res.json({ uploaded: true, url: req.file.location , name: fileName});
+        return res.json({ success: true, url: req.file.location });
     });
 });
 
@@ -84,7 +91,15 @@ router.post("/upload-conteudo/:id", (req, res) => {
         })
     }
     
-    const upload = multer({ storage: storage["conteudo"] }).single("conteudo");
+    const upload = multer({ storage: storage["conteudo"], 
+        fileFilter: (req, file, cb) => {
+            const ext = path.extname(file.originalname)
+            if (ext !== '.pdf') {
+                return cb(res.status(400).end('Only pdf is allowed'), false);
+            }
+            cb(null, true)
+        }
+        }).single("conteudo");
 
     upload(req, res, err => {
         if (err) {

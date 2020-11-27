@@ -172,25 +172,30 @@ function ItemsDrawer(props) {
         // eslint-disable-next-line
     }, [token]);
 
+    function CarregaQuantidadeCorrecoes() {
+        var count = 0;
+        disciplinas.forEach(async item => {
+            if (item.disciplinaID) {
+                const resRA = await api.contarRAsNaoCorrigidas(item.disciplinaID);
+                const resRED = await api.contarRedacoesNaoCorrigidas(item.disciplinaID);
+
+                const valRA = resRA.data;
+                const valRED = resRED.data;
+
+                count += valRA.success ? valRA.data : 0;
+                count += valRED.success ? valRED.data : 0;
+            }
+            console.log(count);
+            setNumCorrections(count);
+        });
+        setWasLoaded(true);
+    }
+
     useEffect(() => {
         // const abortController = new AbortController();
         if (disciplinas.length && !wasLoaded) {
-            var count = 0;
-            disciplinas.forEach(async item => {
-                if (item.disciplinaID) {
-                    const resRA = await api.contarRAsNaoCorrigidas(item.disciplinaID);
-                    const resRED = await api.contarRedacoesNaoCorrigidas(item.disciplinaID);
-
-                    const valRA = resRA.data;
-                    const valRED = resRED.data;
-
-                    count = valRA.success ? valRA.data : 0;
-                    count = valRED.success ? valRED.data : 0;
-
-                    setNumCorrections(numCorrections + count);
-                }
-            });
-            setWasLoaded(true);
+            CarregaQuantidadeCorrecoes();
+            console.log(numCorrections);
         }
         // return abortController.abort();
         // eslint-disable-next-line

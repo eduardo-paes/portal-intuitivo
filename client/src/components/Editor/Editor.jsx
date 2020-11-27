@@ -26,6 +26,9 @@ const editorConfig = {
     removePlugins: [ 
         'List'
     ],
+    // ckfinder: {
+    //     uploadUrl: "http://localhost:5000/api/upload-questao"
+    // }
 }
 
 // -- Função Principal
@@ -67,7 +70,6 @@ function TextEditor (props) {
                 editor.isReadOnly = readOnly;
                 uploadAdapterPlugin(editor);
             }}
-            
             config={ optionType && editorConfig }
             onError={ err => console.log(err) }
             onChange={ handleEditorChange }

@@ -457,7 +457,7 @@ listarRedacoesNaoCorrigidasPorRedacaoID = async (req, res) => {
                     .json({success: false, error: "Redações não encontrada."})
             }
 
-            listaRedacoes.filter(item => {
+            listaRedacoes = listaRedacoes.filter(item => {
                 return item._id === redacaoID;
             });
 
@@ -484,9 +484,9 @@ contarRedacoesNaoCorrigidas = async (req, res) => {
             }
         },
     };
-
+    
     await ProgressoRedacao
-        .countDocuments({ corrigido: false })
+        .find({ corrigido: false })
         .populate(populateQuery)
         .exec((err, contagem) => {
             if (err) {
@@ -495,9 +495,13 @@ contarRedacoesNaoCorrigidas = async (req, res) => {
                     .json({success: false, error: err})
             }
 
+            contagem = contagem.filter(item => {
+                return item.redacaoID.topicoID.disciplinaID !== null;
+            });
+
             return res
                 .status(200)
-                .json({success: true, data: contagem})
+                .json({success: true, data: contagem.length})
         });
 }
 

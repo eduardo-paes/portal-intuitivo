@@ -50,14 +50,14 @@ export default function UploadContent(props) {
           color="primary"
           component="span"
           fullWidth={true}
-          disabled={conteudo === "" ? true : false}
+          disabled={conteudo.url === "" ? true : false}
           startIcon={<VisibilityIcon />} 
           onClick={() => {setOpen(!open)}}
         > Visualizar </Button>
 
         <PDFPreviewDialog 
           topico={topico} 
-          conteudo={conteudo}
+          conteudo={conteudo.url}
           open={open}
           setOpen={setOpen}
         />
