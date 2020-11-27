@@ -382,9 +382,6 @@ const gerarAnaliseProfessor = async (req, res) => {
             }
 
         })
-
-        return analise;
-        
     })
 
     return res.json({data: analise});
