@@ -49,7 +49,7 @@ export default function Dashboard (props) {
   const [wasLoaded, setWasLoaded] = useState(false);
   const [analiseAluno, setAnaliseAluno] = useState();
   const [progressoDiario, setProgressoDiario] = useState([]);
-  const { token } = useContext(StoreContext)
+  const { token } = useContext(StoreContext);
   const alunoID = token.userID;
 
   async function gerarAnalise() {

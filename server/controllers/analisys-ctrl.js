@@ -1,8 +1,8 @@
-const { get } = require('mongoose');
 const RespostaAluno = require('../models/studentAnswer-model');
 const Disciplina = require('../models/subject-model');
 const Topico = require('../models/content-model');
 const Progresso = require('../models/progressTopic-model');
+const Usuario = require('../models/users-model');
 const auxFunctions = require('../../server/utils/auxFunctions');
 const AnoLetivoCtrl = require("../controllers/schoolYear-ctrl");
 const AnoLetivo = require('../models/schoolYear-model');
@@ -112,6 +112,7 @@ const gerarAnaliseAluno = async (req, res) => {
 
 }
 
+// Função para gerar o progresso diário de determinado aluno
 const gerarProgressoDiario = async (req, res) => {  
     
     const { alunoID, dia, semana } = req.params;
@@ -172,319 +173,227 @@ const gerarProgressoDiario = async (req, res) => {
 
 }
 
-// // Função para atualizar resposta do aluno por ID
-// atualizarRespostaAluno = async (req, res) => {
-//     // Recebe dados do formulário
-//     const body = req.body;
-    
-//     if (!body) {
-//         return res.status(400).json({
-//             success: false,
-//             error: "Os dados devem ser fornecidos.",
-//         })
-//     }
-    
-//     const respostaAlunoAtualizada = new RespostaAluno(body);
+// Função para gerar análise geral do aluno
+const gerarAnaliseProfessor = async (req, res) => {
 
-//     // Verifica se dados não são nulos
-//     if (!respostaAlunoAtualizada) {
-//         return res
-//             .status(400)
-//             .json({success: false, error: "Os dados são nulos ou incompatíveis."})
-//     }
+    let { id } = req.params;
+    let respostas = []; 
+    let alunos = [];
+    let topicos = [];
+    let progressos = [];
 
-//     // Busca a resposta do aluno pelo id (id da rota)
-//     RespostaAluno.findOne({
-//         _id: req.params.id
-//     }, (err, respostaAlunoEncontrada) => {
-//         if (err) {
-//             return res
-//                 .status(404)
-//                 .json({
-//                     err, 
-//                     message: "Resposta do aluno não encontrada."
-//                 })
-//         }
+    let analise = {
+        mediaTurma: 0,
+        questoes: {
+            qCorretas: 0,
+            qTotal: 0
+        },
+        alunos: {
+            amNome: "",
+            amNota: 0,
+            apNome: "",
+            apNota: 0,
+        },
+        topicos: {
+            melhor: {
+                tmID: "",
+                tmNome: "",
+                tmNota: 0,
+                tmEstudado: 0,
+                tmTotal: 0
+            },
+            pior: {
+                tpID: "",
+                tpNome: "",
+                tpNota: 0,
+                tpEstudado: 0,
+                tpTotal: 0
+            },
+        },
+        frequencia: {
+            material: {
+                mEstudado: 0,
+                mTotal: 0
+            },
+            videoaula: {
+                vAssistido: 0,
+                vTotal: 0
+            },
+            atividade: {
+                aFeito: 0,
+                aTotal: 0
+            }
+        }
+    }
 
-//         // Atualiza dados da resposta do aluno encontrada
-//         respostaAlunoEncontrada.alunoID = respostaAlunoAtualizada.alunoID
-//         respostaAlunoEncontrada.atividadeID = respostaAlunoAtualizada.atividadeID
-//         respostaAlunoEncontrada.revisaoID = respostaAlunoAtualizada.revisaoID
-//         respostaAlunoEncontrada.respostaQuestaoIDs = respostaAlunoAtualizada.respostaQuestaoIDs
-//         respostaAlunoEncontrada.corrigido = respostaAlunoAtualizada.corrigido
-//         respostaAlunoEncontrada.nota = respostaAlunoAtualizada.nota
+    let respostaAluno = await RespostaAluno.find({  }).populate({path: 'atividadeID', populate: {path: 'topicoID' }}).populate({path: 'alunoID'});
 
-//         // Salva alterações
-//         respostaAlunoEncontrada
-//             .save()
-//             .then(() => {
-//                 return res.status(200).json({
-//                     success: true,
-//                     id: respostaAlunoEncontrada._id,
-//                     message:"Resposta do aluno atualizada com sucesso.",
-//                 })
-//             })
-//             .catch(error => {
-//                 return res.status(404).json({
-//                     error,
-//                     message: "Resposta do aluno não atualizada.",
-//                 })
-//             });
-//     });
-// }
+    respostaAluno.map(row => {    
 
-// // Função para remover respostaAluno por ID
-// removerRespostaAluno = async (req, res) => {
-//     // Encontra respostaQuestao pelo ID e remove
-//     await RespostaAluno
-//         .findOneAndDelete({
-//             _id: req.params.id
-//         }, (err, respostaAlunoEncontrada) => {
+        const disciplinaID = row.atividadeID.disciplinaID + '';
+        
+        const nome = row.alunoID.nome;
+        const alunoID = row.alunoID._id;
+        const nota = row.nota;
 
+        const topicoID = row.atividadeID.topicoID._id;
+        const topicoNome = row.atividadeID.topicoID.topico;
 
-//             if (err) {
-//                 console.log (err);
-//                 return res
-//                     .status(400)
-//                     .json({
-//                         success: false, 
-//                         error: err
-//                     })
-//             }
+        if (disciplinaID === id && row.corrigido === true) {
+            if (alunos.find(element => {return element.alunoID === alunoID})) {
+                alunos.find(element => {
+                    if (element.alunoID === alunoID) {
+                        element.nota += nota;
+                        element.atividades += 1;
+                    }
+                })
+            } else {
+                alunos.push({alunoID, nome, nota, atividades: 1})
+            }
+            if (topicos.find(element => {return element.topicoID === topicoID})) {
+                topicos.find(element => {
+                    if (element.topicoID === topicoID) {
+                        element.nota += nota;
+                        element.atividades += 1;
+                    }
+                })
+            } else {
+                topicos.push({topicoID, topicoNome, nota, atividades: 1})
+            }
+            respostas.push(row);
+            analise.mediaTurma += (nota ? nota : null);
+            analise.questoes.qTotal += row.respostaQuestaoIDs.length;
+            analise.questoes.qCorretas += row.respostaQuestaoIDs.length * nota / 100;
+        }
+    })
+
+    // Armazena o melhor e pior aluno;
+    alunos.map(row => {
+        row.nota = row.nota / row.atividades;
+        if (analise.alunos.amNome === '') {
+            analise.alunos.amNome = analise.alunos.apNome = row.nome;
+            analise.alunos.apNota = analise.alunos.amNota = row.nota;
+        }
+        if (analise.alunos.apNota > row.nota) {
+            analise.alunos.apNome = row.nome;
+            analise.alunos.apNota = row.nota;
+        } else if (analise.alunos.amNota < row.nota) {
+            analise.alunos.amNome = row.nome;
+            analise.alunos.amNota = row.nota;
+        } 
+    })
+
+    // Armazena o melhor e pior tópico;
+    topicos.map(row => {
+        row.nota = row.nota / row.atividades;
+
+        if (analise.topicos.melhor.tmNome === '') {
+            analise.topicos.melhor.tmNome = analise.topicos.pior.tpNome = row.topicoNome;
+            analise.topicos.pior.tpNota = analise.topicos.melhor.tmNota = row.nota;
+            analise.topicos.pior.tpID = analise.topicos.melhor.tmID = row.topicoID;
+        }
+        if (analise.topicos.pior.tpNota > row.nota) {
+            analise.topicos.pior.tpNome = row.topicoNome;
+            analise.topicos.pior.tpNota = row.nota;
+            analise.topicos.pior.tpID = row.topicoID;
+        } else if (analise.topicos.melhor.tmNota < row.nota) {
+            analise.topicos.melhor.tmNome = row.topicoNome;
+            analise.topicos.melhor.tmNota = row.nota;
+            analise.topicos.melhor.tmID = row.topicoID;
+        } 
+        progressos.push(row.topicoID);
+    })
+
+    analise.mediaTurma = analise.mediaTurma / (respostas.length ? respostas.length : 1);
+
+    const data = await progressos.map(async (row, index) => {
+
+        const res = await Progresso.find({topicoID: row});
+        
+        res.map( row => { 
+
+            const id = row.topicoID + '';
             
-//             // Caso não encontre nenhuma respostaQuestão
-//             if (!respostaAlunoEncontrada) {
-//                 return res
-//                     .status(404)
-//                     .json({
-//                         success: false, 
-//                         error: "Resposta aluno não encontrada."
-//                     })
-//             }
+            if (row.progresso.materialEstudo !== undefined) {
+                ++analise.frequencia.material.mTotal;
+                if (id === analise.topicos.melhor.tmID + '') {
+                    ++analise.topicos.melhor.tmTotal;
+                    if (row.progresso.materialEstudo === true) {
+                        ++analise.topicos.melhor.tmEstudado;
+                    }    
+                } 
+                if (id === analise.topicos.pior.tpID + '') {
+                    ++analise.topicos.pior.tpTotal;
+                    if (row.progresso.materialEstudo === true) ++analise.topicos.pior.tpEstudado;
+                }
+                if (row.progresso.materialEstudo === true) ++analise.frequencia.material.mEstudado;
+            } 
 
-//             // Caso não haja erros, conclui operação.
-//             return res
-//                 .status(200)
-//                 .json({
-//                     success: true, 
-//                     data: respostaAlunoEncontrada
-//                 })
-//         })
-//         .catch(err => console.log(err))
-// }
+            if (row.progresso.videoaula !== undefined) {
+                ++analise.frequencia.videoaula.vTotal;
+                if (id === analise.topicos.melhor.tmID + '') {
+                    ++analise.topicos.melhor.tmTotal;
+                    if (row.progresso.videoaula === true) ++analise.topicos.melhor.tmEstudado;
+                } 
+                if (id === analise.topicos.pior.tpID + '') {
+                    ++analise.topicos.pior.tpTotal;
+                    if (row.progresso.videoaula === true) ++analise.topicos.pior.tpEstudado;
+                }
+                if (row.progresso.videoaula === true) ++analise.frequencia.videoaula.vAssistido;
+            } 
 
-// // Função para buscar resposta do aluno pelo id do aluno e da atividade
-// encRespostaAluno = async (req, res) => {
-//     // Encontra resposta do aluno pelo id do aluno e da atividade fornecidos na rota
-//     await RespostaAluno
-//         .findOne({
-//             alunoID: req.params.alunoID,
-//             revisaoID: req.params.revisaoID
-//         }, (err, respostaAlunoEncontrada) => {
-//             if (err) {
-//                 return res
-//                     .status(400)
-//                     .json({success: false, error: err})
-//             }
+            if (row.progresso.exercicioFixacao !== undefined) {
+                ++analise.frequencia.atividade.aTotal;
+                if (id === analise.topicos.melhor.tmID + '') {
+                    ++analise.topicos.melhor.tmTotal;
+                    if (row.progresso.exercicioFixacao === true) ++analise.topicos.melhor.tmEstudado;
+                }
+                if (id === analise.topicos.pior.tpID + '') {
+                    ++analise.topicos.pior.tpTotal;
+                    if (row.progresso.exercicioFixacao === true) ++analise.topicos.pior.tpEstudado;
+                }
+                if (row.progresso.exercicioFixacao === true) ++analise.frequencia.atividade.aFeito;
+            }
 
-//             if (!respostaAlunoEncontrada) {
-//                 return res
-//                     .json({success: false, error: "Resposta do aluno não encontrada."})
-//             }
+            if (row.progresso.exercicioRetomada !== undefined) {
+                ++analise.frequencia.atividade.aTotal;
+                if (id === analise.topicos.melhor.tmID + '') {
+                    ++analise.topicos.melhor.tmTotal;
+                    if (row.progresso.exercicioRetomada === true) ++analise.topicos.melhor.tmEstudado;
+                }
+                if (id === analise.topicos.pior.tpID + '') {
+                    ++analise.topicos.pior.tpTotal;
+                    if (row.progresso.exercicioRetomada === true) ++analise.topicos.pior.tpEstudado;
+                }
+                if (row.progresso.exercicioRetomada === true) ++analise.frequencia.atividade.aFeito;
+            }
 
-//             return res
-//                 .status(200)
-//                 .json({success: true, data: respostaAlunoEncontrada})
-//         })
-//         .catch(err => console.log(err))
-// }
+            if (row.progresso.exercicioAprofundamento !== undefined) {
+                ++analise.frequencia.atividade.aTotal;
+                if (id === analise.topicos.melhor.tmID + '') {
+                    ++analise.topicos.melhor.tmTotal;
+                    if (row.progresso.exercicioAprofundamento === true) ++analise.topicos.melhor.tmEstudado;
+                } 
+                if (id === analise.topicos.pior.tpID + '') {
+                    ++analise.topicos.pior.tpTotal;
+                    if (row.progresso.exercicioAprofundamento === true) ++analise.topicos.pior.tpEstudado;
+                }
+                if (row.progresso.exercicioAprofundamento === true) ++analise.frequencia.atividade.aFeito;
+            }
 
-// // Função para buscar resposta do aluno por ID
-// encRespostaAlunoPorID = async (req, res) => {
-//     // Encontra resposta do aluno por ID fornecido na rota
-//     await RespostaAluno
-//         .findOne({
-//             _id: req.params.id
-//         }, (err, respostaAlunoEncontrada) => {
-//             if (err) {
-//                 return res
-//                     .status(400)
-//                     .json({success: false, error: err})
-//             }
+        })
 
-//             if (!respostaAlunoEncontrada) {
-//                 return res
-//                     .status(404)
-//                     .json({success: false, error: "Resposta do aluno não encontrada."})
-//             }
+        return analise;
+        
+    })
 
-//             return res
-//                 .status(200)
-//                 .json({success: true, data: respostaAlunoEncontrada})
-//         })
-//         .catch(err => console.log(err))
-// }
-
-// // Função para listar respostaAluno contidos no banco
-// listarRespostaAluno = async (req, res) => {
-//     await RespostaAluno.find({})
-//     .exec(function (err, listaRespostaAluno) {
-//         // Verificação de erros
-//         if (err) {
-//             return res.status(400).json({ success: false, error: err })
-//         }
-//         // Verifica se há dados na lista
-//         if (!listaRespostaAluno.length) {
-//             return res
-//                 .status(404)
-//                 .json({ success: false, error: "Dados não encontrados." })
-//         }
-//         // Caso não haja erros, retorna lista de respostaAluno
-//         return res.status(200).json({ success: true, data: listaRespostaAluno })
-//     });
-// }
-
-// // Função para listar TQ por QuestaoID
-// listarRAPorRespostaQuestaoID = async (req, res) => {
-//     await RespostaAluno
-//         .find({ respostaQuestaoIDs: req.params.id }, 
-//             (err, respostaAlunoEncontrada) => {
-//             if (err) {
-//                 return res
-//                     .status(400)
-//                     .json({success: false, error: err})
-//             }
-
-//             if (!respostaAlunoEncontrada) {
-//                 return res
-//                     .status(404)
-//                     .json({success: false, error: "Resposta do aluno não encontrada."})
-//             }
-
-//             return res
-//                 .status(200)
-//                 .json({success: true, data: respostaAlunoEncontrada})
-//         })
-//         .catch(err => console.log(err))
-// }
-
-
-
-// // Função para listar RA por AtividadeID
-// listarRAPorAtividadeID = async (req, res) => {
-//     const populateQuery = {
-//         path: 'atividadeID', 
-//         select: ['questoes', 'tipoAtividade'], 
-//         populate: {
-//             path: 'questoes',
-//             populate: 'questaoID'
-//         }
-//     }
-//     await RespostaAluno
-//         .find({ atividadeID: req.params.atividadeID })
-//         .populate({path: 'alunoID', select: 'nome'})
-//         .populate(populateQuery)
-//         .populate({path: 'respostaQuestaoIDs', select: ['nota', 'resposta', 'questaoID', 'comentario', 'corrigido']})
-//         .exec((err, respostaAlunoEncontrada) => {
-//             if (err) {
-//                 return res
-//                     .status(400)
-//                     .json({success: false, error: err})
-//             }
-
-//             if (!respostaAlunoEncontrada) {
-//                 return res
-//                     .status(404)
-//                     .json({success: false, error: "Resposta do aluno não encontrada."})
-//             }
-
-//             return res
-//                 .status(200)
-//                 .json({success: true, data: respostaAlunoEncontrada})
-//         })
-// }
-
-// listarRespostaAlunoPorDisciplina = async (req, res) => {
-//     const { disciplina } = req.params;
-//     let array = [];
-
-//     const populateQuery = {
-//         path: 'atividadeID',
-//         populate: {
-//             path: 'topicoID',
-//             select: ['topico','numeracao', 'disciplinaID'],
-//             populate: {
-//                 path: 'disciplinaID',
-//                 select: 'nome',
-//                 match: {
-//                     _id: disciplina
-//                 }
-//             }
-//         }
-//     };
-    
-//     await RespostaAluno
-//             .find({ corrigido: { $ne: true }  })
-//             .populate('respostaQuestaoIDs')
-//             .populate(populateQuery)
-//             .exec((err, respostaAlunoEncontrada) => {
-//             if (err) {
-//                 return res
-//                     .status(400)
-//                     .json({success: false, error: err})
-//             }
-            
-//             respostaAlunoEncontrada = respostaAlunoEncontrada.filter(function(item) {
-//                 if (!array.find(element => element === item.atividadeID._id)) {
-//                     array.push(item.atividadeID._id);
-//                     return item.atividadeID.topicoID.disciplinaID;
-//                 }    
-//             });
-            
-//             if (respostaAlunoEncontrada.length === 0) {
-//                 return res
-//                     .status(404)
-//                     .json({success: false, error: "Resposta do aluno não encontrada."})
-//             }
-
-//             return res
-//                 .status(200)
-//                 .json({success: true, data: respostaAlunoEncontrada})
-//         })
-// }
-
-// contarRAsNaoCorrigidas = async (req, res) => {
-//     const populateQuery = {
-//         path: 'atividadeID',
-//         populate: {
-//             path: 'topicoID',
-//             populate: {
-//                 path: 'disciplinaID',
-//                 match: {
-//                     _id: req.params.disciplina
-//                 }
-//             }
-//         }
-//     };
-    
-//     await RespostaAluno
-//             .countDocuments({ corrigido: false })
-//             .populate(populateQuery)
-//             .exec((err, contagem) => {
-//             if (err) {
-//                 return res
-//                     .status(400)
-//                     .json({success: false, error: err})
-//             }
-
-//             return res
-//                 .status(200)
-//                 .json({success: true, data: contagem})
-//         })
-// }
+    console.log(data);
+    return res.json({data: analise});
+}
 
 // Exporta os módulos
 module.exports = {
     gerarAnaliseAluno,
-    gerarProgressoDiario
+    gerarProgressoDiario,
+    gerarAnaliseProfessor
 }

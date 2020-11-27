@@ -1,18 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import api from '../../api';
 import { GeneralTitle, MyContainer } from '../../assets/styles/styledComponents';
 import { SubjectAccordion } from "../../components"
+import { StoreContext } from '../../utils';
 
 const colors = ["#eb7120", "#94c93d", "#a283bc", "#fdc504"]
 
 export default function TeacherAnalysis() {
   const [data, setData] = useState([]);
+  const { token } = useContext(StoreContext);
+  const disciplinas = token.disciplina;
+
+  async function gerarAnalise() {
+    const res = await api.gerarAnaliseProfessor('5f31566b2c79ee17244a7327');
+    console.log(res);
+  }
 
   useEffect(() => {
-    /*
-      TODO: 
-      - Pega dados do banco e saval em data
-    */
-  }, []);
+    const abortController = new AbortController();
+    gerarAnalise();
+    return abortController.abort();
+  }, [data]);
   
   /*
     TODO: 
