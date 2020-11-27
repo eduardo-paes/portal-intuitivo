@@ -306,7 +306,7 @@ const gerarAnaliseProfessor = async (req, res) => {
 
     analise.mediaTurma = analise.mediaTurma / (respostas.length ? respostas.length : 1);
 
-    const data = await progressos.map(async (row, index) => {
+    progressos.map(async (row, index) => {
 
         const res = await Progresso.find({topicoID: row});
         
@@ -387,7 +387,6 @@ const gerarAnaliseProfessor = async (req, res) => {
         
     })
 
-    console.log(data);
     return res.json({data: analise});
 }
 
