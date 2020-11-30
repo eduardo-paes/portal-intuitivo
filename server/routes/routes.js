@@ -23,7 +23,7 @@ const ClassLinkCtrl = require("../controllers/classLink-ctrl");
 const ProgressoCtrl = require("../controllers/generalProgress-ctrl");
 const AnaliseCtrl = require("../controllers/analisys-ctrl");
 
-// USUÁRIO -- Definição dos métodos para cada rota do usuário
+//#region USUÁRIO -- Definição dos métodos para cada rota do usuário
 router.post("/controle-usuario", UsuarioCtrl.inserirUsuario);
 router.put("/controle-usuario/:id", UsuarioCtrl.atualizarUsuario);
 router.delete("/controle-usuario/:id", UsuarioCtrl.removerUsuario);
@@ -31,8 +31,9 @@ router.get("/controle-usuario/:id", UsuarioCtrl.encUsuarioPorID);
 router.get("/controle-usuario", UsuarioCtrl.listarUsuarios);
 router.get("/login/:email", UsuarioCtrl.encUsuarioPorEmail);
 router.post("/confirmar-usuario", UsuarioCtrl.confirmarUsuario); 
+//#endregion
 
-// CONTEÚDO -- Definição dos métodos para cada rota do conteúdo
+//#region CONTEÚDO -- Definição dos métodos para cada rota do conteúdo
 router.post("/controle-conteudo", ConteudoCtrl.inserirConteudo);
 router.put("/controle-conteudo/:id", ConteudoCtrl.atualizarConteudo);
 router.delete("/controle-conteudo/:id", ConteudoCtrl.removerConteudo);
@@ -42,31 +43,35 @@ router.get("/controle-conteudo/disciplina/:id", ConteudoCtrl.listarConteudoPorDi
 router.get(`/controle-conteudo/filtro/:numeracao?/:disciplinaID?/:topicoID?`, ConteudoCtrl.listarConteudoPorFiltro);
 router.get(`/controle-conteudo/topico/:id?/:numeracao?`, ConteudoCtrl.encConteudoPersonalizado);
 router.get(`/controle-conteudo/corrente/:numeracao?/:diaSemana?`, ConteudoCtrl.listarConteudoCorrente);
+//#endregion
 
-// DISCIPLINA -- Definição dos métodos para cada rota da disciplina
+//#region DISCIPLINA -- Definição dos métodos para cada rota da disciplina
 router.post("/configuracoes/disciplina", DisciplinaCtrl.inserirDisciplina);
 router.put("/configuracoes/disciplina/:id", DisciplinaCtrl.atualizarDisciplina);
 router.delete("/configuracoes/disciplina/:id", DisciplinaCtrl.removerDisciplina);
 router.get("/configuracoes/disciplina/:id", DisciplinaCtrl.encDisciplinaPorID);
 router.get("/configuracoes/disciplina", DisciplinaCtrl.listarDisciplinas);
 router.get("/plano-estudo/disciplina/:dia?", DisciplinaCtrl.listarDisciplinasPorDiaDaSemana);
+//#endregion
 
-// TAG -- Definição dos métodos para cada rota da tag
+//#region TAG -- Definição dos métodos para cada rota da tag
 router.post("/configuracoes/tag", TagCtrl.inserirTag);
 router.put("/configuracoes/tag/:id", TagCtrl.atualizarTag);
 router.delete("/configuracoes/tag/:id", TagCtrl.removerTag);
 router.get("/configuracoes/tag/:id", TagCtrl.encTagPorID);
 router.get("/configuracoes/tag", TagCtrl.listarTags);
 router.get("/configuracoes/tags/:id", TagCtrl.listarTagsPorDisciplina);
+//#endregion
 
-// ANO LETIVO -- Definição dos métodos para cada rota da ano letivo
+//#region ANO LETIVO -- Definição dos métodos para cada rota da ano letivo
 router.post("/configuracoes/ano-letivo", AnoLetivoCtrl.inserirAnoLetivo);
 router.put("/configuracoes/ano-letivo/:id", AnoLetivoCtrl.atualizarAnoLetivo);
 router.delete("/configuracoes/ano-letivo/:id", AnoLetivoCtrl.removerAnoLetivo);
 router.get("/configuracoes/ano-letivo/:id", AnoLetivoCtrl.encAnoLetivoPorID);
 router.get("/configuracoes/ano-letivo", AnoLetivoCtrl.listarAnoLetivo);
+//#endregion
 
-// QUESTÃO -- Definição dos métodos para cada rota de questão
+//#region QUESTÃO -- Definição dos métodos para cada rota de questão
 router.post("/controle-questao", QuestaoCtrl.inserirQuestao);
 router.put("/controle-questao/:id", QuestaoCtrl.atualizarQuestao);
 router.delete("/controle-questao/:id", QuestaoCtrl.removerQuestao);
@@ -76,8 +81,9 @@ router.get("/controle-questao/topico/:id", QuestaoCtrl.listarQuestaoPorTopico);
 router.get("/controle-questao/disciplina/:id", QuestaoCtrl.listarQuestaoPorDisciplina);
 router.get("/controle-questao/area/:area", QuestaoCtrl.listarQuestaoPorArea);
 router.get("/controle-questao/tags/:id", QuestaoCtrl.listarTQPorQuestaoID);
+//#endregion
 
-// RESPOSTA-QUESTÃO -- Definição dos métodos para cada rota de respostaQuestão
+//#region RESPOSTA-QUESTÃO -- Definição dos métodos para cada rota de respostaQuestão
 router.post("/resposta-questao", RespostaQuestaoCtrl.inserirRespostaQuestao);
 router.put("/resposta-questao/:id", RespostaQuestaoCtrl.atualizarRespostaQuestao);
 router.delete("/resposta-questao/:id", RespostaQuestaoCtrl.removerRespostaQuestao);
@@ -89,8 +95,9 @@ router.get("/resposta-questao/revisao/:revisaoID/:alunoID/:questaoID", RespostaQ
 router.get("/resposta-questao", RespostaQuestaoCtrl.listarRespostaQuestao);
 router.get("/resposta-questao/questao/:id", RespostaQuestaoCtrl.listarRQPorQuestaoID);
 router.get("/resposta-questao/user/:id", RespostaQuestaoCtrl.listarRQPorAlunoID);
+//#endregion
 
-// RESPOSTA-ALUNO -- Definição dos métodos para cada rota de respostaAluno
+//#region RESPOSTA-ALUNO -- Definição dos métodos para cada rota de respostaAluno
 router.post("/resposta-aluno", RespostaAlunoCtrl.inserirRespostaAluno);
 router.put("/resposta-aluno/:id", RespostaAlunoCtrl.atualizarRespostaAluno);
 router.delete("/resposta-aluno/:id", RespostaAlunoCtrl.removerRespostaAluno);
@@ -101,8 +108,9 @@ router.get("/resposta-aluno/user/:id", RespostaAlunoCtrl.listarRAPorAlunoID);
 router.get("/resposta-aluno/atividade/:atividadeID", RespostaAlunoCtrl.listarRAPorAtividadeID);
 router.get("/resposta-aluno/correcoes/:disciplina", RespostaAlunoCtrl.listarRespostaAlunoPorDisciplina);
 router.get("/resposta-aluno/contagem/:disciplina", RespostaAlunoCtrl.contarRAsNaoCorrigidas);
+//#endregion
 
-// ATIVIDADE -- Definição dos métodos para cada rota de atividade
+//#region ATIVIDADE -- Definição dos métodos para cada rota de atividade
 router.post("/controle-atividade", AtividadeCtrl.inserirAtividade);
 router.put("/controle-atividade/:id", AtividadeCtrl.atualizarAtividade);
 router.delete("/controle-atividade/:id", AtividadeCtrl.removerAtividade);
@@ -113,31 +121,35 @@ router.get("/controle-atividade/topico/:id", AtividadeCtrl.listarAtividadesPorTo
 router.get("/controle-atividade/disciplina/:id", AtividadeCtrl.listarAtividadePorDisciplina);
 router.get("/controle-atividade/redacao/:numeracao", AtividadeCtrl.encRedacaoDaSemana);
 router.get("/controle-atividade/proposta-redacao/:id", AtividadeCtrl.encPropostaRedacao);
+//#endregion
 
-// REVISAO -- Definição dos métodos para cada rota de atividade
+//#region REVISAO -- Definição dos métodos para cada rota de atividade
 router.post("/controle-revisao", RevisaoCtrl.inserirRevisao);
 router.put("/controle-revisao/:id", RevisaoCtrl.atualizarRevisao);
 router.delete("/controle-revisao/:id", RevisaoCtrl.removerRevisao);
 router.get("/controle-revisao/:id", RevisaoCtrl.encRevisaoPorID);
 router.get("/controle-revisao/:numeracao/:area", RevisaoCtrl.encRevisaoPelaNumeracaoEArea);
 router.get("/controle-revisao", RevisaoCtrl.listarRevisao);
+//#endregion
 
-// CLASSLINK -- Definição dos métodos para cada rota de classLink
+//#region CLASSLINK -- Definição dos métodos para cada rota de classLink
 router.post("/aula-link", ClassLinkCtrl.inserirClassLink);
 router.put("/aula-link/:id", ClassLinkCtrl.atualizarClassLink);
 router.delete("/aula-link/:id", ClassLinkCtrl.removerClassLink);
 router.get("/aula-link/:id", ClassLinkCtrl.encClassLinkPorID);
 router.get("/aula-link", ClassLinkCtrl.listarClassLink);  
+//#endregion
 
-// PROGRESSO -- Definição dos métodos para cada rota de progressoTopico
+//#region PROGRESSO-TOPICO -- Definição dos métodos para cada rota de progressoTopico
 router.post("/progresso-conteudo", ProgressoCtrl.inserirProgresso);
 router.put("/progresso-conteudo/:id", ProgressoCtrl.atualizarProgresso);
 router.delete("/progresso-conteudo/:id", ProgressoCtrl.removerProgresso);
 router.get("/progresso-conteudo/:id", ProgressoCtrl.encProgressoPorID);
 router.get("/progresso-conteudo/topico/:alunoID/:topicoID", ProgressoCtrl.encProgressoPorTopico);
 router.get("/progresso-conteudo/aluno/:id", ProgressoCtrl.listarProgressoPorAluno);
+//#endregion
 
-// PROGRESSO -- Definição dos métodos para cada rota de progressoRedacao
+//#region PROGRESSO-REDACAO -- Definição dos métodos para cada rota de progressoRedacao
 router.post("/progresso-redacao", ProgressoCtrl.inserirProgressoRedacao);
 router.put("/progresso-redacao/:id", ProgressoCtrl.atualizarProgressoRedacao);
 router.delete("/progresso-redacao/:id", ProgressoCtrl.removerProgressoRedacao);
@@ -146,16 +158,19 @@ router.get("/progresso-redacao/lista/:alunoID/:redacaoID", ProgressoCtrl.encProg
 router.get("/progresso-redacao/correcoes/:disciplina", ProgressoCtrl.listarRedacoesNaoCorrigidas);
 router.get("/progresso-redacao/redacaoID/:redacaoID", ProgressoCtrl.listarRedacoesNaoCorrigidasPorRedacaoID);
 router.get("/progresso-redacao/contagem/:disciplina", ProgressoCtrl.contarRedacoesNaoCorrigidas);
+router.get("/resultado-redacao/:alunoID", ProgressoCtrl.listarRedacoesCorrigidasPorAlunoID);
+//#endregion
 
-// PROGRESSO -- Definição dos métodos para cada rota de progressoRevisao
+//#region PROGRESSO-REVISAO -- Definição dos métodos para cada rota de progressoRevisao
 router.post("/progresso-revisao", ProgressoCtrl.inserirProgressoRevisao);
 router.put("/progresso-revisao/:id", ProgressoCtrl.atualizarProgressoRevisao);
 router.delete("/progresso-revisao/:id", ProgressoCtrl.removerProgressoRevisao);
 router.get("/progresso-revisao/:id", ProgressoCtrl.encProgressoRevisaoPorID);
 router.get("/progresso-revisao/:alunoID/:revisaoID", ProgressoCtrl.encProgressoPorRevisaoID);
-
+router.get("/resultado-ads/:alunoID", ProgressoCtrl.encProgressoPorAlunoID);
 router.get("/analises/:id", AnaliseCtrl.gerarAnaliseAluno);
 router.get("/analises/:alunoID/:dia/:semana", AnaliseCtrl.gerarProgressoDiario);
 router.get("/analises-professor/:id", AnaliseCtrl.gerarAnaliseProfessor);
+//#endregion
 
 module.exports = router;

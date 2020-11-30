@@ -222,7 +222,6 @@ export default function CorrectionEssayDialog(props) {
 
     const DownloadEssay = () => {
         try {
-            // const url = window.URL.createObjectURL(new Blob([data.redacaoURL]));
             var aux = 'pdf';
             var nomeRedacao = `Redação - ${data.alunoID.nome}.${aux}`;
             var doc = new jsPDF();
@@ -284,7 +283,7 @@ export default function CorrectionEssayDialog(props) {
             eixo1: eixo1Aluno,
             eixo2: eixo2Aluno,
             eixo3: eixo3Aluno,
-            competencia: competenciaAluno,
+            competencia: competenciaAluno > 100 ? 100 : competenciaAluno,
             redacaoURL: data.redacaoURL,
             correcaoURL,
         }
@@ -365,7 +364,7 @@ export default function CorrectionEssayDialog(props) {
                         <Divider style={{ margin: '1rem 0 1rem 0' }}/>
                     </Grid>
 
-                    <Grid id="correctionEssayEixo1" item={true} xs={12}>
+                    <Grid id="correctionEssayEixo1" item={true} xs={12} sm={6}>
                         <Accordion square >
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
                                 <Grid container>
@@ -379,7 +378,7 @@ export default function CorrectionEssayDialog(props) {
                         <Divider style={{ margin: '1rem 0 1rem 0' }}/>
                     </Grid>
 
-                    <Grid id="correctionEssayEixo2" item={true} xs={12}>
+                    <Grid id="correctionEssayEixo2" item={true} xs={12} sm={6}>
                         <Accordion square >
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
                                 <Grid container>
@@ -393,7 +392,7 @@ export default function CorrectionEssayDialog(props) {
                         <Divider style={{ margin: '1rem 0 1rem 0' }}/>
                     </Grid>
 
-                    <Grid id="correctionEssayEixo3" item={true} xs={12}>
+                    <Grid id="correctionEssayEixo3" item={true} xs={12} sm={6}>
                         <Accordion square >
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
                                 <Grid container>
@@ -407,7 +406,7 @@ export default function CorrectionEssayDialog(props) {
                         <Divider style={{ margin: '1rem 0 1rem 0' }}/>
                     </Grid>
 
-                    <Grid id="correctionEssayCompetencias" item={true} xs={12}>
+                    <Grid id="correctionEssayCompetencias" item={true} xs={12} sm={6}>
                         <Accordion square >
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
                                 <Grid container>
@@ -415,7 +414,7 @@ export default function CorrectionEssayDialog(props) {
                                 </Grid>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <SimpleList array={competencia} value={competenciaAluno} setValue={setCompetenciaAluno} word="C"/>
+                                <SimpleList array={competencia} value={competenciaAluno} setValue={setCompetenciaAluno} word="C-"/>
                             </AccordionDetails>
                         </Accordion>
                         <Divider style={{ margin: '1rem 0 1rem 0' }}/>

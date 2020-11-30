@@ -175,7 +175,6 @@ const gerarProgressoDiario = async (req, res) => {
 
 // Função para gerar análise geral do aluno
 const gerarAnaliseProfessor = async (req, res) => {
-
     let { id } = req.params;
     let respostas = []; 
     let alunos = [];
@@ -226,7 +225,7 @@ const gerarAnaliseProfessor = async (req, res) => {
         }
     }
 
-    let respostaAluno = await RespostaAluno.find({  }).populate({path: 'atividadeID', populate: {path: 'topicoID' }}).populate({path: 'alunoID'});
+    let respostaAluno = await RespostaAluno.find({}).populate({path: 'atividadeID', populate: {path: 'topicoID' }}).populate({path: 'alunoID'});
 
     respostaAluno.map(row => {    
 
@@ -306,83 +305,83 @@ const gerarAnaliseProfessor = async (req, res) => {
 
     analise.mediaTurma = analise.mediaTurma / (respostas.length ? respostas.length : 1);
 
+    var key = '';
+    
     progressos.map(async (row, index) => {
+        await Progresso.find({topicoID: row}).then(progressoEncontrado => {
 
-        const res = await Progresso.find({topicoID: row});
-        
-        res.map( row => { 
-
-            const id = row.topicoID + '';
-            
-            if (row.progresso.materialEstudo !== undefined) {
-                ++analise.frequencia.material.mTotal;
-                if (id === analise.topicos.melhor.tmID + '') {
-                    ++analise.topicos.melhor.tmTotal;
-                    if (row.progresso.materialEstudo === true) {
-                        ++analise.topicos.melhor.tmEstudado;
-                    }    
+            progressoEncontrado.map((row, index) => { 
+                key = row.topicoID + '';
+                
+                if (row.progresso.materialEstudo !== undefined) {
+                    ++analise.frequencia.material.mTotal;
+                    if (key === analise.topicos.melhor.tmID + '') {
+                        ++analise.topicos.melhor.tmTotal;
+                        if (row.progresso.materialEstudo === true) {
+                            ++analise.topicos.melhor.tmEstudado;
+                        }    
+                    } 
+                    if (key === analise.topicos.pior.tpID + '') {
+                        ++analise.topicos.pior.tpTotal;
+                        if (row.progresso.materialEstudo === true) ++analise.topicos.pior.tpEstudado;
+                    }
+                    if (row.progresso.materialEstudo === true) ++analise.frequencia.material.mEstudado;
                 } 
-                if (id === analise.topicos.pior.tpID + '') {
-                    ++analise.topicos.pior.tpTotal;
-                    if (row.progresso.materialEstudo === true) ++analise.topicos.pior.tpEstudado;
-                }
-                if (row.progresso.materialEstudo === true) ++analise.frequencia.material.mEstudado;
-            } 
 
-            if (row.progresso.videoaula !== undefined) {
-                ++analise.frequencia.videoaula.vTotal;
-                if (id === analise.topicos.melhor.tmID + '') {
-                    ++analise.topicos.melhor.tmTotal;
-                    if (row.progresso.videoaula === true) ++analise.topicos.melhor.tmEstudado;
+                if (row.progresso.videoaula !== undefined) {
+                    ++analise.frequencia.videoaula.vTotal;
+                    if (key === analise.topicos.melhor.tmID + '') {
+                        ++analise.topicos.melhor.tmTotal;
+                        if (row.progresso.videoaula === true) ++analise.topicos.melhor.tmEstudado;
+                    } 
+                    if (key === analise.topicos.pior.tpID + '') {
+                        ++analise.topicos.pior.tpTotal;
+                        if (row.progresso.videoaula === true) ++analise.topicos.pior.tpEstudado;
+                    }
+                    if (row.progresso.videoaula === true) ++analise.frequencia.videoaula.vAssistido;
                 } 
-                if (id === analise.topicos.pior.tpID + '') {
-                    ++analise.topicos.pior.tpTotal;
-                    if (row.progresso.videoaula === true) ++analise.topicos.pior.tpEstudado;
-                }
-                if (row.progresso.videoaula === true) ++analise.frequencia.videoaula.vAssistido;
-            } 
 
-            if (row.progresso.exercicioFixacao !== undefined) {
-                ++analise.frequencia.atividade.aTotal;
-                if (id === analise.topicos.melhor.tmID + '') {
-                    ++analise.topicos.melhor.tmTotal;
-                    if (row.progresso.exercicioFixacao === true) ++analise.topicos.melhor.tmEstudado;
+                if (row.progresso.exercicioFixacao !== undefined) {
+                    ++analise.frequencia.atividade.aTotal;
+                    if (key === analise.topicos.melhor.tmID + '') {
+                        ++analise.topicos.melhor.tmTotal;
+                        if (row.progresso.exercicioFixacao === true) ++analise.topicos.melhor.tmEstudado;
+                    }
+                    if (key === analise.topicos.pior.tpID + '') {
+                        ++analise.topicos.pior.tpTotal;
+                        if (row.progresso.exercicioFixacao === true) ++analise.topicos.pior.tpEstudado;
+                    }
+                    if (row.progresso.exercicioFixacao === true) ++analise.frequencia.atividade.aFeito;
                 }
-                if (id === analise.topicos.pior.tpID + '') {
-                    ++analise.topicos.pior.tpTotal;
-                    if (row.progresso.exercicioFixacao === true) ++analise.topicos.pior.tpEstudado;
-                }
-                if (row.progresso.exercicioFixacao === true) ++analise.frequencia.atividade.aFeito;
-            }
 
-            if (row.progresso.exercicioRetomada !== undefined) {
-                ++analise.frequencia.atividade.aTotal;
-                if (id === analise.topicos.melhor.tmID + '') {
-                    ++analise.topicos.melhor.tmTotal;
-                    if (row.progresso.exercicioRetomada === true) ++analise.topicos.melhor.tmEstudado;
+                if (row.progresso.exercicioRetomada !== undefined) {
+                    ++analise.frequencia.atividade.aTotal;
+                    if (key === analise.topicos.melhor.tmID + '') {
+                        ++analise.topicos.melhor.tmTotal;
+                        if (row.progresso.exercicioRetomada === true) ++analise.topicos.melhor.tmEstudado;
+                    }
+                    if (key === analise.topicos.pior.tpID + '') {
+                        ++analise.topicos.pior.tpTotal;
+                        if (row.progresso.exercicioRetomada === true) ++analise.topicos.pior.tpEstudado;
+                    }
+                    if (row.progresso.exercicioRetomada === true) ++analise.frequencia.atividade.aFeito;
                 }
-                if (id === analise.topicos.pior.tpID + '') {
-                    ++analise.topicos.pior.tpTotal;
-                    if (row.progresso.exercicioRetomada === true) ++analise.topicos.pior.tpEstudado;
-                }
-                if (row.progresso.exercicioRetomada === true) ++analise.frequencia.atividade.aFeito;
-            }
 
-            if (row.progresso.exercicioAprofundamento !== undefined) {
-                ++analise.frequencia.atividade.aTotal;
-                if (id === analise.topicos.melhor.tmID + '') {
-                    ++analise.topicos.melhor.tmTotal;
-                    if (row.progresso.exercicioAprofundamento === true) ++analise.topicos.melhor.tmEstudado;
-                } 
-                if (id === analise.topicos.pior.tpID + '') {
-                    ++analise.topicos.pior.tpTotal;
-                    if (row.progresso.exercicioAprofundamento === true) ++analise.topicos.pior.tpEstudado;
+                if (row.progresso.exercicioAprofundamento !== undefined) {
+                    ++analise.frequencia.atividade.aTotal;
+                    if (key === analise.topicos.melhor.tmID + '') {
+                        ++analise.topicos.melhor.tmTotal;
+                        if (row.progresso.exercicioAprofundamento === true) ++analise.topicos.melhor.tmEstudado;
+                    } 
+                    if (key === analise.topicos.pior.tpID + '') {
+                        ++analise.topicos.pior.tpTotal;
+                        if (row.progresso.exercicioAprofundamento === true) ++analise.topicos.pior.tpEstudado;
+                    }
+                    if (row.progresso.exercicioAprofundamento === true) ++analise.frequencia.atividade.aFeito;
                 }
-                if (row.progresso.exercicioAprofundamento === true) ++analise.frequencia.atividade.aFeito;
-            }
-
-        })
-    })
+            });
+        });
+    });
 
     return res.json({data: analise});
 }

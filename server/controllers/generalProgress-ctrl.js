@@ -3,8 +3,7 @@ const ProgressoRedacao = require('../models/progressEssay-model');
 const ProgressoRevisao = require('../models/progressRevision-model');
 const { populate } = require('../models/progressTopic-model');
 
-// ================================================
-// PROGRESSO RELACIONADO AO TÓPICO
+//#region PROGRESSO RELACIONADO AO TÓPICO
 // ================================================
 
 // Função de Inserção
@@ -203,9 +202,9 @@ listarProgressoPorAluno = async (req, res) => {
         })
         .catch(err => console.log(err))
 }
+//#endregion
 
-// ================================================
-// PROGRESSO RELACIONADO À REDAÇÃO
+//#region  PROGRESSO RELACIONADO À REDAÇÃO
 // ================================================
 
 // Função de Inserção
@@ -505,8 +504,32 @@ contarRedacoesNaoCorrigidas = async (req, res) => {
         });
 }
 
-// ================================================
-// PROGRESSO RELACIONADO À REVISÃO
+listarRedacoesCorrigidasPorAlunoID = async (req, res) => {
+    const { alunoID } = req.params;
+
+    await ProgressoRedacao
+        .find({ corrigido: false, alunoID: alunoID })
+        .exec((err, listaRedacoes) => {
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (listaRedacoes.length === 0) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Redações não encontrada."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: listaRedacoes})
+        });
+}
+//#endregion
+
+//#region PROGRESSO RELACIONADO À REVISÃO
 // ================================================
 
 // Função de Inserção
@@ -681,6 +704,33 @@ encProgressoPorRevisaoID = async (req, res) => {
         .catch(err => console.log(err))
 }
 
+// Função para buscar por ID
+encProgressoPorAlunoID = async (req, res) => {
+    await ProgressoRevisao
+        .find({
+            alunoID: req.params.alunoID,
+        }, (err, progressoEncontrado) => {
+            
+            if (err) {
+                return res
+                    .status(400)
+                    .json({success: false, error: err})
+            }
+
+            if (!progressoEncontrado) {
+                return res
+                    .status(404)
+                    .json({success: false, error: "Progresso não encontrado."})
+            }
+
+            return res
+                .status(200)
+                .json({success: true, data: progressoEncontrado})
+        })
+        .catch(err => console.log(err))
+}
+//#endregion
+
 // Exporta os módulos
 module.exports = {
     // Atividade
@@ -699,10 +749,12 @@ module.exports = {
     listarRedacoesNaoCorrigidas,
     listarRedacoesNaoCorrigidasPorRedacaoID,
     contarRedacoesNaoCorrigidas,
+    listarRedacoesCorrigidasPorAlunoID,
     // Revisão
     inserirProgressoRevisao,
     atualizarProgressoRevisao,
     removerProgressoRevisao,
     encProgressoRevisaoPorID,
     encProgressoPorRevisaoID,
+    encProgressoPorAlunoID
 }

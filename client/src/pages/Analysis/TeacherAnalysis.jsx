@@ -13,7 +13,7 @@ export default function TeacherAnalysis() {
 
   async function gerarAnalise() {
     const res = await api.gerarAnaliseProfessor('5f31566b2c79ee17244a7327');
-    console.log(res);
+    console.log(res.data.data);
   }
 
   useEffect(() => {

@@ -9,6 +9,7 @@ import {PrivateRoutes} from "../../routes"
 import clsx from "clsx";
 import {makeStyles} from "@material-ui/core";
 import {CssBaseline} from "@material-ui/core";
+import { GeneralText } from "../../assets/styles/styledComponents";
 
 const drawerWidth = 240;
 
@@ -45,6 +46,43 @@ const useStyles = makeStyles(theme => ({
             marginLeft: 0,
         }
     },
+    footer: {
+        position: 'absolute',
+        width: '99%',
+        padding: '0.5rem 1.875rem',
+        borderTop: '1px solid #ddd',
+        [theme.breakpoints.down('sm')]: {
+            padding: '0.5rem 0.7rem',
+        },
+    },
+    footerText: {
+        fontSize: '0.9rem',
+        [theme.breakpoints.down('sm')]: {
+            fontSize: '0.8rem',
+        },
+    },
+    mainContent: {
+        // [theme.breakpoints.up('xl')]: {
+        //     minHeight: 900
+        // },
+        // [theme.breakpoints.up('lg')]: {
+        //     minHeight: 800
+        // },
+        // [theme.breakpoints.up('md')]: {
+        //     minHeight: 800
+        // },
+        // [theme.breakpoints.up('sm')]: {
+        //     // minHeight: 600
+        // },
+        // [theme.breakpoints.up('xs')]: {
+        // },
+        [theme.breakpoints.down('xl')]: {
+            minHeight: 500
+        },
+        [theme.breakpoints.up('xl')]: {
+            minHeight: 800
+        },
+    }
 }));
 
 function HomeScreen(props) {
@@ -56,10 +94,14 @@ function HomeScreen(props) {
             <CssBaseline/>
             <TopBar open={open} setOpen={setOpen}/>
             <SideBar open={open} setOpen={setOpen}/>
-            <main
-                className={clsx(classes.content, { [classes.contentShift]: open })}>
+            <main className={clsx(classes.content, { [classes.contentShift]: open })}>
                 <div className={classes.drawerHeader}/>
-                <PrivateRoutes/>
+                <div className={classes.mainContent}>
+                    <PrivateRoutes/>
+                </div>
+                <div className={classes.footer}>
+                    <GeneralText className={classes.footerText}>Copyright © 2020 Curso Intuitivo. Todos os direitos reservados.</GeneralText>
+                </div>
             </main>
         </div>
     );

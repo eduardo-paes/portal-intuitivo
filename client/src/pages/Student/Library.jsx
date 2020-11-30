@@ -74,12 +74,15 @@ export default function Library (props) {
   // Lista Conteúdo
   async function fetchConteudoAPI() {
     const { numeracao, disciplina, topico } = filter;
-    const response = await api.listarConteudoPorFiltro(numeracao, disciplina, topico);
-    const value = response.data;
-    if (value.success) {
-      setListaConteudo(value.data);
+    
+    if (!(numeracao + disciplina + topico)) {
+      const response = await api.listarConteudoPorFiltro(numeracao, disciplina, topico);
+      const value = response.data;
+      if (value.success) {
+        setListaConteudo(value.data);
+      }
+      setIsLoaded(true);
     }
-    setIsLoaded(true);
   }
 
   // -- Carrega Disciplinas/Número de Semanas
@@ -121,26 +124,28 @@ export default function Library (props) {
         return (
           <Grid item={true}>
             <Typography className={classes.notFoundMsg1}>Nenhum conteúdo encontrado.</Typography>
-            <Typography className={classes.notFoundMsg2}>Tente reajustar o filtro acima para mais conteúdo.</Typography>
+            <Typography className={classes.notFoundMsg2}>Tente reajustar o filtro acima para mais conteúdos.</Typography>
           </Grid>
         )
+      } else {
+        console.log(listaConteudo);
+        return listaConteudo.map((row, index) => {
+          const { _id, topico, disciplinaID, numeracao, videoAulaURL } = row;
+            return (
+              <Grid key={index} item={true} xs={12} lg={12} sm={12}>
+                <ContentAccordion 
+                  topicoID={_id} 
+                  disciplinaNome={disciplinaID.nome} 
+                  titulo={topico} 
+                  semana={numeracao}
+                  tipoAcordeao="biblioteca"
+                  linkAula={videoAulaURL}/>
+              </Grid>
+            )
+        })
       }
-      return listaConteudo.map((row, index) => {
-        const { _id, topico, disciplinaID, numeracao, videoAulaURL } = row;
-          return (
-            <Grid key={index} item={true} xs={12} lg={12} sm={12}>
-              <ContentAccordion 
-                topicoID={_id} 
-                disciplinaNome={disciplinaID.nome} 
-                titulo={topico} 
-                semana={numeracao}
-                tipoAcordeao="biblioteca"
-                linkAula={videoAulaURL}/>
-            </Grid>
-          )
-      })
     } else {
-      return AccordionSkeleton(4);
+      return AccordionSkeleton(3);
     }
   }
 
@@ -238,7 +243,29 @@ export default function Library (props) {
 
       <section id="libraryMain">
         <Grid container={true} spacing={2} className={classes.libraryMain}>
-          { returnContent() }
+          { 
+            isLoaded 
+            ? (!listaConteudo.length) 
+              ? <Grid item={true}>
+                  <Typography className={classes.notFoundMsg1}>Nenhum conteúdo encontrado.</Typography>
+                  <Typography className={classes.notFoundMsg2}>Tente reajustar o filtro acima para mais conteúdos.</Typography>
+                </Grid>
+              : listaConteudo.map((row, index) => {
+                  const { _id, topico, disciplinaID, numeracao, videoAulaURL } = row;
+                    return (
+                      <Grid key={index} item={true} xs={12} lg={12} sm={12}>
+                        <ContentAccordion 
+                          topicoID={_id} 
+                          disciplinaNome={disciplinaID.nome} 
+                          titulo={topico} 
+                          semana={numeracao}
+                          tipoAcordeao="biblioteca"
+                          linkAula={videoAulaURL}/>
+                      </Grid>
+                    )
+                })
+            : AccordionSkeleton(3)
+          }
         </Grid>
       </section>
     </MyContainer>

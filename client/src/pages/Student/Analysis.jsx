@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { GeneralSubtitle, GeneralText, GeneralTitle, MyCard, MyContainer } from '../../assets/styles/styledComponents';
 import { StoreContext } from "../../utils";
 
@@ -13,6 +13,7 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import InfoIcon from '@material-ui/icons/Info';
 import clsx from 'clsx';
 import { StudentResults } from '../../components';
+import api from '../../api';
 
 const useStyles = makeStyles((theme) => ({
   contentCard: {
@@ -167,11 +168,44 @@ const listagemADs = [
 export default function StudentAnalysis() {
   const classes = useStyles();
   const { token } = useContext(StoreContext)
-  const [wasLoaded, setWasLoaded] = useState(false);
+  const [listaRedacoes, setListaRedacoes] = useState([]);
+  const [listaADs, setListaADs] = useState([]);
   const alunoID = token.userID;
   const dataRealizacao = new Intl.DateTimeFormat('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(Date.now());
   const notaRedacaoo = 78.1;
   const notaAD = 81.1;
+
+  const ListarRedacoes = async () => {
+    try {
+      const response = await api.listarRedacoesCorrigidasPorAlunoID(alunoID);
+      const value = response.data;
+  
+      if (value.success) {
+        setListaRedacoes(value.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const ListarADs = async () => {
+    try {
+      const response = await api.encProgressoPorAlunoID(alunoID);
+      const value = response.data;
+  
+      if (value.success) {
+        setListaADs(value.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    ListarRedacoes();
+    ListarADs();
+    return () => {};
+  }, []);
 
   return (
     <MyContainer>

@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const areas = ['Ciências Humanas', 'Ciências Naturais', 'Linguagens', 'Matemática']
+
 export default function StudyPlan () {
   const classes = useStyles();
   const borderColor = [
@@ -79,8 +81,10 @@ export default function StudyPlan () {
   }
 
   async function fetchRevisaoAPI() {
-    const response = await api.encRevisaoPelaNumeracaoEArea(1, 'Ciências Humanas');
+    const areaDoMes = areas[(thisWeek-3) % 4];
+    const response = await api.encRevisaoPelaNumeracaoEArea(1, areaDoMes);
     const value = response.data;
+
     if (value.success) {
       setRevision(value.data);
       setIsMounting(preValue => ({
@@ -117,8 +121,8 @@ export default function StudyPlan () {
     const abortController = new AbortController();
 
     if (thisWeek && currentDay >= 0) {
-      // let day = (currentDay >= 5 || currentDay === 0);
-      let day = true;
+      let day = (currentDay >= 5 || currentDay === 0);
+      // let day = true;
 
       (isMounting.content) && fetchConteudoAPI();                               // Carrega tópicos do dia
       (thisWeek > 3 && day && isMounting.revision) && fetchRevisaoAPI();        // Carrega ADs da semana

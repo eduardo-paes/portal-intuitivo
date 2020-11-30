@@ -13,7 +13,7 @@ import QuestionCircularStatic from "../../components/ProgressBar/QuestionProgres
 // -- Estilos locais
 const useStyles = makeStyles(theme => ({
   exampleCard: {
-    minHeight: "15rem"
+    minHeight: "17rem"
   },
   content: {
     fontStyle: 'normal',
@@ -49,11 +49,12 @@ export default function Dashboard (props) {
   const [wasLoaded, setWasLoaded] = useState(false);
   const [analiseAluno, setAnaliseAluno] = useState();
   const [progressoDiario, setProgressoDiario] = useState([]);
-  const { token } = useContext(StoreContext);
+  const { token } = useContext(StoreContext)
   const alunoID = token.userID;
 
   async function gerarAnalise() {
     const res = await apis.gerarAnaliseAluno(alunoID);
+    console.log(res);
     if (res) setAnaliseAluno(res.data);
     const dis = await apis.gerarProgressoDiario(alunoID, 5, 2);
     if (dis) setProgressoDiario(dis.data.progressos);
@@ -82,15 +83,14 @@ export default function Dashboard (props) {
 
           <Grid item={true} xs={12} sm={3}>
             <GeneralSubtitle className={classes.title}>Tarefas do Dia</GeneralSubtitle>
-            <MyCard>
-              <MyCardContent className={classes.exampleCard}>
-                <List className={classes.root}>
+            <MyCard className={classes.exampleCard}>
+                <List>
                   {
                     progressoDiario.length !== 0 ? 
-                    progressoDiario.map(row => {
+                    progressoDiario.map((row, index) => {
                       
                       return row.numTask ? (
-                        <ListItem>
+                        <ListItem key={index}>
                           <ListItemAvatar>
                             <CircularStatic 
                               wasLoaded={wasLoaded} 
@@ -105,49 +105,42 @@ export default function Dashboard (props) {
                     : null
                   }
                 </List>
-              </MyCardContent>
             </MyCard>
           </Grid>
 
           <Grid item={true} xs={12} sm={3}>
             <GeneralSubtitle className={classes.title}>Melhor Desempenho</GeneralSubtitle>
-            <MyCard>
-              <MyCardContent className={classes.exampleCard}>
+            <MyCard className={classes.exampleCard}>
                 <Grid item={true} align="center">
                   <GeneralSubtitle className={classes.title}>{analiseAluno ? analiseAluno.melhorDesempenho.disciplina : null}</GeneralSubtitle>
                   <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
                   <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={analiseAluno ? analiseAluno.melhorDesempenho.acertos * (100/analiseAluno.melhorDesempenho.questoes): 0}/>
                   <GeneralSubtitle className={classes.subTitle}>{`${analiseAluno ? analiseAluno.melhorDesempenho.acertos : 0} / ${analiseAluno ? analiseAluno.melhorDesempenho.questoes : 0}`}</GeneralSubtitle>
                 </Grid>
-              </MyCardContent>
             </MyCard>
           </Grid>
 
           <Grid item={true} xs={12} sm={3}>
             <GeneralSubtitle className={classes.title}>A Melhorar</GeneralSubtitle>
-            <MyCard>
-              <MyCardContent className={classes.exampleCard}>
+            <MyCard className={classes.exampleCard}>
                 <Grid item={true} align="center">
                   <GeneralSubtitle className={classes.title}>{analiseAluno ? analiseAluno.piorDesempenho.disciplina : null}</GeneralSubtitle>
                   <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
                   <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={analiseAluno ? analiseAluno.piorDesempenho.acertos * (100/analiseAluno.piorDesempenho.questoes): 0}/>
                   <GeneralSubtitle className={classes.subTitle}>{`${analiseAluno ? analiseAluno.piorDesempenho.acertos : 0} / ${analiseAluno ? analiseAluno.piorDesempenho.questoes : 0}`}</GeneralSubtitle>
                 </Grid>
-              </MyCardContent>
             </MyCard>
           </Grid>
 
           <Grid item={true} xs={12} sm={3}>
             <GeneralSubtitle className={classes.title}>Precisa de Atenção</GeneralSubtitle>
-            <MyCard>
-              <MyCardContent className={classes.exampleCard}>
+            <MyCard className={classes.exampleCard}>
                 <Grid item={true} align="center">
                   <GeneralSubtitle className={classes.title}>{analiseAluno ? analiseAluno.piorTopico.topico : null}</GeneralSubtitle>
                   <GeneralSubtitle className={classes.content}>Corretas / Realizadas</GeneralSubtitle>
                   <QuestionCircularStatic className={classes.questionProgress} size={100} progresso={analiseAluno ? analiseAluno.piorTopico.acertos * (100/analiseAluno.piorTopico.questoes): 0}/>
                   <GeneralSubtitle className={classes.subTitle}>{`${analiseAluno ? analiseAluno.piorTopico.acertos : 0} / ${analiseAluno ? analiseAluno.piorTopico.questoes : 0}`}</GeneralSubtitle>
                 </Grid>
-              </MyCardContent>
             </MyCard>
           </Grid>
 
