@@ -168,9 +168,14 @@ router.delete("/progresso-revisao/:id", ProgressoCtrl.removerProgressoRevisao);
 router.get("/progresso-revisao/:id", ProgressoCtrl.encProgressoRevisaoPorID);
 router.get("/progresso-revisao/:alunoID/:revisaoID", ProgressoCtrl.encProgressoPorRevisaoID);
 router.get("/resultado-ads/:alunoID", ProgressoCtrl.encProgressoPorAlunoID);
+//#endregion
+
+//#region ANÁLISE -- Definição dos métodos para cada rota de análises
 router.get("/analises/:id", AnaliseCtrl.gerarAnaliseAluno);
 router.get("/analises/:alunoID/:dia/:semana", AnaliseCtrl.gerarProgressoDiario);
 router.get("/analises-professor/:id", AnaliseCtrl.gerarAnaliseProfessor);
+router.get("/analises-administrador", AnaliseCtrl.gerarAnaliseAdministrador);
+router.get("/analises-frequencia/:id/:tmID/:tpID", AnaliseCtrl.calcularProgresso);
 //#endregion
 
 module.exports = router;

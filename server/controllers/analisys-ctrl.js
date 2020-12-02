@@ -175,6 +175,7 @@ const gerarProgressoDiario = async (req, res) => {
 
 // Função para gerar análise geral do aluno
 const gerarAnaliseProfessor = async (req, res) => {
+    
     let { id } = req.params;
     let respostas = []; 
     let alunos = [];
@@ -191,7 +192,7 @@ const gerarAnaliseProfessor = async (req, res) => {
             amNome: "",
             amNota: 0,
             apNome: "",
-            apNota: 0,
+            apNota: 101,
         },
         topicos: {
             melhor: {
@@ -204,7 +205,7 @@ const gerarAnaliseProfessor = async (req, res) => {
             pior: {
                 tpID: "",
                 tpNome: "",
-                tpNota: 0,
+                tpNota: 101,
                 tpEstudado: 0,
                 tpTotal: 0
             },
@@ -225,170 +226,501 @@ const gerarAnaliseProfessor = async (req, res) => {
         }
     }
 
-    let respostaAluno = await RespostaAluno.find({}).populate({path: 'atividadeID', populate: {path: 'topicoID' }}).populate({path: 'alunoID'});
-
-    respostaAluno.map(row => {    
-
-        const disciplinaID = row.atividadeID.disciplinaID + '';
-        
-        const nome = row.alunoID.nome;
-        const alunoID = row.alunoID._id;
-        const nota = row.nota;
-
-        const topicoID = row.atividadeID.topicoID._id;
-        const topicoNome = row.atividadeID.topicoID.topico;
-
-        if (disciplinaID === id && row.corrigido === true) {
-            if (alunos.find(element => {return element.alunoID === alunoID})) {
-                alunos.find(element => {
-                    if (element.alunoID === alunoID) {
-                        element.nota += nota;
-                        element.atividades += 1;
-                    }
-                })
-            } else {
-                alunos.push({alunoID, nome, nota, atividades: 1})
-            }
-            if (topicos.find(element => {return element.topicoID === topicoID})) {
-                topicos.find(element => {
-                    if (element.topicoID === topicoID) {
-                        element.nota += nota;
-                        element.atividades += 1;
-                    }
-                })
-            } else {
-                topicos.push({topicoID, topicoNome, nota, atividades: 1})
-            }
-            respostas.push(row);
-            analise.mediaTurma += (nota ? nota : null);
-            analise.questoes.qTotal += row.respostaQuestaoIDs.length;
-            analise.questoes.qCorretas += row.respostaQuestaoIDs.length * nota / 100;
-        }
-    })
-
-    // Armazena o melhor e pior aluno;
-    alunos.map(row => {
-        row.nota = row.nota / row.atividades;
-        if (analise.alunos.amNome === '') {
-            analise.alunos.amNome = analise.alunos.apNome = row.nome;
-            analise.alunos.apNota = analise.alunos.amNota = row.nota;
-        }
-        if (analise.alunos.apNota > row.nota) {
-            analise.alunos.apNome = row.nome;
-            analise.alunos.apNota = row.nota;
-        } else if (analise.alunos.amNota < row.nota) {
-            analise.alunos.amNome = row.nome;
-            analise.alunos.amNota = row.nota;
-        } 
-    })
-
-    // Armazena o melhor e pior tópico;
-    topicos.map(row => {
-        row.nota = row.nota / row.atividades;
-
-        if (analise.topicos.melhor.tmNome === '') {
-            analise.topicos.melhor.tmNome = analise.topicos.pior.tpNome = row.topicoNome;
-            analise.topicos.pior.tpNota = analise.topicos.melhor.tmNota = row.nota;
-            analise.topicos.pior.tpID = analise.topicos.melhor.tmID = row.topicoID;
-        }
-        if (analise.topicos.pior.tpNota > row.nota) {
-            analise.topicos.pior.tpNome = row.topicoNome;
-            analise.topicos.pior.tpNota = row.nota;
-            analise.topicos.pior.tpID = row.topicoID;
-        } else if (analise.topicos.melhor.tmNota < row.nota) {
-            analise.topicos.melhor.tmNome = row.topicoNome;
-            analise.topicos.melhor.tmNota = row.nota;
-            analise.topicos.melhor.tmID = row.topicoID;
-        } 
-        progressos.push(row.topicoID);
-    })
-
-    analise.mediaTurma = analise.mediaTurma / (respostas.length ? respostas.length : 1);
-
-    var key = '';
-    
-    progressos.map(async (row, index) => {
-        await Progresso.find({topicoID: row}).then(progressoEncontrado => {
-
-            progressoEncontrado.map((row, index) => { 
-                key = row.topicoID + '';
+    await RespostaAluno
+        .find({})
+        .populate({path: 'atividadeID', select: ['disciplinaID', 'topicoID'], populate: 'topicoID'})
+        .populate({path: 'alunoID', select: 'nome'})
+        .then(respostaAluno => {
+            respostaAluno.map(row => {    
                 
-                if (row.progresso.materialEstudo !== undefined) {
-                    ++analise.frequencia.material.mTotal;
-                    if (key === analise.topicos.melhor.tmID + '') {
-                        ++analise.topicos.melhor.tmTotal;
-                        if (row.progresso.materialEstudo === true) {
-                            ++analise.topicos.melhor.tmEstudado;
-                        }    
-                    } 
-                    if (key === analise.topicos.pior.tpID + '') {
-                        ++analise.topicos.pior.tpTotal;
-                        if (row.progresso.materialEstudo === true) ++analise.topicos.pior.tpEstudado;
+                const disciplinaID = row.atividadeID.disciplinaID + '';
+                const nome = row.alunoID.nome;
+                const alunoID = row.alunoID._id + '';
+                const nota = row.nota;
+                // console.log(row.atividadeID);
+                const topicoID = row.atividadeID.topicoID._id + '';
+                const topicoNome = row.atividadeID.topicoID.topico;
+                
+                if (disciplinaID === id && row.corrigido === true) {
+                    if (alunos.find(element => {return element.alunoID === alunoID})) {
+                        alunos.find(element => {
+                            if (element.alunoID === alunoID) {
+                                element.nota += nota;
+                                element.atividades += 1;
+                            }
+                        })
+                    } else {
+                        alunos.push({alunoID, nome, nota, atividades: 1})
                     }
-                    if (row.progresso.materialEstudo === true) ++analise.frequencia.material.mEstudado;
+                    if (topicos.find(element => {return element.topicoID === topicoID})) {
+                        topicos.find(element => {
+                            if (element.topicoID === topicoID) {
+                                element.nota += nota;
+                                element.atividades += 1;
+                            }
+                        })
+                    } else {
+                        topicos.push({topicoID, topicoNome, nota, atividades: 1})
+                    }
+                    respostas.push(row);
+                    analise.mediaTurma += (nota ? nota : null);
+                    analise.questoes.qTotal += row.respostaQuestaoIDs.length;
+                    analise.questoes.qCorretas += row.respostaQuestaoIDs.length * nota / 100;
+                }
+            })
+            // Armazena o melhor e pior aluno;
+            alunos.map(row => {
+                row.nota = row.nota / row.atividades;
+                if (analise.alunos.apNota > row.nota) {
+                    analise.alunos.apNome = row.nome;
+                    analise.alunos.apNota = row.nota;
+                } else if (analise.alunos.amNota < row.nota) {
+                    analise.alunos.amNome = row.nome;
+                    analise.alunos.amNota = row.nota;
                 } 
-
-                if (row.progresso.videoaula !== undefined) {
-                    ++analise.frequencia.videoaula.vTotal;
-                    if (key === analise.topicos.melhor.tmID + '') {
-                        ++analise.topicos.melhor.tmTotal;
-                        if (row.progresso.videoaula === true) ++analise.topicos.melhor.tmEstudado;
-                    } 
-                    if (key === analise.topicos.pior.tpID + '') {
-                        ++analise.topicos.pior.tpTotal;
-                        if (row.progresso.videoaula === true) ++analise.topicos.pior.tpEstudado;
-                    }
-                    if (row.progresso.videoaula === true) ++analise.frequencia.videoaula.vAssistido;
+            })
+            
+            // Armazena o melhor e pior tópico;
+            topicos.map(row => {
+                // console.log(row);
+                row.nota = row.nota / row.atividades;
+                if (analise.topicos.pior.tpNota > row.nota) {
+                    analise.topicos.pior.tpNome = row.topicoNome;
+                    analise.topicos.pior.tpNota = row.nota;
+                    analise.topicos.pior.tpID = row.topicoID;
+                }
+                if (analise.topicos.melhor.tmNota < row.nota) {
+                    analise.topicos.melhor.tmNome = row.topicoNome;
+                    analise.topicos.melhor.tmNota = row.nota;
+                    analise.topicos.melhor.tmID = row.topicoID;
                 } 
+                progressos.push(row.topicoID);
+            })
+        
+            analise.mediaTurma = analise.mediaTurma / (respostas.length ? respostas.length : 1);
+        })
+    
+    
+    // console.log(analise);
+    return res.json({data: analise, progresso: progressos});
+}
 
-                if (row.progresso.exercicioFixacao !== undefined) {
-                    ++analise.frequencia.atividade.aTotal;
-                    if (key === analise.topicos.melhor.tmID + '') {
-                        ++analise.topicos.melhor.tmTotal;
-                        if (row.progresso.exercicioFixacao === true) ++analise.topicos.melhor.tmEstudado;
-                    }
-                    if (key === analise.topicos.pior.tpID + '') {
-                        ++analise.topicos.pior.tpTotal;
-                        if (row.progresso.exercicioFixacao === true) ++analise.topicos.pior.tpEstudado;
-                    }
-                    if (row.progresso.exercicioFixacao === true) ++analise.frequencia.atividade.aFeito;
-                }
 
-                if (row.progresso.exercicioRetomada !== undefined) {
-                    ++analise.frequencia.atividade.aTotal;
-                    if (key === analise.topicos.melhor.tmID + '') {
-                        ++analise.topicos.melhor.tmTotal;
-                        if (row.progresso.exercicioRetomada === true) ++analise.topicos.melhor.tmEstudado;
-                    }
-                    if (key === analise.topicos.pior.tpID + '') {
-                        ++analise.topicos.pior.tpTotal;
-                        if (row.progresso.exercicioRetomada === true) ++analise.topicos.pior.tpEstudado;
-                    }
-                    if (row.progresso.exercicioRetomada === true) ++analise.frequencia.atividade.aFeito;
-                }
+const calcularProgresso = async (req, res) => {
+    
+    const { id, tmID, tpID } = req.params;
+    let frequencia = {
+        material: {
+            mEstudado: 0,
+            mTotal: 0
+        },
+        videoaula: {
+            vAssistido: 0,
+            vTotal: 0
+        },
+        atividade: {
+            aFeito: 0,
+            aTotal: 0
+        }
+    };
+    let tmTotal = 0;
+    let tmEstudado = 0;
+    let tpTotal = 0;
+    let tpEstudado = 0;
 
-                if (row.progresso.exercicioAprofundamento !== undefined) {
-                    ++analise.frequencia.atividade.aTotal;
-                    if (key === analise.topicos.melhor.tmID + '') {
-                        ++analise.topicos.melhor.tmTotal;
-                        if (row.progresso.exercicioAprofundamento === true) ++analise.topicos.melhor.tmEstudado;
-                    } 
-                    if (key === analise.topicos.pior.tpID + '') {
-                        ++analise.topicos.pior.tpTotal;
-                        if (row.progresso.exercicioAprofundamento === true) ++analise.topicos.pior.tpEstudado;
-                    }
-                    if (row.progresso.exercicioAprofundamento === true) ++analise.frequencia.atividade.aFeito;
-                }
-            });
-        });
+    const progressoEncontrado = await Progresso.find({topicoID: id});
+    
+    progressoEncontrado.map((row) => { 
+        
+        const key = row.topicoID + '';
+        
+        if (row.progresso.materialEstudo !== undefined) {
+            ++frequencia.material.mTotal;
+            if (key === tmID + '') {
+                ++tmTotal;
+                if (row.progresso.materialEstudo === true) {
+                    ++tmEstudado;
+                }    
+            } 
+            if (key === tpID + '') {
+                ++tpTotal;
+                if (row.progresso.materialEstudo === true) ++tpEstudado;
+            }
+            if (row.progresso.materialEstudo === true) ++frequencia.material.mEstudado;
+        } 
+
+        if (row.progresso.videoaula !== undefined) {
+            ++frequencia.videoaula.vTotal;
+            if (key === tmID + '') {
+                ++tmTotal;
+                if (row.progresso.videoaula === true) ++tmEstudado;
+            } 
+            if (key === tpID + '') {
+                ++tpTotal;
+                if (row.progresso.videoaula === true) ++tpEstudado;
+            }
+            if (row.progresso.videoaula === true) ++frequencia.videoaula.vAssistido;
+        } 
+
+        if (row.progresso.exercicioFixacao !== undefined) {
+            ++frequencia.atividade.aTotal;
+            if (key === tmID + '') {
+                ++tmTotal;
+                if (row.progresso.exercicioFixacao === true) ++tmEstudado;
+            }
+            if (key === tpID + '') {
+                ++tpTotal;
+                if (row.progresso.exercicioFixacao === true) ++tpEstudado;
+            }
+            if (row.progresso.exercicioFixacao === true) ++frequencia.atividade.aFeito;
+        }
+
+        if (row.progresso.exercicioRetomada !== undefined) {
+            ++frequencia.atividade.aTotal;
+            if (key === tmID + '') {
+                ++tmTotal;
+                if (row.progresso.exercicioRetomada === true) ++tmEstudado;
+            }
+            if (key === tpID + '') {
+                ++tpTotal;
+                if (row.progresso.exercicioRetomada === true) ++tpEstudado;
+            }
+            if (row.progresso.exercicioRetomada === true) ++frequencia.atividade.aFeito;
+        }
+
+        if (row.progresso.exercicioAprofundamento !== undefined) {
+            ++frequencia.atividade.aTotal;
+            if (key === tmID + '') {
+                ++tmTotal;
+                if (row.progresso.exercicioAprofundamento === true) ++tmEstudado;
+            } 
+            if (key === tpID + '') {
+                ++tpTotal;
+                if (row.progresso.exercicioAprofundamento === true) ++tpEstudado;
+            }
+            if (row.progresso.exercicioAprofundamento === true) ++frequencia.atividade.aFeito;
+        }
     });
 
-    return res.json({data: analise});
+    return res.json({frequencia, tmTotal, tmEstudado, tpTotal, tpEstudado});
 }
+
+const gerarAnaliseAdministrador = async (req, res) => {
+
+    let analise = {
+        porArea: {
+          linguagens: {
+            mediaAlunos: 0,
+            atividades: {
+              parte: 0,
+              total: 0
+            },
+            questoes: {
+              parte: 0,
+              total: 0
+            },
+            topicos: {
+              parte: 0,
+              total: 0
+            },
+            videoaulas: {
+              parte: 0,
+              total: 0
+            },
+          },
+          matematica: {
+            mediaAlunos: 0,
+            atividades: {
+              parte: 0,
+              total: 0
+            },
+            questoes: {
+              parte: 0,
+              total: 0
+            },
+            topicos: {
+              parte: 0,
+              total: 0
+            },
+            videoaulas: {
+              parte: 0,
+              total: 0
+            },
+          },
+          cienciasHumanas: {
+            mediaAlunos: 0,
+            atividades: {
+              parte: 0,
+              total: 0
+            },
+            questoes: {
+              parte: 0,
+              total: 0
+            },
+            topicos: {
+              parte: 0,
+              total: 0
+            },
+            videoaulas: {
+              parte: 0,
+              total: 0
+            },
+          },
+          cienciasNaturais: {
+            mediaAlunos: 0,
+            atividades: {
+              parte: 0,
+              total: 0
+            },
+            questoes: {
+              parte: 0,
+              total: 0
+            },
+            topicos: {
+              parte: 0,
+              total: 0
+            },
+            videoaulas: {
+              parte: 0,
+              total: 0
+            },
+          },
+        },
+        porDisciplina: {
+          linguagens: {
+            melhor: {
+              nome: 0,
+              nota: 0,
+              parte: 0,
+              total: 0
+            },
+            pior: {
+              nome: 0,
+              nota: 0,
+              parte: 0,
+              total: 0
+            }
+          },
+          matematica: {
+            melhor: {
+              nome: 0,
+              nota: 0,
+              parte: 0,
+              total: 0
+            },
+            pior: {
+              nome: 0,
+              nota: 0,
+              parte: 0,
+              total: 0
+            }
+          },
+          cienciasHumanas: {
+            melhor: {
+              nome: 0,
+              nota: 0,
+              parte: 0,
+              total: 0
+            },
+            pior: {
+              nome: 0,
+              nota: 0,
+              parte: 0,
+              total: 0
+            }
+          },
+          cienciasNaturais: {
+            melhor: {
+              nome: 0,
+              nota: 0,
+              parte: 0,
+              total: 0
+            },
+            pior: {
+              nome: 0,
+              nota: 0,
+              parte: 0,
+              total: 0
+            }
+          },
+        }
+    } 
+
+    let resultadoDisciplinas = [
+        { areaConhecimento: '', disciplina: 'Matemática', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'História', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Geografia', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Filosofia', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Sociologia', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Química', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Física', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Biologia', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Língua Portuguesa', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Literatura', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Inglês', nota: 0, atividades: 0, acertos: 0, questoes: 0},
+        { areaConhecimento: '', disciplina: 'Espanhol', nota: 0, atividades: 0, acertos: 0, questoes: 0}
+    ];
+
+    var linguagens = { 
+        total: 0,
+        atividades: 0,
+        melhor: {
+            nome: '',
+            nota: 0,
+            parte: 0,
+            total: 0
+        },
+        pior: {
+            nome: '',
+            nota: 101,
+            parte: 0,
+            total: 0
+        } 
+    }
+    var matematica = {
+        total: 0, 
+        atividades: 0,
+        melhor: {
+            nome: '',
+            nota: 0,
+            parte: 0,
+            total: 0
+        },
+        pior: {
+            nome: '',
+            nota: 101,
+            parte: 0,
+            total: 0
+        } 
+    }
+    var cienciasHumanas = {
+        total: 0, 
+        atividades: 0,
+        melhor: {
+            nome: '',
+            nota: 0,
+            parte: 0,
+            total: 0
+        },
+        pior: {
+            nome: '',
+            nota: 101,
+            parte: 0,
+            total: 0
+        } 
+    }
+    var cienciasNaturais = {
+        total: 0, 
+        atividades: 0,
+        melhor: {
+            nome: '',
+            nota: 0,
+            parte: 0,
+            total: 0
+        },
+        pior: {
+            nome: '',
+            nota: 101,
+            parte: 0,
+            total: 0
+        } 
+    }
+    
+    await RespostaAluno
+        .find({})
+        .populate({path: 'atividadeID', select: ['disciplinaID', 'areaConhecimento'], populate: {path: 'disciplinaID', select: 'nome'}})
+        .then(respostaAluno => {
+            respostaAluno.map(row => {
+                if (row.corrigido) {
+                    if (row.atividadeID.areaConhecimento === 'Linguagens') {
+                        linguagens.total += row.nota;
+                        linguagens.atividades += 1;
+                    } else if (row.atividadeID.areaConhecimento === 'Matemática') {
+                        matematica.total += row.nota;
+                        matematica.atividades += 1;
+                    } else if (row.atividadeID.areaConhecimento === 'Ciências Humanas') {
+                        cienciasHumanas.total += row.nota;
+                        cienciasHumanas.atividades += 1;
+                    } else {
+                        cienciasNaturais.total += row.nota;
+                        cienciasNaturais.atividades += 1;
+                    }
+
+                    resultadoDisciplinas.find(element => {
+                        if (element.disciplina === row.atividadeID.disciplinaID.nome) {
+                            element.nota += row.nota;
+                            element.atividades += 1;
+                            element.questoes += row.respostaQuestaoIDs.length;
+                            element.acertos += (row.nota*row.respostaQuestaoIDs.length)/100;
+                            element.areaConhecimento = row.atividadeID.areaConhecimento;
+                        }
+                    })
+                }
+            });
+        
+            if (linguagens.total !== 0) analise.porArea.linguagens.mediaAlunos = linguagens.total / linguagens.atividades;
+            if (matematica.total !== 0) analise.porArea.matematica.mediaAlunos = matematica.total / matematica.atividades;
+            if (cienciasHumanas.total !== 0) analise.porArea.cienciasHumanas.mediaAlunos = cienciasHumanas.total / cienciasHumanas.atividades;
+            if (cienciasNaturais.total !== 0) analise.porArea.cienciasNaturais.mediaAlunos = cienciasNaturais.total / cienciasNaturais.atividades;
+
+            resultadoDisciplinas.map(row => {
+                // console.log(row);
+                if (row.atividades > 0) row.nota = row.nota / row.atividades;
+                if (row.areaConhecimento === 'Linguagens') {
+                    if (row.nota > linguagens.melhor.nota) {
+                        linguagens.melhor.nota = row.nota;
+                        linguagens.melhor.nome = row.disciplina;
+                    } else if (row.nota < linguagens.pior.nota) {
+                        linguagens.pior.nota = row.nota;
+                        linguagens.pior.nome = row.disciplina;
+                    }
+                } else if (row.areaConhecimento === 'Matemática') {
+                    if (row.nota > matematica.melhor.nota) {
+                        matematica.melhor.nota = row.nota;
+                        matematica.melhor.nome = row.disciplina;
+                    } else if (row.nota < matematica.pior.nota) {
+                        matematica.pior.nota = row.nota;
+                        matematica.pior.nome = row.disciplina;
+                    }
+                } else if (row.areaConhecimento === 'Ciências Humanas') {
+                    if (row.nota > cienciasHumanas.melhor.nota) {
+                        cienciasHumanas.melhor.nota = row.nota;
+                        cienciasHumanas.melhor.nome = row.disciplina;
+                    } else if (row.nota < cienciasHumanas.pior.nota) {
+                        cienciasHumanas.pior.nota = row.nota;
+                        cienciasHumanas.pior.nome = row.disciplina;
+                    }
+                } else if (row.areaConhecimento === 'Ciências da Natureza') {
+                    if (row.nota > cienciasNaturais.melhor.nota) {
+                        cienciasNaturais.melhor.nota = row.nota;
+                        cienciasNaturais.melhor.nome = row.disciplina;
+                    } else if (row.nota < cienciasNaturais.pior.nota) {
+                        cienciasNaturais.pior.nota = row.nota;
+                        cienciasNaturais.pior.nome = row.disciplina;
+                    }
+                }
+            })
+        
+            analise.porDisciplina.linguagens.melhor = linguagens.melhor;
+            analise.porDisciplina.linguagens.pior = linguagens.pior;
+            analise.porDisciplina.matematica.melhor = matematica.melhor;
+            analise.porDisciplina.matematica.pior = matematica.pior;
+            analise.porDisciplina.cienciasHumanas.melhor = cienciasHumanas.melhor;
+            analise.porDisciplina.cienciasHumanas.pior = cienciasHumanas.pior;
+            analise.porDisciplina.cienciasNaturais.melhor = cienciasNaturais.melhor;
+            analise.porDisciplina.cienciasNaturais.pior = cienciasNaturais.pior;
+        })
+
+
+    return res.json({analise})
+}
+
 
 // Exporta os módulos
 module.exports = {
     gerarAnaliseAluno,
     gerarProgressoDiario,
-    gerarAnaliseProfessor
+    gerarAnaliseProfessor,
+    calcularProgresso,
+    gerarAnaliseAdministrador
 }

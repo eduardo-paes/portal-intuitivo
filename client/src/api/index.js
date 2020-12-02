@@ -154,6 +154,8 @@ export const encProgressoPorAlunoID = (alunoID) => api.get(`/resultado-ads/${alu
 export const gerarAnaliseAluno = id => api.get(`analises/${id}`);
 export const gerarProgressoDiario = (alunoID, dia, semana) => api.get(`analises/${alunoID}/${dia}/${semana}`);
 export const gerarAnaliseProfessor = id => api.get(`analises-professor/${id}`);
+export const gerarAnaliseAdministrador = () => api.get(`analises-administrador`);
+export const calcularProgresso = (id, tmID, tpID) => api.get(`analises-frequencia/${id}/${tmID}/${tpID}`);
 //#endregion
 
 const apis = {
@@ -280,7 +282,9 @@ const apis = {
     //Analise
     gerarAnaliseAluno,
     gerarProgressoDiario,
-    gerarAnaliseProfessor
+    gerarAnaliseProfessor,
+    calcularProgresso,
+    gerarAnaliseAdministrador,
 }
 
 export default apis;

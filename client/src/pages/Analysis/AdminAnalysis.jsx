@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { GeneralSubtitle, GeneralTitle, MyContainer } from '../../assets/styles/styledComponents';
 import { makeStyles, Grid } from '@material-ui/core';
 import { AreaCard, SubjectCard } from '../../components';
+import { useEffect } from 'react';
+import apis from '../../api';
 
 // -- Estilos locais
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +29,15 @@ const desempenhoArea = [
 
 export default function AdminAnalysis() {
   const classes = useStyles();
+
+  async function gerarAnalise() {
+    const res = await apis.gerarAnaliseAdministrador();
+    console.log(res);
+  }
+
+  useEffect(() => {
+    gerarAnalise();
+  }, [])
 
   return (
     <MyContainer>
